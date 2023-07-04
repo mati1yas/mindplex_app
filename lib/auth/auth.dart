@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mindplex_app/auth/login_page.dart';
+import 'package:mindplex_app/auth/register_page.dart';
 
 import '../main.dart';
 
@@ -13,13 +15,11 @@ class _AuthPageState extends State<AuthPage> {
   bool isLogin = true;
 
   @override
-  Widget build(BuildContext context) =>
-      // isLogin
-      // ? LoginPage(onClickedLogIn: toggle)
-      // : RegisterPage(
-      //     onClickedRegister: toggle,
-      //   );
-      const MyHomePage(title: "Mindplex");
+  Widget build(BuildContext context) => isLogin
+      ? LoginPage(changePage: toggle)
+      : RegisterPage(
+          changePage: toggle,
+        );
 
   void toggle() => setState(() => isLogin = !isLogin);
 }
