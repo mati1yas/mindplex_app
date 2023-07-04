@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     // ToDo: check if user signedIn or not
-    bool signedIn = false;
+    bool signedIn = true;
 
     return Scaffold(
       body: AnimatedSplashScreen(
