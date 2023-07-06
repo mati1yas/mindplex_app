@@ -111,6 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 10,
                               ),
                               Container(
+                                height: 50,
                                 decoration: BoxDecoration(
                                   color: secondbackgroundColor,
                                   boxShadow: [
@@ -125,12 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                                 child: TextFormField(
                                     controller: emailController,
                                     focusNode: emailFocusNode,
-                                    cursorColor: Colors.blue,
+                                    cursorColor:
+                                        Color.fromARGB(224, 14, 187, 158),
                                     decoration: InputDecoration(
                                       prefixIcon: Icon(
                                         Icons.mail_outline,
                                         color: emailFocusNode.hasFocus
-                                            ? Colors.blue
+                                            ? Color.fromARGB(224, 14, 187, 158)
                                             : Colors.grey,
                                       ),
                                       hintText: "Email",
@@ -151,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
-                                            color: Colors.blue),
+                                            color: Color.fromARGB(
+                                                224, 14, 187, 158)),
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
@@ -180,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 15,
                               ),
                               Container(
+                                height: 50,
                                 decoration: BoxDecoration(
                                   color: secondbackgroundColor,
                                   boxShadow: [
@@ -195,12 +199,13 @@ class _LoginPageState extends State<LoginPage> {
                                 child: TextFormField(
                                   controller: passwordController,
                                   focusNode: passwordFocusNode,
-                                  cursorColor: Colors.blue,
+                                  cursorColor:
+                                      Color.fromARGB(224, 14, 187, 158),
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(
                                       Icons.lock_outline,
                                       color: passwordFocusNode.hasFocus
-                                          ? Colors.blue
+                                          ? Color.fromARGB(224, 14, 187, 158)
                                           : Colors.grey,
                                     ),
                                     suffixIcon: IconButton(
@@ -212,11 +217,13 @@ class _LoginPageState extends State<LoginPage> {
                                       icon: isPressed
                                           ? Icon(Icons.visibility_off_outlined,
                                               color: passwordFocusNode.hasFocus
-                                                  ? Colors.blue
+                                                  ? Color.fromARGB(
+                                                      224, 14, 187, 158)
                                                   : Colors.grey)
                                           : Icon(Icons.visibility_outlined,
                                               color: passwordFocusNode.hasFocus
-                                                  ? Colors.blue
+                                                  ? Color.fromARGB(
+                                                      224, 14, 187, 158)
                                                   : Colors.grey),
                                     ),
                                     hintText: "Password",
@@ -233,8 +240,9 @@ class _LoginPageState extends State<LoginPage> {
                                       borderRadius: BorderRadius.circular(15.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                          const BorderSide(color: Colors.blue),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              224, 14, 187, 158)),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
@@ -287,6 +295,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             fixedSize: Size(260, 50),
                             backgroundColor: Color.fromARGB(224, 14, 187, 158)),
                         onPressed: login,
