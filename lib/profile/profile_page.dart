@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../auth/auth_controller/auth_controller.dart';
 import 'about_screen.dart';
 import 'bookmark_screen.dart';
 
@@ -12,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
+  AuthController authController = Get.put(AuthController());
   //array og pages
   final double coverHeight = 280;
   var screens = [
@@ -151,6 +154,21 @@ class _ProfilePage extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          PopupMenuButton(
+              color: Colors.white,
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                        onTap: () {
+                          authController.logout();
+                          Navigator.of(context).pop();
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout),
+                            Text("Logout"),
+                          ],
+                        ))
+                  ]),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
