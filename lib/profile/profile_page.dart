@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'about_screen.dart';
@@ -216,8 +214,8 @@ class _ProfilePage extends State<ProfilePage> {
           (item) {
             return Row(
               children: [
-                const Column(
-                  children: [
+                Column(
+                  children: const [
                     Text(
                       '22',
                       textAlign: TextAlign.center,
