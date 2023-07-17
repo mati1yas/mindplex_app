@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../../auth/auth_controller/auth_controller.dart';
 
 AuthController authController = Get.put(AuthController());
@@ -12,7 +12,6 @@ final posts = <Widget>[];
 const articlePr =
     'roses are red, violets are blue, i\'m training to be a hacker and i still do...';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -21,8 +20,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
- 
-  
   late final TabController _tabController;
 
   static const List<Tab> pageTabs = <Tab>[
@@ -36,20 +33,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    
+
     for (int i = 0; i < 5; i++) {
-        posts.add(
-          const PostWidget(
-          name: 'Tristan Harris',
-          date: 'Jan 19 2018',
-          balance: 511,
-          avatarImage: 'assets/images/woman.png',
-          title: 'article title',
-          articlePreview: articlePr,
-          minutesWatch: 11,
-          totalViews: 19.9),
-        );
-      }
+      posts.add(
+        const PostWidget(
+            name: 'Tristan Harris',
+            date: 'Jan 19 2018',
+            balance: 511,
+            avatarImage: 'assets/images/woman.png',
+            title: 'article title',
+            articlePreview: articlePr,
+            minutesWatch: 11,
+            totalViews: 19.9),
+      );
+    }
   }
 
   @override
@@ -69,11 +66,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(171),
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.203),
           child: AppBar(
+            title: Image.asset('assets/images/logo.png'),
+            titleSpacing: 120,
             leading: Builder(builder: (context) {
               return IconButton(
-                icon: const ImageIcon(AssetImage('assets/images/woman.png')),
+                icon: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/woman.png')),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               );
             }),
@@ -84,13 +85,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             ),
           ),
         ),
-
         drawer: Drawer(
-          
           child: Container(
             decoration: const BoxDecoration(
               color: Color.fromARGB(255, 0, 50, 71),
-              
             ),
             child: ListView(
               padding: EdgeInsets.zero,
@@ -98,35 +96,39 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 UserAccountsDrawerHeader(
                   accountName: userText,
                   accountEmail: userEmail,
-                  currentAccountPicture: const CircleAvatar(backgroundImage: AssetImage('assets/images/woman.png')),
-                  decoration: const BoxDecoration(color: Color.fromARGB(255, 0, 50, 71),),
+                  currentAccountPicture: const CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/woman.png')),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 0, 50, 71),
+                  ),
                 ),
                 ListTile(
                   title: const Text(
-                    'Item 1',
+                    'Profile',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                    ),
-                    ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
                   onTap: () {
                     // ...
-                   
                   },
                 ),
-          
-                const SizedBox(height: 20,),
-          
+                const SizedBox(
+                  height: 10,
+                ),
                 ListTile(
-                  title: const Text('Item 2'),
+                  title: const Text(
+                    'Upgrade',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
                   onTap: () {
-                    // Update the state of the app.
                     // ...
                   },
                 ),
-          
-          
               ],
             ),
           ),
@@ -177,14 +179,14 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
           color: Color.fromARGB(255, 4, 77, 100),
         ),
         padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: SizedBox(
-          height: 187,
-          width: 357,
+          height: MediaQuery.of(context).size.height * 0.222,
+          width: MediaQuery.of(context).size.width * 0.915,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,28 +198,17 @@ class PostWidget extends StatelessWidget {
                     backgroundImage: AssetImage(avatarImage),
                   ),
                   const SizedBox(
-                    width: 4,
+                    width: 2,
                   ),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  Text(name,
+                      style: GoogleFonts.barlowCondensed(
+                        color: Colors.white,
+                      )),
                   const SizedBox(
-                    width: 4,
+                    width: 2,
                   ),
                   Text(
                     date,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    '${balance.toString()} MBX',
                     style: const TextStyle(
                       color: Colors.white,
                     ),
