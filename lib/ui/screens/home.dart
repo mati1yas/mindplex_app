@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/auth/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../auth/auth_controller/auth_controller.dart';
+import '../../routes/app_routes.dart';
 
 AuthController authController = Get.put(AuthController());
 
@@ -111,6 +111,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         color: Colors.white),
                   ),
                   onTap: () {
+                    Get.offAllNamed(AppRoutes.profilePage);
                     // ...
                   },
                 ),
