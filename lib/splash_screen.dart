@@ -2,10 +2,10 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
-import 'package:mindplex_app/ui/screens/home.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'auth/auth.dart';
+import 'main.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
@@ -27,7 +27,7 @@ class SplashScreen extends StatelessWidget {
           pageTransitionType: PageTransitionType.fade,
           nextScreen: Obx(() => !authController.isAuthenticated.value
               ? const AuthPage()
-              : const Home())),
+              : const MyHomePage(title: "Mindplex"))),
     );
   }
 }
