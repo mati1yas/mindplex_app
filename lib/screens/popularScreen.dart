@@ -1,10 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:mindplex_app/provider/popularProvider.dart';
 import 'package:mindplex_app/services/PopularServices.dart';
-import 'package:provider/provider.dart';
 
-import '../Models/popularModel.dart';
+import '../models/popularModel.dart';
 
 class PopularScreen extends StatefulWidget {
   const PopularScreen({super.key});
