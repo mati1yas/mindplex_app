@@ -2,11 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../Models/popularModel.dart';
-import 'package:http/http.dart' as http;
+import '../models/popularModel.dart';
 
 Future<List<PopularDetails>> getData() async {
-  List<PopularDetails> list;
   // String link =
   //     "https://newsapi.org/v2/top-headlines?country=in&apiKey=API_KEY";
   // var res = await rootBundle.loadString("assets/demoAPI.json");

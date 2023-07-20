@@ -26,7 +26,7 @@ class AuthController extends GetxController {
   void logout() {
     localStorage.value.deleteFromStorage("Token");
     isAuthenticated.value = false;
-    Get.offAll(const AuthPage());
+    Get.to(() => AuthPage());
   }
 
   Future<void> loginUser(
