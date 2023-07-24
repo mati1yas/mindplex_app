@@ -1,6 +1,11 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mindplex_app/routes/app_routes.dart';
+
+import 'auth_controller/auth_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback changePage;
@@ -555,6 +560,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future register() async {
+    FocusScope.of(context).unfocus();
     isSaved = false;
     final form = formkey.currentState!;
     setState(() {
@@ -567,6 +573,43 @@ class _RegisterPageState extends State<RegisterPage> {
           builder: (context) => Center(
                 child: CircularProgressIndicator(color: Colors.green[900]),
               ));
+
+      AuthController authController = Get.put(AuthController());
+
+      await authController.register(
+          email: emailController.text,
+          firstName: firstnameController.text,
+          lastName: lastnameController.text,
+          password: passwordController.text);
+      Navigator.pop(context);
+      if (authController.isRegistered.isTrue) {
+        Get.offAllNamed(AppRoutes.authPage);
+        if (mounted) {
+          Flushbar(
+            flushbarPosition: FlushbarPosition.BOTTOM,
+            margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+            titleSize: 20,
+            messageSize: 17,
+            backgroundColor: Colors.green,
+            borderRadius: BorderRadius.circular(8),
+            message: "Succesfully Registered, Verify your email",
+            duration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      } else {
+        if (mounted) {
+          Flushbar(
+            flushbarPosition: FlushbarPosition.BOTTOM,
+            margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+            titleSize: 20,
+            messageSize: 17,
+            backgroundColor: Colors.red,
+            borderRadius: BorderRadius.circular(8),
+            message: "Email already Exists",
+            duration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      }
     }
   }
 }
