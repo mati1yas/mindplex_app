@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: '/',
+      initialRoute: AppRoutes.home,
       getPages: AppRoutes.pages,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -46,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: PopularScreen(),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

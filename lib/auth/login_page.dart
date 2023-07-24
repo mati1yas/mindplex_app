@@ -421,7 +421,7 @@ class _LoginPageState extends State<LoginPage> {
           loginType: 'email_password');
 
       if (authController.isAuthenticated.value) {
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.landingPage);
       } else {
         Navigator.pop(context);
         Flushbar(
