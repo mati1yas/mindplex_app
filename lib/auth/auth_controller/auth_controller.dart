@@ -10,6 +10,8 @@ class AuthController extends GetxController {
   final localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
+  final RxBool isRegistered = false.obs;
+  final RxBool isVerified = false.obs;
 
   void checkAuthentication() async {
     final hasToken = await localStorage.value.readFromStorage('Token');
@@ -49,6 +51,28 @@ class AuthController extends GetxController {
       isAuthenticated.value = true;
     } catch (e) {
       isAuthenticated.value = false;
+    }
+  }
+
+  Future<void> register(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String password}) async {
+    try {
+      String statusCode = await authService.value.register(
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          password: password);
+
+      if (statusCode == '200') {
+        isRegistered.value = true;
+      } else {
+        isRegistered.value = false;
+      }
+    } catch (e) {
+      isRegistered.value = false;
     }
   }
 }

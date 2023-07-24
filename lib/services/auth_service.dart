@@ -25,4 +25,27 @@ class AuthService {
       throw e;
     }
   }
+
+  Future<String> register(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String password}) async {
+    try {
+      var dio = Dio();
+
+      Response response = await dio.post(AppUrls.registerationUrl,
+          data: jsonEncode(<String, String>{
+            "registed_with": "email_password",
+            "email": email,
+            "first_name": firstName,
+            "last_name": lastName,
+            "password": password
+          }));
+
+      return response.statusCode.toString();
+    } catch (e) {
+      throw e;
+    }
+  }
 }
