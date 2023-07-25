@@ -592,7 +592,7 @@ class _RegisterPageState extends State<RegisterPage> {
             messageSize: 17,
             backgroundColor: Colors.green,
             borderRadius: BorderRadius.circular(8),
-            message: "Succesfully Registered, Verify your email",
+            message: authController.statusMessage.toString(),
             duration: const Duration(seconds: 5),
           ).show(context);
         }
@@ -605,7 +605,7 @@ class _RegisterPageState extends State<RegisterPage> {
             messageSize: 17,
             backgroundColor: Colors.red,
             borderRadius: BorderRadius.circular(8),
-            message: "Email already Exists",
+            message: authController.statusMessage.toString(),
             duration: const Duration(seconds: 5),
           ).show(context);
         }

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
@@ -12,6 +13,7 @@ class AuthController extends GetxController {
   final RxBool isAuthenticated = false.obs;
   final RxBool isRegistered = false.obs;
   final RxBool isVerified = false.obs;
+  final RxString statusMessage = ''.obs;
 
   void checkAuthentication() async {
     final hasToken = await localStorage.value.readFromStorage('Token');
@@ -50,6 +52,11 @@ class AuthController extends GetxController {
           userNiceName: userData.userNicename.toString());
       isAuthenticated.value = true;
     } catch (e) {
+      if (e is DioException) {
+        var message = e.response!.data['message'].toString();
+
+        statusMessage.value = message;
+      }
       isAuthenticated.value = false;
     }
   }
@@ -68,10 +75,18 @@ class AuthController extends GetxController {
 
       if (statusCode == '200') {
         isRegistered.value = true;
+        statusMessage.value =
+            "User $email Registration was Successful. Verify your email!";
       } else {
         isRegistered.value = false;
       }
     } catch (e) {
+      if (e is DioException) {
+        var message = e.response!.data['message'].toString();
+
+        statusMessage.value = message;
+      }
+      isAuthenticated.value = false;
       isRegistered.value = false;
     }
   }

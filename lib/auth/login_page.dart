@@ -432,7 +432,7 @@ class _LoginPageState extends State<LoginPage> {
           messageColor: Colors.red,
           backgroundColor: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          message: "Failed To Login",
+          message: authController.statusMessage.toString(),
           duration: const Duration(seconds: 5),
         ).show(context);
       }
