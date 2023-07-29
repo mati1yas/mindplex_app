@@ -1,5 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../models/auth_model.dart';
+
 class LocalStorage {
   final FlutterSecureStorage flutterSecureStorage;
 
@@ -32,6 +34,47 @@ class LocalStorage {
     writeToStorage("firstName", firstName);
     writeToStorage("lastName", lastName);
     writeToStorage("userNiceName", userNiceName);
+  }
+
+  Future<AuthModel> readUserInfo() async {
+    String email = await readFromStorage(
+      "email",
+    );
+
+    String token = await readFromStorage(
+      "Token",
+    );
+    String image = await readFromStorage(
+      "image",
+    );
+    String userDisplayName = await readFromStorage(
+      "userDisplayName",
+    );
+    String userName = await readFromStorage(
+      "username",
+    );
+    String firstName = await readFromStorage(
+      "firstName",
+    );
+    String lastName = await readFromStorage(
+      "lastName",
+    );
+    String userNiceName = await readFromStorage(
+      "userNiceName",
+    );
+    var userData = {
+      "user_email": email,
+      'image': image,
+      'token': token,
+      'user_nicename': userNiceName,
+      'user_display_name': userDisplayName,
+      'username': userName,
+      'first_name': firstName,
+      'last_name': lastName,
+    };
+
+    print(userData);
+    return AuthModel.fromJson(userData);
   }
 
   Future<void> deleteFromStorage(String key) async {

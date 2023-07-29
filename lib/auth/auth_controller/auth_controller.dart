@@ -2,13 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
+import 'package:mindplex_app/routes/app_routes.dart';
 import 'package:mindplex_app/services/local_storage.dart';
 
 import '../../services/auth_service.dart';
 
 class AuthController extends GetxController {
   final authService = AuthService().obs;
-  final localStorage =
+  Rx<LocalStorage> localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
   final RxBool isRegistered = false.obs;
@@ -30,7 +31,7 @@ class AuthController extends GetxController {
   void logout() {
     localStorage.value.deleteFromStorage("Token");
     isAuthenticated.value = false;
-    Get.to(() => AuthPage());
+    Get.toNamed(AppRoutes.authPage);
   }
 
   Future<void> loginUser(
