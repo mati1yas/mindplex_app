@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
 
+import '../profile/user_profile_controller.dart';
 import 'auth_controller/auth_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -422,6 +423,8 @@ class _LoginPageState extends State<LoginPage> {
 
       if (authController.isAuthenticated.value) {
         Get.offAllNamed(AppRoutes.landingPage);
+        ProfileController profileController = Get.put(ProfileController());
+        await profileController.getAuthenticatedUser();
       } else {
         Navigator.pop(context);
         Flushbar(
