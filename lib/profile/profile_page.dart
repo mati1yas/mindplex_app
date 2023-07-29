@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/auth/auth.dart';
+import 'package:mindplex_app/profile/user_profile_controller.dart';
+import 'package:mindplex_app/routes/app_routes.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import 'about_screen.dart';
@@ -48,8 +51,11 @@ class _ProfilePage extends State<ProfilePage> {
     });
   }
 
+  ProfileController profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
+    profileController.getAuthenticatedUser();
     return Scaffold(
         backgroundColor:
             const Color.fromARGB(255, 12, 45, 68), // can and should be removed
@@ -67,11 +73,8 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget buildCoverImage() {
     // decoration:BoxDecoration()), add curves to the image
-    return Image.network(
-        'https://images.unsplash.com/photo-1509745651274-ddeb337c854a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fDE0NDAlMjB4JTIwMTIwMHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60',
-        width: double.infinity,
-        height: coverHeight,
-        fit: BoxFit.cover);
+    return Image.network(profileController.authenticatedUser.value.image ?? "",
+        width: double.infinity, height: coverHeight, fit: BoxFit.cover);
   }
 
   Widget buildTop() {
@@ -149,6 +152,9 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   Widget buildUserName() {
+    final firstName =
+        profileController.authenticatedUser.value.firstName ?? " ";
+    final lastName = profileController.authenticatedUser.value.lastName ?? " ";
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -175,17 +181,17 @@ class _ProfilePage extends State<ProfilePage> {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 5),
-                child: const Text(
-                  'Ayden Tiao',
-                  style: TextStyle(
+                child: Text(
+                  firstName + " " + lastName,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const Text(
-                '@AydenTiao',
+              Text(
+                profileController.authenticatedUser.value.username ?? "",
                 style: TextStyle(
                   color: Color.fromARGB(255, 190, 190, 190),
                   fontSize: 15,

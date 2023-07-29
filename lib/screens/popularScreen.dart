@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/services/PopularServices.dart';
 import 'dart:ui' show ImageFilter;
 import '../models/popularModel.dart';
+import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
 
 class PopularScreen extends StatefulWidget {
@@ -38,9 +39,13 @@ class _PopularScreenState extends State<PopularScreen> {
         return Container();
       }
   */
+  ProfileController profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     // popularList = context.read<PopularProvider>().getAllPopularList;
+    profileController.getAuthenticatedUser();
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       key: _globalkey,
@@ -95,7 +100,11 @@ class _PopularScreenState extends State<PopularScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Ayden Tiao",
+                              profileController
+                                      .authenticatedUser.value.firstName ??
+                                  " " +
+                                      '${profileController.authenticatedUser.value.lastName}' ??
+                                  " ",
                               style: TextStyle(
                                   fontSize: 30,
                                   color: Colors.white,
@@ -105,7 +114,9 @@ class _PopularScreenState extends State<PopularScreen> {
                               height: 10,
                             ),
                             Text(
-                              "@AydenTiao",
+                              profileController
+                                      .authenticatedUser.value.username ??
+                                  " ",
                               style:
                                   TextStyle(fontSize: 15, color: Colors.grey),
                             ),
@@ -199,7 +210,8 @@ class _PopularScreenState extends State<PopularScreen> {
                           color: Colors.white),
                     ),
                     onTap: () {
-                      Get.offAllNamed(AppRoutes.profilePage);
+                      Navigator.of(context).pop();
+                      Get.toNamed(AppRoutes.profilePage);
                       // ...
                     },
                   ),
@@ -646,9 +658,12 @@ class _PopularScreenState extends State<PopularScreen> {
   }
 
   loadPopularList() async {
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
     try {
       var res = await getData();
       setState(() {
