@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/blogs/landing_page.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
-import 'package:mindplex_app/screens/popularScreen.dart';
 
 import 'splash_screen.dart';
 
@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PopularScreen(),
+      body: LandingPage(),
     );
   }
 }
