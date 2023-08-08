@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
@@ -42,117 +43,119 @@ class _LandingPageState extends State<LandingPage> {
             child: ListView(
               padding: EdgeInsets.only(top: 20, left: 20),
               children: [
-                Container(
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          height: 50,
-                          width: 50,
-                          margin:
-                              EdgeInsets.only(top: 40, left: 10, bottom: 15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: Colors.green,
-                            image: DecorationImage(
-                              image: NetworkImage(profileController
-                                      .authenticatedUser.value.image ??
-                                  ""),
+                Obx(
+                  () => Container(
+                    height: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            height: 50,
+                            width: 50,
+                            margin:
+                                EdgeInsets.only(top: 40, left: 10, bottom: 15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: Colors.green,
+                              image: DecorationImage(
+                                image: NetworkImage(profileController
+                                        .authenticatedUser.value.image ??
+                                    ""),
+                              ),
                             ),
+                            child: Container()),
+                        Container(
+                          margin: const EdgeInsets.only(left: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                profileController
+                                        .authenticatedUser.value.firstName ??
+                                    " " +
+                                        '${profileController.authenticatedUser.value.lastName}' ??
+                                    " ",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                profileController
+                                        .authenticatedUser.value.username ??
+                                    " ",
+                                style:
+                                    TextStyle(fontSize: 15, color: Colors.grey),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "20",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Friends",
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "120",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Following",
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "100",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Followers",
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                          child: Container()),
-                      Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              profileController
-                                      .authenticatedUser.value.firstName ??
-                                  " " +
-                                      '${profileController.authenticatedUser.value.lastName}' ??
-                                  " ",
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              profileController
-                                      .authenticatedUser.value.username ??
-                                  " ",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "20",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Friends",
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "120",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Following",
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "100",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Followers",
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -218,7 +221,8 @@ class _LandingPageState extends State<LandingPage> {
                         color: Colors.white),
                   ),
                   onTap: () {
-                    // ...
+                    blogsController.filterBlogsByPostType(postType: 'text');
+                    Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -235,7 +239,8 @@ class _LandingPageState extends State<LandingPage> {
                         color: Colors.white),
                   ),
                   onTap: () {
-                    // ...
+                    blogsController.filterBlogsByPostType(postType: 'video');
+                    Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -252,7 +257,8 @@ class _LandingPageState extends State<LandingPage> {
                         color: Colors.white),
                   ),
                   onTap: () {
-                    // ...
+                    blogsController.filterBlogsByPostType(postType: 'audio');
+                    Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -280,13 +286,14 @@ class _LandingPageState extends State<LandingPage> {
       body: Column(
         children: [
           Container(
-            height: 120,
+            height: 110,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 GestureDetector(
                   onTap: () => {_globalkey.currentState!.openDrawer()},
-                  child: Container(
+                  child: Obx(
+                    () => Container(
                       height: 40,
                       width: 40,
                       margin: EdgeInsets.only(left: 40),
@@ -299,7 +306,8 @@ class _LandingPageState extends State<LandingPage> {
                                   ""),
                         ),
                       ),
-                      child: Container()),
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   width: 80,
@@ -323,16 +331,16 @@ class _LandingPageState extends State<LandingPage> {
                 String category = blogsController.categories[index];
 
                 return GestureDetector(
-                  onTap: () =>
-                      blogsController.filterBlogsByCategory(category: category),
+                  onTap: () => blogsController.filterBlogsByRecommender(
+                      category: category),
                   child: Obx(
                     () => Container(
                       margin: const EdgeInsets.only(left: 5, right: 5),
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, top: 8, bottom: 8),
                       decoration: BoxDecoration(
-                          color: blogsController.selectedBlogCategory.value ==
-                                  category
+                          color: blogsController.recommender.value ==
+                                  blogsController.recommenderMaps[category]
                               ? Color(0xFF46b4b5)
                               : Color(0xFF0f567c),
                           borderRadius:
@@ -372,28 +380,34 @@ class _LandingPageState extends State<LandingPage> {
                                 Row(
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, top: 10, right: 5),
                                       height: 40,
                                       width: 40,
+                                      margin: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.green,
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                              "assets/images/profile.PNG"),
+                                        image: DecorationImage(
+                                          image: NetworkImage(blogsController
+                                                  .filteredBlogs[index]
+                                                  .authorAvatar! +
+                                              " "),
                                         ),
                                       ),
                                     ),
+
                                     Container(
                                       margin: EdgeInsets.only(right: 3),
                                       child: SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                .50,
+                                                .5,
                                         child: Text(
                                           blogsController.filteredBlogs[index]
-                                              .profileName!,
+                                                  .authorDisplayName! +
+                                              " " +
+                                              blogsController
+                                                  .filteredBlogs[index]
+                                                  .publishedAt!,
                                           style: const TextStyle(
                                               fontSize: 10,
                                               fontWeight: FontWeight.w300,
@@ -402,35 +416,47 @@ class _LandingPageState extends State<LandingPage> {
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 3),
-                                      child: blogsController
-                                                  .filteredBlogs[index].MPXR !=
-                                              " "
-                                          ? const Text("")
-                                          : Row(
-                                              children: [
-                                                const Text(
-                                                  "| ",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      color: Colors.white),
-                                                ),
-                                                Text(
-                                                  blogsController
-                                                      .filteredBlogs[index]
-                                                      .MPXR!,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
-                                                )
-                                              ],
-                                            ),
-                                    ),
+
+                                    // Container(
+                                    //   margin: EdgeInsets.only(left: 3),
+                                    //   child: Text(
+                                    //     blogsController
+                                    //         .filteredBlogs[index].publishedAt!,
+                                    //     style: const TextStyle(
+                                    //         fontSize: 10,
+                                    //         fontWeight: FontWeight.w300,
+                                    //         color: Colors.white),
+                                    //   ),
+                                    // ),
+                                    // Container(
+                                    //   margin: EdgeInsets.only(left: 3),
+                                    //   child: blogsController
+                                    //               .filteredBlogs[index].MPXR !=
+                                    //           " "
+                                    //       ? const Text("")
+                                    //       : Row(
+                                    //           children: [
+                                    //             const Text(
+                                    //               "| ",
+                                    //               style: TextStyle(
+                                    //                   fontSize: 12,
+                                    //                   fontStyle:
+                                    //                       FontStyle.normal,
+                                    //                   color: Colors.white),
+                                    //             ),
+                                    //             Text(
+                                    //               blogsController
+                                    //                   .filteredBlogs[index]
+                                    //                   .MPXR!,
+                                    //               style: const TextStyle(
+                                    //                   fontSize: 12,
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold,
+                                    //                   color: Colors.white),
+                                    //             )
+                                    //           ],
+                                    //         ),
+                                    // ),
                                     Container(
                                       height: 60,
                                       width: 35,
@@ -450,8 +476,8 @@ class _LandingPageState extends State<LandingPage> {
                                                 bottom: 10),
                                             child: blogsController
                                                         .filteredBlogs[index]
-                                                        .state ==
-                                                    "read"
+                                                        .postTypeFormat ==
+                                                    "text"
                                                 ? const Icon(
                                                     Icons.description_outlined,
                                                     color: Color(0xFF8aa7da),
@@ -460,8 +486,8 @@ class _LandingPageState extends State<LandingPage> {
                                                 : blogsController
                                                             .filteredBlogs[
                                                                 index]
-                                                            .state ==
-                                                        "watch"
+                                                            .postTypeFormat ==
+                                                        "video"
                                                     ? const Icon(
                                                         Icons.videocam,
                                                         color: Color.fromARGB(
@@ -483,7 +509,8 @@ class _LandingPageState extends State<LandingPage> {
                                   margin:
                                       const EdgeInsets.only(left: 10, top: 10),
                                   child: Text(
-                                    blogsController.filteredBlogs[index].title!,
+                                    blogsController
+                                        .filteredBlogs[index].postTitle!,
                                     style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -495,7 +522,7 @@ class _LandingPageState extends State<LandingPage> {
                                       left: 10, top: 10, right: 20),
                                   child: Text(
                                     blogsController
-                                        .filteredBlogs[index].description!,
+                                        .filteredBlogs[index].overview!,
                                     maxLines: 3,
                                     style: const TextStyle(
                                         fontSize: 12,
@@ -507,18 +534,6 @@ class _LandingPageState extends State<LandingPage> {
                                 const Spacer(),
                                 Row(
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, bottom: 5),
-                                      child: Text(
-                                        blogsController
-                                            .filteredBlogs[index].lastSeen!,
-                                        style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w300,
-                                            color: Colors.white),
-                                      ),
-                                    ),
                                     const SizedBox(
                                       width: 5,
                                     ),
@@ -526,7 +541,7 @@ class _LandingPageState extends State<LandingPage> {
                                       margin: const EdgeInsets.only(bottom: 5),
                                       child: Text(
                                         blogsController
-                                            .filteredBlogs[index].state!,
+                                            .filteredBlogs[index].minToRead!,
                                         style: const TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.w300,
@@ -542,7 +557,8 @@ class _LandingPageState extends State<LandingPage> {
                                         children: [
                                           Text(
                                             blogsController
-                                                .filteredBlogs[index].views!,
+                                                .filteredBlogs[index].likes
+                                                .toString(),
                                             style: const TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w300,
