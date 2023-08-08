@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
@@ -568,7 +567,7 @@ class _LandingPageState extends State<LandingPage> {
                                             width: 2,
                                           ),
                                           const Text(
-                                            "views",
+                                            "Likes",
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w300,

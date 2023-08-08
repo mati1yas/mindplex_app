@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialRoute: AppRoutes.home,
       getPages: AppRoutes.pages,
-      title: 'Flutter Demo',
+      title: 'MindPlex',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
