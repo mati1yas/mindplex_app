@@ -1,15 +1,23 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/models/popularModel.dart';
+import 'package:mindplex_app/models/blog_model.dart';
+import 'package:mindplex_app/services/api_services.dart';
 
 class BlogsController extends GetxController {
   RxBool isLoading = true.obs;
-  RxString selectedBlogCategory = "Popular".obs;
-  RxList<PopularDetails> blogs = <PopularDetails>[].obs;
 
-  final categories = ['Popular', 'Most recent', 'Trending', 'Editors pick'];
+  RxString recommender = "default".obs;
+  RxString post_format = "text".obs;
+  RxInt page = 1.obs;
+  RxList<Blog> blogs = <Blog>[].obs;
+  final apiSerivice = ApiSerivice().obs;
+  final categories = ['All', 'Popular', 'Most Recent', 'Trending'];
+
+  final recommenderMaps = {
+    'All': 'default',
+    'Popular': 'popularity',
+    'Most Recent': 'recent',
+    'Trending': 'trending'
+  };
 
   @override
   void onInit() {
@@ -18,27 +26,27 @@ class BlogsController extends GetxController {
   }
 
   void fetchBlogs() async {
-    final jsondata = await rootBundle.loadString('assets/demoAPI.json');
+    isLoading.value = true;
+    final res = await apiSerivice.value.loadBlogs(
+        recommender: recommender.value,
+        post_format: post_format.value,
+        page: page.value.toInt());
 
-    final List<dynamic> populars = await jsonDecode(jsondata);
-
-    List<PopularDetails> popularDetail = [];
-    populars.forEach((jsonCategory) {
-      PopularDetails popularCategory = PopularDetails.fromJson(jsonCategory);
-      popularDetail.add(popularCategory);
-    });
-
-    blogs.value = popularDetail;
+    blogs.value = res;
     isLoading.value = false;
   }
 
-  void filterBlogsByCategory({required String category}) {
-    selectedBlogCategory.value = category;
+  void filterBlogsByRecommender({required String category}) {
+    recommender.value = recommenderMaps[category] as String;
+    fetchBlogs();
   }
 
-  List<PopularDetails> get filteredBlogs {
-    return blogs
-        .where((blog) => blog.type == selectedBlogCategory.value)
-        .toList();
+  void filterBlogsByPostType({required String postType}) {
+    post_format.value = postType;
+    fetchBlogs();
+  }
+
+  List<Blog> get filteredBlogs {
+    return blogs;
   }
 }
