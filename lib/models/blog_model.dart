@@ -10,6 +10,7 @@ class Blog {
   String? overview;
   int? likes;
   String? minToRead;
+  String? content;
 
   Blog(
       {this.url,
@@ -22,7 +23,8 @@ class Blog {
       this.postTitle,
       this.overview,
       this.likes,
-      this.minToRead});
+      this.minToRead,
+      this.content});
 
   Blog.fromJson(Map<String, dynamic> json) {
     url = json['url'];
@@ -36,6 +38,7 @@ class Blog {
     overview = json['overview'];
     likes = json['likes'];
     minToRead = json['min_to_read'];
+    content = json['content'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +54,7 @@ class Blog {
     data['overview'] = this.overview;
     data['likes'] = this.likes;
     data['min_to_read'] = this.minToRead;
+    data['content'] = this.content;
     return data;
   }
 }
