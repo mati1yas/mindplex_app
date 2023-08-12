@@ -34,6 +34,8 @@ dependencies:
   get:
   dio:
   another_flushbar: 
+  flutter_html_all: 
+  
 
   flutter:
     sdk: flutter
