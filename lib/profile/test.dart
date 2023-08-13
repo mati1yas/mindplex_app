@@ -20,9 +20,18 @@ class _ProfilePage extends State<ProfilePage> {
   AuthController authController = Get.put(AuthController());
   //array og pages
   final double coverHeight = 280;
+  var screens = [
+    {'name': 'About', 'active': true, 'widget': const AboutScreen()},
+    {
+      'name': 'Published Content',
+      "active": false,
+      'widget': const BookmarkScreen()
+    },
+    {'name': 'Bookmarks', "active": false, 'widget': const BookmarkScreen()},
+    {'name': 'Drafts', "active": false, 'widget': const BookmarkScreen()}
+  ];
 
   Widget activeScreen = const AboutScreen();
-
   //make this an object with 3 values
   //1 of widget
   //2 activeStatus of boolean
@@ -57,20 +66,15 @@ class _ProfilePage extends State<ProfilePage> {
             // buildContent(),
             buildUserName(),
             buildStatus(),
-            buidScreens(),
-            buildTab(),
+            buidScreens()
           ],
         ));
   }
 
   Widget buildCoverImage() {
     // decoration:BoxDecoration()), add curves to the image
-    return Image.network(
-        profileController.authenticatedUser.value.image ??
-            "assets/images/profile.PNG",
-        width: double.infinity,
-        height: coverHeight,
-        fit: BoxFit.cover);
+    return Image.network(profileController.authenticatedUser.value.image ?? "",
+        width: double.infinity, height: coverHeight, fit: BoxFit.cover);
   }
 
   Widget buildTop() {
@@ -99,6 +103,49 @@ class _ProfilePage extends State<ProfilePage> {
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 )),
           )
+          // Column(mainAxisSize: MainAxisSize.min, children: [
+          //   const Text("Profile page"),
+          //   // rgb(16, 63, 87)
+          //   Container(
+          //     margin: const EdgeInsets.all(40),
+          //     child: Row(
+          //       children: [
+          //         OutlinedButton(
+          //           style: OutlinedButton.styleFrom(
+          //             backgroundColor: const Color.fromARGB(255, 16, 63, 87),
+          //             foregroundColor: Colors.white,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(40),
+          //             ),
+          //           ),
+          //           onPressed: () {
+          //             switchScreen(1);
+          //           },
+          //           child: const Text('About'),
+          //         ),
+          //         OutlinedButton(
+          //           style: OutlinedButton.styleFrom(
+          //             backgroundColor:
+          //                 const Color.fromARGB(255, 137, 69, 118),
+          //             foregroundColor: Colors.white,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(40),
+          //             ),
+          //           ),
+          //           onPressed: () {
+          //             switchScreen(2);
+          //           },
+          //           child: const Text('Bookmarks'),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   // switchScreen(),
+          //   activeScreen,
+          //   // AboutScreen(),
+          //   // BookmarkScreen(),
+          // ]
+          // )
         ],
       ),
     );
@@ -185,7 +232,6 @@ class _ProfilePage extends State<ProfilePage> {
       {"amount": "100", "value": " MPXR"}
     ];
     return Container(
-      height: 46,
       margin: const EdgeInsets.only(bottom: 18),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
         ...status.map(
@@ -193,9 +239,9 @@ class _ProfilePage extends State<ProfilePage> {
             return Row(
               children: [
                 Column(
-                  children: [
+                  children: const [
                     Text(
-                      item['amount'].toString(),
+                      '22',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -204,7 +250,7 @@ class _ProfilePage extends State<ProfilePage> {
                       ),
                     ),
                     Text(
-                      item['value'].toString(),
+                      'Following',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color.fromARGB(255, 190, 190, 190),
@@ -215,7 +261,7 @@ class _ProfilePage extends State<ProfilePage> {
                   ],
                 ),
                 Container(
-                  height: 40.0,
+                  height: 24.0,
                   width: 1.0,
                   color: const Color.fromARGB(255, 73, 150, 154),
                   margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -247,56 +293,33 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   Widget buidScreens() {
-    return Column(
-      children: [
-        Container(
-          height: 33,
-          width: MediaQuery.sizeOf(context).width - 40,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: profileController.screens.length,
-            itemBuilder: (context, index) {
-              String selectedTab =
-                  profileController.screens[index]["name"].toString();
-
-              return GestureDetector(
-                onTap: () {
-                  profileController.switchTab(tab: selectedTab);
-                  switchScreen(profileController.screens[index]['num'] as int);
-                },
-                child: Obx(
-                  () => Container(
-                    margin: const EdgeInsets.only(left: 5, right: 5),
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, top: 8, bottom: 8),
-                    decoration: BoxDecoration(
-                        color: profileController.selectedTabCategory.value ==
-                                selectedTab
-                            ? Color.fromARGB(255, 137, 69, 118)
-                            : Color(0xFF0f567c),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20))),
-                    child: Center(
-                      child: Text(
-                        selectedTab,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.white),
-                      ),
-                    ),
+    return Column(children: [
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            ...screens.map((item) {
+              return Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 137, 69, 118),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  'About',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               );
-            },
-          ),
+            })
+          ],
         ),
-      ],
-    );
+      ),
+    ]);
   }
-
-  Widget buildTab() => Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
-        height: 320,
-        width: 320,
-        child: activeScreen,
-      );
 }
