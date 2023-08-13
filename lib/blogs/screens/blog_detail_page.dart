@@ -21,7 +21,7 @@ class DetailsPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.82,
             child: SingleChildScrollView(
               child: Container(
-                  margin: EdgeInsets.only(top: 100),
+                  margin: EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
                       Row(
@@ -48,8 +48,8 @@ class DetailsPage extends StatelessWidget {
                                   Text(
                                     details.authorDisplayName!,
                                     style: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w300,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200,
                                         fontStyle: FontStyle.normal,
                                         color: Colors.white),
                                   ),
@@ -130,70 +130,60 @@ class DetailsPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.07,
             color: Color.fromARGB(255, 17, 126, 113),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.thumb_up_off_alt_outlined,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text("Like",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300))
-                    ],
-                  ),
+                SizedBox(
+                  width: 8,
+                ),
+                Icon(
+                  Icons.thumb_up_off_alt_outlined,
+                  color: Colors.white,
                 ),
                 SizedBox(
-                  width: 15,
+                  width: 8,
                 ),
-                Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.thumb_down_off_alt_outlined,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text("DisLike",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300))
-                    ],
-                  ),
+                Icon(
+                  Icons.thumb_down_off_alt_outlined,
+                  color: Colors.white,
                 ),
                 SizedBox(
-                  width: 15,
+                  width: 8,
                 ),
-                Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.share_outlined,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        "Share",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w300),
-                      )
-                    ],
-                  ),
-                )
+                Icon(
+                  Icons.share_outlined,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Icon(
+                  Icons.mode_comment_outlined,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Icon(
+                  Icons.add_reaction_outlined,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Icon(
+                  Icons.check_box_outline_blank,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Icon(
+                  Icons.bookmark_add,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
               ],
             ),
           )
