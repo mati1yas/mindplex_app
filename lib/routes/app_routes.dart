@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/main.dart';
 import 'package:mindplex_app/splash_screen.dart';
-import 'package:mindplex_app/ui/screens/home.dart';
 
 import '../profile/profile_page.dart';
 
