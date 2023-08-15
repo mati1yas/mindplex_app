@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import 'about_screen.dart';
@@ -54,7 +55,6 @@ class _ProfilePage extends State<ProfilePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             buildTop(),
-            // buildContent(),
             buildUserName(),
             buildStatus(),
             buidScreens(),
@@ -65,41 +65,76 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget buildCoverImage() {
     // decoration:BoxDecoration()), add curves to the image
-    return Image.network(
-        profileController.authenticatedUser.value.image ??
-            "assets/images/profile.PNG",
-        width: double.infinity,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(coverHeight * 0.5),
+      child: FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage(
+          profileController.authenticatedUser.value.image ??
+              "assets/images/profile.PNG",
+        ),
+        fit: BoxFit.cover,
+        width: coverHeight,
         height: coverHeight,
-        fit: BoxFit.cover);
+      ),
+    );
   }
 
   Widget buildTop() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 40),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          buildCoverImage(),
-          Positioned(
-            // top:,
-            top: 260,
-            child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 55, 153, 159),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(106, 37),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20, top: 20),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            buildCoverImage(),
+            Positioned(
+              top: 0,
+              left: 5,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
                 ),
-                onPressed: null,
-                child: const Text(
-                  'Change Info',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                )),
-          )
-        ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 5,
+              child: PopupMenuButton(
+                  color: Colors.white,
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          onTap: () {
+                            authController.logout();
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout),
+                              Text("Logout"),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.info),
+                              Text("Change info"),
+                            ],
+                          ),
+                        ),
+                      ]),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -113,21 +148,6 @@ class _ProfilePage extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          PopupMenuButton(
-              color: Colors.white,
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                        onTap: () {
-                          authController.logout();
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.logout),
-                            Text("Logout"),
-                          ],
-                        ))
-                  ]),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -223,25 +243,7 @@ class _ProfilePage extends State<ProfilePage> {
               ],
             );
           },
-        )
-        // Text(
-        //   '20',
-        //   style: TextStyle(
-        //     color: Colors.white,
-        //     fontSize: 16,
-        //     fontWeight: FontWeight.w700,
-        //   ),
-        // ),
-        // Text(
-        //   'Friends',
-        //   style: TextStyle(
-        //     color: Colors.white,
-        //     fontSize: 26,
-        //     fontWeight: FontWeight.w700,
-        //   ),
-        // ),
-        // SizedBox(width: 46, height: 1),
-        ,
+        ),
       ]),
     );
   }
@@ -293,10 +295,12 @@ class _ProfilePage extends State<ProfilePage> {
     );
   }
 
-  Widget buildTab() => Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
-        height: 320,
-        width: 320,
-        child: activeScreen,
-      );
+  Widget buildTab() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
+      height: 320,
+      width: 320,
+      child: activeScreen,
+    );
+  }
 }
