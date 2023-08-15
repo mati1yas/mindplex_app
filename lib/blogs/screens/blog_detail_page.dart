@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
 import 'package:mindplex_app/models/popularModel.dart';
 
@@ -85,43 +85,14 @@ class DetailsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Container(
-                        child: Html(
-                          data: details.content,
-                          style: {
-                            'p': Style(
-                                padding: HtmlPaddings.all(10),
-                                fontWeight: FontWeight.w300,
-                                fontSize: FontSize(17),
-                                color: Colors.white),
-                            'p.has-text-align-center': Style(
-                                alignment: Alignment.centerRight,
-                                padding: HtmlPaddings.only(left: 40, right: 40),
-                                fontWeight: FontWeight.w300,
-                                fontSize: FontSize(17),
-                                color: Colors.white),
-                            'figcaption': Style(
-                                padding: HtmlPaddings.all(10),
-                                alignment: Alignment.topRight,
-                                fontWeight: FontWeight.w300,
-                                fontSize: FontSize(15),
-                                color: Colors.yellow),
-                            'h2': Style(
-                                padding: HtmlPaddings.all(10),
-                                fontWeight: FontWeight.bold,
-                                fontSize: FontSize(22),
-                                color: Colors.white),
-                            'h1': Style(
-                                fontWeight: FontWeight.bold,
-                                fontSize: FontSize(22),
-                                color: Colors.red),
-                            'h3': Style(
-                                fontWeight: FontWeight.bold,
-                                fontSize: FontSize(22),
-                                color: Colors.white)
-                          },
+
+                      // Place to Displaye Content
+                      Material(
+                        color: Color(0xFF0c2b46),
+                        child: BlogContentDisplay(
+                          data: details.content ?? [],
                         ),
-                      ),
+                      )
                     ],
                   )),
             ),
