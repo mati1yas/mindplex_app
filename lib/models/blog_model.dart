@@ -10,7 +10,7 @@ class Blog {
   String? overview;
   int? likes;
   String? minToRead;
-  String? content;
+  List<Content>? content;
 
   Blog(
       {this.url,
@@ -38,7 +38,12 @@ class Blog {
     overview = json['overview'];
     likes = json['likes'];
     minToRead = json['min_to_read'];
-    content = json['content'];
+    if (json['content'] != null) {
+      content = <Content>[];
+      json['content'].forEach((v) {
+        content!.add(new Content.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +59,27 @@ class Blog {
     data['overview'] = this.overview;
     data['likes'] = this.likes;
     data['min_to_read'] = this.minToRead;
+    if (this.content != null) {
+      data['content'] = this.content!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Content {
+  String? type;
+  String? content;
+
+  Content({this.type, this.content});
+
+  Content.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    content = json['content'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['type'] = this.type;
     data['content'] = this.content;
     return data;
   }
