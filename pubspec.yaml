@@ -34,7 +34,10 @@ dependencies:
   get:
   dio:
   another_flushbar: 
-  flutter_html_all: 
+  flutter_highlight:
+  flutter_html:
+  youtube_player_flutter: 
+  
   
 
   flutter:
