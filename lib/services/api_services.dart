@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../models/blog_model.dart';
+import '../utils/constatns.dart';
 
 class ApiSerivice {
   Future<List<Blog>> loadBlogs(
@@ -12,7 +13,7 @@ class ApiSerivice {
       var dio = Dio();
 
       Response response = await dio.get(
-          "https://staging.mindplex.ai/wp-json/mp_gl/v1/posts/$recommender/$post_format/$page");
+          "${AppUrls.blogUrl}/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
         print(blog);
