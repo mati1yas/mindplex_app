@@ -1,12 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mindplex_app/blogs/comments/controller.dart';
 
 import '../../models/comment.dart';
 
 class MyWidgetComment extends GetView<CommentController> {
-  const MyWidgetComment({super.key});
+  MyWidgetComment({super.key});
+
+  final controller = Get.put(CommentController(post_slug: 'hello'));
 
   @override
   Widget build(BuildContext context) {
@@ -327,7 +331,7 @@ class _CommentSectionView extends StatelessWidget {
                           ),
                         ),
                         child: const Icon(
-                          BoxIcons.bx_trash,
+                          Boxicons.bx_trash,
                           color: Colors.red,
                         ),
                       ),

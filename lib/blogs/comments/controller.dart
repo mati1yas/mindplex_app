@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/comment.dart';
+import '../../services/api_services.dart';
 
 class CommentController extends GetxController {
-  late String lessonId;
+  late String post_slug = 'hello';
   int currentPage = 1; // the page number we're at (related to *pagination*)
 
   String? profileName = '';
@@ -29,7 +31,7 @@ class CommentController extends GetxController {
   // we use this boolean to decide if we show the 'more comments' button or not.
   var moreCommentsAvailable = true.obs;
 
-  CommentController({required this.lessonId}); // the constructor
+  CommentController({required this.post_slug}); // the constructor
 
   @override
   void onInit() {
@@ -41,14 +43,14 @@ class CommentController extends GetxController {
   }
 
   void prepareComments() async {
-    comments.value = await ApiProvider().fetchComments(lessonId: lessonId);
+    comments.value = await ApiService().fetchComments(post_slug: post_slug);
   }
 
   void fetchMoreComments() async {
     loadingMoreComments = RxBool(true);
     comments.refresh();
-    var moreComments = await ApiProvider()
-        .fetchComments(lessonId: lessonId, page: currentPage + 1);
+    var moreComments = await ApiService()
+        .fetchComments(post_slug: post_slug, page: currentPage + 1);
     if (moreComments.isNotEmpty) {
       currentPage += 1;
       comments.value!.addAll(moreComments);
@@ -61,8 +63,8 @@ class CommentController extends GetxController {
 
   onClickPost() async {
     // create a comment object on the server and get the newly created comment back
-    var newComment = await ApiProvider().createComment(
-        lessonId: lessonId, content: commentTextEditingController.text);
+    var newComment = await ApiService().createComment(
+        post_slug: post_slug, content: commentTextEditingController.text);
     // add the comment object to the comments list
     comments.value!.insert(0, newComment);
     comments.refresh();
@@ -72,8 +74,10 @@ class CommentController extends GetxController {
 
   onClickReply(Comment comment, String replyText) async {
     // create a comment object on the server
-    var newComment = await ApiProvider().createComment(
-        lessonId: lessonId, content: replyText, parent: comment.id.toString());
+    var newComment = await ApiService().createComment(
+        post_slug: post_slug,
+        content: replyText,
+        parent: comment.id.toString());
     // add the comment object to the replies list of the parent comment # make sure get updates the view
     comment.replies ??= [];
     comment.replies!.insert(0, newComment);
@@ -84,7 +88,7 @@ class CommentController extends GetxController {
 
   onUpdateComment(Comment comment, String newContent) async {
     // update the comment object on the server
-    var updateSuccessful = await ApiProvider().updateComment(
+    var updateSuccessful = await ApiService().updateComment(
         commentId: comment.id.toString(), newContent: newContent);
     // update the comment object in the comments list and refresh
     if (updateSuccessful == true) {
@@ -98,7 +102,7 @@ class CommentController extends GetxController {
   onDeleteComment(Comment comment) async {
     // create a comment object on the server
     var deleteSuccessful =
-        await ApiProvider().deleteComment(commentId: comment.id);
+        await ApiService().deleteComment(commentId: comment.id);
     // remove the comment from the comments list if it's deleted successfully from the server
     if (deleteSuccessful == true) {
       comments.value!.remove(comment);
@@ -109,7 +113,7 @@ class CommentController extends GetxController {
   onDeleteReply(Comment reply, Comment parent) async {
     // delete the reply from the server
     var deleteSuccessful =
-        await ApiProvider().deleteComment(commentId: reply.id);
+        await ApiService().deleteComment(commentId: reply.id);
     // remove the reply from the replies list of the parent comment if it's deleted successfully from the server
     if (deleteSuccessful == true) {
       parent.replies?.remove(reply);
@@ -122,7 +126,7 @@ class CommentController extends GetxController {
     // the underlying implementation has a like-dislike but the interface provided to the user
     // only has like and default states (there's no 'unlike' button users will see)
     bool? success;
-    success = await ApiProvider()
+    success = await ApiService()
         .commentLikeDislike(comment.id.toString(), like: !comment.isUserLiked);
     if (success == true) {
       comment.isUserLiked = !comment.isUserLiked;

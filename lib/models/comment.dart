@@ -3,7 +3,7 @@
 //-----Comment model-----------------//
 class Comment {
   late final int id;
-  late final int lessonId;
+  late final String post_slug;
   late final String date;
   late final String authorId;
   late final String authorName;
@@ -19,7 +19,7 @@ class Comment {
 
   Comment({
     required this.id,
-    required this.lessonId,
+    required this.post_slug,
     required this.date,
     required this.authorId,
     required this.authorName,
@@ -62,7 +62,7 @@ class Comment {
   factory Comment.fromMap(Map<String, dynamic> map) {
     return Comment(
       id: int.parse(map['comment_ID']),
-      lessonId: int.parse(map['comment_post_ID']),
+      post_slug: map['post_slug'],
       date: map['comment_date'],
       authorId: map['user_id'],
       authorName: map['comment_author'],

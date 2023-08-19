@@ -9,7 +9,7 @@ class BlogsController extends GetxController {
   RxString post_format = "text".obs;
   RxInt page = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
-  final apiSerivice = ApiSerivice().obs;
+  final apiSerivice = ApiService().obs;
   final categories = ['All', 'Popular', 'Most Recent', 'Trending'];
 
   final recommenderMaps = {

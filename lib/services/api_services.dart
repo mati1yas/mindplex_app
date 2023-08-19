@@ -5,7 +5,7 @@ import '../models/blog_model.dart';
 import '../models/comment.dart';
 import '../utils/constatns.dart';
 
-class ApiSerivice {
+class ApiService {
   Future<List<Blog>> loadBlogs(
       {required String recommender,
       required String post_format,
@@ -27,7 +27,7 @@ class ApiSerivice {
   }
 
   Future<List<Comment>> fetchComments(
-      {required String lessonId,
+      {required String post_slug,
       int page = 1,
       int perPage = 10,
       String parent = '0'}) async {
@@ -35,7 +35,7 @@ class ApiSerivice {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
     Response response = await dio.get(
-      '${AppUrls.commentsFetch}/$lessonId/$parent?&per_page=$perPage',
+      '${AppUrls.commentsFetch}/$post_slug/$parent?&per_page=$perPage',
       queryParameters: {'page': '$page', 'per_page': '$perPage'},
     );
     if (response.statusCode == 200) {
@@ -44,7 +44,7 @@ class ApiSerivice {
       if (parent == '0') {
         for (Comment comment in comments) {
           var replies = await fetchComments(
-              lessonId: lessonId, parent: comment.id.toString());
+              post_slug: post_slug, parent: comment.id.toString());
           comment.replies = replies;
         }
       }
@@ -55,7 +55,7 @@ class ApiSerivice {
   }
 
   Future<Comment> createComment(
-      {required String lessonId,
+      {required String post_slug,
       required String content,
       String parent = '0'}) async {
     // let's read the email, password, and login_with values from shared preferences.
@@ -63,7 +63,7 @@ class ApiSerivice {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
     Response response = await dio.post(
-      '${AppUrls.commentCreate}/$lessonId/$parent',
+      '${AppUrls.commentCreate}/$post_slug/$parent',
       queryParameters: {
         'comment_content': content,
       },

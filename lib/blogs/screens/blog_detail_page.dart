@@ -111,10 +111,7 @@ class DetailsPage extends StatelessWidget {
                   width: 8,
                 ),
                 IconButton(
-                  onPressed: () => Get.bottomSheet(
-                    const MyWidgetComment(),
-                    isScrollControlled: true,
-                  ),
+                  onPressed: () {},
                   icon: Icon(
                     Icons.thumb_up_off_alt_outlined,
                     color: Colors.white,
@@ -137,9 +134,15 @@ class DetailsPage extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Icon(
-                  Icons.mode_comment_outlined,
-                  color: Colors.white,
+                IconButton(
+                  onPressed: () => Get.bottomSheet(
+                    MyWidgetComment(),
+                    isScrollControlled: true,
+                  ),
+                  icon: Icon(
+                    Icons.mode_comment_outlined,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(
                   width: 8,
