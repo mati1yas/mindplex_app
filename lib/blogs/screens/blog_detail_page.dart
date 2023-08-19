@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
 import 'package:mindplex_app/models/popularModel.dart';
+
+import '../comments/comment.dart';
 
 class DetailsPage extends StatelessWidget {
   final Blog details;
@@ -102,13 +105,20 @@ class DetailsPage extends StatelessWidget {
             color: Color.fromARGB(255, 17, 126, 113),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   width: 8,
                 ),
-                Icon(
-                  Icons.thumb_up_off_alt_outlined,
-                  color: Colors.white,
+                IconButton(
+                  onPressed: () => Get.bottomSheet(
+                    const MyWidgetComment(),
+                    isScrollControlled: true,
+                  ),
+                  icon: Icon(
+                    Icons.thumb_up_off_alt_outlined,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(
                   width: 8,
