@@ -44,8 +44,11 @@ class MyWidgetComment extends GetView<CommentController> {
                       children: [
                         CircleAvatar(
                           maxRadius: 24,
+                          /*
                           foregroundImage: CachedNetworkImageProvider(
                               controller.profileImage!),
+                              */
+                          foregroundImage: AssetImage('assets/images/logo.png'),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
