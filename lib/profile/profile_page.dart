@@ -207,7 +207,11 @@ class _ProfilePage extends State<ProfilePage> {
     return Container(
       height: 46,
       margin: const EdgeInsets.only(bottom: 18),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          /*
         ...status.map(
           (item) {
             return Row(
@@ -244,7 +248,45 @@ class _ProfilePage extends State<ProfilePage> {
             );
           },
         ),
-      ]),
+
+*/
+
+          for (var item in status)
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      item['amount'].toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      item['value'].toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 190, 190, 190),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                if (status.indexOf(item) != status.length - 1)
+                  Container(
+                    height: 40.0,
+                    width: 1.0,
+                    color: const Color.fromARGB(255, 73, 150, 154),
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  ), //
+              ],
+            ),
+        ],
+      ),
     );
   }
 

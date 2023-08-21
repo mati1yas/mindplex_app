@@ -38,7 +38,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   Widget build(BuildContext context) {
     return ListView.separated(
         itemCount: _posts.length,
-        separatorBuilder: (context, index) => SizedBox(height: 5),
+        separatorBuilder: (context, index) => SizedBox(height: 15),
         itemBuilder: (context, index) {
           var current = _posts[index];
           return Container(
