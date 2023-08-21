@@ -21,7 +21,7 @@ class MyWidgetComment extends GetView<CommentController> {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
               topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-          color: const Color.fromARGB(255, 25, 32, 36),
+          color: Color(0xFF0c2b46),
         ),
         child: SingleChildScrollView(
           child: SizedBox(
@@ -34,8 +34,11 @@ class MyWidgetComment extends GetView<CommentController> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Comments',
-                          style: theme.textTheme.displayLarge
-                              ?.copyWith(fontSize: 16),
+                          style: theme.textTheme.displayLarge?.copyWith(
+                            fontSize: 16,
+                            color: Color(0xff6eded0),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -105,7 +108,13 @@ class MyWidgetComment extends GetView<CommentController> {
                         */
                         child: OutlinedButton(
                           onPressed: () {},
-                          child: Text('Pos'),
+                          child: Text(
+                            'Post',
+                            style: TextStyle(
+                              color: Color(0xff6eded0),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -186,7 +195,9 @@ class MyWidgetComment extends GetView<CommentController> {
                                               color: Colors.blue),
                                         )
                                       : const Text("More comments",
-                                          style: TextStyle(color: Colors.blue)),
+                                          style: TextStyle(
+                                            color: Color(0xff6eded0),
+                                          )),
                                 ),
                               ),
                           ],
@@ -246,19 +257,28 @@ class _CommentSectionView extends StatelessWidget {
                     const SizedBox(width: 16),
                     Text(
                       comment.authorName,
-                      style: theme.textTheme.titleLarge,
+                      style: theme.textTheme.titleLarge!.copyWith(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Text(
                       formatCommentDate(comment.date),
-                      style: theme.textTheme.titleLarge,
+                      style: theme.textTheme.titleLarge!.copyWith(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     )
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
                   comment.content,
-                  style: theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
                   textAlign: TextAlign.justify,
                 ),
                 Row(
@@ -292,7 +312,7 @@ class _CommentSectionView extends StatelessWidget {
                                   TextButton(
                                     onPressed: () => controller.onClickReply(
                                         comment, replyText),
-                                    child: const Text('Replay'),
+                                    child: const Text('Reply'),
                                   )
                                 ],
                               ),
@@ -302,10 +322,10 @@ class _CommentSectionView extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100.0),
                             ),
-                            foregroundColor: Colors.blue,
+                            foregroundColor: Color(0xff6eded0),
                           ),
                           child: const Text(
-                            'Replay',
+                            'Reply',
                           )),
                     TextButton(
                         onPressed: () {},
@@ -313,7 +333,7 @@ class _CommentSectionView extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100.0),
                           ),
-                          foregroundColor: Colors.blue,
+                          foregroundColor: Color(0xff6eded0),
                         ),
                         child: const Text(
                           'Report',
@@ -379,7 +399,7 @@ class _CommentSectionView extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100.0),
                           ),
-                          foregroundColor: Colors.blue,
+                          foregroundColor: Color(0xff6eded0),
                         ),
                         child: const Icon(Icons.edit),
                       ),
