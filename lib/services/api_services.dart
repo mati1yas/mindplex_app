@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/blog_model.dart';
 import '../models/comment.dart';
 import '../utils/constatns.dart';
+import 'local_storage.dart';
 
 class ApiService {
   Future<List<Blog>> loadBlogs(
@@ -32,8 +35,12 @@ class ApiService {
       int perPage = 10,
       String parent = '0'}) async {
     var dio = Dio();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer ${token}";
     Response response = await dio.get(
       '${AppUrls.commentsFetch}/$post_slug/$parent?&per_page=$perPage',
       queryParameters: {'page': '$page', 'per_page': '$perPage'},
