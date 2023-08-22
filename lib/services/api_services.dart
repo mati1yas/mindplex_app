@@ -135,4 +135,17 @@ class ApiService {
       throw Exception('Failed to delete the comment from the server.');
     }
   }
+
+  Future<void> likeDislikeArticle(
+      {required String articleSlug, required String interction}) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+
+    Response response = await dio.post(
+        "https://staging.mindplex.ai/wp-json/wp/v2/post/like_dislike/$articleSlug?like_or_dislike=$interction");
+  }
 }

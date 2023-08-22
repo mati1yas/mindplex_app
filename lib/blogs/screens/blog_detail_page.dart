@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_controller.dart';
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
-import 'package:mindplex_app/models/popularModel.dart';
 
 import '../comments/comment.dart';
 
@@ -12,6 +12,8 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       appBar: AppBar(
@@ -111,7 +113,10 @@ class DetailsPage extends StatelessWidget {
                   width: 8,
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    likeDislikeConroller.likeDislikeArticle(
+                        articleSlug: details.slug ?? "", interction: "L");
+                  },
                   icon: Icon(
                     Icons.thumb_up_off_alt_outlined,
                     color: Colors.white,
@@ -120,9 +125,15 @@ class DetailsPage extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Icon(
-                  Icons.thumb_down_off_alt_outlined,
-                  color: Colors.white,
+                IconButton(
+                  onPressed: () {
+                    likeDislikeConroller.likeDislikeArticle(
+                        articleSlug: details.slug ?? "", interction: "D");
+                  },
+                  icon: Icon(
+                    Icons.thumb_down_off_alt_outlined,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(
                   width: 8,
