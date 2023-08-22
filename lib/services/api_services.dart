@@ -17,6 +17,12 @@ class ApiService {
     try {
       var dio = Dio();
 
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+
       Response response =
           await dio.get("${AppUrls.blogUrl}/$recommender/$post_format/$page");
 

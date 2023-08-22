@@ -6,7 +6,7 @@ import '../../models/comment.dart';
 import '../../services/api_services.dart';
 
 class CommentController extends GetxController {
-  late String post_slug = 'hello';
+  late String post_slug = '';
   int currentPage = 1; // the page number we're at (related to *pagination*)
 
   String? profileName = '';
