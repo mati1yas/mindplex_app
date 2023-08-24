@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/blogs/screens/blog_detail_page.dart';
+import 'package:mindplex_app/utils/colors.dart';
 
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
@@ -361,9 +362,15 @@ class _LandingPageState extends State<LandingPage> {
               },
             ),
           ),
+
           Obx(() {
             return blogsController.isLoading.value == true && isIntialLoading
-                ? CircularProgressIndicator()
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: 5,
+                      itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                    ),
+                  )
                 : Expanded(
                     child: ListView.builder(
                         controller: blogsController.scrollController,
@@ -670,6 +677,109 @@ class _LandingPageState extends State<LandingPage> {
                         }),
                   );
           })
+        ],
+      ),
+    );
+  }
+}
+
+class BlogSkeleton extends StatelessWidget {
+  const BlogSkeleton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      height: 180,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: blogContainerColor.withAlpha(100),
+      ),
+      child: Stack(
+        children: [
+          CircleAvatar(
+            backgroundColor: Color(0xFF103e56),
+            radius: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.green,
+                      /* image: DecorationImage(
+                        image: NetworkImage(
+                            blogsController.filteredBlogs[index].authorAvatar! +
+                                " "),
+                      ), */
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 3),
+                    decoration:
+                        BoxDecoration(color: Colors.black.withOpacity(0.5)),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * .5,
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: 35,
+                    margin: EdgeInsets.only(left: 10, top: 0),
+                    decoration: BoxDecoration(
+                        color: Colors.black.withAlpha(200),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(5),
+                        )),
+                  )
+                ],
+              ),
+              Container(
+                //margin: const EdgeInsets.only(left: 10, top: 10),
+                width: 50,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Color(0xFF6eded0),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 10, top: 10, right: 20),
+                decoration: BoxDecoration(
+                  color: Color(0xFF6eded0),
+                ),
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6eded0),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6eded0),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );

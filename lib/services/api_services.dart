@@ -35,6 +35,9 @@ class ApiService {
     return ret;
   }
 
+  void likeDislikeArticle(
+      {required String articleSlug, required String interction}) {}
+
   Future<List<Comment>> fetchComments(
       {required String post_slug,
       int page = 1,
@@ -73,9 +76,17 @@ class ApiService {
       String parent = '0'}) async {
     // let's read the email, password, and login_with values from shared preferences.
     var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+/*
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
+    */
     Response response = await dio.post(
+      //'${AppUrls.commentCreate}/$post_slug/$parent',
       '${AppUrls.commentCreate}/$post_slug/$parent',
       queryParameters: {
         'comment_content': content,
@@ -134,18 +145,5 @@ class ApiService {
     } else {
       throw Exception('Failed to delete the comment from the server.');
     }
-  }
-
-  Future<void> likeDislikeArticle(
-      {required String articleSlug, required String interction}) async {
-    var dio = Dio();
-    Rx<LocalStorage> localStorage =
-        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
-    final token = await localStorage.value.readFromStorage('Token');
-
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-
-    Response response = await dio.post(
-        "https://staging.mindplex.ai/wp-json/wp/v2/post/like_dislike/$articleSlug?like_or_dislike=$interction");
   }
 }

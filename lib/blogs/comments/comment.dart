@@ -107,7 +107,9 @@ class MyWidgetComment extends GetView<CommentController> {
                         ),
                         */
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.onClickPost();
+                          },
                           child: Text(
                             'Post',
                             style: TextStyle(
