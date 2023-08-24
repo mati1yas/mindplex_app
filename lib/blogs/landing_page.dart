@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/blogs/screens/blog_detail_page.dart';
 import 'package:mindplex_app/utils/colors.dart';
+import 'package:shimmer_effect/shimmer_effect.dart';
 
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
@@ -683,6 +684,43 @@ class _LandingPageState extends State<LandingPage> {
   }
 }
 
+class SkeletonElement extends StatelessWidget {
+  const SkeletonElement({
+    super.key,
+    required this.isMarginForAll,
+    required this.dimensions,
+    required this.colors,
+  });
+
+  final bool isMarginForAll;
+  final Map<String, double> dimensions;
+  final Map<String, Color> colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerEffect(
+      baseColor: Color(0xFF6eded0).withOpacity(.3),
+      highlightColor: Color(0xFF6eded0),
+      child: Container(
+        margin: isMarginForAll
+            ? EdgeInsets.all(dimensions['margin_all']!)
+            : EdgeInsets.fromLTRB(
+                dimensions['margin_left'] ?? 0,
+                dimensions['margin_top'] ?? 0,
+                dimensions['margin_right'] ?? 0,
+                dimensions['margin_bottom'] ?? 0,
+              ),
+        width: dimensions['width'],
+        height: dimensions['height'],
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(dimensions['radius'] ?? 0),
+          color: Color(0xFF6eded0).withOpacity(.3),
+        ),
+      ),
+    );
+  }
+}
+
 class BlogSkeleton extends StatelessWidget {
   const BlogSkeleton({Key? key}) : super(key: key);
 
@@ -697,63 +735,93 @@ class BlogSkeleton extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          CircleAvatar(
-            backgroundColor: Color(0xFF103e56),
-            radius: 10,
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.green,
-                      /* image: DecorationImage(
-                        image: NetworkImage(
-                            blogsController.filteredBlogs[index].authorAvatar! +
-                                " "),
-                      ), */
+                  SkeletonElement(
+                    isMarginForAll: true,
+                    dimensions: {
+                      'height': 40,
+                      'width': 40,
+                      'margin_all': 10,
+                      'radius': 20,
+                    },
+                    colors: {
+                      'base': Color(0xFF103e56),
+                      'highlight': Color.fromARGB(255, 28, 105, 146),
+                    },
+                  ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'width': MediaQuery.of(context).size.width * .4,
+                      'height': 18,
+                      'margin_left': 8,
+                      'margin_right': 3,
+                      'radius': 4,
+                    },
+                    colors: {
+                      'base': shimmerEffectBase1,
+                      'highlight': shimmerEffectHighlight1,
+                    },
+                  ),
+                  ShimmerEffect(
+                    baseColor: const Color.fromARGB(255, 46, 46, 46),
+                    highlightColor:
+                        const Color.fromARGB(255, 66, 66, 66).withAlpha(200),
+                    child: Container(
+                      height: 60,
+                      width: 35,
+                      margin: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.circular(5),
+                      )),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(right: 3),
-                    decoration:
-                        BoxDecoration(color: Colors.black.withOpacity(0.5)),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .5,
-                    ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'height': 60,
+                      'width': 35,
+                      'margin_left': 10,
+                    },
+                    colors: {
+                      'base': Colors.black.withAlpha(200),
+                      'highlight': Colors.black.withAlpha(250),
+                    },
                   ),
-                  Container(
-                    height: 60,
-                    width: 35,
-                    margin: EdgeInsets.only(left: 10, top: 0),
-                    decoration: BoxDecoration(
-                        color: Colors.black.withAlpha(200),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        )),
-                  )
                 ],
               ),
-              Container(
-                //margin: const EdgeInsets.only(left: 10, top: 10),
-                width: 50,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: Color(0xFF6eded0),
-                ),
+              SkeletonElement(
+                isMarginForAll: true,
+                dimensions: {
+                  'width': MediaQuery.of(context).size.width * .8,
+                  'height': 30,
+                  'margin_all': 10,
+                  'radius': 8,
+                },
+                colors: {
+                  'base': shimmerEffectBase2,
+                  'highlight': shimmerEffectHighlight2,
+                },
               ),
-              Container(
-                margin: const EdgeInsets.only(left: 10, top: 10, right: 20),
-                decoration: BoxDecoration(
-                  color: Color(0xFF6eded0),
-                ),
+              SkeletonElement(
+                isMarginForAll: false,
+                dimensions: {
+                  'width': MediaQuery.of(context).size.width * .8,
+                  'height': 40,
+                  'margin_left': 10,
+                  'margin_right': 10,
+                  'radius': 8,
+                },
+                colors: {
+                  'base': shimmerEffectBase2,
+                  'highlight': shimmerEffectHighlight2,
+                },
               ),
               const Spacer(),
               Row(
@@ -761,20 +829,34 @@ class BlogSkeleton extends StatelessWidget {
                   const SizedBox(
                     width: 5,
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF6eded0),
-                    ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'width': 40,
+                      'height': 15,
+                      'radius': 4,
+                      'margin_bottom': 5
+                    },
+                    colors: {
+                      'base': shimmerEffectBase1,
+                      'highlight': shimmerEffectHighlight1,
+                    },
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF6eded0),
-                    ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'width': 40,
+                      'height': 15,
+                      'radius': 4,
+                      'margin_bottom': 5
+                    },
+                    colors: {
+                      'base': shimmerEffectBase1,
+                      'highlight': shimmerEffectHighlight1,
+                    },
                   )
                 ],
               ),
