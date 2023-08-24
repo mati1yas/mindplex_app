@@ -31,7 +31,7 @@ class ApiService {
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {}
-    print(ret.length);
+
     return ret;
   }
 
@@ -44,8 +44,8 @@ class ApiService {
 
     dio.options.headers["Authorization"] = "Bearer ${token}";
 
-    Response response = await dio.post(
-        "https://staging.mindplex.ai/wp-json/wp/v2/post/like_dislike/$articleSlug?like_or_dislike=$interction");
+    Response response = await dio
+        .post("${AppUrls.likeDislike}$articleSlug?like_or_dislike=$interction");
   }
 
   Future<List<Comment>> fetchComments(

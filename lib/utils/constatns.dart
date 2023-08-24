@@ -8,4 +8,5 @@ class AppUrls {
   static var commentDelete = '$baseUrl/wp/v2/comment/delete';
   static var commentUpdate = '$baseUrl/wp/v2/comment/update';
   static var commentLikeDislike = '$baseUrl/wp/v2/comment/like_dislike';
+  static var likeDislike = '$baseUrl/wp/v2/post/like_dislike/';
 }
