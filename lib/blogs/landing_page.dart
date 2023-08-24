@@ -386,6 +386,7 @@ class _LandingPageState extends State<LandingPage> {
                             return GestureDetector(
                               onTap: () {
                                 Get.to(DetailsPage(
+                                    index: index,
                                     details:
                                         blogsController.filteredBlogs[index]));
                               },

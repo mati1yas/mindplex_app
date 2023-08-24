@@ -4,15 +4,18 @@ import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_control
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
 
+import '../blogs_controller.dart';
 import '../comments/comment.dart';
 
 class DetailsPage extends StatelessWidget {
   final Blog details;
-  const DetailsPage({super.key, required this.details});
+  final int index;
+  const DetailsPage({super.key, required this.details, required this.index});
 
   @override
   Widget build(BuildContext context) {
     LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
+    BlogsController blogsController = Get.find();
 
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
@@ -62,7 +65,7 @@ class DetailsPage extends StatelessWidget {
                                     height: 10,
                                   ),
                                   Text(
-                                    "It's easier to fool people than to confince them that they've been fooled. I spent the last three years as a design Ethicist It's easier to fool people than to confince them that they've been fooled",
+                                    details.authorBio ?? "",
                                     style: TextStyle(
                                         fontSize: 10,
                                         color: Colors.white,
@@ -105,81 +108,101 @@ class DetailsPage extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height * 0.07,
             color: Color.fromARGB(255, 17, 126, 113),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 8,
-                ),
-                IconButton(
-                  onPressed: () {
-                    likeDislikeConroller.likeDislikeArticle(
-                        articleSlug: details.slug ?? "", interction: "L");
-                  },
-                  icon: Icon(
-                    Icons.thumb_up_off_alt_outlined,
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 8,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      likeDislikeConroller.likeDislikeArticle(
+                          articleSlug: details.slug ?? "", interction: "L");
+                      details.isUserLiked.value = true;
+                      details.isUserDisliked.value = false;
+                      blogsController.blogs[index] = details;
+                    },
+                    icon: (details.isUserLiked.value)
+                        ? Icon(
+                            Icons.thumb_up_off_alt_rounded,
+                            color: Color.fromARGB(255, 73, 255, 179),
+                          )
+                        : Icon(
+                            Icons.thumb_up_off_alt_outlined,
+                            color: Colors.white,
+                          ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      likeDislikeConroller.likeDislikeArticle(
+                          articleSlug: details.slug ?? "", interction: "D");
+                      details.isUserDisliked.value = true;
+                      details.isUserLiked.value = false;
+
+                      blogsController.blogs[index] = details;
+                      ;
+                    },
+                    icon: details.isUserDisliked.value
+                        ? Icon(
+                            Icons.thumb_down,
+                            color: const Color.fromARGB(255, 230, 96, 86),
+                          )
+                        : Icon(
+                            Icons.thumb_down_off_alt_outlined,
+                            color: Colors.white,
+                          ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Icon(
+                    Icons.share_outlined,
                     color: Colors.white,
                   ),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                IconButton(
-                  onPressed: () {
-                    likeDislikeConroller.likeDislikeArticle(
-                        articleSlug: details.slug ?? "", interction: "D");
-                  },
-                  icon: Icon(
-                    Icons.thumb_down_off_alt_outlined,
+                  SizedBox(
+                    width: 8,
+                  ),
+                  IconButton(
+                    onPressed: () => Get.bottomSheet(
+                      MyWidgetComment(),
+                      isScrollControlled: true,
+                    ),
+                    icon: Icon(
+                      Icons.mode_comment_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Icon(
+                    Icons.add_reaction_outlined,
                     color: Colors.white,
                   ),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(
-                  Icons.share_outlined,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                IconButton(
-                  onPressed: () => Get.bottomSheet(
-                    MyWidgetComment(),
-                    isScrollControlled: true,
+                  SizedBox(
+                    width: 8,
                   ),
-                  icon: Icon(
-                    Icons.mode_comment_outlined,
+                  Icon(
+                    Icons.check_box_outline_blank,
                     color: Colors.white,
                   ),
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(
-                  Icons.add_reaction_outlined,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(
-                  Icons.check_box_outline_blank,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(
-                  Icons.bookmark_add,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-              ],
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Icon(
+                    Icons.bookmark_add,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                ],
+              ),
             ),
           )
         ],
