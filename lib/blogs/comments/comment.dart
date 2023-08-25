@@ -8,12 +8,13 @@ import 'package:mindplex_app/blogs/comments/controller.dart';
 import '../../models/comment.dart';
 
 class MyWidgetComment extends GetView<CommentController> {
-  MyWidgetComment({super.key});
+  MyWidgetComment({super.key, required this.post_slug});
 
-  final controller = Get.put(CommentController(post_slug: 'hello'));
+  final String post_slug;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CommentController(post_slug: post_slug));
     final theme = Theme.of(context);
     return SafeArea(
       child: Container(

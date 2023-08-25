@@ -61,8 +61,7 @@ class ApiService {
 
     dio.options.headers["Authorization"] = "Bearer ${token}";
     Response response = await dio.get(
-      '${AppUrls.commentsFetch}/$post_slug/$parent?&per_page=$perPage',
-      queryParameters: {'page': '$page', 'per_page': '$perPage'},
+      '${AppUrls.commentsFetch}/$post_slug/$parent?page=$page&per_page=$perPage',
     );
     if (response.statusCode == 200) {
       final responseBody = response.data as List<dynamic>;
