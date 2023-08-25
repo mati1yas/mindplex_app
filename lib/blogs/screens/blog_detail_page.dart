@@ -118,11 +118,19 @@ class DetailsPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      likeDislikeConroller.likeDislikeArticle(
-                          articleSlug: details.slug ?? "", interction: "L");
-                      details.isUserLiked.value = true;
-                      details.isUserDisliked.value = false;
-                      blogsController.blogs[index] = details;
+                      if (details.isUserLiked.value == true) {
+                        likeDislikeConroller.removePreviousInteraction(
+                            blog: details,
+                            index: index,
+                            articleSlug: details.slug ?? "",
+                            interction: "L");
+                      } else if (details.isUserLiked.value == false) {
+                        likeDislikeConroller.likeDislikeArticle(
+                            blog: details,
+                            index: index,
+                            articleSlug: details.slug ?? "",
+                            interction: "L");
+                      }
                     },
                     icon: (details.isUserLiked.value)
                         ? Icon(
@@ -139,12 +147,20 @@ class DetailsPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      likeDislikeConroller.likeDislikeArticle(
-                          articleSlug: details.slug ?? "", interction: "D");
-                      details.isUserDisliked.value = true;
-                      details.isUserLiked.value = false;
+                      if (details.isUserDisliked.value == true) {
+                        likeDislikeConroller.removePreviousInteraction(
+                            blog: details,
+                            index: index,
+                            articleSlug: details.slug ?? "",
+                            interction: "L");
+                      } else if (details.isUserDisliked.value == false) {
+                        likeDislikeConroller.likeDislikeArticle(
+                            blog: details,
+                            index: index,
+                            articleSlug: details.slug ?? "",
+                            interction: "D");
+                      }
 
-                      blogsController.blogs[index] = details;
                       ;
                     },
                     icon: details.isUserDisliked.value
