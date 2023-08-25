@@ -48,6 +48,19 @@ class ApiService {
         .post("${AppUrls.likeDislike}$articleSlug?like_or_dislike=$interction");
   }
 
+  Future<void> removePreviousInteraction(
+      {required String articleSlug, required String interction}) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+
+    Response response = await dio.post(
+        "${AppUrls.likeDislike}$articleSlug?is_remove=1&like_or_dislike=$interction");
+  }
+
   Future<List<Comment>> fetchComments(
       {required String post_slug,
       int page = 1,
