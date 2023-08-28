@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
+import 'package:mindplex_app/utils/colors.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
@@ -49,8 +50,7 @@ class _ProfilePage extends State<ProfilePage> {
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
     return Scaffold(
-        backgroundColor:
-            const Color.fromARGB(255, 12, 45, 68), // can and should be removed
+        backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.zero,

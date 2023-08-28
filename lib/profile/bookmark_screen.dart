@@ -43,7 +43,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
         itemBuilder: (context, index) {
           var current = _posts[index];
           return Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(26),
               color: blogContainerColor,

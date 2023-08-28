@@ -35,7 +35,7 @@ class _AboutScreen extends State<AboutScreen> {
         ),
         height: 380,
         width: 140,
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
             Container(
