@@ -23,6 +23,8 @@ class _ProfilePage extends State<ProfilePage> {
   //array og pages
   final double coverHeight = 280;
 
+  bool isWalletConnected = false;
+
   Widget activeScreen = const AboutScreen();
 
   //make this an object with 3 values
@@ -41,6 +43,12 @@ class _ProfilePage extends State<ProfilePage> {
           break;
         default:
       }
+    });
+  }
+
+  void switchWallectConnectedState() {
+    setState(() {
+      isWalletConnected = true;
     });
   }
 
@@ -146,8 +154,6 @@ class _ProfilePage extends State<ProfilePage> {
         profileController.authenticatedUser.value.firstName ?? " ";
     final lastName = profileController.authenticatedUser.value.lastName ?? " ";
 
-    bool isWalletConnected = false;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -181,7 +187,7 @@ class _ProfilePage extends State<ProfilePage> {
           ),
           if (!isWalletConnected)
             OutlinedButton(
-              onPressed: null,
+              onPressed: switchWallectConnectedState,
               style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
