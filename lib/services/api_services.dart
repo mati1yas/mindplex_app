@@ -94,6 +94,7 @@ class ApiService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
     */
+    print('${AppUrls.commentCreate}/$post_slug/$parent');
     Response response = await dio.post(
       //'${AppUrls.commentCreate}/$post_slug/$parent',
       '${AppUrls.commentCreate}/$post_slug/$parent',

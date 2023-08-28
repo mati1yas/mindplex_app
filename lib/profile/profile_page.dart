@@ -51,15 +51,17 @@ class _ProfilePage extends State<ProfilePage> {
     return Scaffold(
         backgroundColor:
             const Color.fromARGB(255, 12, 45, 68), // can and should be removed
-        body: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            buildTop(),
-            buildUserName(),
-            buildStatus(),
-            buidScreens(),
-            buildTab(),
-          ],
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              buildTop(),
+              buildUserName(),
+              buildStatus(),
+              buidScreens(),
+              buildTab(),
+            ],
+          ),
         ));
   }
 
@@ -143,10 +145,13 @@ class _ProfilePage extends State<ProfilePage> {
     final firstName =
         profileController.authenticatedUser.value.firstName ?? " ";
     final lastName = profileController.authenticatedUser.value.lastName ?? " ";
+
+    bool isWalletConnected = false;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -174,24 +179,25 @@ class _ProfilePage extends State<ProfilePage> {
               // OutlinedButton(onPressed: onPressed, child: child)
             ],
           ),
-          OutlinedButton(
-            onPressed: null,
-            style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                minimumSize: Size(117, 37),
-                backgroundColor: const Color.fromARGB(255, 225, 62, 111),
-                foregroundColor: Colors.white),
-            child: const Text(
-              'Connect Wallet',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400),
+          if (!isWalletConnected)
+            OutlinedButton(
+              onPressed: null,
+              style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  minimumSize: Size(117, 37),
+                  backgroundColor: const Color.fromARGB(255, 225, 62, 111),
+                  foregroundColor: Colors.white),
+              child: const Text(
+                'Connect Wallet',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+              ),
             ),
-          ),
         ],
       ),
     );
