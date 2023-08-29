@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
+import 'package:mindplex_app/utils/colors.dart';
 
 class BookmarkScreen extends StatefulWidget {
   const BookmarkScreen({super.key});
@@ -38,14 +39,14 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   Widget build(BuildContext context) {
     return ListView.separated(
         itemCount: _posts.length,
-        separatorBuilder: (context, index) => SizedBox(height: 15),
+        separatorBuilder: (context, index) => SizedBox(height: 10),
         itemBuilder: (context, index) {
           var current = _posts[index];
           return Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Color(0xFF103e56),
+              borderRadius: BorderRadius.circular(26),
+              color: blogContainerColor,
             ),
             height: 250,
             width: 140,

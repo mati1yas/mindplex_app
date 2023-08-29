@@ -185,7 +185,7 @@ class DetailsPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => Get.bottomSheet(
-                      MyWidgetComment(),
+                      MyWidgetComment(post_slug: details.slug!),
                       isScrollControlled: true,
                     ),
                     icon: Icon(

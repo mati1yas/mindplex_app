@@ -74,8 +74,7 @@ class ApiService {
 
     dio.options.headers["Authorization"] = "Bearer ${token}";
     Response response = await dio.get(
-      '${AppUrls.commentsFetch}/$post_slug/$parent?&per_page=$perPage',
-      queryParameters: {'page': '$page', 'per_page': '$perPage'},
+      '${AppUrls.commentsFetch}/$post_slug/$parent?page=$page&per_page=$perPage',
     );
     if (response.statusCode == 200) {
       final responseBody = response.data as List<dynamic>;
@@ -108,6 +107,7 @@ class ApiService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
     */
+    print('${AppUrls.commentCreate}/$post_slug/$parent');
     Response response = await dio.post(
       //'${AppUrls.commentCreate}/$post_slug/$parent',
       '${AppUrls.commentCreate}/$post_slug/$parent',

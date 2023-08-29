@@ -6,7 +6,9 @@ import '../../models/comment.dart';
 import '../../services/api_services.dart';
 
 class CommentController extends GetxController {
-  late String post_slug = '';
+  CommentController({required this.post_slug}); // the constructor
+
+  final String post_slug;
   int currentPage = 1; // the page number we're at (related to *pagination*)
 
   String? profileName = '';
@@ -31,8 +33,6 @@ class CommentController extends GetxController {
   // we use this boolean to decide if we show the 'more comments' button or not.
   var moreCommentsAvailable = true.obs;
 
-  CommentController({required this.post_slug}); // the constructor
-
   @override
   void onInit() {
     getProfileDetails();
@@ -41,6 +41,12 @@ class CommentController extends GetxController {
 
     super.onInit();
   }
+
+  /*
+  void updateSlug(String post_slug) {
+    post_slug = post_slug;
+  }
+  */
 
   void prepareComments() async {
     comments.value = await ApiService().fetchComments(post_slug: post_slug);
