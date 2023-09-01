@@ -1,3 +1,4 @@
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/models/blog_model.dart';
@@ -15,8 +16,21 @@ class LikeDislikeConroller extends GetxController {
         .likeDislikeArticle(articleSlug: articleSlug, interction: interction);
     final BlogsController blogsController = Get.find();
 
+// logic for incrementing and decrmenting like and dislike counter realtime
+    if (blog.isUserLiked.value == true && interction == "D") {
+      blog.likes.value -= 1;
+    } else if (blog.isUserDisliked.value == true && interction == "L") {
+      blog.likes.value += 1;
+    } else if (blog.isUserDisliked.value == false &&
+        blog.isUserLiked.value == false) {
+      if (interction == "L") {
+        blog.likes.value += 1;
+      }
+    }
+
     if (interction == "D") {
       blog.isUserDisliked.value = true;
+
       blog.isUserLiked.value = false;
 
       blogsController.blogs[index] = blog;
@@ -36,6 +50,10 @@ class LikeDislikeConroller extends GetxController {
 
     apiService.value.removePreviousInteraction(
         articleSlug: articleSlug, interction: interction);
+
+    if (blog.isUserLiked.value == true && interction == "L") {
+      blog.likes.value -= 1;
+    }
 
     blog.isUserDisliked.value = false;
     blog.isUserLiked.value = false;
