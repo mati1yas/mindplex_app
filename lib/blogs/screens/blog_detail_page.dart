@@ -28,6 +28,7 @@ class DetailsPage extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height * 0.82,
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Container(
                   margin: EdgeInsets.only(top: 30),
                   child: Column(
@@ -92,6 +93,80 @@ class DetailsPage extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Text(
+                                details.postTitle ?? "",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 73, 255, 179),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${details.publishedAt}' + " " ?? "",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Text(
+                                  '${details.minToRead}' + "   " ?? "",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Obx(
+                                  () => Text(
+                                    details.likes.value.toString() + " likes  ",
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(235, 247, 202, 0),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  '0 ',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.tag_faces_outlined,
+                                  color: Color.fromARGB(235, 247, 202, 0),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              child: Text(
+                                details.overview ?? "",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                              color: Colors.white,
+                            ),
+                            Container(
+                                height: 150,
+                                width: 600,
+                                child: Image.network(
+                                    fit: BoxFit.cover,
+                                    details.thumbnailImage ?? ""))
+                          ],
+                        ),
                       ),
 
                       // Place to Displaye Content
