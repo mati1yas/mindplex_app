@@ -22,7 +22,7 @@ class AuthController extends GetxController {
     if (hasToken != '') {
       isAuthenticated.value = true;
     } else {
-      isAuthenticated.value = false;
+      isAuthenticated.value = true;
     }
   }
 

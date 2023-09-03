@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/main.dart';
+import 'package:mindplex_app/profile/settings_page.dart';
 import 'package:mindplex_app/splash_screen.dart';
 
 import '../profile/profile_page.dart';
@@ -14,14 +15,16 @@ class AppRoutes {
 
   static const String profilePage = '/profilePage';
   static const String verificationPage = '/verificationPage';
+  static const String settingsPage = '/settingsPage';
   static final List<GetPage> pages = [
     GetPage(name: home, page: () => SplashScreen()),
     GetPage(name: authPage, page: () => AuthPage()),
+    GetPage(name: settingsPage, page: () => SettingsPage()),
     GetPage(
         name: landingPage,
         page: () => MyHomePage(
-              title: "Mindplex",
-            )),
+          title: "Mindplex",
+        )),
     GetPage(name: profilePage, page: () => const ProfilePage()),
   ];
 }
