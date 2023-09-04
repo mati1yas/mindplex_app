@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 
+import '../routes/app_routes.dart';
 import '../utils/colors.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -120,10 +121,8 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => const EditProfile()),
-                          // );
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.editProfilePage);
                         }),
                     ContainerClass(
                         context: context,
@@ -133,6 +132,8 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.changePasswordPage);
                         }),
                     ContainerClass(
                         context: context,
@@ -148,6 +149,8 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.changeLanguagePage);
                         }),
                     ContainerClass(
                         context: context,
@@ -156,7 +159,10 @@ class _SettingsPage extends State<SettingsPage> {
                         info: null,
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
-                        tapped: () {}),
+                        tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.notificationsPage);
+                        }),
                     ContainerClass(
                         context: context,
                         leading: Icons.privacy_tip_outlined,
@@ -165,7 +171,8 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          // Get.toNamed(AppRoute.privacyPolicy);
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.privacyPolicyPage);
                         }),
                     ContainerClass(
                         context: context,
@@ -175,7 +182,8 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          // Get.toNamed(AppRoute.help);
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.helpPage);
                         }),
                     ContainerClass(
                         context: context,
