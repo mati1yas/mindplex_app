@@ -25,6 +25,8 @@ class _SettingsPage extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+    final firstName = profileController.authenticatedUser.value.firstName ?? " ";
+    final userEmail = profileController.authenticatedUser.value.userEmail??" ";
     return Scaffold(
       backgroundColor: mainBackgroundColor,
       body: Column(
@@ -81,7 +83,7 @@ class _SettingsPage extends State<SettingsPage> {
             child: Column(
               children: [
                 Text(
-                  "Abrham",
+                  firstName,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -90,7 +92,7 @@ class _SettingsPage extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
-                  child: Text("abrhamsisay33@gmail.com", style: TextStyle(
+                  child: Text(userEmail, style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
@@ -137,23 +139,6 @@ class _SettingsPage extends State<SettingsPage> {
                         }),
                     ContainerClass(
                         context: context,
-                        leading: Icons.language,
-                        title: 'Language',
-                        info: Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            child: Text(
-                              "English(US)",
-                              style: TextStyle(fontSize: 13,fontWeight: FontWeight.normal,color: Color.fromARGB(
-                                  219, 255, 255, 255),)
-                            )),
-                        trailing: Icons.arrow_forward_ios,
-                        splash: true,
-                        tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.changeLanguagePage);
-                        }),
-                    ContainerClass(
-                        context: context,
                         leading: Icons.notifications_none_rounded,
                         title: 'Notifications',
                         info: null,
@@ -173,17 +158,6 @@ class _SettingsPage extends State<SettingsPage> {
                         tapped: () {
                           Navigator.of(context).pop();
                           Get.toNamed(AppRoutes.privacyPolicyPage);
-                        }),
-                    ContainerClass(
-                        context: context,
-                        leading: Icons.help,
-                        title: 'Help',
-                        info: null,
-                        trailing: Icons.arrow_forward_ios,
-                        splash: true,
-                        tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.helpPage);
                         }),
                     ContainerClass(
                         context: context,
