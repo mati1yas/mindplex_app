@@ -27,6 +27,12 @@ class _DraftScreenState extends State<DraftScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.separated(
         itemCount: _drafts.length,
@@ -45,13 +51,6 @@ class _DraftScreenState extends State<DraftScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  current['date'] ?? "",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
                 Text(
                   current['title'] ?? "",
                   style: TextStyle(
