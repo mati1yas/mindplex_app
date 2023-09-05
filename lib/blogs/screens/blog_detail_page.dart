@@ -187,6 +187,7 @@ class DetailsPage extends StatelessWidget {
                     onPressed: () => Get.bottomSheet(
                       MyWidgetComment(post_slug: details.slug!),
                       isScrollControlled: true,
+                      ignoreSafeArea: false,
                     ),
                     icon: Icon(
                       Icons.mode_comment_outlined,
