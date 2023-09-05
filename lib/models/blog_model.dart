@@ -13,7 +13,7 @@ class Blog {
   String? publishedAt;
   String? postTitle;
   String? overview;
-  int? likes;
+  RxInt likes = 0.obs; // Changed to RxInt
   String? minToRead;
   List<Content>? content;
   RxBool isUserLiked = false.obs;
@@ -32,12 +32,13 @@ class Blog {
     this.publishedAt,
     this.postTitle,
     this.overview,
-    this.likes,
+    int? likes, // Changed to int
     this.minToRead,
     this.content,
     bool? userLiked,
     bool? userDisliked,
   }) {
+    this.likes.value = likes ?? 0; // Initialize likes as an RxInt
     isUserLiked.value = userLiked ?? false;
     isUserDisliked.value = userDisliked ?? false;
   }
@@ -56,7 +57,7 @@ class Blog {
       publishedAt: json['published_at'],
       postTitle: json['post_title'],
       overview: json['overview'],
-      likes: json['likes'],
+      likes: json['likes'], // Changed to int
       minToRead: json['min_to_read'],
       content: (json['content'] as List<dynamic>?)
           ?.map((c) => Content.fromJson(c))
@@ -80,7 +81,7 @@ class Blog {
       'published_at': publishedAt,
       'post_title': postTitle,
       'overview': overview,
-      'likes': likes,
+      'likes': likes.value, // Access the value of RxInt
       'min_to_read': minToRead,
       'content': content?.map((c) => c.toJson()).toList(),
       'is_user_liked': isUserLiked.value,
