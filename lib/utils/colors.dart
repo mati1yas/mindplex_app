@@ -11,3 +11,4 @@ final shimmerEffectHighlight1 = Color(0xFF6eded0);
 final shimmerEffectHighlight2 = blogContainerColor.withAlpha(250);
 
 final commentSectionColor = Color(0xff6eded0);
+final profileGolden = Color.fromARGB(255, 255, 226, 121);
