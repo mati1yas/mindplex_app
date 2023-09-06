@@ -20,6 +20,42 @@ class DetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       appBar: AppBar(
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            details.postTypeFormat == "text"
+                ? const Icon(
+                    Icons.description_outlined,
+                    color: Color(0xFF8aa7da),
+                    size: 20,
+                  )
+                : details.postTypeFormat == "video"
+                    ? const Icon(
+                        Icons.videocam,
+                        color: Color.fromARGB(255, 185, 127, 127),
+                        size: 20,
+                      )
+                    : const Icon(
+                        Icons.headphones,
+                        color: Colors.green,
+                        size: 20,
+                      ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
+            ),
+            Text(
+                details.postTypeFormat == "text"
+                    ? "Read"
+                    : details.postTypeFormat == "video"
+                        ? "Watch "
+                        : "Listen",
+                style: TextStyle(fontWeight: FontWeight.w300)),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.13,
+            )
+          ],
+        ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         backgroundColor: Color.fromARGB(255, 17, 126, 113),
       ),
@@ -33,68 +69,6 @@ class DetailsPage extends StatelessWidget {
                   margin: EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 40,
-                            margin: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.green,
-                              image: DecorationImage(
-                                image: NetworkImage(details.authorAvatar ?? ""),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              margin: EdgeInsets.only(right: 3, top: 30),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    details.authorDisplayName!,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    details.authorBio ?? "",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w200),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 30, right: 30, bottom: 10),
-                            margin: EdgeInsets.only(top: 15),
-                            decoration: const BoxDecoration(
-                                color: Color(0xFF0f3e57),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: const Text(
-                              'Follow',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Column(
@@ -175,7 +149,68 @@ class DetailsPage extends StatelessWidget {
                         child: BlogContentDisplay(
                           data: details.content ?? [],
                         ),
-                      )
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            margin: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.green,
+                              image: DecorationImage(
+                                image: NetworkImage(details.authorAvatar ?? ""),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              margin: EdgeInsets.only(right: 3, top: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    details.authorDisplayName!,
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    details.authorBio ?? "",
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w200),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                top: 10, left: 30, right: 30, bottom: 10),
+                            margin: EdgeInsets.only(top: 15),
+                            decoration: const BoxDecoration(
+                                color: Color(0xFF0f3e57),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: const Text(
+                              'Follow',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w200,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   )),
             ),
