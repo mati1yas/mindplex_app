@@ -9,6 +9,7 @@ import 'package:transparent_image/transparent_image.dart';
 import '../auth/auth_controller/auth_controller.dart';
 import 'about_screen.dart';
 import 'bookmark_screen.dart';
+import 'draft_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -40,6 +41,9 @@ class _ProfilePage extends State<ProfilePage> {
           break;
         case 2:
           activeScreen = const BookmarkScreen();
+          break;
+        case 3:
+          activeScreen = const DraftScreen();
           break;
         default:
       }

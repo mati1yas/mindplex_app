@@ -689,11 +689,13 @@ class SkeletonElement extends StatelessWidget {
   const SkeletonElement({
     super.key,
     required this.isMarginForAll,
+    required this.isRadiusForAll,
     required this.dimensions,
     required this.colors,
   });
 
   final bool isMarginForAll;
+  final bool isRadiusForAll;
   final Map<String, double> dimensions;
   final Map<String, Color> colors;
 
@@ -714,7 +716,16 @@ class SkeletonElement extends StatelessWidget {
         width: dimensions['width'],
         height: dimensions['height'],
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(dimensions['radius'] ?? 0),
+          borderRadius: isRadiusForAll
+              ? BorderRadius.circular(dimensions['radius'] ?? 0)
+              : BorderRadius.only(
+                  bottomLeft: Radius.circular(
+                    dimensions['radius_bottom_left']!,
+                  ),
+                  bottomRight: Radius.circular(
+                    dimensions['radius_bottom_right']!,
+                  ),
+                ),
           color: Color(0xFF6eded0).withOpacity(.3),
         ),
       ),
@@ -741,7 +752,9 @@ class BlogSkeleton extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  // circular avatar
                   SkeletonElement(
+                    isRadiusForAll: true,
                     isMarginForAll: true,
                     dimensions: {
                       'height': 40,
@@ -754,41 +767,32 @@ class BlogSkeleton extends StatelessWidget {
                       'highlight': Color.fromARGB(255, 28, 105, 146),
                     },
                   ),
+                  // date and title
                   SkeletonElement(
+                    isRadiusForAll: true,
                     isMarginForAll: false,
                     dimensions: {
-                      'width': MediaQuery.of(context).size.width * .4,
-                      'height': 18,
+                      'width': MediaQuery.of(context).size.width * .5,
+                      'height': 14,
                       'margin_left': 8,
                       'margin_right': 3,
-                      'radius': 4,
+                      'radius': 6,
                     },
                     colors: {
                       'base': shimmerEffectBase1,
                       'highlight': shimmerEffectHighlight1,
                     },
                   ),
-                  ShimmerEffect(
-                    baseColor: const Color.fromARGB(255, 46, 46, 46),
-                    highlightColor:
-                        const Color.fromARGB(255, 66, 66, 66).withAlpha(200),
-                    child: Container(
-                      height: 60,
-                      width: 35,
-                      margin: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(5),
-                        bottomRight: Radius.circular(5),
-                      )),
-                    ),
-                  ),
+
                   SkeletonElement(
+                    isRadiusForAll: false,
                     isMarginForAll: false,
                     dimensions: {
                       'height': 60,
                       'width': 35,
                       'margin_left': 10,
+                      'radius_bottom_left': 6,
+                      'radius_bottom_right': 6,
                     },
                     colors: {
                       'base': Colors.black.withAlpha(200),
@@ -798,6 +802,7 @@ class BlogSkeleton extends StatelessWidget {
                 ],
               ),
               SkeletonElement(
+                isRadiusForAll: true,
                 isMarginForAll: true,
                 dimensions: {
                   'width': MediaQuery.of(context).size.width * .8,
@@ -811,6 +816,7 @@ class BlogSkeleton extends StatelessWidget {
                 },
               ),
               SkeletonElement(
+                isRadiusForAll: true,
                 isMarginForAll: false,
                 dimensions: {
                   'width': MediaQuery.of(context).size.width * .8,
@@ -825,41 +831,20 @@ class BlogSkeleton extends StatelessWidget {
                 },
               ),
               const Spacer(),
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  SkeletonElement(
-                    isMarginForAll: false,
-                    dimensions: {
-                      'width': 40,
-                      'height': 15,
-                      'radius': 4,
-                      'margin_bottom': 5
-                    },
-                    colors: {
-                      'base': shimmerEffectBase1,
-                      'highlight': shimmerEffectHighlight1,
-                    },
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SkeletonElement(
-                    isMarginForAll: false,
-                    dimensions: {
-                      'width': 40,
-                      'height': 15,
-                      'radius': 4,
-                      'margin_bottom': 5
-                    },
-                    colors: {
-                      'base': shimmerEffectBase1,
-                      'highlight': shimmerEffectHighlight1,
-                    },
-                  )
-                ],
+              SkeletonElement(
+                isRadiusForAll: true,
+                isMarginForAll: false,
+                dimensions: {
+                  'width': 90,
+                  'height': 12,
+                  'radius': 6,
+                  'margin_bottom': 5,
+                  'margin_left': 5,
+                },
+                colors: {
+                  'base': shimmerEffectBase1,
+                  'highlight': shimmerEffectHighlight1,
+                },
               ),
             ],
           ),
