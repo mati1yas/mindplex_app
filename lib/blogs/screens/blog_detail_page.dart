@@ -133,13 +133,11 @@ class DetailsPage extends StatelessWidget {
                               thickness: 2,
                               color: Colors.white,
                             ),
-                            if (details.thumbnailImage != 'default.jpg')
-                              Container(
-                                  height: 150,
-                                  width: 600,
-                                  child: Image.network(
-                                      fit: BoxFit.cover,
-                                      details.thumbnailImage ?? ""))
+                            Container(
+                                height: 150,
+                                width: 600,
+                                child: Image.network(
+                                    fit: BoxFit.cover, details.banner ?? ""))
                           ],
                         ),
                       ),

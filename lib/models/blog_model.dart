@@ -12,6 +12,7 @@ class Blog {
   String? authorDisplayName;
   String? publishedAt;
   String? postTitle;
+  String? banner;
   String? overview;
   RxInt likes = 0.obs; // Changed to RxInt
   String? minToRead;
@@ -31,6 +32,7 @@ class Blog {
     this.authorDisplayName,
     this.publishedAt,
     this.postTitle,
+    this.banner,
     this.overview,
     int? likes, // Changed to int
     this.minToRead,
@@ -56,6 +58,7 @@ class Blog {
       authorDisplayName: json['author_display_name'],
       publishedAt: json['published_at'],
       postTitle: json['post_title'],
+      banner: json['banner'],
       overview: json['overview'],
       likes: json['likes'], // Changed to int
       minToRead: json['min_to_read'],
@@ -80,6 +83,7 @@ class Blog {
       'author_display_name': authorDisplayName,
       'published_at': publishedAt,
       'post_title': postTitle,
+      'banner': banner,
       'overview': overview,
       'likes': likes.value, // Access the value of RxInt
       'min_to_read': minToRead,
