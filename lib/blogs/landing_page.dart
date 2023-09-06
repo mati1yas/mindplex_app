@@ -38,15 +38,15 @@ class _LandingPageState extends State<LandingPage> {
           child: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF062f46), Color(0xFF1d253d)],
-            )),
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF062f46), Color(0xFF1d253d)],
+                )),
             child: ListView(
               padding: EdgeInsets.only(top: 20, left: 20),
               children: [
                 Obx(
-                  () => Container(
+                      () => Container(
                     height: 200,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,13 +55,13 @@ class _LandingPageState extends State<LandingPage> {
                             height: 50,
                             width: 50,
                             margin:
-                                EdgeInsets.only(top: 40, left: 10, bottom: 15),
+                            EdgeInsets.only(top: 40, left: 10, bottom: 15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
                               color: Colors.green,
                               image: DecorationImage(
                                 image: NetworkImage(profileController
-                                        .authenticatedUser.value.image ??
+                                    .authenticatedUser.value.image ??
                                     ""),
                               ),
                             ),
@@ -73,7 +73,7 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Text(
                                 profileController
-                                        .authenticatedUser.value.firstName ??
+                                    .authenticatedUser.value.firstName ??
                                     " " +
                                         '${profileController.authenticatedUser.value.lastName}' ??
                                     " ",
@@ -87,10 +87,10 @@ class _LandingPageState extends State<LandingPage> {
                               ),
                               Text(
                                 profileController
-                                        .authenticatedUser.value.username ??
+                                    .authenticatedUser.value.username ??
                                     " ",
                                 style:
-                                    TextStyle(fontSize: 15, color: Colors.grey),
+                                TextStyle(fontSize: 15, color: Colors.grey),
                               ),
                               SizedBox(
                                 height: 10,
@@ -280,6 +280,25 @@ class _LandingPageState extends State<LandingPage> {
                     // ...
                   },
                 ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.settings,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    'Settings',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Get.toNamed(AppRoutes.settingsPage);
+                    // ...
+                  },
+                ),
               ],
             ),
           ),
@@ -295,7 +314,7 @@ class _LandingPageState extends State<LandingPage> {
                 GestureDetector(
                   onTap: () => {_globalkey.currentState!.openDrawer()},
                   child: Obx(
-                    () => Container(
+                        () => Container(
                       height: 40,
                       width: 40,
                       margin: EdgeInsets.only(left: 40),
@@ -339,17 +358,17 @@ class _LandingPageState extends State<LandingPage> {
                         category: category);
                   },
                   child: Obx(
-                    () => Container(
+                        () => Container(
                       margin: const EdgeInsets.only(left: 5, right: 5),
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, top: 8, bottom: 8),
                       decoration: BoxDecoration(
                           color: blogsController.recommender.value ==
-                                  blogsController.recommenderMaps[category]
+                              blogsController.recommenderMaps[category]
                               ? Color(0xFF46b4b5)
                               : Color(0xFF0f567c),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(10))),
+                          const BorderRadius.all(Radius.circular(10))),
                       child: Center(
                         child: Text(
                           category,
@@ -367,317 +386,317 @@ class _LandingPageState extends State<LandingPage> {
           Obx(() {
             return blogsController.isLoading.value == true && isIntialLoading
                 ? Expanded(
-                    child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                    ),
-                  )
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (ctx, inx) => const BlogSkeleton(),
+              ),
+            )
                 : Expanded(
-                    child: ListView.builder(
-                        controller: blogsController.scrollController,
-                        itemCount: blogsController.filteredBlogs.length + 1,
-                        itemBuilder: (ctx, index) {
-                          if (index < blogsController.filteredBlogs.length) {
-                            final thumbnailUrl = blogsController
-                                .filteredBlogs[index].thumbnailImage;
-                            isIntialLoading = false;
-                            final isDefaultThumbnail =
-                                thumbnailUrl == "default.jpg";
-                            return GestureDetector(
-                              onTap: () {
-                                Get.to(DetailsPage(
-                                    index: index,
-                                    details:
-                                        blogsController.filteredBlogs[index]));
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    left: 20, right: 20, bottom: 10),
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  color: isDefaultThumbnail
-                                      ? Color(0xFF103e56)
-                                      : null,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    if (!isDefaultThumbnail)
-                                      Positioned.fill(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              Image.network(
-                                                thumbnailUrl!,
-                                                fit: BoxFit.cover,
-                                              ),
-                                              BackdropFilter(
-                                                filter: ImageFilter.blur(
-                                                    sigmaX: 1, sigmaY: 1),
-                                                child: Container(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+              child: ListView.builder(
+                  controller: blogsController.scrollController,
+                  itemCount: blogsController.filteredBlogs.length + 1,
+                  itemBuilder: (ctx, index) {
+                    if (index < blogsController.filteredBlogs.length) {
+                      final thumbnailUrl = blogsController
+                          .filteredBlogs[index].thumbnailImage;
+                      isIntialLoading = false;
+                      final isDefaultThumbnail =
+                          thumbnailUrl == "default.jpg";
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(DetailsPage(
+                              index: index,
+                              details:
+                              blogsController.filteredBlogs[index]));
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 10),
+                          height: 180,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10)),
+                            color: isDefaultThumbnail
+                                ? Color(0xFF103e56)
+                                : null,
+                          ),
+                          child: Stack(
+                            children: [
+                              if (!isDefaultThumbnail)
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10)),
+                                    child: Stack(
+                                      fit: StackFit.expand,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              height: 40,
-                                              width: 40,
-                                              margin: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: Colors.green,
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      blogsController
-                                                              .filteredBlogs[
-                                                                  index]
-                                                              .authorAvatar! +
-                                                          " "),
-                                                ),
-                                              ),
-                                            ),
-
-                                            Container(
-                                              margin: EdgeInsets.only(right: 3),
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .5,
-                                                child: Text(
-                                                  blogsController
-                                                          .filteredBlogs[index]
-                                                          .authorDisplayName! +
-                                                      " " +
-                                                      blogsController
-                                                          .filteredBlogs[index]
-                                                          .publishedAt!,
-                                                  style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-
-                                            // Container(
-                                            //   margin: EdgeInsets.only(left: 3),
-                                            //   child: Text(
-                                            //     blogsController
-                                            //         .filteredBlogs[index].publishedAt!,
-                                            //     style: const TextStyle(
-                                            //         fontSize: 10,
-                                            //         fontWeight: FontWeight.w300,
-                                            //         color: Colors.white),
-                                            //   ),
-                                            // ),
-                                            // Container(
-                                            //   margin: EdgeInsets.only(left: 3),
-                                            //   child: blogsController
-                                            //               .filteredBlogs[index].MPXR !=
-                                            //           " "
-                                            //       ? const Text("")
-                                            //       : Row(
-                                            //           children: [
-                                            //             const Text(
-                                            //               "| ",
-                                            //               style: TextStyle(
-                                            //                   fontSize: 12,
-                                            //                   fontStyle:
-                                            //                       FontStyle.normal,
-                                            //                   color: Colors.white),
-                                            //             ),
-                                            //             Text(
-                                            //               blogsController
-                                            //                   .filteredBlogs[index]
-                                            //                   .MPXR!,
-                                            //               style: const TextStyle(
-                                            //                   fontSize: 12,
-                                            //                   fontWeight:
-                                            //                       FontWeight.bold,
-                                            //                   color: Colors.white),
-                                            //             )
-                                            //           ],
-                                            //         ),
-                                            // ),
-                                            Container(
-                                              height: 60,
-                                              width: 35,
-                                              margin: EdgeInsets.only(
-                                                  left: 10, top: 0),
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.black,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(5),
-                                                    bottomRight:
-                                                        Radius.circular(5),
-                                                  )),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            bottom: 10),
-                                                    child: blogsController
-                                                                .filteredBlogs[
-                                                                    index]
-                                                                .postTypeFormat ==
-                                                            "text"
-                                                        ? const Icon(
-                                                            Icons
-                                                                .description_outlined,
-                                                            color: Color(
-                                                                0xFF8aa7da),
-                                                            size: 20,
-                                                          )
-                                                        : blogsController
-                                                                    .filteredBlogs[
-                                                                        index]
-                                                                    .postTypeFormat ==
-                                                                "video"
-                                                            ? const Icon(
-                                                                Icons.videocam,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        185,
-                                                                        127,
-                                                                        127),
-                                                                size: 20,
-                                                              )
-                                                            : const Icon(
-                                                                Icons
-                                                                    .headphones,
-                                                                color: Colors
-                                                                    .green,
-                                                                size: 20,
-                                                              ),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
+                                        Image.network(
+                                          thumbnailUrl!,
+                                          fit: BoxFit.cover,
                                         ),
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, top: 10),
-                                          child: Text(
-                                            blogsController.filteredBlogs[index]
-                                                .postTitle!,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF6eded0)),
+                                        BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: 1, sigmaY: 1),
+                                          child: Container(
+                                            color: Colors.black
+                                                .withOpacity(0.5),
                                           ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, top: 10, right: 20),
-                                          child: Text(
-                                            blogsController
-                                                .filteredBlogs[index].overview!,
-                                            maxLines: 3,
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        const Spacer(),
-                                        Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 5),
-                                              child: Text(
-                                                blogsController
-                                                    .filteredBlogs[index]
-                                                    .minToRead!,
-                                                style: const TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w300,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 5),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    blogsController
-                                                        .filteredBlogs[index]
-                                                        .likes
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: Colors.white),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 2,
-                                                  ),
-                                                  const Text(
-                                                    "Likes",
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: Colors.white),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        margin: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                          color: Colors.green,
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                blogsController
+                                                    .filteredBlogs[
+                                                index]
+                                                    .authorAvatar! +
+                                                    " "),
+                                          ),
+                                        ),
+                                      ),
+
+                                      Container(
+                                        margin: EdgeInsets.only(right: 3),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                              .5,
+                                          child: Text(
+                                            blogsController
+                                                .filteredBlogs[index]
+                                                .authorDisplayName! +
+                                                " " +
+                                                blogsController
+                                                    .filteredBlogs[index]
+                                                    .publishedAt!,
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight:
+                                                FontWeight.w300,
+                                                fontStyle:
+                                                FontStyle.normal,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Container(
+                                      //   margin: EdgeInsets.only(left: 3),
+                                      //   child: Text(
+                                      //     blogsController
+                                      //         .filteredBlogs[index].publishedAt!,
+                                      //     style: const TextStyle(
+                                      //         fontSize: 10,
+                                      //         fontWeight: FontWeight.w300,
+                                      //         color: Colors.white),
+                                      //   ),
+                                      // ),
+                                      // Container(
+                                      //   margin: EdgeInsets.only(left: 3),
+                                      //   child: blogsController
+                                      //               .filteredBlogs[index].MPXR !=
+                                      //           " "
+                                      //       ? const Text("")
+                                      //       : Row(
+                                      //           children: [
+                                      //             const Text(
+                                      //               "| ",
+                                      //               style: TextStyle(
+                                      //                   fontSize: 12,
+                                      //                   fontStyle:
+                                      //                       FontStyle.normal,
+                                      //                   color: Colors.white),
+                                      //             ),
+                                      //             Text(
+                                      //               blogsController
+                                      //                   .filteredBlogs[index]
+                                      //                   .MPXR!,
+                                      //               style: const TextStyle(
+                                      //                   fontSize: 12,
+                                      //                   fontWeight:
+                                      //                       FontWeight.bold,
+                                      //                   color: Colors.white),
+                                      //             )
+                                      //           ],
+                                      //         ),
+                                      // ),
+                                      Container(
+                                        height: 60,
+                                        width: 35,
+                                        margin: EdgeInsets.only(
+                                            left: 10, top: 0),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                            BorderRadius.only(
+                                              bottomLeft:
+                                              Radius.circular(5),
+                                              bottomRight:
+                                              Radius.circular(5),
+                                            )),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              margin:
+                                              const EdgeInsets.only(
+                                                  bottom: 10),
+                                              child: blogsController
+                                                  .filteredBlogs[
+                                              index]
+                                                  .postTypeFormat ==
+                                                  "text"
+                                                  ? const Icon(
+                                                Icons
+                                                    .description_outlined,
+                                                color: Color(
+                                                    0xFF8aa7da),
+                                                size: 20,
+                                              )
+                                                  : blogsController
+                                                  .filteredBlogs[
+                                              index]
+                                                  .postTypeFormat ==
+                                                  "video"
+                                                  ? const Icon(
+                                                Icons.videocam,
+                                                color: Color
+                                                    .fromARGB(
+                                                    255,
+                                                    185,
+                                                    127,
+                                                    127),
+                                                size: 20,
+                                              )
+                                                  : const Icon(
+                                                Icons
+                                                    .headphones,
+                                                color: Colors
+                                                    .green,
+                                                size: 20,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10, top: 10),
+                                    child: Text(
+                                      blogsController.filteredBlogs[index]
+                                          .postTitle!,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF6eded0)),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10, top: 10, right: 20),
+                                    child: Text(
+                                      blogsController
+                                          .filteredBlogs[index].overview!,
+                                      maxLines: 3,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            bottom: 5),
+                                        child: Text(
+                                          blogsController
+                                              .filteredBlogs[index]
+                                              .minToRead!,
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            bottom: 5),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              blogsController
+                                                  .filteredBlogs[index]
+                                                  .likes
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight:
+                                                  FontWeight.w300,
+                                                  color: Colors.white),
+                                            ),
+                                            const SizedBox(
+                                              width: 2,
+                                            ),
+                                            const Text(
+                                              "Likes",
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight:
+                                                  FontWeight.w300,
+                                                  color: Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
-                            );
-                          } else {
-                            print("executing else statement");
-                            if (index == blogsController.filteredBlogs.length &&
-                                !blogsController.reachedEndOfList) {
-                              // Display CircularProgressIndicator under the last card
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Container(); // Return an empty container otherwise
-                            }
-                          }
-                        }),
-                  );
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      print("executing else statement");
+                      if (index == blogsController.filteredBlogs.length &&
+                          !blogsController.reachedEndOfList) {
+                        // Display CircularProgressIndicator under the last card
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        return Container(); // Return an empty container otherwise
+                      }
+                    }
+                  }),
+            );
           })
         ],
       ),
@@ -689,13 +708,11 @@ class SkeletonElement extends StatelessWidget {
   const SkeletonElement({
     super.key,
     required this.isMarginForAll,
-    required this.isRadiusForAll,
     required this.dimensions,
     required this.colors,
   });
 
   final bool isMarginForAll;
-  final bool isRadiusForAll;
   final Map<String, double> dimensions;
   final Map<String, Color> colors;
 
@@ -708,24 +725,15 @@ class SkeletonElement extends StatelessWidget {
         margin: isMarginForAll
             ? EdgeInsets.all(dimensions['margin_all']!)
             : EdgeInsets.fromLTRB(
-                dimensions['margin_left'] ?? 0,
-                dimensions['margin_top'] ?? 0,
-                dimensions['margin_right'] ?? 0,
-                dimensions['margin_bottom'] ?? 0,
-              ),
+          dimensions['margin_left'] ?? 0,
+          dimensions['margin_top'] ?? 0,
+          dimensions['margin_right'] ?? 0,
+          dimensions['margin_bottom'] ?? 0,
+        ),
         width: dimensions['width'],
         height: dimensions['height'],
         decoration: BoxDecoration(
-          borderRadius: isRadiusForAll
-              ? BorderRadius.circular(dimensions['radius'] ?? 0)
-              : BorderRadius.only(
-                  bottomLeft: Radius.circular(
-                    dimensions['radius_bottom_left']!,
-                  ),
-                  bottomRight: Radius.circular(
-                    dimensions['radius_bottom_right']!,
-                  ),
-                ),
+          borderRadius: BorderRadius.circular(dimensions['radius'] ?? 0),
           color: Color(0xFF6eded0).withOpacity(.3),
         ),
       ),
@@ -752,9 +760,7 @@ class BlogSkeleton extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  // circular avatar
                   SkeletonElement(
-                    isRadiusForAll: true,
                     isMarginForAll: true,
                     dimensions: {
                       'height': 40,
@@ -767,32 +773,41 @@ class BlogSkeleton extends StatelessWidget {
                       'highlight': Color.fromARGB(255, 28, 105, 146),
                     },
                   ),
-                  // date and title
                   SkeletonElement(
-                    isRadiusForAll: true,
                     isMarginForAll: false,
                     dimensions: {
-                      'width': MediaQuery.of(context).size.width * .5,
-                      'height': 14,
+                      'width': MediaQuery.of(context).size.width * .4,
+                      'height': 18,
                       'margin_left': 8,
                       'margin_right': 3,
-                      'radius': 6,
+                      'radius': 4,
                     },
                     colors: {
                       'base': shimmerEffectBase1,
                       'highlight': shimmerEffectHighlight1,
                     },
                   ),
-
+                  ShimmerEffect(
+                    baseColor: const Color.fromARGB(255, 46, 46, 46),
+                    highlightColor:
+                    const Color.fromARGB(255, 66, 66, 66).withAlpha(200),
+                    child: Container(
+                      height: 60,
+                      width: 35,
+                      margin: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5),
+                          )),
+                    ),
+                  ),
                   SkeletonElement(
-                    isRadiusForAll: false,
                     isMarginForAll: false,
                     dimensions: {
                       'height': 60,
                       'width': 35,
                       'margin_left': 10,
-                      'radius_bottom_left': 6,
-                      'radius_bottom_right': 6,
                     },
                     colors: {
                       'base': Colors.black.withAlpha(200),
@@ -802,7 +817,6 @@ class BlogSkeleton extends StatelessWidget {
                 ],
               ),
               SkeletonElement(
-                isRadiusForAll: true,
                 isMarginForAll: true,
                 dimensions: {
                   'width': MediaQuery.of(context).size.width * .8,
@@ -816,7 +830,6 @@ class BlogSkeleton extends StatelessWidget {
                 },
               ),
               SkeletonElement(
-                isRadiusForAll: true,
                 isMarginForAll: false,
                 dimensions: {
                   'width': MediaQuery.of(context).size.width * .8,
@@ -831,20 +844,41 @@ class BlogSkeleton extends StatelessWidget {
                 },
               ),
               const Spacer(),
-              SkeletonElement(
-                isRadiusForAll: true,
-                isMarginForAll: false,
-                dimensions: {
-                  'width': 90,
-                  'height': 12,
-                  'radius': 6,
-                  'margin_bottom': 5,
-                  'margin_left': 5,
-                },
-                colors: {
-                  'base': shimmerEffectBase1,
-                  'highlight': shimmerEffectHighlight1,
-                },
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'width': 40,
+                      'height': 15,
+                      'radius': 4,
+                      'margin_bottom': 5
+                    },
+                    colors: {
+                      'base': shimmerEffectBase1,
+                      'highlight': shimmerEffectHighlight1,
+                    },
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SkeletonElement(
+                    isMarginForAll: false,
+                    dimensions: {
+                      'width': 40,
+                      'height': 15,
+                      'radius': 4,
+                      'margin_bottom': 5
+                    },
+                    colors: {
+                      'base': shimmerEffectBase1,
+                      'highlight': shimmerEffectHighlight1,
+                    },
+                  )
+                ],
               ),
             ],
           ),
