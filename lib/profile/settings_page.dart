@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 
@@ -77,6 +78,16 @@ class _SettingsPage extends State<SettingsPage> {
           const SizedBox(
             height: 10,
           ),
+          Stack(
+            children: [
+              buildImage(),
+              Positioned(
+                bottom: 0,
+                right: 4,
+                child: buildAddPhoto(Colors.blueGrey),
+              ),
+            ],
+          ),
           Container(
             margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.center,
@@ -117,25 +128,58 @@ class _SettingsPage extends State<SettingsPage> {
                     ),
                     ContainerClass(
                         context: context,
-                        leading: Icons.edit,
-                        title: 'Edit Profile',
+                        leading: Icons.settings,
+                        title: 'General',
                         info: null,
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
                           Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.editProfilePage);
+                          Get.toNamed(AppRoutes.generalSettingsPage);
+                        }),
+                    ContainerClass(
+                        context: context,
+                        leading: Icons.edit,
+                        title: 'Personal',
+                        info: null,
+                        trailing: Icons.arrow_forward_ios,
+                        splash: true,
+                        tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.personalSettingsPage);
                         }),
                     ContainerClass(
                         context: context,
                         leading: Icons.change_circle,
-                        title: 'Change Password',
+                        title: 'Password',
                         info: null,
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
                           Navigator.of(context).pop();
                           Get.toNamed(AppRoutes.changePasswordPage);
+                        }),
+                    ContainerClass(
+                        context: context,
+                        leading: Icons.edit,
+                        title: 'Recommendation',
+                        info: null,
+                        trailing: Icons.arrow_forward_ios,
+                        splash: true,
+                        tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.recommendationPage);
+                        }),
+                    ContainerClass(
+                        context: context,
+                        leading: Icons.edit,
+                        title: 'Preferences',
+                        info: null,
+                        trailing: Icons.arrow_forward_ios,
+                        splash: true,
+                        tapped: () {
+                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.preferencePage);
                         }),
                     ContainerClass(
                         context: context,
@@ -174,6 +218,86 @@ class _SettingsPage extends State<SettingsPage> {
           )
         ],
       ),
+    );
+  }
+
+  buildAddPhoto(MaterialColor blue) {
+    IconThemeData icon = Theme.of(context).iconTheme;
+    return ClipOval(
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        color: Colors.cyan,
+        child: InkWell(
+            onTap: () async {
+              String? filePath = await pickImage();
+              // let's show a loading dialog with a loading message
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) => const Center(
+                  child: CircularProgressIndicator(color: Colors.blue),
+                ),
+              );
+              // let's upload the image to the api
+              if (filePath != null) {
+                // let's try to upload the image
+
+                // try {
+                //   String imageUrl = await ApiProvider().changeProfilePicture(filePath);
+                //   setState(() {
+                //     image = imageUrl;
+                //   });
+                //   UserPreferences.setProfilePicture(imageUrl);
+                //   var landingPageController = Get.find<LandingPageController>();
+                //   landingPageController.profileImage = imageUrl;
+                // } catch (error) {
+                //   // let's show an error message
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //       content: Text("Failed to upload image. Try again later."),
+                //     ),
+                //   );
+                // }
+              } else {
+                // display a snackbar with error message (to the user)
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Invalid file selected."),
+                  ),
+                );
+              }
+              // pop the dialog
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.mode_edit_outline_outlined,
+              color: icon.color,
+              size: 17,
+            )),
+      ),
+    );
+  }
+  Future<String?> pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    String filepath = '';
+    if (pickedImage != null) {
+      filepath = pickedImage.path;
+      return filepath;
+    }
+    return null;
+  }
+  Widget buildImage() {
+    ImageProvider<Object> image = NetworkImage(
+      profileController.authenticatedUser.value.image ??
+          "assets/images/profile.PNG",
+    );
+    return CircleAvatar(
+    radius: 45,
+    foregroundImage: image,
+    child: const Material(
+    color: Color.fromARGB(0, 231, 6, 6), //
+    ),
     );
   }
 }
@@ -285,14 +409,4 @@ class ContainerClass extends StatelessWidget {
       ],
     );
   }
-}
-Widget buildImage() {
-  ImageProvider<Object> image = const AssetImage('assets/images/logo.png');
-  return CircleAvatar(
-    radius: 45,
-    foregroundImage: image,
-    child: const Material(
-      color: Color.fromARGB(0, 231, 6, 6), //
-    ),
-  );
 }
