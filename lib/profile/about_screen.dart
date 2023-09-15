@@ -11,20 +11,6 @@ class AboutScreen extends StatefulWidget {
   }
 }
 
-class TitleText extends StatelessWidget {
-  const TitleText({super.key, required this.text});
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: TextStyle(
-          color: Color.fromARGB(255, 255, 226, 121),
-          fontWeight: FontWeight.w700,
-        ),
-      );
-}
-
 class _AboutScreen extends State<AboutScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -110,4 +96,18 @@ class _AboutScreen extends State<AboutScreen> {
       ),
     );
   }
+}
+
+class TitleText extends StatelessWidget {
+  const TitleText({super.key, required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        style: TextStyle(
+          color: profileGolden,
+          fontWeight: FontWeight.w700,
+        ),
+      );
 }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/models/auth_model.dart';
+import 'package:mindplex_app/profile/draft_screen.dart';
 import 'package:mindplex_app/services/local_storage.dart';
 
 import '../models/popularModel.dart';
@@ -30,12 +31,7 @@ class ProfileController extends GetxController {
       'widget': const BookmarkScreen(),
       "num": 2
     },
-    {
-      'name': 'Drafts',
-      "active": false,
-      'widget': const BookmarkScreen(),
-      "num": 2
-    }
+    {'name': 'Drafts', "active": false, 'widget': const DraftScreen(), "num": 3}
   ];
 
   @override

@@ -20,6 +20,42 @@ class DetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       appBar: AppBar(
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            details.postTypeFormat == "text"
+                ? const Icon(
+                    Icons.description_outlined,
+                    color: Color(0xFF8aa7da),
+                    size: 20,
+                  )
+                : details.postTypeFormat == "video"
+                    ? const Icon(
+                        Icons.videocam,
+                        color: Color.fromARGB(255, 185, 127, 127),
+                        size: 20,
+                      )
+                    : const Icon(
+                        Icons.headphones,
+                        color: Colors.green,
+                        size: 20,
+                      ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
+            ),
+            Text(
+                details.postTypeFormat == "text"
+                    ? "Read"
+                    : details.postTypeFormat == "video"
+                        ? "Watch "
+                        : "Listen",
+                style: TextStyle(fontWeight: FontWeight.w300)),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.13,
+            )
+          ],
+        ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         backgroundColor: Color.fromARGB(255, 17, 126, 113),
       ),
@@ -28,10 +64,91 @@ class DetailsPage extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height * 0.82,
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Container(
                   margin: EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Text(
+                                details.postTitle ?? "",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 73, 255, 179),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${details.publishedAt}' + " " ?? "",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Text(
+                                  '${details.minToRead}' + "   " ?? "",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Obx(
+                                  () => Text(
+                                    details.likes.value.toString() + " likes  ",
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(235, 247, 202, 0),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  '0 ',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(235, 247, 202, 0),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.tag_faces_outlined,
+                                  color: Color.fromARGB(235, 247, 202, 0),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              child: Text(
+                                details.overview ?? "",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              thickness: 2,
+                              color: Colors.white,
+                            ),
+                            Container(
+                                height: 150,
+                                width: 600,
+                                child: Image.network(
+                                    fit: BoxFit.cover, details.banner ?? ""))
+                          ],
+                        ),
+                      ),
+
+                      // Place to Displaye Content
+                      Material(
+                        color: Color(0xFF0c2b46),
+                        child: BlogContentDisplay(
+                          data: details.content ?? [],
+                        ),
+                      ),
                       Row(
                         children: [
                           Container(
@@ -93,14 +210,6 @@ class DetailsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      // Place to Displaye Content
-                      Material(
-                        color: Color(0xFF0c2b46),
-                        child: BlogContentDisplay(
-                          data: details.content ?? [],
-                        ),
-                      )
                     ],
                   )),
             ),
@@ -187,6 +296,7 @@ class DetailsPage extends StatelessWidget {
                     onPressed: () => Get.bottomSheet(
                       MyWidgetComment(post_slug: details.slug!),
                       isScrollControlled: true,
+                      ignoreSafeArea: false,
                     ),
                     icon: Icon(
                       Icons.mode_comment_outlined,

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -325,12 +324,6 @@ class ContainerClass extends StatelessWidget {
   Widget build(context) {
     double radius = 30;
     const mainColor = Colors.black;
-    // TextTheme textTheme = Theme
-    //     .of(context)
-    //     .textTheme;
-    IconThemeData icon = Theme
-        .of(context)
-        .iconTheme;
     return Column(
       children: [
         Container(
