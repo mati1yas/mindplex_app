@@ -35,10 +35,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   Widget build(BuildContext context) {
     final userName = profileController.authenticatedUser.value.username ?? " ";
     final email = profileController.authenticatedUser.value.userEmail??" ";
-    final userDisplayName = profileController.authenticatedUser.value.userDisplayName??" ";
-    user_name = profileController.authenticatedUser.value.username ?? " ";
     user_email = profileController.authenticatedUser.value.userEmail ?? " ";
-    user_display_name = profileController.authenticatedUser.value.userDisplayName ?? " ";
+    TextEditingController uName = TextEditingController();
+    uName.text = userName;
+
+    user_name = uName.text;
+    user_display_name = uName.text;
 
 
     return Scaffold(
@@ -73,19 +75,19 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(children: [
                   const SizedBox(height: 10),
-                  _container(context, false, null, userName, TextInputType.name, Icons.verified_user, 20, userName, "uName", (() {})),
+                  _container(context, false, uName, null, TextInputType.name, Icons.verified_user, 20, userName, "uName", (() {})),
                   userNameError != null && isSaved ? errorMessage(userNameError.toString()) : Container(),
                   _container(context, false, null, email, TextInputType.name, BoxIcons.bx_user, 20, email, "uEmail", (() {})),
                   userEmailError != null && isSaved ? errorMessage(userEmailError.toString()) : Container(),
                   _container(
                     context,
-                    false,
+                    true,
+                    uName,
                     null,
-                    userDisplayName,
                     TextInputType.name,
                     BoxIcons.bx_briefcase,
                     21,
-                    userDisplayName,
+                    userName,
                     "uDisplayName",
                     (() {}),
                   ),
@@ -203,10 +205,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     onChanged: (value) {
                       if (type == "uName") {
                         user_name = value;
+                        user_display_name = value;
+                        controller?.text = value;
                       } else if (type == "uEmail") {
                         user_email = value;
-                      } else if (type == "uDisplayName") {
-                        user_display_name = value;
                       }
                     },
                     validator: ((value) {

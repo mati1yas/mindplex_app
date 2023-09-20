@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/utils/colors.dart';
 
+import '../models/user_profile.dart';
 import '../routes/app_routes.dart';
+import '../services/api_services.dart';
 
 class PreferencePage extends StatefulWidget {
   const PreferencePage({Key? key}) : super(key: key);
@@ -15,12 +18,70 @@ class PreferencePage extends StatefulWidget {
 
 enum PrivacyPreference { public ,friends , private }
 
+PrivacyPreference maptoPrivacyPreference(String pref){
+  if(pref == "Private"){
+    return PrivacyPreference.private;
+  }
+  else if(pref == "Public"){
+    return PrivacyPreference.public;
+  }
+  else if(pref == "Friends"){
+    return PrivacyPreference.friends;
+  }
+  else{
+    return PrivacyPreference.private;
+  }
+}
+
 class _PreferencePageState extends State<PreferencePage> {
 
-  PrivacyPreference? _character = PrivacyPreference.private;
-  bool _label1 = false,_label2 = false,_label3 = false,_label4 = false,_label5 = false;
+  PrivacyPreference? _agePreference,_genderPreference,_educationPreference;
+  late bool _notifyPublications ,_notifyEmail,_notifyInteraction,_notifyWeekly,_notifyUpdates;
+
+
+  final ApiService _apiService = ApiService();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile();
+  }
+
+  Future<void> fetchUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    ProfileController profileController = Get.put(ProfileController());
+
+    try {
+      UserProfile userProfile = await _apiService.fetchUserProfile(userName:profileController.authenticatedUser.value.username!);
+
+      setState(() {
+        _agePreference = maptoPrivacyPreference(userProfile.agePreference!);
+        _genderPreference = maptoPrivacyPreference(userProfile.genderPreference!);
+        _educationPreference = maptoPrivacyPreference(userProfile.educationPreference!);
+        _notifyPublications = userProfile.notifyPublications!;
+        _notifyEmail = userProfile.notifyFollower!;
+        _notifyInteraction = userProfile.notifyInteraction!;
+        _notifyWeekly = userProfile.notifyWeekly!;
+        _notifyUpdates = userProfile.notifyUpdates!;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Handle any errors that occurred during the API request
+      print('Error fetching user profile: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    if(_isLoading){
+      return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator(),),);
+    }
     return Scaffold(
       backgroundColor: mainBackgroundColor,
       body: SingleChildScrollView(
@@ -77,10 +138,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('public',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.public,
-                      groupValue: _character,
+                      groupValue: _agePreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _agePreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -90,10 +151,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('friends',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.friends,
-                      groupValue: _character,
+                      groupValue: _agePreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _agePreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -103,10 +164,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('private',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.private,
-                      groupValue: _character,
+                      groupValue: _agePreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _agePreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -128,10 +189,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('public',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.public,
-                      groupValue: _character,
+                      groupValue: _genderPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _genderPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -141,10 +202,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('friends',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.friends,
-                      groupValue: _character,
+                      groupValue: _genderPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _genderPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -154,10 +215,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('private',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.private,
-                      groupValue: _character,
+                      groupValue: _genderPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _genderPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -179,10 +240,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('public',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.public,
-                      groupValue: _character,
+                      groupValue: _educationPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _educationPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -192,10 +253,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('friends',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.friends,
-                      groupValue: _character,
+                      groupValue: _educationPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _educationPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -205,10 +266,10 @@ class _PreferencePageState extends State<PreferencePage> {
                     title: const Text('private',style: TextStyle(color: Colors.white),),
                     leading: Radio<PrivacyPreference>(
                       value: PrivacyPreference.private,
-                      groupValue: _character,
+                      groupValue: _educationPreference,
                       onChanged: (PrivacyPreference? value) {
                         setState(() {
-                          _character = value;
+                          _educationPreference = value;
                         });
                       },
                       fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
@@ -236,10 +297,10 @@ class _PreferencePageState extends State<PreferencePage> {
               child: LabeledCheckbox(
                 label: ' Emails from Mindplex notifying you of new articles, news, or media.',
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                value: _label1,
+                value: _notifyPublications,
                 onChanged: (bool newValue) {
                   setState(() {
-                    _label1 = newValue;
+                    _notifyPublications = newValue;
                   });
                 },
               ),
@@ -249,10 +310,10 @@ class _PreferencePageState extends State<PreferencePage> {
               child: LabeledCheckbox(
                 label: ' Notification emails, receive emails when someone you follow publishes content.',
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                value: _label2,
+                value: _notifyEmail,
                 onChanged: (bool newValue) {
                   setState(() {
-                    _label2 = newValue;
+                    _notifyEmail = newValue;
                   });
                 },
               ),
@@ -262,10 +323,10 @@ class _PreferencePageState extends State<PreferencePage> {
               child: LabeledCheckbox(
                 label: ' Interaction emails: receive emails when someone comments on your content.',
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                value: _label3,
+                value: _notifyInteraction,
                 onChanged: (bool newValue) {
                   setState(() {
-                    _label3 = newValue;
+                    _notifyInteraction = newValue;
                   });
                 },
               ),
@@ -275,10 +336,10 @@ class _PreferencePageState extends State<PreferencePage> {
               child: LabeledCheckbox(
                 label: ' Weekly digest emails, receive emails about the week’s popular, recommended, editor’s picks, most reputable, and people’s choice articles.',
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                value: _label4,
+                value: _notifyWeekly,
                 onChanged: (bool newValue) {
                   setState(() {
-                    _label4 = newValue;
+                    _notifyWeekly = newValue;
                   });
                 },
               ),
@@ -288,10 +349,10 @@ class _PreferencePageState extends State<PreferencePage> {
               child: LabeledCheckbox(
                 label: 'Mindplex updates, receive timely company announcments and community updates.',
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                value: _label5,
+                value: _notifyUpdates,
                 onChanged: (bool newValue) {
                   setState(() {
-                    _label5 = newValue;
+                    _notifyUpdates = newValue;
                   });
                 },
               ),
@@ -300,7 +361,14 @@ class _PreferencePageState extends State<PreferencePage> {
             Padding(
               padding: const EdgeInsets.only(right: 15.0),
               child: buildButton("Save", (() async {
-                print(_label1);
+                print(_agePreference);
+                print(_genderPreference);
+                print(_educationPreference);
+                print(_notifyPublications);
+                print(_notifyEmail);
+                print(_notifyInteraction);
+                print(_notifyWeekly);
+                print(_notifyUpdates);
               }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
             ),
           ],

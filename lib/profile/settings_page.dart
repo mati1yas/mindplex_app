@@ -4,6 +4,13 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
+import 'package:mindplex_app/profile/Notifications_page.dart';
+import 'package:mindplex_app/profile/change_password.dart';
+import 'package:mindplex_app/profile/general_settings.dart';
+import 'package:mindplex_app/profile/personal_settings.dart';
+import 'package:mindplex_app/profile/preference.dart';
+import 'package:mindplex_app/profile/privacy_policy_page.dart';
+import 'package:mindplex_app/profile/recommendation.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 
 import '../routes/app_routes.dart';
@@ -133,8 +140,10 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.generalSettingsPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const GeneralSettings()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
@@ -144,8 +153,10 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.personalSettingsPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const PersonalSettingsPage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
@@ -155,30 +166,36 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.changePasswordPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const ChangePasswordPage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
-                        leading: Icons.edit,
+                        leading: Icons.star,
                         title: 'Recommendation',
                         info: null,
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.recommendationPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const RecommendationPage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
-                        leading: Icons.edit,
+                        leading: Icons.person,
                         title: 'Preferences',
                         info: null,
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.preferencePage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const PreferencePage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
@@ -188,8 +205,10 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.notificationsPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const NotificationPage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,
@@ -199,8 +218,10 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: Icons.arrow_forward_ios,
                         splash: true,
                         tapped: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.privacyPolicyPage);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(builder: (context) => const PrivacyPolicyPage()),
+                          );
                         }),
                     ContainerClass(
                         context: context,

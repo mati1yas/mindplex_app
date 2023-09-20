@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex_app/profile/user_profile_controller.dart';
 
+import '../models/user_profile.dart';
 import '../routes/app_routes.dart';
+import '../services/api_services.dart';
 import '../utils/colors.dart';
 
 class RecommendationPage extends StatefulWidget {
@@ -14,13 +17,57 @@ class RecommendationPage extends StatefulWidget {
 }
 
 class _RecommendationPageState extends State<RecommendationPage> {
-  double _popularitySliderValue = 50;
-  double _patternSliderValue = 50;
-  double _highQualitySliderValue = 50;
-  double _randomSliderValue = 50;
-  double _timelinessSliderValue = 50;
+  late double _popularitySliderValue;
+  late double _patternSliderValue;
+  late double _highQualitySliderValue;
+  late double _randomSliderValue;
+  late double _timelinessSliderValue;
+
+  final ApiService _apiService = ApiService();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile();
+  }
+
+  Future<void> fetchUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    ProfileController profileController = Get.put(ProfileController());
+
+    try {
+      UserProfile userProfile = await _apiService.fetchUserProfile(userName:profileController.authenticatedUser.value.username!);
+
+      setState(() {
+        _popularitySliderValue = userProfile.recPopularity!.toDouble();
+        _patternSliderValue = userProfile.recPattern!.toDouble();
+        _highQualitySliderValue = userProfile.recQuality!.toDouble();
+        _randomSliderValue = userProfile.recRandom!.toDouble();
+        _timelinessSliderValue = userProfile.recTimeliness!.toDouble();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Handle any errors that occurred during the API request
+      print('Error fetching user profile: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(backgroundColor: mainBackgroundColor,
+      body: Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),);
+    }
     return Scaffold(
         backgroundColor: mainBackgroundColor,
         body: SingleChildScrollView(
@@ -69,7 +116,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 ),
               ),
               Slider(
-                value: _popularitySliderValue!,
+                value: _popularitySliderValue == 0.0?50.0:_popularitySliderValue,
                 max: 100,
                 divisions: 100,
                 label: _popularitySliderValue.round().toString(),
@@ -98,7 +145,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 ),
               ),
               Slider(
-                value: _patternSliderValue!,
+                value: _patternSliderValue == 0.0?50.0:_patternSliderValue,
                 max: 100,
                 divisions: 100,
                 label: _patternSliderValue.round().toString(),
@@ -127,7 +174,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 ),
               ),
               Slider(
-                value: _highQualitySliderValue!,
+                value: _highQualitySliderValue == 0.0?50.0:_highQualitySliderValue,
                 max: 100,
                 divisions: 100,
                 label: _highQualitySliderValue.round().toString(),
@@ -156,7 +203,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 ),
               ),
               Slider(
-                value: _randomSliderValue!,
+                value: _randomSliderValue == 0.0?50.0:_randomSliderValue,
                 max: 100,
                 divisions: 100,
                 label: _randomSliderValue.round().toString(),
@@ -185,7 +232,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 ),
               ),
               Slider(
-                value: _timelinessSliderValue!,
+                value: _timelinessSliderValue == 0.0?50.0:_timelinessSliderValue!,
                 max: 100,
                 divisions: 100,
                 label: _timelinessSliderValue.round().toString(),

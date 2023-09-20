@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:mindplex_app/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/blog_model.dart';
@@ -167,6 +168,27 @@ class ApiService {
       return true;
     } else {
       throw Exception('Failed to delete the comment from the server.');
+    }
+  }
+
+  Future<UserProfile> fetchUserProfile(
+      {required String userName}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    Response response = await dio.get(
+      '${AppUrls.profileUrl}/$userName',
+    );
+    if (response.statusCode == 200) {
+      final responseBody = response.data;
+      UserProfile userProfile = UserProfile.fromJson(responseBody);
+      return userProfile;
+    } else {
+      throw Exception('Failed to fetch user profile from the server.');
     }
   }
 }

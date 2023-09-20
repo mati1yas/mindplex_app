@@ -5,7 +5,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
+import '../models/user_profile.dart';
 import '../routes/app_routes.dart';
+import '../services/api_services.dart';
 import '../utils/box_icons.dart';
 import '../utils/colors.dart';
 
@@ -16,11 +18,10 @@ class PersonalSettingsPage extends StatefulWidget {
   State<PersonalSettingsPage> createState() => _PersonalSettingsPageState();
 }
 final _formKey = GlobalKey<FormState>();
-String? first_name, last_name, biography,education,gender;
+String? first_name, last_name, biography,education;
 List<String>? interests = [];
 List<String> genderChoices = ['Male','Female','Non-binary','Prefer not to say', 'Other'];
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
-int? age;
 String? firstNameError, lastNameError, ageError;
 
 class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
@@ -30,6 +31,42 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   AuthController authController = Get.put(AuthController());
 
   ProfileController profileController = Get.put(ProfileController());
+
+  late int age;
+  late String gender;
+
+  final ApiService _apiService = ApiService();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile();
+  }
+
+  Future<void> fetchUserProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    ProfileController profileController = Get.put(ProfileController());
+
+    try {
+      UserProfile userProfile = await _apiService.fetchUserProfile(userName:profileController.authenticatedUser.value.username!);
+
+      setState(() {
+        age = userProfile.age!;
+        gender = userProfile.gender == ""?genderChoices[3]:userProfile.gender!;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Handle any errors that occurred during the API request
+      print('Error fetching user profile: $e');
+    }
+  }
 
   void _saveSelectedChoice(String choice) {
     setState(() {
@@ -48,6 +85,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     final lastName = profileController.authenticatedUser.value.lastName??" ";
     first_name = profileController.authenticatedUser.value.firstName?? " ";
     last_name = profileController.authenticatedUser.value.lastName??" ";
+    if(_isLoading){
+      return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator()),);
+    }
     return Scaffold(
       backgroundColor: mainBackgroundColor,
       body: SingleChildScrollView(
@@ -231,11 +271,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                     context,
                     false,
                     null,
-                    "",
+                    age==0?"":age.toString(),
                     TextInputType.number,
                     BoxIcons.bx_briefcase,
                     21,
-                    "",
+                    age.toString(),
                     "age",
                     (() {}),
                   ),
