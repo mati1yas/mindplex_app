@@ -58,6 +58,8 @@ dependencies:
   intl: ^0.18.1
   shimmer_effect: ^1.0.4
   image_picker: ^0.8.7+5
+  share: ^2.0.0
+
   
 
 dev_dependencies:

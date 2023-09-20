@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_controller.dart';
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
+import 'package:share/share.dart';
 
 import '../blogs_controller.dart';
 import '../comments/comment.dart';
@@ -285,9 +286,15 @@ class DetailsPage extends StatelessWidget {
                   SizedBox(
                     width: 8,
                   ),
-                  Icon(
-                    Icons.share_outlined,
-                    color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      Share.share(details.url ?? "",
+                          subject: 'Sharing blog to your media appearance');
+                    },
+                    child: Icon(
+                      Icons.share_outlined,
+                      color: Colors.white,
+                    ),
                   ),
                   SizedBox(
                     width: 8,
