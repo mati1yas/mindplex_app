@@ -12,13 +12,16 @@ class PrivacyPolicyPage extends StatefulWidget {
   @override
   State<PrivacyPolicyPage> createState() => _PrivacyPolicyPageState();
 }
-
 class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
-  AuthController authController = Get.put(AuthController());
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Privacy Policy Page")),);
+    return Scaffold(
+      body: Center(child: Text("Privacy policy page"),),
+    );
   }
 }

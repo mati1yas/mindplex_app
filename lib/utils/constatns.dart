@@ -3,7 +3,7 @@ class AppUrls {
   //https://staging.mindplex.ai/wp-json/wp/v2/users/profile
   static var loginUrl = '$baseUrl/auth/v1/token';
   static var profileUrl = '$baseUrl/wp/v2/users/profile';
-
+  static var editProfileUrl = '$baseUrl/wp/v2/users/profile';
   static var registerationUrl = '$baseUrl/wp/v2/users/register';
   static var blogUrl = '$baseUrl/mp_gl/v1/posts';
   static var commentsFetch = '$baseUrl/wp/v2/comments';

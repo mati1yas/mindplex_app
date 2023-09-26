@@ -191,4 +191,26 @@ class ApiService {
       throw Exception('Failed to fetch user profile from the server.');
     }
   }
+  Future<String> updateUserProfile(
+      {required UserProfile updatedProfile}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.patch(
+      '${AppUrls.editProfileUrl}',//user name is needed here??
+      data: updatedProfile.toJson(),
+    );
+    if (response.statusCode == 200) {
+      final responseBody = response.data;
+      return responseBody.toString();
+      // UserProfile userProfile = UserProfile.fromJson(responseBody);
+      // return userProfile;
+    } else {
+      throw Exception('Failed to update user profile.');
+    }
+  }
 }
