@@ -361,10 +361,13 @@ class DetailsPage extends StatelessWidget {
                           !likeDislikeConroller.showEmoji.value;
                     },
                     child: Obx(
-                      () => likeDislikeConroller.currentEmoji.isNotEmpty
+                      () => likeDislikeConroller.reactedWithEmoji.value
                           ? Text(likeDislikeConroller.currentEmoji.value[0],
                               style: TextStyle(fontSize: 24))
-                          : Text("😅", style: TextStyle(fontSize: 30)),
+                          : Icon(
+                              Icons.add_reaction_outlined,
+                              color: Colors.white,
+                            ),
                     ),
                   ),
                   SizedBox(
