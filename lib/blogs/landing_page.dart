@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/blogs/screens/blog_detail_page.dart';
@@ -270,7 +271,7 @@ class _LandingPageState extends State<LandingPage> {
                     color: Colors.white,
                   ),
                   title: const Text(
-                    'New',
+                    'News',
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -282,23 +283,53 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 ListTile(
                   leading: const Icon(
-                    Icons.settings,
+                    FontAwesome.cube,
                     size: 25,
                     color: Colors.white,
                   ),
                   title: const Text(
-                    'Settings',
+                    'Topics',
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
                     // ...
                   },
                 ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.help_outline,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    'FAQ',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  onTap: () {
+                    // ...
+                  },
+                ),
+                SizedBox(height: 40,),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                    Text("© 2023 MindPlex. All rights reserved",style: TextStyle(color: Colors.white),),
+                    SizedBox(width: 10,),
+                    InkWell(child: Icon(Icons.settings,size: 32,color: Colors.white,),onTap: (){
+                      Navigator.of(context).pop();
+                      Get.toNamed(AppRoutes.settingsPage);
+                    },
+                    ),
+                      SizedBox(width: 15,)
+                  ],
+                ),
+                SizedBox(height: 60,)
               ],
             ),
           ),
