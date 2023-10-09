@@ -149,9 +149,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             child: Text(
               hintText(type)??" ",
               style: TextStyle(
-                color: Colors.amber,
-                fontWeight: FontWeight.w800,
-                fontSize: 20
+                  color: Colors.amber,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20
               ),
             ),
           ),
@@ -296,3 +296,4 @@ snackbar(Text title, Text message) {
       messageText: message,
       margin: const EdgeInsets.only(top: 12, left: 15, right: 15, bottom: 15));
 }
+
