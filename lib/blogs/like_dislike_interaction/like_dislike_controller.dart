@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
@@ -7,6 +8,12 @@ import 'package:mindplex_app/services/api_services.dart';
 class LikeDislikeConroller extends GetxController {
   RxBool isLoading = true.obs;
   final apiService = ApiService().obs;
+  RxBool showEmoji = false.obs;
+  RxBool reactedWithEmoji = false.obs;
+  RxList currentEmoji = [
+    "😅",
+  ].obs;
+
   Future<void> likeDislikeArticle(
       {required int index,
       required Blog blog,
@@ -39,6 +46,12 @@ class LikeDislikeConroller extends GetxController {
       blog.isUserLiked.value = true;
       blogsController.blogs[index] = blog;
     }
+  }
+
+  void changeEmoji(String icon) {
+    currentEmoji[0] = icon;
+    showEmoji.value = !showEmoji.value;
+    reactedWithEmoji.value = true;
   }
 
   Future<void> removePreviousInteraction(
