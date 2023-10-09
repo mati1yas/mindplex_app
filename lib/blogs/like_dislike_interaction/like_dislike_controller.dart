@@ -9,11 +9,9 @@ class LikeDislikeConroller extends GetxController {
   RxBool isLoading = true.obs;
   final apiService = ApiService().obs;
   RxBool showEmoji = false.obs;
+  RxBool reactedWithEmoji = false.obs;
   RxList currentEmoji = [
-    Icon(
-      Icons.add_reaction_outlined,
-      color: Colors.white,
-    ),
+    "😅",
   ].obs;
 
   Future<void> likeDislikeArticle(
@@ -50,9 +48,10 @@ class LikeDislikeConroller extends GetxController {
     }
   }
 
-  void changeEmoji(Icon icon) {
+  void changeEmoji(String icon) {
     currentEmoji[0] = icon;
     showEmoji.value = !showEmoji.value;
+    reactedWithEmoji.value = true;
   }
 
   Future<void> removePreviousInteraction(

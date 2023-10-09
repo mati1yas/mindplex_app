@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/blogs/widgets/reaction_emoji.dart';
 import 'package:share/share.dart';
 
 import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_controller.dart';
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
 
+import '../../utils/constatns.dart';
 import '../blogs_controller.dart';
 import '../comments/comment.dart';
 
@@ -229,86 +231,25 @@ class DetailsPage extends StatelessWidget {
                 () => likeDislikeConroller.showEmoji.value
                     ? Positioned(
                         bottom: MediaQuery.of(context).size.height * 0.005,
-                        left: MediaQuery.of(context).size.width * 0.4,
+                        left: MediaQuery.of(context).size.width * 0.25,
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: 120,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          padding: EdgeInsets.all(8),
+                          height: 100,
                           decoration: BoxDecoration(
-                              color: const Color.fromARGB(80, 218, 210, 209),
+                              color: const Color.fromARGB(230, 218, 210, 209),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5))),
-                          child: GridView.count(
-                            crossAxisCount: 3,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  likeDislikeConroller.changeEmoji(Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                  ));
-                                },
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  likeDislikeConroller.changeEmoji(
-                                    Icon(
-                                      Icons.sentiment_very_satisfied_rounded,
-                                      color: Colors.yellow,
-                                    ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.sentiment_very_satisfied_rounded,
-                                  color: Colors.yellow,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  likeDislikeConroller.changeEmoji(Icon(
-                                    Icons.sentiment_dissatisfied,
-                                    color: Colors.red,
-                                  ));
-                                },
-                                child: Icon(
-                                  Icons.sentiment_dissatisfied,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  likeDislikeConroller.changeEmoji(
-                                    Icon(
-                                      Icons.percent,
-                                      color: Colors.red,
-                                    ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.percent,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  likeDislikeConroller.changeEmoji(
-                                    Icon(
-                                      Icons.heart_broken,
-                                      fill: 0.24,
-                                      color: Colors.red,
-                                    ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.heart_broken,
-                                  fill: 0.24,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
+                          child: GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 6,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                            ),
+                            itemCount: emojis.length,
+                            itemBuilder: (context, index) =>
+                                ReactionEmoji(emoji: emojis[index]),
                           ),
                         ),
                       )
@@ -420,8 +361,9 @@ class DetailsPage extends StatelessWidget {
                           !likeDislikeConroller.showEmoji.value;
                     },
                     child: Obx(
-                      () => likeDislikeConroller.currentEmoji.isNotEmpty
-                          ? likeDislikeConroller.currentEmoji.value[0]
+                      () => likeDislikeConroller.reactedWithEmoji.value
+                          ? Text(likeDislikeConroller.currentEmoji.value[0],
+                              style: TextStyle(fontSize: 24))
                           : Icon(
                               Icons.add_reaction_outlined,
                               color: Colors.white,

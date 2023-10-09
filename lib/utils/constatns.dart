@@ -13,6 +13,21 @@ class AppUrls {
   static var commentLikeDislike = '$baseUrl/wp/v2/comment/like_dislike';
   static var likeDislike = '$baseUrl/wp/v2/post/like_dislike/';
 }
+
+final List<String> emojis = [
+  "💯",
+  "💘",
+  "😍",
+  "✨",
+  "🎉",
+  "👏",
+  "🟨",
+  "😴",
+  "😡",
+  "❌",
+  "🤮",
+  "💩"
+];
 List<String> countryList = [
   "Afghanistan",
   "Albania",
