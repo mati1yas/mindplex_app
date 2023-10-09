@@ -1,6 +1,5 @@
 class AppUrls {
   static var baseUrl = "https://staging.mindplex.ai/wp-json";
-  //https://staging.mindplex.ai/wp-json/wp/v2/users/profile
   static var loginUrl = '$baseUrl/auth/v1/token';
   static var profileUrl = '$baseUrl/wp/v2/users/profile';
   static var editProfileUrl = '$baseUrl/wp/v2/users/profile';

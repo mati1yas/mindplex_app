@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
+import 'package:mindplex_app/services/local_storage.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import '../models/user_profile.dart';
@@ -24,7 +26,11 @@ List<String> genderChoices = ['Male','Female','Non-binary','Prefer not to say', 
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
 String? firstNameError, lastNameError, ageError;
 
+bool _isUpdating = false;
+
 class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
+  Rx<LocalStorage> localStorage =
+      LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   String? title;
   bool isSaved = false;
   bool isValueSet = false;
@@ -41,6 +47,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   @override
   void initState() {
     super.initState();
+    profileController.getAuthenticatedUser();
+    first_name = profileController.authenticatedUser.value.firstName??" ";
+    last_name = profileController.authenticatedUser.value.lastName??" ";
     fetchUserProfile();
   }
 
@@ -67,6 +76,35 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       print('Error fetching user profile: $e');
     }
   }
+  Future<String> updateUserProfile(firstName,lastName) async {
+    setState(() {
+      _isUpdating = true;
+    });
+    try {
+      UserProfile updatedProfile = UserProfile(
+        // Set the updated values for the profile properties
+        firstName: firstName,
+        lastName: lastName,
+        age: age,
+        gender: gender,
+      );
+      String updatedValues = await _apiService.updateUserProfile(
+        updatedProfile: updatedProfile,
+      );
+      setState(() {
+        _isUpdating = false;
+      });
+      localStorage.value.updateUserInfo(firstName: firstName,lastName: lastName);
+      return updatedValues;
+    } catch (e) {
+      setState(() {
+        _isUpdating = false;
+      });
+      print('Error updating user profile: $e');
+      return '';
+    }
+  }
+
 
   void _saveSelectedChoice(String choice) {
     setState(() {
@@ -79,12 +117,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     final firstName = profileController.authenticatedUser.value.firstName ?? " ";
     final lastName = profileController.authenticatedUser.value.lastName??" ";
-    first_name = profileController.authenticatedUser.value.firstName?? " ";
-    last_name = profileController.authenticatedUser.value.lastName??" ";
     if(_isLoading){
       return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator()),);
     }
@@ -284,31 +321,43 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: buildButton("Save", (() async {
-                    isSaved = false;
-                    final isValidForm = _formKey.currentState!.validate();
-                    setState(() {
-                      isSaved = true;
-                    });
-                    if (isValidForm) {
-                      print(first_name!);
-                      print(last_name!);
-                      print(age!);
-                      print(biography!);
-                      print(education!);
-                      print(gender!);
+            child: Center(
+              child: buildButton("Save", (() async {
+                isSaved = false;
+                final isValidForm = _formKey.currentState!.validate();
+                setState(() {
+                  isSaved = true;
+                });
+                if (isValidForm) {
+                  print("first name " + first_name!);
+                  updateUserProfile(first_name,last_name).then((String updatedValues) {
+                    print('Updated values: $updatedValues');
+                    var snackBar = SnackBar(
+                      content: Text(
+                        'personal settings successfully set',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.height - 100,
+                        left: 10,
+                        right: 10,
+                      ),
+                      action: SnackBarAction(
+                        label: 'ok',
+                        textColor: Colors.white,
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        },
+                      ),);
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }).catchError((error) {
+                    print('Error updating user profile: $error');
+                  });
 
-                    }
-                  }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
-                ),
-                buildButton("Delete Account", () async {
-                  print("account deleted");
-                }, const Color.fromARGB(255, 255, 0, 0), const Color.fromARGB(255, 253, 47, 47))
-              ],
+                }
+              }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
             ),
           ),
 
@@ -474,10 +523,14 @@ Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2)
     width: 150,
     height: 50,
     child: GestureDetector(
-      onTap: onTap,
+      onTap: _isUpdating?null:onTap,
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: _isUpdating?LinearGradient(
+            colors: [Colors.white, Colors.white, Colors.white, Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ):LinearGradient(
             colors: [color1, color1, color1, color2],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -485,10 +538,13 @@ Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2)
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 20),
-          ),
+            child: !_isUpdating?Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+            ):Text(
+              "saving...",
+              style: const TextStyle(color: Colors.purpleAccent, fontSize: 20),
+            )
         ),
       ),
     ),
