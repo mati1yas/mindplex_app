@@ -1,8 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:flutter_html/flutter_html.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart' show parse;
+
 import 'package:mindplex_app/blogs/comments/controller.dart';
 
 import '../../models/comment.dart';
@@ -239,6 +242,9 @@ class _CommentSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final decodedHtml = parse(comment.content).documentElement!.text;
+
     return Row(
       children: [
         Expanded(
@@ -278,14 +284,15 @@ class _CommentSectionView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  comment.content,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 16,
+                Html(style: {
+                  'p': Style(
                     color: Colors.white,
                   ),
-                  textAlign: TextAlign.justify,
-                ),
+                  'b': Style(color: Colors.white, fontWeight: FontWeight.bold),
+                  'i': Style(color: Colors.white, fontStyle: FontStyle.italic),
+                  'strong':
+                      Style(color: Colors.white, fontWeight: FontWeight.w400),
+                }, data: decodedHtml),
                 Row(
                   children: [
                     TextButton(
