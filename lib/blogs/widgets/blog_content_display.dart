@@ -188,7 +188,7 @@ class YouTubeVideoPlayer extends StatelessWidget {
     YoutubePlayerController controller = YoutubePlayerController(
       initialVideoId: YoutubePlayer.convertUrlToId(videoLink) ?? "",
       flags: YoutubePlayerFlags(
-        autoPlay: true,
+        autoPlay: false,
         mute: true,
       ),
     );
