@@ -312,7 +312,14 @@ class _LandingPageState extends State<LandingPage> {
                 const SizedBox(
                   width: 80,
                 ),
-                Image.asset("assets/images/logo.png"),
+                Obx(() => Text(
+                    blogsController.postFormatMaps[
+                            blogsController.post_format.value] ??
+                        "",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.white))),
               ],
             ),
           ),
