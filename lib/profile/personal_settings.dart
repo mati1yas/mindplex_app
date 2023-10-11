@@ -130,38 +130,17 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
-            margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: Colors.white,
-                    size: 35,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
-                  },
-                ),
-                Text('Personal Settings', textAlign: TextAlign.end, style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white)),
-                const SizedBox(width: 35)
-              ],
-            ),
-          ),
-          Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Form(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(children: [
                   const SizedBox(height: 10),
-                  _container(context, false, null, firstName, TextInputType.name,BoxIcons.bx_user, 20, firstName, "fName", (() {})),
+                  _container(context, false, null, firstName, TextInputType.name, firstName, "fName","", (() {})),
                   firstNameError != null && isSaved ? errorMessage(firstNameError.toString()) : Container(),
-                  _container(context, false, null, lastName, TextInputType.name, BoxIcons.bx_user, 20, lastName, "lName", (() {})),
+                  _container(context, false, null, lastName, TextInputType.name, lastName, "lName","", (() {})),
                   lastNameError != null && isSaved ? errorMessage(lastNameError.toString()) : Container(),
-                  _container(context, false, null, "", TextInputType.name, BoxIcons.bx_user, 0, "", "bio", (() {}),maxLines: 8),
+                  _container(context, false, null, "", TextInputType.name, "", "bio", "",(() {}),maxLines: 8),
                   SizedBox(height: 20),
                   Column(
                     children: [
@@ -182,7 +161,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       Container(
                         width: double.infinity, // Cover the whole width
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: mainBackgroundColor,
                           borderRadius: BorderRadius.circular(15), // Apply border radius
                           boxShadow: [
                             BoxShadow(
@@ -197,15 +176,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           child: Container(
                             width: double.infinity, // Set the width of the dropdown
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15), // Apply border radius
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                              color: mainBackgroundColor,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.amber,width: 2.0),// Apply border radius
                             ),
                             child: DropdownButton<String>(
                               value: education, // Set the initial value to the first choice (placeholder)
@@ -221,10 +194,10 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                               onChanged: (String? newValue) {
                                 _saveSelectedChoice(newValue!);
                               },
-                              style: TextStyle(color: Colors.black), // Customize the text color
-                              dropdownColor: Colors.white, // Customize the dropdown menu's background color
-                              icon: Icon(Icons.arrow_drop_down), // Custom dropdown arrow icon
-                              iconSize: 24, // Set the icon size as needed
+                              style: TextStyle(color: Colors.white), // Customize the text color
+                              dropdownColor: Colors.purpleAccent, // Customize the dropdown menu's background color
+                              icon: Icon(Icons.arrow_drop_down,color: Colors.amber,), // Custom dropdown arrow icon
+                              iconSize: 40, // Set the icon size as needed
                               isExpanded: true, // Expand the dropdown to cover the width
                               underline: SizedBox(), // Remove the default underline
                             ),
@@ -233,7 +206,20 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
+                  _container(
+                    context,
+                    false,
+                    null,
+                    age==0?"":age.toString(),
+                    TextInputType.number,
+                    age.toString(),
+                    "age",
+                    "",
+                    (() {}),
+                  ),
+                  ageError != null && isSaved ? errorMessage(ageError.toString()) : Container(),
+                  SizedBox(height: 20,),
                   Column(
                     children: [
                       Padding(
@@ -268,15 +254,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           child: Container(
                             width: double.infinity, // Set the width of the dropdown
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15), // Apply border radius
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                              color: mainBackgroundColor,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.amber,width: 2.0),// Apply border radius
                             ),
                             child: DropdownButton<String>(
                               value: gender, // Set the initial value to the first choice (placeholder)
@@ -292,10 +272,10 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                               onChanged: (String? newValue) {
                                 _saveSelectedChoiceGender(newValue!);
                               },
-                              style: TextStyle(color: Colors.black), // Customize the text color
-                              dropdownColor: Colors.white, // Customize the dropdown menu's background color
-                              icon: Icon(Icons.arrow_drop_down), // Custom dropdown arrow icon
-                              iconSize: 24, // Set the icon size as needed
+                              style: TextStyle(color: Colors.white), // Customize the text color
+                              dropdownColor: Colors.purpleAccent, // Customize the dropdown menu's background color
+                              icon: Icon(Icons.arrow_drop_down,color: Colors.amber,), // Custom dropdown arrow icon
+                              iconSize: 40, // Set the icon size as needed
                               isExpanded: true, // Expand the dropdown to cover the width
                               underline: SizedBox(), // Remove the default underline
                             ),
@@ -304,19 +284,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       ),
                     ],
                   ),
-                  _container(
-                    context,
-                    false,
-                    null,
-                    age==0?"":age.toString(),
-                    TextInputType.number,
-                    BoxIcons.bx_briefcase,
-                    21,
-                    age.toString(),
-                    "age",
-                    (() {}),
-                  ),
-                  ageError != null && isSaved ? errorMessage(ageError.toString()) : Container(),
+                  InterestDropdown(),
+                  _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { })
                 ])),
           ),
           Padding(
@@ -376,11 +345,12 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     }else if (inputType == "age") {
       return "Age";
     }
-    return null;
+    else if(inputType == "social")
+    return "Social links";
   }
 
   Widget _container(BuildContext context, bool readOnly,TextEditingController? controller, String? initialValue, TextInputType? inputType,
-      IconData icon, double iconSize, String? value, String? type, VoidCallback onTap,
+      String? value, String? type, String hint, VoidCallback onTap,
       {maxLines = 1}) {
     TextTheme textTheme = Theme.of(context).textTheme;
     Color secondbackgroundColor = Theme.of(context).cardColor;
@@ -426,29 +396,29 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                     initialValue: initialValue,
                     keyboardType: inputType,
                     maxLines: maxLines,
-                    style: textTheme.headline2?.copyWith(fontSize: 15, fontWeight: FontWeight.w400),
+                    style: textTheme.headline2?.copyWith(fontSize: 15, fontWeight: FontWeight.w400,color: Colors.white),
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                         filled: true,
-                        fillColor: secondbackgroundColor,
-                        hintStyle: TextStyle(color: Colors.grey[400]),
-                        hintText: hintText(type),
+                        fillColor: mainBackgroundColor,
                         errorBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.red),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         errorStyle: const TextStyle(fontSize: 0.01),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.amber,width: 2.0),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ) ,
                         contentPadding: const EdgeInsets.only(left: 25, top: 10, bottom: 10),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.blue),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         border: InputBorder.none,
-                        suffixIcon: Icon(
-                          icon,
-                          size: iconSize,
-                          color: const Color.fromARGB(255, 172, 172, 171),
-                        )),
+                        hintText: hint,
+                        hintStyle: TextStyle(color: Colors.grey)
+                        ),
                     onTap: onTap,
                     onChanged: (value) {
                       if (type == "fName") {
@@ -571,4 +541,94 @@ snackbar(Text title, Text message) {
       titleText: title,
       messageText: message,
       margin: const EdgeInsets.only(top: 12, left: 15, right: 15, bottom: 15));
+}
+
+class InterestDropdown extends StatefulWidget {
+  @override
+  _InterestDropdownState createState() => _InterestDropdownState();
+}
+
+class _InterestDropdownState extends State<InterestDropdown> {
+  List<String> dropdownItems = [
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+  ];
+
+  List<String> selectedItems = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Container(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Interests",
+              style: TextStyle(
+                  color: Colors.amber,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20
+              ),
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: mainBackgroundColor,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.amber,width: 2.0),// Apply border radius
+          ),
+          child: DropdownButtonFormField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(borderSide:BorderSide(color: Colors.amber,width: 2.0),borderRadius: BorderRadius.circular(15),),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),),
+            ),
+            items: dropdownItems.map((String item) {
+              return DropdownMenuItem(
+                value: item,
+                child: CheckboxListTile(
+                  title: Text(item),
+                  value: selectedItems.contains(item),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value!=null) {
+                        selectedItems.add(item);
+                      } else {
+                        selectedItems.remove(item);
+                      }
+                    });
+                  },
+                ),
+              );
+            }).toList(),
+            onChanged: (value) {},
+            onSaved: (value) {},
+            selectedItemBuilder: (BuildContext context) {
+              return selectedItems.map<Widget>((String item) {
+                return ListTile(
+                  title: Text(item),
+                  trailing: IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        selectedItems.remove(item);
+                      });
+                    },
+                  ),
+                );
+              }).toList();
+            },
+            isExpanded: true,
+            value: null,
+          ),
+        ),
+      ],
+    );
+  }
 }

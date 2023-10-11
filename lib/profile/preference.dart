@@ -132,28 +132,6 @@ class _PreferencePageState extends State<PreferencePage> {
       backgroundColor: mainBackgroundColor,
       body: SingleChildScrollView(
         child: Column(children: [
-          Container(
-            margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: Colors.white,
-                    size: 35,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
-                  },
-                ),
-                Text('Preferences', textAlign: TextAlign.end, style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white)),
-                const SizedBox(width: 35)
-              ],
-            ),
-          ),
-
           Column(
             children: <Widget>[
               Padding(

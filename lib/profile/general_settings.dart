@@ -48,36 +48,15 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
-            margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: Colors.white,
-                    size: 35,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
-                  },
-                ),
-                Text('General Settings', textAlign: TextAlign.end, style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white)),
-                const SizedBox(width: 35)
-              ],
-            ),
-          ),
-          Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Form(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(children: [
                   const SizedBox(height: 10),
-                  _container(context, false, uName, null, TextInputType.name, Icons.verified_user, 20, userName, "uName", (() {})),
+                  _container(context, false, uName, null, TextInputType.name, userName, "uName", (() {})),
                   userNameError != null && isSaved ? errorMessage(userNameError.toString()) : Container(),
-                  _container(context, false, null, email, TextInputType.name, BoxIcons.bx_user, 20, email, "uEmail", (() {})),
+                  _container(context, false, null, email, TextInputType.name, email, "uEmail", (() {})),
                   userEmailError != null && isSaved ? errorMessage(userEmailError.toString()) : Container(),
                   _container(
                     context,
@@ -85,8 +64,6 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     uName,
                     null,
                     TextInputType.name,
-                    BoxIcons.bx_briefcase,
-                    21,
                     userName,
                     "uDisplayName",
                     (() {}),
@@ -98,8 +75,11 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             padding: const EdgeInsets.all(40.0),
             child: Row(
               children: [
+                buildButton("Cancel", () async {
+                  print("account deleted");
+                }, Colors.blueAccent, false),
                 Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
+                  padding: const EdgeInsets.only(left: 15.0),
                   child: buildButton("Save", (() async {
                     isSaved = false;
                     final isValidForm = _formKey.currentState!.validate();
@@ -109,11 +89,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     if (isValidForm) {
                       print(user_name! + " " + user_display_name!+" " + user_email!);
                     }
-                  }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
-                ),
-                buildButton("Delete Account", () async {
-                  print("account deleted");
-                }, const Color.fromARGB(255, 255, 0, 0), const Color.fromARGB(255, 253, 47, 47))
+                  }), Colors.blueAccent.shade200,true)
+                )
               ],
             ),
           ),
@@ -124,17 +101,17 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   }
   String? hintText(String? inputType) {
     if (inputType == "uName") {
-      return "User Name";
+      return "Username";
     } else if (inputType == "uEmail") {
-      return "Email Address";
+      return "Email";
     }else if (inputType == "uDisplayName") {
-      return "Mindplex Handle";
+      return "Mindplex handle";
     }
     return null;
   }
 
-  Widget _container(BuildContext context, bool readOnly, TextEditingController? controller, String? initialValue, TextInputType? inputType,
-      IconData icon, double iconSize, String? value, String? type, VoidCallback onTap) {
+  Widget _container(BuildContext context, bool readOnly, TextEditingController? controller, String? initialValue, TextInputType? inputType
+  , String? value, String? type, VoidCallback onTap) {
     TextTheme textTheme = Theme.of(context).textTheme;
     Color secondbackgroundColor = Theme.of(context).cardColor;
     IconThemeData icontheme = Theme.of(context).iconTheme;
@@ -150,13 +127,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               hintText(type)??" ",
               style: TextStyle(
                   color: Colors.amber,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w500,
                   fontSize: 20
               ),
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Container(
             decoration: BoxDecoration(
               color: secondbackgroundColor,
@@ -178,29 +155,23 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     controller: controller,
                     initialValue: initialValue,
                     keyboardType: inputType,
-                    style: textTheme.headline2?.copyWith(fontSize: 15, fontWeight: FontWeight.w400),
+                    style: textTheme.headline2?.copyWith(fontSize: 15, fontWeight: FontWeight.w400,color: Colors.white),
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                         filled: true,
-                        fillColor: secondbackgroundColor,
-                        hintStyle: TextStyle(color: Colors.grey[400]),
-                        hintText: hintText(type),
+                        fillColor: mainBackgroundColor,
                         errorBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.red),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         errorStyle: const TextStyle(fontSize: 0.01),
                         contentPadding: const EdgeInsets.only(left: 25, top: 10, bottom: 10),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.amber,width: 2.0),borderRadius: BorderRadius.circular(15)),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.blue),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          icon,
-                          size: iconSize,
-                          color: const Color.fromARGB(255, 172, 172, 171),
-                        )),
+                    ),
                     onTap: onTap,
                     onChanged: (value) {
                       if (type == "uName") {
@@ -248,7 +219,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     );
   }
 }
-Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2) {
+Widget buildButton(String label, VoidCallback onTap, Color color1,bool fill) {
   return SizedBox(
     key: UniqueKey(),
     width: 150,
@@ -256,18 +227,17 @@ Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2)
     child: GestureDetector(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color1, color1, color1, color2],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: fill?BoxDecoration(
+          color: color1,
           borderRadius: BorderRadius.circular(10),
+        ):BoxDecoration(
+          border: Border.all(color: color1),
+          borderRadius: BorderRadius.circular(10)
         ),
         child: Center(
           child: Text(
             label,
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style:fill?TextStyle(color:Colors.white, fontSize: 20):TextStyle(color: color1,fontSize: 20),
           ),
         ),
       ),

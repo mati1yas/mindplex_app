@@ -221,27 +221,6 @@ class _RecommendationPageState extends State<RecommendationPage> {
         backgroundColor: mainBackgroundColor,
         body: SingleChildScrollView(
         child: Column(children: [
-        Container(
-        margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
-        child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-        TextButton(
-    child: Icon(
-    Icons.chevron_left,
-    color: Colors.white,
-    size: 35,
-    ),
-    onPressed: () {
-    Navigator.of(context).pop();
-    Get.toNamed(AppRoutes.settingsPage);
-    },
-    ),
-    Text('Recommendation', textAlign: TextAlign.end, style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white)),
-    const SizedBox(width: 35)
-    ],
-    ),
-    ),
           Container(child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text("Here, you can set the intensity of our recommendation engine's parameters. "
