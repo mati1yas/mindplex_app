@@ -82,6 +82,7 @@ class ApiService {
       final comments = responseBody.map((e) => Comment.fromMap(e)).toList();
       if (parent == '0') {
         for (Comment comment in comments) {
+          print(comment.content);
           var replies = await fetchComments(
               post_slug: post_slug, parent: comment.id.toString());
           comment.replies = replies;
@@ -97,6 +98,7 @@ class ApiService {
       {required String post_slug,
       required String content,
       String parent = '0'}) async {
+    print('CREATING NEW COMMENT');
     // let's read the email, password, and login_with values from shared preferences.
     var dio = Dio();
 
@@ -113,7 +115,7 @@ class ApiService {
       //'${AppUrls.commentCreate}/$post_slug/$parent',
       '${AppUrls.commentCreate}/$post_slug/$parent',
       queryParameters: {
-        'comment_content': content,
+        'comment_content': "&lt;p&gt;" + content + "&lt;p&gt;",
       },
     );
     if (response.statusCode == 200) {
@@ -171,8 +173,7 @@ class ApiService {
     }
   }
 
-  Future<UserProfile> fetchUserProfile(
-      {required String userName}) async {
+  Future<UserProfile> fetchUserProfile({required String userName}) async {
     var dio = Dio();
 
     Rx<LocalStorage> localStorage =
@@ -191,6 +192,7 @@ class ApiService {
       throw Exception('Failed to fetch user profile from the server.');
     }
   }
+
   Future<String> updateUserProfile(
       {required UserProfile updatedProfile}) async {
     var dio = Dio();
@@ -201,7 +203,7 @@ class ApiService {
 
     dio.options.headers["Authorization"] = "Bearer $token";
     Response response = await dio.patch(
-      '${AppUrls.editProfileUrl}',//user name is needed here??
+      '${AppUrls.editProfileUrl}', //user name is needed here??
       data: updatedProfile.toJson(),
     );
     if (response.statusCode == 200) {
