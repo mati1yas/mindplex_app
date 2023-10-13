@@ -20,6 +20,12 @@ class BlogsController extends GetxController {
     'Trending': 'trending'
   };
 
+  final postFormatMaps = {
+    'text': 'Read',
+    'video': 'Watch',
+    'audio': 'Listen',
+  };
+
   ScrollController scrollController = ScrollController();
   bool reachedEndOfList = false;
 
