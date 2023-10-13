@@ -24,7 +24,7 @@ String? first_name, last_name, biography,education;
 List<String>? interests = [];
 List<String> genderChoices = ['Male','Female','Non-binary','Prefer not to say', 'Other'];
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
-String? firstNameError, lastNameError, ageError;
+String? nameError, lastNameError, ageError;
 
 bool _isUpdating = false;
 
@@ -122,6 +122,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   Widget build(BuildContext context) {
     final firstName = profileController.authenticatedUser.value.firstName ?? " ";
     final lastName = profileController.authenticatedUser.value.lastName??" ";
+    final name = firstName + " " + lastName;
     if(_isLoading){
       return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator()),);
     }
@@ -136,10 +137,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(children: [
                   const SizedBox(height: 10),
-                  _container(context, false, null, firstName, TextInputType.name, firstName, "fName","", (() {})),
-                  firstNameError != null && isSaved ? errorMessage(firstNameError.toString()) : Container(),
-                  _container(context, false, null, lastName, TextInputType.name, lastName, "lName","", (() {})),
-                  lastNameError != null && isSaved ? errorMessage(lastNameError.toString()) : Container(),
+                  _container(context, false, null, name, TextInputType.name, name, "name","", (() {})),
+                  nameError != null && isSaved ? errorMessage(nameError.toString()) : Container(),
                   _container(context, false, null, "", TextInputType.name, "", "bio", "",(() {}),maxLines: 8),
                   SizedBox(height: 20),
                   Column(
@@ -299,6 +298,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                 });
                 if (isValidForm) {
                   print("first name " + first_name!);
+                  print("last name " + last_name! );
                   updateUserProfile(first_name,last_name).then((String updatedValues) {
                     print('Updated values: $updatedValues');
                     var snackBar = SnackBar(
@@ -335,10 +335,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     );
   }
   String? hintText(String? inputType) {
-    if (inputType == "fName") {
-      return "First Name";
-    } else if (inputType == "lName") {
-      return "Last Name";
+    if (inputType == "name") {
+      return "Name";
     }
     else if (inputType == "bio") {
       return "Biography";
@@ -405,7 +403,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           borderSide: const BorderSide(color: Colors.red),
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        errorStyle: const TextStyle(fontSize: 0.01),
+                        errorStyle: const TextStyle(fontSize: 0.01,color: Colors.red),
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.amber,width: 2.0),
                           borderRadius: BorderRadius.circular(15.0),
@@ -421,10 +419,15 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         ),
                     onTap: onTap,
                     onChanged: (value) {
-                      if (type == "fName") {
-                        first_name = value;
-                      } else if (type == "lName") {
-                        last_name = value;
+                      if (type == "name") {
+                        List<String> parts = value.split(' '); // Split the text into two parts at the first whitespace
+                        if (parts.length > 1) {
+                          first_name = parts[0].trim(); // Remove leading and trailing whitespace from the first part
+                          last_name = parts[1].trim(); // Remove leading and trailing whitespace from the second part
+                        }
+                        else if(parts.length == 1){
+                          first_name = parts[0];
+                        }
                       } else if (type == "age") {
                         age = int.parse(value);
                       }
@@ -433,38 +436,20 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       }
                     },
                     validator: ((value) {
-                      if (type == "fName") {
+                      if (type == "name") {
                         if (value != null && value.length < 1) {
-                          firstNameError = "Please enter your First name";
-                          return firstNameError;
-                        } else {
-                          firstNameError = null;
+                          nameError = "Please enter your First name";
+                          return nameError;
+                        }
+                        else if(value!.trim().split(" ").length > 2 ){
+                          nameError = "Please specify first and last name only";
+                          return nameError;
+                        }
+                        else {
+                          nameError = null;
                           return null;
                         }
                       }
-
-                      else if (type == "lName") {
-                        if (value != null && value.length < 1) {
-                          lastNameError = "Please enter your Last name";
-                          return lastNameError;
-                        } else {
-                          lastNameError = null;
-                          return null;
-                        }
-                      }
-                      // else if (type == "uEmail") {
-                      //   final emailRegex = RegExp(
-                      //       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-                      //   if (value!.isEmpty) {
-                      //     userEmailError = "Please enter a valid email address (ex. abc@gmail.com)";
-                      //     return userEmailError;
-                      //   } else if (emailRegex.hasMatch(value) == false) {
-                      //     userEmailError = "Please enter a valid email address (ex. abc@gmail.com)";
-                      //     return userEmailError;
-                      //   }
-                      //   userEmailError = null;
-                      //   return null;
-                      // }
                       else if (type == "age") {
                         if (value != null && value.length < 1) {
                           ageError = "Please enter your age";
