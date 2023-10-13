@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:getwidget/components/dropdown/gf_multiselect.dart';
+import 'package:getwidget/types/gf_checkbox_type.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/services/local_storage.dart';
-
 import '../auth/auth_controller/auth_controller.dart';
 import '../models/user_profile.dart';
 import '../routes/app_routes.dart';
@@ -130,6 +134,14 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       backgroundColor: mainBackgroundColor,
       body: SingleChildScrollView(
         child: Column(children: [
+          Column(
+            children: [
+              SizedBox(height: 10,),
+              buildImage(),
+              SizedBox(height: 15,),
+              buildAddPhoto()
+            ],
+          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Form(
@@ -284,53 +296,156 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                     ],
                   ),
                   InterestDropdown(),
-                  _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { })
+                  _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { }),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Icon(FontAwesome.linkedin,size: 35,color: Colors.amber,),
+                          SizedBox(width: 15,),
+                          Icon(FontAwesome.facebook,size: 35,color: Colors.amber),
+                            SizedBox(width: 15,),
+                          SvgPicture.asset(
+                            'assets/icons/x-twitter.svg',
+                            width: 35,
+                            height: 35,
+                            color: Colors.amber,
+                          )
+                        ],),
+                        buildButton("Add link", () { }, Colors.amber, true)
+
+                      ],
+                    ),
+                  )
                 ])),
           ),
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: Center(
-              child: buildButton("Save", (() async {
-                isSaved = false;
-                final isValidForm = _formKey.currentState!.validate();
-                setState(() {
-                  isSaved = true;
-                });
-                if (isValidForm) {
-                  print("first name " + first_name!);
-                  print("last name " + last_name! );
-                  updateUserProfile(first_name,last_name).then((String updatedValues) {
-                    print('Updated values: $updatedValues');
-                    var snackBar = SnackBar(
-                      content: Text(
-                        'personal settings successfully set',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Colors.green,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height - 100,
-                        left: 10,
-                        right: 10,
-                      ),
-                      action: SnackBarAction(
-                        label: 'ok',
-                        textColor: Colors.white,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        },
-                      ),);
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }).catchError((error) {
-                    print('Error updating user profile: $error');
-                  });
+            child: Row(
+              children: [
+                buildButton("Cancel", () async {
+                  print("account deleted");
+                }, Colors.blueAccent, false),
+                Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: buildButton("Save", (() async {
+                      isSaved = false;
+                      final isValidForm = _formKey.currentState!.validate();
+                      setState(() {
+                        isSaved = true;
+                      });
+                      if (isValidForm) {
+                        print("first name " + first_name!);
+                        print("last name " + last_name! );
+                        updateUserProfile(first_name,last_name).then((String updatedValues) {
+                          print('Updated values: $updatedValues');
+                          var snackBar = SnackBar(
+                            content: Text(
+                              'personal settings successfully set',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.green,
+                            behavior: SnackBarBehavior.floating,
+                            margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.height - 100,
+                              left: 10,
+                              right: 10,
+                            ),
+                            action: SnackBarAction(
+                              label: 'ok',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                              },
+                            ),);
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }).catchError((error) {
+                          print('Error updating user profile: $error');
+                        });
 
-                }
-              }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
+                      }
+                    }), Colors.blueAccent.shade200,true)
+                )
+              ],
             ),
           ),
 
         ]),
+      ),
+    );
+  }
+  buildAddPhoto() {
+    return Container(
+        child: InkWell(
+            onTap: () async {
+              String? filePath = await pickImage();
+              // let's show a loading dialog with a loading message
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) => const Center(
+                  child: CircularProgressIndicator(color: Colors.blue),
+                ),
+              );
+              // let's upload the image to the api
+              if (filePath != null) {
+                // let's try to upload the image
+
+                // try {
+                //   String imageUrl = await ApiProvider().changeProfilePicture(filePath);
+                //   setState(() {
+                //     image = imageUrl;
+                //   });
+                //   UserPreferences.setProfilePicture(imageUrl);
+                //   var landingPageController = Get.find<LandingPageController>();
+                //   landingPageController.profileImage = imageUrl;
+                // } catch (error) {
+                //   // let's show an error message
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //       content: Text("Failed to upload image. Try again later."),
+                //     ),
+                //   );
+                // }
+              } else {
+                // display a snackbar with error message (to the user)
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Invalid file selected."),
+                  ),
+                );
+              }
+              // pop the dialog
+              Navigator.pop(context);
+            },
+            child: Text("Change Picture",style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.w400),)),
+    );
+  }
+  Future<String?> pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    String filepath = '';
+    if (pickedImage != null) {
+      filepath = pickedImage.path;
+      return filepath;
+    }
+    return null;
+  }
+  Widget buildImage() {
+    ImageProvider<Object> image = NetworkImage(
+      profileController.authenticatedUser.value.image ??
+          "assets/images/profile.PNG",
+    );
+    return CircleAvatar(
+      radius: 45,
+      foregroundImage: image,
+      child: const Material(
+        color: Color.fromARGB(0, 231, 6, 6), //
       ),
     );
   }
@@ -415,7 +530,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         ),
                         border: InputBorder.none,
                         hintText: hint,
-                        hintStyle: TextStyle(color: Colors.grey)
+                        hintStyle: TextStyle(color: Colors.grey),
+                        suffix: type == 'age'?Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: Text("Years",style: TextStyle(fontSize:15,fontWeight: FontWeight.w600,color: Colors.amber),),
+                        ):null
                         ),
                     onTap: onTap,
                     onChanged: (value) {
@@ -472,34 +591,26 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
 bool isNumeric(String value) {
   return double.tryParse(value) != null;
 }
-Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2) {
+Widget buildButton(String label, VoidCallback onTap, Color color1,bool fill) {
   return SizedBox(
     key: UniqueKey(),
-    width: 150,
-    height: 50,
+    width:150,
+    height:label == "Add link"?35: 50,
     child: GestureDetector(
-      onTap: _isUpdating?null:onTap,
+      onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          gradient: _isUpdating?LinearGradient(
-            colors: [Colors.white, Colors.white, Colors.white, Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ):LinearGradient(
-            colors: [color1, color1, color1, color2],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: fill?BoxDecoration(
+          color: color1,
           borderRadius: BorderRadius.circular(10),
+        ):BoxDecoration(
+            border: Border.all(color: color1),
+            borderRadius: BorderRadius.circular(10)
         ),
         child: Center(
-            child: !_isUpdating?Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 20),
-            ):Text(
-              "saving...",
-              style: const TextStyle(color: Colors.purpleAccent, fontSize: 20),
-            )
+          child: Text(
+            label,
+            style:fill?TextStyle(color:Colors.white, fontSize: 20):TextStyle(color: color1,fontSize: 20),
+          ),
         ),
       ),
     ),
@@ -540,6 +651,12 @@ class _InterestDropdownState extends State<InterestDropdown> {
     'Item 3',
     'Item 4',
     'Item 5',
+    'Item 6',
+    'Item 7',
+    'Item 9',
+    'Item 70',
+    'Item 76',
+    'Item 66',
   ];
 
   List<String> selectedItems = [];
@@ -552,7 +669,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
         Container(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               "Interests",
               style: TextStyle(
@@ -563,54 +680,41 @@ class _InterestDropdownState extends State<InterestDropdown> {
             ),
           ),
         ),
+        SizedBox(height: 10,),
         Container(
-          decoration: BoxDecoration(
-            color: mainBackgroundColor,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: Colors.amber,width: 2.0),// Apply border radius
-          ),
-          child: DropdownButtonFormField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(borderSide:BorderSide(color: Colors.amber,width: 2.0),borderRadius: BorderRadius.circular(15),),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),),
-            ),
-            items: dropdownItems.map((String item) {
-              return DropdownMenuItem(
-                value: item,
-                child: CheckboxListTile(
-                  title: Text(item),
-                  value: selectedItems.contains(item),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value!=null) {
-                        selectedItems.add(item);
-                      } else {
-                        selectedItems.remove(item);
-                      }
-                    });
-                  },
-                ),
-              );
-            }).toList(),
-            onChanged: (value) {},
-            onSaved: (value) {},
-            selectedItemBuilder: (BuildContext context) {
-              return selectedItems.map<Widget>((String item) {
-                return ListTile(
-                  title: Text(item),
-                  trailing: IconButton(
-                    icon: Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        selectedItems.remove(item);
-                      });
-                    },
-                  ),
-                );
-              }).toList();
+          child: GFMultiSelect(
+            items: dropdownItems,
+            dropdownBgColor: Colors.transparent,
+            onSelect: (value) {
+              print('selected $value ');
             },
-            isExpanded: true,
-            value: null,
+            margin: EdgeInsets.only(top: 10),
+            dropdownTitleTileText: ' ',
+              dropdownTitleTileMargin: EdgeInsets.zero,
+              dropdownTitleTilePadding: EdgeInsets.only(top: 5,left: 10),
+            dropdownTitleTileColor: mainBackgroundColor,
+            dropdownUnderlineBorder: const BorderSide(color: Colors.transparent, width: 1),
+            dropdownTitleTileBorder: Border.all(color: Colors.amber, width: 2),
+            dropdownTitleTileBorderRadius: BorderRadius.circular(15),
+            expandedIcon: const Icon(
+              Icons.arrow_drop_down,
+              color: Colors.amber,
+              size: 40,
+            ),
+            collapsedIcon: const Icon(
+              Icons.arrow_drop_up,
+              color: Colors.amber,
+              size: 40,
+            ),
+            submitButton: Text('OK'),
+            dropdownTitleTileTextStyle: const TextStyle(
+                fontSize: 14, color: Colors.white,),
+            listItemTextColor: Colors.white,
+            type: GFCheckboxType.square,
+            size: 15.0,
+            activeBgColor: Colors.pinkAccent,
+            activeBorderColor: Colors.transparent,
+            activeIcon: Icon(Icons.check,color: Colors.transparent,),
           ),
         ),
       ],
