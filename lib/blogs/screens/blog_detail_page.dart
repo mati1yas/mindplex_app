@@ -7,8 +7,9 @@ import 'package:mindplex_app/models/popularModel.dart';
 import '../comments/comment.dart';
 
 class DetailsPage extends StatelessWidget {
+  final int index;
   final Blog details;
-  const DetailsPage({super.key, required this.details});
+  const DetailsPage({super.key, required this.details, required this.index});
 
   @override
   Widget build(BuildContext context) {
