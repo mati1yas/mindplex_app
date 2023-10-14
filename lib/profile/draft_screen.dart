@@ -2,29 +2,27 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:mindplex_app/profile/user_profile_controller.dart';
-import 'package:mindplex_app/utils/colors.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
-class BookmarkScreen extends StatefulWidget {
-  const BookmarkScreen({super.key});
+import '../utils/colors.dart';
+
+class DraftScreen extends StatefulWidget {
+  const DraftScreen({Key? key}) : super(key: key);
 
   @override
-  State<BookmarkScreen> createState() {
-    return _BookmarkScreen();
-  }
+  _DraftScreenState createState() => _DraftScreenState();
 }
 
-class _BookmarkScreen extends State<BookmarkScreen> {
-  List _posts = [];
+class _DraftScreenState extends State<DraftScreen> {
+  List _drafts = [];
 
   Future<void> loadData() async {
     final String response =
         await rootBundle.loadString('assets/bookmarkAPI.json');
     final data = await json.decode(response);
     setState(() {
-      _posts = data['items'];
-      print('number of items: ${_posts.length}');
+      _drafts = data['items'];
+      print('number of items: ${_drafts.length}');
     });
   }
 
@@ -34,37 +32,29 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     loadData();
   }
 
-  ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        itemCount: _posts.length,
+        itemCount: _drafts.length,
         separatorBuilder: (context, index) => SizedBox(height: 10),
         itemBuilder: (context, index) {
-          var current = _posts[index];
+          var current = _drafts[index];
           return Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(26),
               color: blogContainerColor,
             ),
-            height: 250,
+            height: 280,
             width: 140,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  current['date'] ?? "",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
                   current['title'] ?? "",
                   style: TextStyle(
-                    color: Color.fromARGB(255, 97, 255, 213),
+                    color: profileGolden,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
@@ -79,16 +69,29 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                 )),
                 Row(
                   children: [
-                    Text(
-                      current['lastseen'] ?? "",
-                      style: TextStyle(color: Colors.white),
+                    TextButton(
+                      child: Text(
+                        'Edit Draft',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {},
                     ),
-                    Text(
-                      current['views'] ?? "",
-                      style: TextStyle(color: Colors.white),
-                    )
+                    SizedBox(
+                      width: 10,
+                    ),
+                    TextButton(
+                      child: Text(
+                        'Delete Draft',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 255, 85, 85),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           );

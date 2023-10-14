@@ -1,19 +1,24 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:flutter_html/flutter_html.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart' show parse;
+
 import 'package:mindplex_app/blogs/comments/controller.dart';
 
 import '../../models/comment.dart';
+import '../../utils/colors.dart';
 
 class MyWidgetComment extends GetView<CommentController> {
-  MyWidgetComment({super.key});
+  MyWidgetComment({super.key, required this.post_slug});
 
-  final controller = Get.put(CommentController(post_slug: 'hello'));
+  final String post_slug;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CommentController(post_slug: post_slug));
     final theme = Theme.of(context);
     return SafeArea(
       child: Container(
@@ -36,7 +41,7 @@ class MyWidgetComment extends GetView<CommentController> {
                           'Comments',
                           style: theme.textTheme.displayLarge?.copyWith(
                             fontSize: 16,
-                            color: Color(0xff6eded0),
+                            color: commentSectionColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -70,11 +75,11 @@ class MyWidgetComment extends GetView<CommentController> {
                               controller:
                                   controller.commentTextEditingController,
                               textAlignVertical: TextAlignVertical.center,
-                              cursorColor: Colors.blue,
+                              cursorColor: commentSectionColor,
                               decoration: const InputDecoration(
                                 hintStyle: TextStyle(
                                     color: Color.fromARGB(90, 175, 175, 175),
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w400),
                                 hintText: 'Share something user',
                                 contentPadding: EdgeInsets.all(14),
@@ -107,11 +112,13 @@ class MyWidgetComment extends GetView<CommentController> {
                         ),
                         */
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.onClickPost();
+                          },
                           child: Text(
                             'Post',
                             style: TextStyle(
-                              color: Color(0xff6eded0),
+                              color: commentSectionColor,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -119,9 +126,9 @@ class MyWidgetComment extends GetView<CommentController> {
                       ),
                     ),
                     if (controller.comments.value == null)
-                      const Center(
+                      Center(
                         child: CircularProgressIndicator(
-                          color: Colors.cyan,
+                          color: commentSectionColor,
                         ),
                       ),
                     if (controller.comments.value != null)
@@ -189,14 +196,15 @@ class MyWidgetComment extends GetView<CommentController> {
                                     controller.fetchMoreComments();
                                   },
                                   child: controller.loadingMoreComments.value
-                                      ? const SizedBox(
+                                      ? SizedBox(
                                           width: 80,
                                           child: LinearProgressIndicator(
-                                              color: Colors.blue),
+                                            color: commentSectionColor,
+                                          ),
                                         )
-                                      : const Text("More comments",
+                                      : Text("More comments",
                                           style: TextStyle(
-                                            color: Color(0xff6eded0),
+                                            color: commentSectionColor,
                                           )),
                                 ),
                               ),
@@ -234,6 +242,9 @@ class _CommentSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final decodedHtml = parse(comment.content).documentElement!.text;
+
     return Row(
       children: [
         Expanded(
@@ -259,7 +270,7 @@ class _CommentSectionView extends StatelessWidget {
                       comment.authorName,
                       style: theme.textTheme.titleLarge!.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -267,20 +278,21 @@ class _CommentSectionView extends StatelessWidget {
                       formatCommentDate(comment.date),
                       style: theme.textTheme.titleLarge!.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
                     )
                   ],
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  comment.content,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 16,
+                Html(style: {
+                  'p': Style(
                     color: Colors.white,
                   ),
-                  textAlign: TextAlign.justify,
-                ),
+                  'b': Style(color: Colors.white, fontWeight: FontWeight.bold),
+                  'i': Style(color: Colors.white, fontStyle: FontStyle.italic),
+                  'strong':
+                      Style(color: Colors.white, fontWeight: FontWeight.w400),
+                }, data: decodedHtml),
                 Row(
                   children: [
                     TextButton(
@@ -322,7 +334,7 @@ class _CommentSectionView extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100.0),
                             ),
-                            foregroundColor: Color(0xff6eded0),
+                            foregroundColor: commentSectionColor,
                           ),
                           child: const Text(
                             'Reply',
@@ -333,7 +345,7 @@ class _CommentSectionView extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100.0),
                           ),
-                          foregroundColor: Color(0xff6eded0),
+                          foregroundColor: commentSectionColor,
                         ),
                         child: const Text(
                           'Report',
@@ -399,7 +411,7 @@ class _CommentSectionView extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100.0),
                           ),
-                          foregroundColor: Color(0xff6eded0),
+                          foregroundColor: commentSectionColor,
                         ),
                         child: const Icon(Icons.edit),
                       ),

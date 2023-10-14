@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
+import 'package:mindplex_app/utils/colors.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import 'about_screen.dart';
 import 'bookmark_screen.dart';
+import 'draft_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,6 +23,8 @@ class _ProfilePage extends State<ProfilePage> {
   AuthController authController = Get.put(AuthController());
   //array og pages
   final double coverHeight = 280;
+
+  bool isWalletConnected = false;
 
   Widget activeScreen = const AboutScreen();
 
@@ -38,8 +42,17 @@ class _ProfilePage extends State<ProfilePage> {
         case 2:
           activeScreen = const BookmarkScreen();
           break;
+        case 3:
+          activeScreen = const DraftScreen();
+          break;
         default:
       }
+    });
+  }
+
+  void switchWallectConnectedState() {
+    setState(() {
+      isWalletConnected = true;
     });
   }
 
@@ -49,17 +62,18 @@ class _ProfilePage extends State<ProfilePage> {
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
     return Scaffold(
-        backgroundColor:
-            const Color.fromARGB(255, 12, 45, 68), // can and should be removed
-        body: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            buildTop(),
-            buildUserName(),
-            buildStatus(),
-            buidScreens(),
-            buildTab(),
-          ],
+        backgroundColor: mainBackgroundColor, // can and should be removed
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              buildTop(),
+              buildUserName(),
+              buildStatus(),
+              buidScreens(),
+              buildTab(),
+            ],
+          ),
         ));
   }
 
@@ -143,10 +157,11 @@ class _ProfilePage extends State<ProfilePage> {
     final firstName =
         profileController.authenticatedUser.value.firstName ?? " ";
     final lastName = profileController.authenticatedUser.value.lastName ?? " ";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -174,24 +189,25 @@ class _ProfilePage extends State<ProfilePage> {
               // OutlinedButton(onPressed: onPressed, child: child)
             ],
           ),
-          OutlinedButton(
-            onPressed: null,
-            style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                minimumSize: Size(117, 37),
-                backgroundColor: const Color.fromARGB(255, 225, 62, 111),
-                foregroundColor: Colors.white),
-            child: const Text(
-              'Connect Wallet',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400),
+          if (!isWalletConnected)
+            OutlinedButton(
+              onPressed: switchWallectConnectedState,
+              style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  minimumSize: Size(117, 37),
+                  backgroundColor: const Color.fromARGB(255, 225, 62, 111),
+                  foregroundColor: Colors.white),
+              child: const Text(
+                'Connect Wallet',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+              ),
             ),
-          ),
         ],
       ),
     );
