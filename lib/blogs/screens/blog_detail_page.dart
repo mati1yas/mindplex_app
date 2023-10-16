@@ -12,8 +12,8 @@ import '../blogs_controller.dart';
 import '../comments/comment.dart';
 
 class DetailsPage extends StatelessWidget {
-  final Blog details;
   final int index;
+  final Blog details;
   const DetailsPage({super.key, required this.details, required this.index});
 
   @override
