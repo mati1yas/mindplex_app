@@ -5,8 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:getwidget/components/dropdown/gf_multiselect.dart';
-import 'package:getwidget/types/gf_checkbox_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/services/local_storage.dart';
@@ -646,20 +644,41 @@ class InterestDropdown extends StatefulWidget {
 
 class _InterestDropdownState extends State<InterestDropdown> {
   List<String> dropdownItems = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 9',
-    'Item 70',
-    'Item 76',
-    'Item 66',
+    'Classroom Study',
+    'Software Development',
+    'Hardware Development',
+    'Blockchain Development',
+    'Robotics',
+    'Design',
+    'Research',
+    'Trading',
+    'Marketing',
+    'Partnership',
+    'Finance And Investing',
+    'Fashion In Wearable Tech',
+    'Love In Virtual Word',
+    'Dating Robots And Other Tech Entities',
+    'Fitness Technologies',
+    'Travel',
+    'AI Art',
+    '3D Food Printing',
+    'Space',
+    'Law',
+    'Journalism',
+    'Philosophy And Related',
+    'Healthcare And Related',
+    'Agriculture And Related',
+    'Accounting',
+    'Environmental And Wildlife',
+    'Governance',
+    'Military',
+    'Commerce',
+    'Art',
   ];
 
   List<String> selectedItems = [];
+
+  bool showDropDown = false;
 
   @override
   Widget build(BuildContext context) {
@@ -681,42 +700,133 @@ class _InterestDropdownState extends State<InterestDropdown> {
           ),
         ),
         SizedBox(height: 10,),
-        Container(
-          child: GFMultiSelect(
-            items: dropdownItems,
-            dropdownBgColor: Colors.transparent,
-            onSelect: (value) {
-              print('selected $value ');
+        InkWell(
+          onTap: (){
+            print("hey there");
+            setState(() {
+              showDropDown = !showDropDown;
+            });
             },
-            margin: EdgeInsets.only(top: 10),
-            dropdownTitleTileText: ' ',
-              dropdownTitleTileMargin: EdgeInsets.zero,
-              dropdownTitleTilePadding: EdgeInsets.only(top: 5,left: 10),
-            dropdownTitleTileColor: mainBackgroundColor,
-            dropdownUnderlineBorder: const BorderSide(color: Colors.transparent, width: 1),
-            dropdownTitleTileBorder: Border.all(color: Colors.amber, width: 2),
-            dropdownTitleTileBorderRadius: BorderRadius.circular(15),
-            expandedIcon: const Icon(
-              Icons.arrow_drop_down,
-              color: Colors.amber,
-              size: 40,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color:Colors.amber,width: 2.0),
+              color: mainBackgroundColor,
+              borderRadius: BorderRadius.circular(15), // Apply border radius
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-            collapsedIcon: const Icon(
-              Icons.arrow_drop_up,
-              color: Colors.amber,
-              size: 40,
-            ),
-            submitButton: Text('OK'),
-            dropdownTitleTileTextStyle: const TextStyle(
-                fontSize: 14, color: Colors.white,),
-            listItemTextColor: Colors.white,
-            type: GFCheckboxType.square,
-            size: 15.0,
-            activeBgColor: Colors.pinkAccent,
-            activeBorderColor: Colors.transparent,
-            activeIcon: Icon(Icons.check,color: Colors.transparent,),
-          ),
+            child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Wrap(
+                      alignment: WrapAlignment.start,
+                      children: List.generate(selectedItems.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: mainBackgroundColor,
+                              border: Border.all(color: Colors.purpleAccent),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: EdgeInsets.all(8.0), // Adjust the padding as needed
+                            child: Text(
+                              selectedItems[index],
+                              style: TextStyle(color: Colors.purpleAccent),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  Icon(showDropDown?Icons.arrow_drop_up:Icons.arrow_drop_down,size: 40,color: Colors.amber,),
+
+                ],
+          ),),
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: Container(
+            width: double.infinity,
+            height: showDropDown?260:0,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(100, 130, 16, 185),
+              border: Border.all(
+                  color: Color.fromARGB(100, 52, 5, 112),
+                  width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(15)
+            ),
+            child: showDropDown?Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: "Search your interest here...",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                         GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 4.0, // Adjust this value to change the aspect ratio of the checkboxes
+                            ),
+                            itemCount: dropdownItems.length, // Replace 'choices' with your list of choices
+                            itemBuilder: (context, index) {
+                              return Theme(
+                                data: ThemeData(unselectedWidgetColor: Colors.white,checkboxTheme: CheckboxThemeData(fillColor: MaterialStateProperty.all(Colors.white))),
+                                child: CheckboxListTile(
+                                  checkColor: Colors.white,
+                                  activeColor: Colors.purpleAccent,
+                                  controlAffinity: ListTileControlAffinity.leading,
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(dropdownItems[index],style: TextStyle(color: Colors.white),),
+                                  value: selectedItems.contains(dropdownItems[index])?true:false,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      if(newValue == true){
+                                        selectedItems.add(dropdownItems[index]);
+                                      }
+                                      else{
+                                        selectedItems.remove(dropdownItems[index]);
+                                      }
+                                      print(selectedItems);
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ):null,
+          ),
+        )
       ],
     );
   }

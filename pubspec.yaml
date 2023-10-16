@@ -57,7 +57,6 @@ dependencies:
   flutter_boxicons: ^3.0.0
   flutter_svg: ^1.1.0
   intl: ^0.18.1
-  getwidget: ^2.0.4
   shimmer_effect: ^1.0.4
   image_picker: ^0.8.7+5
   share: ^2.0.0
