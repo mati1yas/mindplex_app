@@ -37,7 +37,7 @@ dependencies:
   flutter_highlight:
   flutter_html:
   youtube_player_flutter:
-  
+  url_launcher: ^6.0.0
 
   flutter:
     sdk: flutter
