@@ -8,6 +8,7 @@ import '../auth/auth_controller/auth_controller.dart';
 import '../blogs/widgets/gradient_button.dart';
 import '../routes/app_routes.dart';
 import '../utils/colors.dart';
+import 'general_settings.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -16,36 +17,36 @@ class ChangePasswordPage extends StatefulWidget {
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-String? passwordError, confirmPasswordError;
-bool _passwordVisible = false;
-bool _confirmPasswordVisible = false;
+String? oldPasswordError, newPasswordError;
+bool _oldPasswordVisible = false;
+bool _newPasswordVisible = false;
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   AuthController authController = Get.put(AuthController());
 
   ProfileController profileController = Get.put(ProfileController());
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  late FocusNode passwordFocusNode, confirmPasswordFocusNode;
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  late FocusNode oldPasswordFocusNode, newPasswordFocusNode;
 
   @override
   void initState() {
-    _passwordVisible = false;
-    _confirmPasswordVisible = false;
+    _oldPasswordVisible = false;
+    _newPasswordVisible = false;
     super.initState();
 
-    passwordFocusNode = FocusNode();
-    confirmPasswordFocusNode = FocusNode();
-    passwordFocusNode.addListener(() => setState(() {}));
-    confirmPasswordFocusNode.addListener(() => setState(() {}));
+    oldPasswordFocusNode = FocusNode();
+    newPasswordFocusNode = FocusNode();
+    oldPasswordFocusNode.addListener(() => setState(() {}));
+    newPasswordFocusNode.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    passwordFocusNode.dispose();
-    confirmPasswordFocusNode.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    oldPasswordFocusNode.dispose();
+    newPasswordFocusNode.dispose();
 
     super.dispose();
   }
@@ -63,76 +64,64 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         body:SingleChildScrollView(
         child:Container(
         margin: const EdgeInsets.only(left: 15, right: 15),
-    child: Column(
-    children: [
-    Container(
-    margin: const EdgeInsets.only(top: 25, bottom: 15),
-    child: Text("Create new password", style: textTheme.displayLarge?.copyWith(fontSize: 20, fontWeight: FontWeight.w500,color: Colors.white)),
-    ),
-    Container(
-    margin: const EdgeInsets.symmetric(horizontal: 5),
-    child: Text("Your new password must be different from the old password",
-    textAlign: TextAlign.center,
-    style: textTheme.displayMedium?.copyWith(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-        color: Colors.white
-    )),
-    ),
-    Container(
-    alignment: Alignment.topLeft,
-    margin: const EdgeInsets.only(top: 20),
-    child: Text("Password", style: textTheme.displayMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.amber)),
-    ),
-    Form(
-    key: _formKey,
-    child: Column(
-    children: [
-    _container(context, passwordController, "Password", "password", passwordFocusNode, confirmPasswordFocusNode, null, () {
-    setState(() {
-    _passwordVisible = !_passwordVisible;
-    });
-    }),
-    passwordError != null && isSaved ? errorMessage(passwordError.toString()) : Container(),
-    const SizedBox(
-    height: 20,
-    ),
-    Container(
-    alignment: Alignment.topLeft,
-    margin: const EdgeInsets.only(top: 20),
-    child: Text("Confirm Password", style: textTheme.displayMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.amber)),
-    ),
-    _container(
-    context, confirmPasswordController, "Confirm Password", "confirm", confirmPasswordFocusNode, null, passwordController.text,
-    () {
-    setState(() {
-    _confirmPasswordVisible = !_confirmPasswordVisible;
-    });
-    }),
-    confirmPasswordError != null && isSaved ? errorMessage(confirmPasswordError.toString()) : Container(),
-    const SizedBox(
-    height: 30,
-    ),
-    ],
-    ),
-    ),
-    GradientBtn(
-    onPressed: (() {
-    final isValidForm = _formKey.currentState!.validate();
-    setState(() {
-    isSaved = true;
-    });
-    if (isValidForm) {
-      print(confirmPasswordController.text);
-    }
-    }),
-    btnName: 'Reset Password',
-    defaultBtn: true,
-    isPcked: false,
-    width: 280,
-    height: 52,
-    ),
-    ],
+    child: Padding(
+      padding: const EdgeInsets.only(left:8.0,right: 8.0),
+      child: Column(
+      children: [
+      Container(
+      alignment: Alignment.topLeft,
+      margin: const EdgeInsets.only(top: 20),
+      child: Text("Old Password", style: textTheme.displayMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.amber)),
+      ),
+      Form(
+      key: _formKey,
+      child: Column(
+      children: [
+      _container(context, oldPasswordController, "Old Password", "password", oldPasswordFocusNode, newPasswordFocusNode, null, () {
+      setState(() {
+      _oldPasswordVisible = !_oldPasswordVisible;
+      });
+      }),
+      oldPasswordError != null && isSaved ? errorMessage(oldPasswordError.toString()) : Container(),
+      Container(
+      alignment: Alignment.topLeft,
+      margin: const EdgeInsets.only(top: 20),
+      child: Text("New Password", style: textTheme.displayMedium?.copyWith(fontSize: 16, fontWeight: FontWeight.w500,color: Colors.amber)),
+      ),
+      _container(
+      context, newPasswordController, "New Password", "new", newPasswordFocusNode, null, null,
+      () {
+      setState(() {
+      _newPasswordVisible = !_newPasswordVisible;
+      });
+      }),
+      newPasswordError != null && isSaved ? errorMessage(newPasswordError.toString()) : Container(),
+      const SizedBox(
+      height: 30,
+      ),
+      ],
+      ),
+      ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buildButton("Cancel", () async {
+                print("account deleted");
+              }, Colors.blueAccent, false),
+              buildButton("Save", (() async {
+                    isSaved = false;
+                    final isValidForm = _formKey.currentState!.validate();
+                    setState(() {
+                      isSaved = true;
+                    });
+                    if (isValidForm) {
+                      print(newPasswordController.text! + " " + oldPasswordController.text!);
+                    }
+                  }), Colors.blueAccent.shade200,true)
+            ],
+          ),
+      ],
+      ),
     ),
     ),),);
   }
@@ -142,6 +131,7 @@ Widget _container(BuildContext context, TextEditingController controller, String
   TextTheme textTheme = Theme.of(context).textTheme;
   Color secondbackgroundColor = Theme.of(context).cardColor;
   return Container(
+    height: 48,
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
         color: secondbackgroundColor,
@@ -161,23 +151,28 @@ Widget _container(BuildContext context, TextEditingController controller, String
           focusNode: focus,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
-          obscureText: type == "password" ? !_passwordVisible : !_confirmPasswordVisible,
-          style: textTheme.displayMedium?.copyWith(fontSize: 15, fontWeight: FontWeight.w400),
+          obscureText: type == "password" ? !_oldPasswordVisible : !_newPasswordVisible,
+          style: type == "password"?_oldPasswordVisible?textTheme.displayMedium?.copyWith(fontSize: 15, fontWeight: FontWeight.w400,color: Colors.white):
+          TextStyle(color: Colors.amber,fontSize: 30)://font size to be changed later on
+          _newPasswordVisible?textTheme.displayMedium?.copyWith(fontSize: 15, fontWeight: FontWeight.w400,color: Colors.white):
+          TextStyle(color: Colors.amber,fontSize: 30),//font size to be changed later on
           textAlignVertical: TextAlignVertical.center,
           cursorColor: Colors.blue,
           decoration: InputDecoration(
             filled: true,
-            fillColor: secondbackgroundColor,
-            hintStyle: TextStyle(color: Colors.grey[400]),
-            hintText: hint,
+            fillColor: mainBackgroundColor,
             errorBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.red),
               borderRadius: BorderRadius.circular(15.0),
             ),
             errorStyle: const TextStyle(fontSize: 0.01),
-            contentPadding: const EdgeInsets.only(left: 25, top: 10, bottom: 10),
+            contentPadding: type == "password"?_oldPasswordVisible?EdgeInsets.only(left: 10, top: 10, bottom: 10):EdgeInsets.only(left: 5,bottom: 5):_newPasswordVisible?EdgeInsets.only(left: 10, top: 10, bottom: 10):EdgeInsets.only(left: 5,bottom: 5),
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.blue),
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.amber,width: 2.0),
               borderRadius: BorderRadius.circular(15.0),
             ),
             focusedErrorBorder: OutlineInputBorder(
@@ -189,13 +184,14 @@ Widget _container(BuildContext context, TextEditingController controller, String
               onPressed: onTap,
               icon: Icon(
                 type == "password"
-                    ? _passwordVisible
+                    ? _oldPasswordVisible
                     ? Icons.visibility
                     : Icons.visibility_off
-                    : _confirmPasswordVisible
+                    : _newPasswordVisible
                     ? Icons.visibility
                     : Icons.visibility_off,
-                color: focus.hasFocus ? Colors.blue : const Color.fromARGB(255, 172, 172, 171),
+                color: focus.hasFocus ? Colors.blue : Colors.amber,
+                size: 30,
               ), //
             ),
           ),
@@ -209,18 +205,18 @@ Widget _container(BuildContext context, TextEditingController controller, String
           validator: ((value) {
             if (type == "password") {
               if (value != null && value.length < 8) {
-                passwordError = "Must be at least 8 characters";
-                return passwordError;
+                oldPasswordError = "Must be at least 8 characters";
+                return oldPasswordError;
               } else {
-                passwordError = null;
+                oldPasswordError = null;
                 return null;
               }
-            } else if (type == "confirm") {
-              if (value != confirmPassword) {
-                confirmPasswordError = "Both passwords must match";
-                return confirmPasswordError;
+            } else if (type == "new") {
+              if (value != null && value.length < 8) {
+                newPasswordError = "Must be at least 8 characters";
+                return newPasswordError;
               } else {
-                confirmPasswordError = null;
+                newPasswordError = null;
                 return null;
               }
             } else {

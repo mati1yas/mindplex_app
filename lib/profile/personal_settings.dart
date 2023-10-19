@@ -648,8 +648,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         if(value == ""){
                           return null;
                         }
-                        if(value != null && !value.startsWith("http://www",0)){
-                          socialLinkError = "invalid link make sure your link start with http://www";
+                        if(value != null && !value.startsWith("https://www",0)){
+                          socialLinkError = "invalid link make sure your link start with https://www";
                           return socialLinkError;
                         }
                         else{
