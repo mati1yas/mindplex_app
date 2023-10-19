@@ -6,8 +6,10 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mindplex_app/models/social_link.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/services/local_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_controller/auth_controller.dart';
 import '../models/user_profile.dart';
 import '../routes/app_routes.dart';
@@ -26,7 +28,7 @@ String? first_name, last_name, biography,education;
 List<String>? interests = [];
 List<String> genderChoices = ['Male','Female','Non-binary','Prefer not to say', 'Other'];
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
-String? nameError, lastNameError, ageError;
+String? nameError, lastNameError, ageError,socialLinkError;
 
 bool _isUpdating = false;
 
@@ -35,6 +37,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   String? title;
   bool isSaved = false;
+  bool isLinkAdded = false;
   bool isValueSet = false;
   AuthController authController = Get.put(AuthController());
 
@@ -42,6 +45,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
 
   late int age;
   late String gender;
+  String social = " ";
+  SocialLink socialLink = SocialLink();
 
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
@@ -295,6 +300,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                   ),
                   InterestDropdown(),
                   _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { }),
+                  socialLinkError != null && isLinkAdded ? errorMessage(socialLinkError.toString()) : Container(),
                   SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -304,18 +310,72 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                          Icon(FontAwesome.linkedin,size: 35,color: Colors.amber,),
-                          SizedBox(width: 15,),
-                          Icon(FontAwesome.facebook,size: 35,color: Colors.amber),
-                            SizedBox(width: 15,),
-                          SvgPicture.asset(
-                            'assets/icons/x-twitter.svg',
-                            width: 35,
-                            height: 35,
-                            color: Colors.amber,
+                          GestureDetector(
+                              child: Icon(socialLink.linkedinLink != null?FontAwesome.linkedin:null,size: 35,color: Colors.amber),
+                              onTap:  () async {
+                                await launchUrl(Uri.parse(socialLink.linkedinLink!));
+                              },
+                          ),
+                          SizedBox(width: socialLink.linkedinLink == null?0:10,),
+                          GestureDetector(
+                              child: Icon(socialLink.facebookLink != null?FontAwesome.facebook:null,size: 35,color: Colors.amber),
+                            onTap:  () async {
+                              await launchUrl(Uri.parse(socialLink.facebookLink!));
+                            },
+                          ),
+                            SizedBox(width: socialLink.facebookLink == null?0:10,),
+                          GestureDetector(
+                            child: SvgPicture.asset(
+                              'assets/icons/x-twitter.svg',
+                              width: socialLink.twitterLink == null?0:35,
+                              height: socialLink.twitterLink == null?0:35,
+                              color: Colors.amber,
+                            ),
+                            onTap:  () async {
+                              await launchUrl(Uri.parse(socialLink.twitterLink!));
+                            },
                           )
                         ],),
-                        buildButton("Add link", () { }, Colors.amber, true)
+                        buildButton("Add link", () {
+                          isLinkAdded = false;
+                          final isValidLink = socialLinkError == null;
+                          setState(() {
+                            isLinkAdded = true;
+                          });
+                          if(isValidLink){
+                            print(social);
+                            RegExp facebookRegex = RegExp(
+                              r'^(?:https?:\/\/)?(?:www\.|m\.)?facebook\.com\/',
+                              caseSensitive: false,
+                            );
+                            RegExp twitterRegex = RegExp(
+                              r'^(?:https?:\/\/)?(?:www\.|m\.)?twitter\.com\/',
+                              caseSensitive: false,
+                            );
+                            RegExp linkedinRegex = RegExp(
+                              r'^(?:https?:\/\/)?(?:www\.|m\.)?linkedin\.com\/',
+                              caseSensitive: false,
+                            );
+                           if (facebookRegex.hasMatch(social)){
+                             setState(() {
+                               socialLink.facebookLink = social;
+                             });
+                           }
+                           else if (twitterRegex.hasMatch(social)){
+                              setState(() {
+                                socialLink.twitterLink = social;
+                              });
+                            }
+                           else if (linkedinRegex.hasMatch(social)){
+                              setState(() {
+                                socialLink.linkedinLink = social;
+                              });
+                            }
+                           else{
+
+                           }
+                          }
+                        }, Colors.amber, true)
 
                       ],
                     ),
@@ -458,6 +518,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     }
     else if(inputType == "social")
     return "Social links";
+    return null;
   }
 
   Widget _container(BuildContext context, bool readOnly,TextEditingController? controller, String? initialValue, TextInputType? inputType,
@@ -551,6 +612,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       else if(type == "bio"){
                         biography = value;
                       }
+                      else if(type == "social"){
+                        social = value;
+                      }
                     },
                     validator: ((value) {
                       if (type == "name") {
@@ -577,6 +641,19 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           return ageError;
                         }else {
                           ageError = null;
+                          return null;
+                        }
+                      }
+                      else if(type == "social"){
+                        if(value == ""){
+                          return null;
+                        }
+                        if(value != null && !value.startsWith("http://www",0)){
+                          socialLinkError = "invalid link make sure your link start with http://www";
+                          return socialLinkError;
+                        }
+                        else{
+                          socialLinkError = null;
                           return null;
                         }
                       }
@@ -617,7 +694,7 @@ Widget buildButton(String label, VoidCallback onTap, Color color1,bool fill) {
 Widget errorMessage(String? error) {
   return Container(
       alignment: Alignment.topLeft,
-      margin: const EdgeInsets.only(top: 5, left: 2),
+      margin: const EdgeInsets.only(top: 5, left: 10),
       child: Text(
         error.toString(),
         style: const TextStyle(color: Colors.red),
