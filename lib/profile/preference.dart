@@ -291,6 +291,174 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
+                    "Privacy preference",
+                    style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:15.0,top: 8.0),
+                child: Container(alignment:Alignment.centerLeft,
+                    child: Text("who should see your age",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:20.0,top: 0.0),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: const Text('public',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.public,
+                        groupValue: _agePreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _agePreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('friends',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.friends,
+                        groupValue: _agePreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _agePreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('private',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.private,
+                        groupValue: _agePreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _agePreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:25.0,top: 8.0),
+                child: Container(alignment:Alignment.centerLeft,
+                    child: Text("who should see your gender",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:20.0,top: 0.0),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: const Text('public',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.public,
+                        groupValue: _genderPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _genderPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('friends',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.friends,
+                        groupValue: _genderPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _genderPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('private',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.private,
+                        groupValue: _genderPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _genderPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:25.0,top: 8.0),
+                child: Container(alignment:Alignment.centerLeft,
+                    child: Text("who should see your education",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:20.0,top: 0.0),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: const Text('public',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.public,
+                        groupValue: _educationPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _educationPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('friends',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.friends,
+                        groupValue: _educationPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _educationPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('private',style: TextStyle(color: Colors.white),),
+                      leading: Radio<PrivacyPreference>(
+                        value: PrivacyPreference.private,
+                        groupValue: _educationPreference,
+                        onChanged: (PrivacyPreference? value) {
+                          setState(() {
+                            _educationPreference = value;
+                          });
+                        },
+                        fillColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                     "Email preference",
                     style: TextStyle(
                         color: Colors.amber,
