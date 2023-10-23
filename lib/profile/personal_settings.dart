@@ -779,7 +779,6 @@ class _InterestDropdownState extends State<InterestDropdown> {
         SizedBox(height: 10,),
         InkWell(
           onTap: (){
-            print("hey there");
             setState(() {
               showDropDown = !showDropDown;
             });

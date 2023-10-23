@@ -49,6 +49,7 @@ bool _isUpdating = false;
 class _PreferencePageState extends State<PreferencePage> {
 
   PrivacyPreference? _agePreference,_genderPreference,_educationPreference;
+  bool lightMode = true,darkMode = false,system = false;
   late bool _notifyPublications ,_notifyEmail,_notifyInteraction,_notifyWeekly,_notifyUpdates;
 
 
@@ -123,6 +124,53 @@ class _PreferencePageState extends State<PreferencePage> {
       return '';
     }
   }
+  void toogleColorTheme(String mode,bool newValue){
+    if(mode == "light"){
+      if(newValue == false){
+        setState(() {
+          darkMode = true;
+          lightMode = false;
+        });
+      }
+      else{
+        setState(() {
+          lightMode = true;
+          darkMode = false;
+          system = false;
+        });
+      }
+    }
+    else if(mode == "dark"){
+      if(newValue == false){
+        setState(() {
+          lightMode = true;
+          darkMode = false;
+        });
+      }
+      else{
+        setState(() {
+          lightMode = false;
+          darkMode = true;
+          system = false;
+        });
+      }
+    }
+    else if(mode == "system"){
+      if(newValue == false){
+        setState(() {
+          system = false;
+          lightMode = true;
+        });
+      }
+      else{
+        setState(() {
+          lightMode = false;
+          darkMode = false;
+          system = true;
+        });
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     if(_isLoading){
@@ -139,170 +187,105 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Privacy preference",
+                    "Color theme",
                     style: TextStyle(
                         color: Colors.amber,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 25
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.only(left:25.0,top: 8.0),
-                child: Container(alignment:Alignment.centerLeft,
-                    child: Text("who should see your age",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Column(children: [
+                        Theme(
+                          data: ThemeData(
+                            checkboxTheme: CheckboxThemeData(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              side: BorderSide(color: Colors.white,width: 1.5),
+                              fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                              checkColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                            ),
+                          ),
+                          child: Checkbox(
+                              activeColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent) ,
+                              value: darkMode,
+                              onChanged: (bool? newValue){
+                                toogleColorTheme("dark", newValue!);
+                          }),
+                        ),
+                        SizedBox(height: 5,)
+                      ],),
+                      Column(children: [
+                        Icon(Icons.dark_mode_outlined,size: 30,color: Colors.white,),
+                        Text("Dark",style: TextStyle(color: Colors.amber,fontSize: 16),)
+                      ],),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(children: [
+                        Theme(
+                          data: ThemeData(
+                            checkboxTheme: CheckboxThemeData(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              side: BorderSide(color: Colors.white,width: 1.5),
+                              fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                              checkColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                            ),
+                          ),
+                          child: Checkbox(
+                              activeColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent) ,
+                              value: lightMode,
+                              onChanged: (bool? newValue){
+                                toogleColorTheme("light", newValue!);
+                              }),
+                        ),
+                        SizedBox(height: 5,)
+                      ],),
+                      Column(children: [
+                        Icon(Icons.light_mode_outlined,size: 30,color: Colors.white,),
+                        Text("Light",style: TextStyle(color: Colors.amber,fontSize: 16),)
+                      ],),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                        Theme(
+                          data: ThemeData(
+                            checkboxTheme: CheckboxThemeData(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              side: BorderSide(color: Colors.white,width: 1.5),
+                              fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                              checkColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                            ),
+                          ),
+                          child: Checkbox(
+                              activeColor: MaterialStateColor.resolveWith((states) => Colors.pinkAccent) ,
+                              value: system,
+                              onChanged: (bool? newValue){
+                                toogleColorTheme("system", newValue!);
+                              }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right:10.0),
+                          child: Text("Use System Preferences",style: TextStyle(color: Colors.amber,fontSize: 16),),
+                        )
+                    ],
+                  )
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left:64.0,top: 10.0),
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('public',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.public,
-                        groupValue: _agePreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _agePreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('friends',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.friends,
-                        groupValue: _agePreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _agePreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('private',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.private,
-                        groupValue: _agePreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _agePreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:25.0,top: 8.0),
-                child: Container(alignment:Alignment.centerLeft,
-                    child: Text("who should see your gender",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:64.0,top: 10.0),
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('public',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.public,
-                        groupValue: _genderPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _genderPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('friends',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.friends,
-                        groupValue: _genderPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _genderPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('private',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.private,
-                        groupValue: _genderPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _genderPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:25.0,top: 8.0),
-                child: Container(alignment:Alignment.centerLeft,
-                    child: Text("who should see your education",textAlign: TextAlign.left,style: TextStyle(fontSize: 20,color: Colors.white),)),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:64.0,top: 10.0),
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('public',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.public,
-                        groupValue: _educationPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _educationPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('friends',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.friends,
-                        groupValue: _educationPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _educationPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('private',style: TextStyle(color: Colors.white),),
-                      leading: Radio<PrivacyPreference>(
-                        value: PrivacyPreference.private,
-                        groupValue: _educationPreference,
-                        onChanged: (PrivacyPreference? value) {
-                          setState(() {
-                            _educationPreference = value;
-                          });
-                        },
-                        fillColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20,),
+              SizedBox(height: 10,),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -311,8 +294,8 @@ class _PreferencePageState extends State<PreferencePage> {
                     "Email preference",
                     style: TextStyle(
                         color: Colors.amber,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 25
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
                     ),
                   ),
                 ),
@@ -381,69 +364,129 @@ class _PreferencePageState extends State<PreferencePage> {
                   },
                 ),
               ),
-              SizedBox(height: 15,),
+              SizedBox(height: 25,),
               Padding(
-                padding: const EdgeInsets.only(right: 15.0),
-                child: buildButton("Save", (() async {
-                  updateUserProfile().then((String updatedValues) {
-                    print('Updated values: $updatedValues');
-                    var snackBar = SnackBar(
-                      content: Text(
-                        'preferences successfully set',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Colors.green,
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height - 100,
-                        left: 10,
-                        right: 10,
-                      ),
-                      action: SnackBarAction(
-                        label: 'ok',
-                        textColor: Colors.white,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        },
-                      ),);
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }).catchError((error) {
-                    print('Error updating user profile: $error');
-                  });
-                }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Deactivate Account",
+                    style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left:10.0), // Adjust the margin value as per your preference
+                child: Text(
+                  'Deactivating your account will remove it from mindplex megazine. Deactivation will also immediately cancel any subscription for mindplex megazine Membership, and no money will be reimbursed. You can sign back in anytime to reactivate your account and restore its content.',
+                  style: TextStyle(fontSize: 16.0,color: Colors.white,height: 1.3),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: buildButton("Deactivate", () {
+                      print("Account Deactivated");
+                    }, Color.fromARGB(255, 58, 58, 58), true),
+                  )),
+              SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Delete Account",
+                    style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left:10.0), // Adjust the margin value as per your preference
+                child: Text(
+'Permanently delete your account from mindplex '
+    'and your reputation token(MPXR) from the mindplex ecosystem.',
+                    style: TextStyle(fontSize: 16.0,color: Colors.white,height: 1.3),
+                ),
+              ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: buildButton("Delete", () {
+                      print("Account Deleted");
+                    }, Color.fromARGB(255, 211, 58, 58), true),
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    buildButton("Cancel", () async {
+                      print("canceled");
+                    }, Colors.blueAccent, false),
+                    buildButton("Save", (() async {
+                      updateUserProfile().then((String updatedValues) {
+                        print('Updated values: $updatedValues');
+                        var snackBar = SnackBar(
+                          content: Text(
+                            'preferences successfully set',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height - 100,
+                            left: 10,
+                            right: 10,
+                          ),
+                          action: SnackBarAction(
+                            label: 'ok',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            },
+                          ),);
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }).catchError((error) {
+                        print('Error updating user profile: $error');
+                      });
+                    }), Colors.blueAccent.shade200,true)
+                  ],
+                ),
               ),
             ],
           )],),),);
   }
 }
-Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2) {
+Widget buildButton(String label, VoidCallback onTap, Color color1,bool fill) {
   return SizedBox(
     key: UniqueKey(),
-    width: 150,
-    height: 50,
+    width:150,
+    height:label == "Add link"?35: 50,
     child: GestureDetector(
-      onTap: _isUpdating?null:onTap,
+      onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          gradient: _isUpdating?LinearGradient(
-            colors: [Colors.white, Colors.white, Colors.white, Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ):LinearGradient(
-            colors: [color1, color1, color1, color2],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: fill?BoxDecoration(
+          color: color1,
           borderRadius: BorderRadius.circular(10),
+        ):BoxDecoration(
+            border: Border.all(color: color1),
+            borderRadius: BorderRadius.circular(10)
         ),
         child: Center(
-            child: !_isUpdating?Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 20),
-            ):Text(
-              "saving...",
-              style: const TextStyle(color: Colors.purpleAccent, fontSize: 20),
-            )
+          child: Text(
+            label,
+            style:fill?TextStyle(color:Colors.white, fontSize: 20):TextStyle(color: color1,fontSize: 20),
+          ),
         ),
       ),
     ),
@@ -470,18 +513,33 @@ class LabeledCheckbox extends StatelessWidget {
         onChanged(!value);
       },
       child: Padding(
-        padding: padding,
+        padding: EdgeInsets.only(left: 8.0,right: 8.0),
         child: Row(
           children: <Widget>[
-            Checkbox(
-              value: value,
-              onChanged: (bool? newValue) {
-                onChanged(newValue!);
-              },
-              fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-              checkColor: MaterialStateColor.resolveWith((states) => Colors.purpleAccent),
+            Theme(
+              data: ThemeData(
+                checkboxTheme: CheckboxThemeData(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  side: BorderSide(color: Colors.transparent),
+                  fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+                  checkColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                ),
+              ),
+              child: Checkbox(
+                activeColor: MaterialStateColor.resolveWith((states) => Color.fromARGB(255,255, 73, 139)),
+                value: value,
+                onChanged: (bool? newValue) {
+                  onChanged(newValue!);
+                },
+              ),
             ),
-            Expanded(child: Text(label , style: TextStyle(color: Colors.white , fontSize: 16),)),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(label , style: TextStyle(color: Colors.white , fontSize: 16),),
+            )),
           ],
         ),
       ),
