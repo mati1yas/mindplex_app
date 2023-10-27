@@ -186,6 +186,7 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       final responseBody = response.data;
+      print(responseBody);
       UserProfile userProfile = UserProfile.fromJson(responseBody);
       return userProfile;
     } else {

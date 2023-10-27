@@ -46,7 +46,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   late int age;
   late String gender;
   String social = " ";
-  SocialLink socialLink = SocialLink();
+  List<String> _socialMediaLinks = [];
 
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
@@ -65,6 +65,53 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     }
     return -1;
   }
+  void addSocialMediaLink() {
+    String platform = detectSocialMediaPlatform(social);
+
+    if (platform.isNotEmpty) {
+      setState(() {
+        _socialMediaLinks.add(
+          social
+        );
+      });
+    }
+  }
+
+  String detectSocialMediaPlatform(String url) {
+    if (RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/?$').hasMatch(url)) {
+      return "facebook";
+    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/?$').hasMatch(url)) {
+      return "twitter";
+    } else if (RegExp(r'^https?:\/\/(?:www\.)?linkedin\.com\/?$').hasMatch(url)) {
+      return "linkedin";
+    } else {
+      return "";
+    }
+  }
+  String searchSocialMediaPlaform(List<String> urls,int index){
+    if(index == 1){
+      for (var value in urls) {
+        if(detectSocialMediaPlatform(value) == "linkedin"){
+          return value;
+        }
+      }
+    }
+    else if(index == 2){
+      for (var value in urls) {
+        if(detectSocialMediaPlatform(value) == "facebook"){
+          return value;
+        }
+      }
+    }
+    else if(index == 3){
+      for (var value in urls) {
+        if(detectSocialMediaPlatform(value) == "twitter"){
+          return value;
+        }
+      }
+    }
+      return "";
+  }
   Future<void> fetchUserProfile() async {
     setState(() {
       _isLoading = true;
@@ -80,6 +127,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
         biography = userProfile.biography!;
         interests = userProfile.interests!;
         education = educationChoices[mapEducation(userProfile.education!.educationalBackground!)];
+        _socialMediaLinks = userProfile.socialLink!;
         _isLoading = false;
       });
     } catch (e) {
@@ -102,7 +150,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
         lastName: lastName,
         age: age,
         gender: gender,
-        biography: biography
+        biography: biography,
+
       );
       String updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
@@ -311,84 +360,73 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                   _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { }),
                   socialLinkError != null && isLinkAdded ? errorMessage(socialLinkError.toString()) : Container(),
                   SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                          GestureDetector(
-                              child: Icon(socialLink.linkedinLink != null?FontAwesome.linkedin:null,size: 35,color: Colors.amber),
-                              onTap:  () async {
-                                await launchUrl(Uri.parse(socialLink.linkedinLink!));
-                              },
-                          ),
-                          SizedBox(width: socialLink.linkedinLink == null?0:10,),
-                          GestureDetector(
-                              child: Icon(socialLink.facebookLink != null?FontAwesome.facebook:null,size: 35,color: Colors.amber),
-                            onTap:  () async {
-                              await launchUrl(Uri.parse(socialLink.facebookLink!));
-                            },
-                          ),
-                            SizedBox(width: socialLink.facebookLink == null?0:10,),
-                          GestureDetector(
-                            child: SvgPicture.asset(
-                              'assets/icons/x-twitter.svg',
-                              width: socialLink.twitterLink == null?0:35,
-                              height: socialLink.twitterLink == null?0:35,
-                              color: Colors.amber,
-                            ),
-                            onTap:  () async {
-                              await launchUrl(Uri.parse(socialLink.twitterLink!));
-                            },
-                          )
-                        ],),
-                        buildButton("Add link", () {
-                          isLinkAdded = false;
-                          final isValidLink = socialLinkError == null;
-                          setState(() {
-                            isLinkAdded = true;
-                          });
-                          if(isValidLink){
-                            print(social);
-                            RegExp facebookRegex = RegExp(
-                              r'^(?:https?:\/\/)?(?:www\.|m\.)?facebook\.com\/',
-                              caseSensitive: false,
-                            );
-                            RegExp twitterRegex = RegExp(
-                              r'^(?:https?:\/\/)?(?:www\.|m\.)?twitter\.com\/',
-                              caseSensitive: false,
-                            );
-                            RegExp linkedinRegex = RegExp(
-                              r'^(?:https?:\/\/)?(?:www\.|m\.)?linkedin\.com\/',
-                              caseSensitive: false,
-                            );
-                           if (facebookRegex.hasMatch(social)){
-                             setState(() {
-                               socialLink.facebookLink = social;
-                             });
-                           }
-                           else if (twitterRegex.hasMatch(social)){
-                              setState(() {
-                                socialLink.twitterLink = social;
-                              });
-                            }
-                           else if (linkedinRegex.hasMatch(social)){
-                              setState(() {
-                                socialLink.linkedinLink = social;
-                              });
-                            }
-                           else{
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                              GestureDetector(
+                                  child: Icon(searchSocialMediaPlaform(_socialMediaLinks, 1)!=""?FontAwesome.linkedin:null,size: 35,color: Colors.amber),
+                                  onTap:  () async {
+                                    await launchUrl(Uri.parse(searchSocialMediaPlaform(_socialMediaLinks, 1)));
+                                  },
+                              ),
+                              SizedBox(width: searchSocialMediaPlaform(_socialMediaLinks, 1) == ""?0:10,),
+                              GestureDetector(
+                                  child: Icon(searchSocialMediaPlaform(_socialMediaLinks, 2) != ""?FontAwesome.facebook:null,size: 35,color: Colors.amber),
+                                onTap:  () async {
+                                  await launchUrl(Uri.parse(searchSocialMediaPlaform(_socialMediaLinks, 2)));
+                                },
+                              ),
+                                SizedBox(width: searchSocialMediaPlaform(_socialMediaLinks, 2) == ""?0:10,),
+                              GestureDetector(
+                                child: SvgPicture.asset(
+                                  'assets/icons/x-twitter.svg',
+                                  width: searchSocialMediaPlaform(_socialMediaLinks, 3) != ""?35:0,
+                                  height:  searchSocialMediaPlaform(_socialMediaLinks, 3) != ""?35:0,
+                                  color: Colors.amber,
+                                ),
+                                onTap:  () async {
+                                  await launchUrl(Uri.parse(searchSocialMediaPlaform(_socialMediaLinks, 3)));
+                                },
+                              )
+                            ],),
+                            buildButton("Add link", () {
+                                isLinkAdded = false;
+                                final isValidLink = socialLinkError == null;
+                                setState(() {
+                                  isLinkAdded = true;
+                                });
+                                if(isValidLink){
+                                 addSocialMediaLink();
+                                 _socialMediaLinks.forEach((element) {
+                                   print(element);
+                                 });
+                                }
+                              }, Colors.amber, true),
 
-                           }
-                          }
-                        }, Colors.amber, true)
-
-                      ],
+                          ],
+                        ),
+                  ),
+                    SizedBox(height: 10,),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        children: _socialMediaLinks
+                            .where((text) => detectSocialMediaPlatform(text) == "")
+                            .map((text) => Row(
+                              children: [
+                                Icon(Icons.language_outlined,color: Colors.amber,),
+                                SizedBox(width: 10,),
+                                Text(text!,style: TextStyle(color: Colors.white),),
+                              ],
+                            ))
+                            .toList(),
+                      )
                     ),
-                  )
                 ])),
           ),
           Padding(

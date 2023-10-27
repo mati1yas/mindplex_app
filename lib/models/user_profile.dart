@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:mindplex_app/models/social_link.dart';
+
 class UserProfile {
   String? firstName;
   String? lastName;
@@ -23,8 +25,7 @@ class UserProfile {
   String? biography;
   Education? education;
   List<String>? interests;
-  SocialMedia? socialMedia;
-
+  List<String>? socialLink;
 
 
   UserProfile({
@@ -37,7 +38,7 @@ class UserProfile {
     this.biography,
     this.education,
     this.interests,
-    this.socialMedia,
+    this.socialLink,
     this.recPopularity,
     this.recPattern,
     this.recQuality,
@@ -77,7 +78,7 @@ class UserProfile {
     biography = json['biography'];
     education = Education.fromJson(json['education']);
     interests = List<String>.from(json['interest']);
-    socialMedia = SocialMedia.fromJson(jsonDecode(json['social_media']));
+    socialLink = List<String>.from(json['social_media']);
   }
 
   Map<String, dynamic> toJson() {
@@ -103,8 +104,8 @@ class UserProfile {
     data['notify_updates'] = this.notifyUpdates;
     return data;
   }
-}
 
+}
 class Education {
   String id;
   String educationalBackground;
@@ -118,20 +119,6 @@ class Education {
     return Education(
       id: json['id'],
       educationalBackground: json['educational_background'],
-    );
-  }
-}
-
-class SocialMedia {
-  String link;
-
-  SocialMedia({
-    required this.link,
-  });
-
-  factory SocialMedia.fromJson(Map<String, dynamic> json) {
-    return SocialMedia(
-      link: json['github'],
     );
   }
 }

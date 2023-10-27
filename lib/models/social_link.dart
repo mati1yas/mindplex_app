@@ -1,12 +1,19 @@
+class SocialLink {
+  String? platform;
+  String? link;
 
-class SocialLink{
-  String? facebookLink;
-  String? linkedinLink;
-  String? twitterLink;
+  SocialLink({this.platform, this.link});
 
-  SocialLink({
-    this.facebookLink,
-    this.linkedinLink,
-    this.twitterLink
-});
+  factory SocialLink.fromJson(Map<String, dynamic> json) {
+    return SocialLink(
+      platform: json.keys.first,
+      link: json.values.first,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      platform!: link!,
+    };
+  }
 }
