@@ -59,7 +59,12 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     last_name = profileController.authenticatedUser.value.lastName??" ";
     fetchUserProfile();
   }
-
+  int mapEducation(String apiResponse){
+    if(apiResponse == "Degree"){
+      return 2;
+    }
+    return -1;
+  }
   Future<void> fetchUserProfile() async {
     setState(() {
       _isLoading = true;
@@ -72,6 +77,9 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       setState(() {
         age = userProfile.age!;
         gender = userProfile.gender == ""?genderChoices[3]:userProfile.gender!;
+        biography = userProfile.biography!;
+        interests = userProfile.interests!;
+        education = educationChoices[mapEducation(userProfile.education!.educationalBackground!)];
         _isLoading = false;
       });
     } catch (e) {
@@ -94,6 +102,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
         lastName: lastName,
         age: age,
         gender: gender,
+        biography: biography
       );
       String updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
@@ -154,7 +163,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                   const SizedBox(height: 10),
                   _container(context, false, null, name, TextInputType.name, name, "name","", (() {})),
                   nameError != null && isSaved ? errorMessage(nameError.toString()) : Container(),
-                  _container(context, false, null, "", TextInputType.name, "", "bio", "",(() {}),maxLines: 8),
+                  _container(context, false, null, biography, TextInputType.name, biography, "bio", "",(() {}),maxLines: 8),
                   SizedBox(height: 20),
                   Column(
                     children: [
@@ -195,7 +204,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                               border: Border.all(color: Colors.amber,width: 2.0),// Apply border radius
                             ),
                             child: DropdownButton<String>(
-                              value: education, // Set the initial value to the first choice (placeholder)
+                              value: education,// Set the initial value to the first choice (placeholder)
                               items: educationChoices.map((String choice) {
                                 return DropdownMenuItem<String>(
                                   value: choice,
@@ -298,7 +307,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       ),
                     ],
                   ),
-                  InterestDropdown(),
+                  InterestDropdown(selectedItems: interests!,),
                   _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { }),
                   socialLinkError != null && isLinkAdded ? errorMessage(socialLinkError.toString()) : Container(),
                   SizedBox(height: 10,),
@@ -715,6 +724,9 @@ snackbar(Text title, Text message) {
 }
 
 class InterestDropdown extends StatefulWidget {
+  late final List<String> selectedItems;
+  InterestDropdown({required this.selectedItems});
+
   @override
   _InterestDropdownState createState() => _InterestDropdownState();
 }
@@ -752,11 +764,22 @@ class _InterestDropdownState extends State<InterestDropdown> {
     'Commerce',
     'Art',
   ];
-
-  List<String> selectedItems = [];
+  List<String> searchOutputs =[];
 
   bool showDropDown = false;
-
+  TextEditingController searchText = TextEditingController();
+  void updateInterests(String query) {
+    setState(() {
+      searchOutputs = dropdownItems
+          .where((interest) => interest.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+@override
+  void initState() {
+    searchOutputs = dropdownItems;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -803,7 +826,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
                   Expanded(
                     child: Wrap(
                       alignment: WrapAlignment.start,
-                      children: List.generate(selectedItems.length, (index) {
+                      children: List.generate(widget.selectedItems.length, (index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -814,7 +837,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
                             ),
                             padding: EdgeInsets.all(8.0), // Adjust the padding as needed
                             child: Text(
-                              selectedItems[index],
+                              widget.selectedItems[index],
                               style: TextStyle(color: Colors.purpleAccent),
                             ),
                           ),
@@ -860,6 +883,11 @@ class _InterestDropdownState extends State<InterestDropdown> {
                                 borderSide: BorderSide(color: Colors.white),
                               ),
                             ),
+                            style: TextStyle(color: Colors.white),
+                            controller: searchText,
+                            onChanged: (value){
+                              updateInterests(value);
+                            },
                           ),
                         ),
                          GridView.builder(
@@ -869,7 +897,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
                               crossAxisCount: 2,
                               childAspectRatio: 4.0, // Adjust this value to change the aspect ratio of the checkboxes
                             ),
-                            itemCount: dropdownItems.length, // Replace 'choices' with your list of choices
+                            itemCount: searchOutputs.length, // Replace 'choices' with your list of choices
                             itemBuilder: (context, index) {
                               return Theme(
                                 data: ThemeData(unselectedWidgetColor: Colors.white,checkboxTheme: CheckboxThemeData(fillColor: MaterialStateProperty.all(Colors.white))),
@@ -878,17 +906,17 @@ class _InterestDropdownState extends State<InterestDropdown> {
                                   activeColor: Colors.purpleAccent,
                                   controlAffinity: ListTileControlAffinity.leading,
                                   contentPadding: EdgeInsets.zero,
-                                  title: Text(dropdownItems[index],style: TextStyle(color: Colors.white),),
-                                  value: selectedItems.contains(dropdownItems[index])?true:false,
+                                  title: Text(searchOutputs[index],style: TextStyle(color: Colors.white),),
+                                  value: widget.selectedItems.contains(searchOutputs[index])?true:false,
                                   onChanged: (newValue) {
                                     setState(() {
                                       if(newValue == true){
-                                        selectedItems.add(dropdownItems[index]);
+                                        widget.selectedItems.add(searchOutputs[index]);
                                       }
                                       else{
-                                        selectedItems.remove(dropdownItems[index]);
+                                        widget.selectedItems.remove(searchOutputs[index]);
                                       }
-                                      print(selectedItems);
+                                      print(widget.selectedItems);
                                     });
                                   },
                                 ),

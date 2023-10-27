@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserProfile {
   String? firstName;
   String? lastName;
@@ -18,6 +20,10 @@ class UserProfile {
   bool? notifyInteraction;
   bool? notifyWeekly;
   bool? notifyUpdates;
+  String? biography;
+  Education? education;
+  List<String>? interests;
+  SocialMedia? socialMedia;
 
 
 
@@ -28,6 +34,10 @@ class UserProfile {
     this.username,
     this.age,
     this.gender,
+    this.biography,
+    this.education,
+    this.interests,
+    this.socialMedia,
     this.recPopularity,
     this.recPattern,
     this.recQuality,
@@ -63,6 +73,11 @@ class UserProfile {
     notifyInteraction = json['notify_interaction'];
     notifyWeekly = json['notify_weekly'];
     notifyUpdates = json['notify_updates'];
+    // Additional attributes
+    biography = json['biography'];
+    education = Education.fromJson(json['education']);
+    interests = List<String>.from(json['interest']);
+    socialMedia = SocialMedia.fromJson(jsonDecode(json['social_media']));
   }
 
   Map<String, dynamic> toJson() {
@@ -87,5 +102,36 @@ class UserProfile {
     data['notify_weekly'] = this.notifyWeekly;
     data['notify_updates'] = this.notifyUpdates;
     return data;
+  }
+}
+
+class Education {
+  String id;
+  String educationalBackground;
+
+  Education({
+    required this.id,
+    required this.educationalBackground,
+  });
+
+  factory Education.fromJson(Map<String, dynamic> json) {
+    return Education(
+      id: json['id'],
+      educationalBackground: json['educational_background'],
+    );
+  }
+}
+
+class SocialMedia {
+  String link;
+
+  SocialMedia({
+    required this.link,
+  });
+
+  factory SocialMedia.fromJson(Map<String, dynamic> json) {
+    return SocialMedia(
+      link: json['github'],
+    );
   }
 }
