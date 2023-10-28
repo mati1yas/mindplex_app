@@ -42,6 +42,8 @@ class ModeratorApplicationForm extends StatelessWidget {
                 TextFormField(
                   controller: nameController,
                   decoration: InputDecoration(
+                    hintText: 'your name here',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(color: Colors.green)),
@@ -66,6 +68,8 @@ class ModeratorApplicationForm extends StatelessWidget {
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
+                    hintText: 'your email here',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(color: Colors.green)),
@@ -91,6 +95,8 @@ class ModeratorApplicationForm extends StatelessWidget {
                   maxLines: 3,
                   controller: biographyController,
                   decoration: InputDecoration(
+                    hintText: 'your biography here',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(color: Colors.green)),
@@ -148,6 +154,8 @@ class ModeratorApplicationForm extends StatelessWidget {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
+                    hintText: 'your age here',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(color: Colors.green)),
