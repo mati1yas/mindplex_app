@@ -74,7 +74,6 @@ class UserProfile {
     notifyInteraction = json['notify_interaction'];
     notifyWeekly = json['notify_weekly'];
     notifyUpdates = json['notify_updates'];
-    // Additional attributes
     biography = json['biography'];
     education = Education.fromJson(json['education']);
     interests = List<String>.from(json['interest']);
@@ -102,6 +101,9 @@ class UserProfile {
     data['notify_interaction'] = this.notifyInteraction;
     data['notify_weekly'] = this.notifyWeekly;
     data['notify_updates'] = this.notifyUpdates;
+    data['biography'] = this.biography;
+    data['interests'] = this.interests;
+    data['social_media'] = this.socialLink!;
     return data;
   }
 

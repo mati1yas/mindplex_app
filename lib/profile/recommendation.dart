@@ -1,3 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,14 +28,40 @@ class _RecommendationPageState extends State<RecommendationPage> {
 
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
+  bool _hasInternetConnection = false;
   bool _isUpdating = false;
+  Connectivity connectivity = Connectivity();
 
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
-    editedSeekbars = [];
-    lastEditedSeekbar = 0;
+    connectivity.checkConnectivity().then(
+            (value) =>
+        {
+          if(value != ConnectivityResult.ethernet &&
+              value != ConnectivityResult.wifi &&
+              value != ConnectivityResult.mobile){
+            _hasInternetConnection = false,
+
+            Flushbar(
+              flushbarPosition: FlushbarPosition.BOTTOM,
+              margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+              titleSize: 20,
+              messageSize: 17,
+              messageColor: Colors.white,
+              backgroundColor: Colors.red,
+              borderRadius: BorderRadius.circular(8),
+              message: "No Internet Connection",
+              duration: const Duration(seconds: 2),
+            ).show(context)
+          }
+          else{
+            _hasInternetConnection = true,
+        fetchUserProfile(),
+        editedSeekbars = [],
+        lastEditedSeekbar = 0,
+          }
+        });
   }
 
   Future<void> fetchUserProfile() async {
@@ -216,6 +244,9 @@ class _RecommendationPageState extends State<RecommendationPage> {
           child: CircularProgressIndicator(),
         ),
       ),);
+    }
+    if(!_hasInternetConnection){
+      return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: Text("NO INTERNET CONNECTION",style: TextStyle(color: Colors.white),)),);
     }
     return Scaffold(
         backgroundColor: mainBackgroundColor,

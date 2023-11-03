@@ -196,12 +196,11 @@ class ApiService {
 
   Future<String> updateUserProfile(
       {required UserProfile updatedProfile}) async {
-    var dio = Dio();
 
+    var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
     final token = await localStorage.value.readFromStorage('Token');
-
     dio.options.headers["Authorization"] = "Bearer $token";
     Response response = await dio.patch(
       '${AppUrls.editProfileUrl}', //user name is needed here??

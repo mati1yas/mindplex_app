@@ -1,3 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,16 +52,41 @@ class _PreferencePageState extends State<PreferencePage> {
 
   PrivacyPreference? _agePreference,_genderPreference,_educationPreference;
   bool lightMode = true,darkMode = false,system = false;
-  late bool _notifyPublications ,_notifyEmail,_notifyInteraction,_notifyWeekly,_notifyUpdates;
+   bool? _notifyPublications ,_notifyEmail,_notifyInteraction,_notifyWeekly,_notifyUpdates;
 
 
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
-
+  bool _hasInternetConnection = false;
+   Connectivity connectivity = Connectivity();
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
+    connectivity.checkConnectivity().then(
+            (value) =>
+            {
+              if(value != ConnectivityResult.ethernet &&
+                  value != ConnectivityResult.wifi &&
+                  value != ConnectivityResult.mobile){
+                _hasInternetConnection = false,
+
+                Flushbar(
+                  flushbarPosition: FlushbarPosition.BOTTOM,
+                  margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                  titleSize: 20,
+                  messageSize: 17,
+                  messageColor: Colors.white,
+                  backgroundColor: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                  message: "No Internet Connection",
+                  duration: const Duration(seconds: 2),
+                ).show(context)
+              }
+              else{
+                _hasInternetConnection = true,
+                fetchUserProfile()
+              }
+            });
   }
 
   Future<void> fetchUserProfile() async {
@@ -175,6 +202,9 @@ class _PreferencePageState extends State<PreferencePage> {
   Widget build(BuildContext context) {
     if(_isLoading){
       return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator(),),);
+    }
+    if(!_hasInternetConnection){
+      return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: Text("NO INTERNET CONNECTION",style: TextStyle(color: Colors.white),)),);
     }
     return Scaffold(
       backgroundColor: mainBackgroundColor,
@@ -472,7 +502,7 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: LabeledCheckbox(
                   label: ' Emails from Mindplex notifying you of new articles, news, or media.',
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  value: _notifyPublications,
+                  value: _notifyPublications!,
                   onChanged: (bool newValue) {
                     setState(() {
                       _notifyPublications = newValue;
@@ -485,7 +515,7 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: LabeledCheckbox(
                   label: ' Notification emails, receive emails when someone you follow publishes content.',
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  value: _notifyEmail,
+                  value: _notifyEmail!,
                   onChanged: (bool newValue) {
                     setState(() {
                       _notifyEmail = newValue;
@@ -498,7 +528,7 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: LabeledCheckbox(
                   label: ' Interaction emails: receive emails when someone comments on your content.',
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  value: _notifyInteraction,
+                  value: _notifyInteraction!,
                   onChanged: (bool newValue) {
                     setState(() {
                       _notifyInteraction = newValue;
@@ -511,7 +541,7 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: LabeledCheckbox(
                   label: ' Weekly digest emails, receive emails about the week’s popular, recommended, editor’s picks, most reputable, and people’s choice articles.',
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  value: _notifyWeekly,
+                  value: _notifyWeekly!,
                   onChanged: (bool newValue) {
                     setState(() {
                       _notifyWeekly = newValue;
@@ -524,7 +554,7 @@ class _PreferencePageState extends State<PreferencePage> {
                 child: LabeledCheckbox(
                   label: 'Mindplex updates, receive timely company announcments and community updates.',
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  value: _notifyUpdates,
+                  value: _notifyUpdates!,
                   onChanged: (bool newValue) {
                     setState(() {
                       _notifyUpdates = newValue;

@@ -1,3 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -23,6 +25,8 @@ class PersonalSettingsPage extends StatefulWidget {
   @override
   State<PersonalSettingsPage> createState() => _PersonalSettingsPageState();
 }
+Connectivity connectivity = Connectivity();
+
 final _formKey = GlobalKey<FormState>();
 String? first_name, last_name, biography,education;
 List<String>? interests = [];
@@ -88,6 +92,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       return "";
     }
   }
+
   String searchSocialMediaPlaform(List<String> urls,int index){
     if(index == 1){
       for (var value in urls) {
@@ -140,26 +145,45 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     }
   }
   Future<String> updateUserProfile(firstName,lastName) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(color: Colors.green[900]),
+        ));
     setState(() {
       _isUpdating = true;
     });
     try {
       UserProfile updatedProfile = UserProfile(
-        // Set the updated values for the profile properties
         firstName: firstName,
         lastName: lastName,
         age: age,
         gender: gender,
         biography: biography,
-
+        socialLink: _socialMediaLinks
       );
-      String updatedValues = await _apiService.updateUserProfile(
+      print(updatedProfile.biography);
+      String? updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
       );
+      print(updatedValues);
       setState(() {
         _isUpdating = false;
       });
       localStorage.value.updateUserInfo(firstName: firstName,lastName: lastName);
+      Navigator.of(context).pop();
+      Flushbar(
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+        titleSize: 20,
+        messageSize: 17,
+        messageColor: Colors.white,
+        backgroundColor: Colors.green,
+        borderRadius: BorderRadius.circular(8),
+        message: "Saved",
+        duration: const Duration(seconds: 2),
+      ).show(context);
       return updatedValues;
     } catch (e) {
       setState(() {
@@ -445,34 +469,25 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         isSaved = true;
                       });
                       if (isValidForm) {
-                        print("first name " + first_name!);
-                        print("last name " + last_name! );
                         updateUserProfile(first_name,last_name).then((String updatedValues) {
-                          print('Updated values: $updatedValues');
-                          var snackBar = SnackBar(
-                            content: Text(
-                              'personal settings successfully set',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.green,
-                            behavior: SnackBarBehavior.floating,
-                            margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height - 100,
-                              left: 10,
-                              right: 10,
-                            ),
-                            action: SnackBarAction(
-                              label: 'ok',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                              },
-                            ),);
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
                         }).catchError((error) {
                           print('Error updating user profile: $error');
                         });
 
+                      }
+                      else{
+                        Flushbar(
+                          flushbarPosition: FlushbarPosition.BOTTOM,
+                          margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                          titleSize: 20,
+                          messageSize: 17,
+                          messageColor: Colors.white,
+                          backgroundColor: Colors.red,
+                          borderRadius: BorderRadius.circular(8),
+                          message: "invalid value on 1 or more input",
+                          duration: const Duration(seconds: 2),
+                        ).show(context);
                       }
                     }), Colors.blueAccent.shade200,true)
                 )
@@ -695,8 +710,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         if(value == ""){
                           return null;
                         }
-                        if(value != null && !value.startsWith("https://www",0)){
-                          socialLinkError = "invalid link make sure your link start with https://www";
+                        if(value != null && !value.startsWith("https://",0)){
+                          socialLinkError = "invalid link make sure your link start with https://";
                           return socialLinkError;
                         }
                         else{
@@ -711,7 +726,15 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   }
 }
 bool isNumeric(String value) {
-  return double.tryParse(value) != null;
+  try {
+    int age = int.parse(value);
+    if (age > 0) {
+      return true; // Age is a positive integer
+    }
+  } catch (e) {
+    return false;
+  }
+  return false;
 }
 Widget buildButton(String label, VoidCallback onTap, Color color1,bool fill) {
   return SizedBox(
@@ -746,19 +769,6 @@ Widget errorMessage(String? error) {
         error.toString(),
         style: const TextStyle(color: Colors.red),
       ));
-}
-
-snackbar(Text title, Text message) {
-  return Get.snackbar("", "",
-      snackStyle: SnackStyle.FLOATING,
-      snackPosition: SnackPosition.BOTTOM,
-      borderWidth: 2,
-      dismissDirection: DismissDirection.horizontal,
-      duration: const Duration(seconds: 4),
-      backgroundColor: Colors.blue,
-      titleText: title,
-      messageText: message,
-      margin: const EdgeInsets.only(top: 12, left: 15, right: 15, bottom: 15));
 }
 
 class InterestDropdown extends StatefulWidget {
