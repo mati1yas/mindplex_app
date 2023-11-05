@@ -103,7 +103,7 @@ class UserProfile {
     data['notify_updates'] = this.notifyUpdates;
     data['biography'] = this.biography;
     data['interests'] = this.interests;
-    data['social_media'] = this.socialLink!;
+    data['social_media'] = this.socialLink;
     return data;
   }
 

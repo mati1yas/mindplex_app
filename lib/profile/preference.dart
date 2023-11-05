@@ -1,5 +1,4 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -57,36 +56,10 @@ class _PreferencePageState extends State<PreferencePage> {
 
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
-  bool _hasInternetConnection = false;
-   Connectivity connectivity = Connectivity();
   @override
   void initState() {
     super.initState();
-    connectivity.checkConnectivity().then(
-            (value) =>
-            {
-              if(value != ConnectivityResult.ethernet &&
-                  value != ConnectivityResult.wifi &&
-                  value != ConnectivityResult.mobile){
-                _hasInternetConnection = false,
-
-                Flushbar(
-                  flushbarPosition: FlushbarPosition.BOTTOM,
-                  margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                  titleSize: 20,
-                  messageSize: 17,
-                  messageColor: Colors.white,
-                  backgroundColor: Colors.red,
-                  borderRadius: BorderRadius.circular(8),
-                  message: "No Internet Connection",
-                  duration: const Duration(seconds: 2),
-                ).show(context)
-              }
-              else{
-                _hasInternetConnection = true,
-                fetchUserProfile()
-              }
-            });
+    fetchUserProfile();
   }
 
   Future<void> fetchUserProfile() async {
@@ -135,6 +108,7 @@ class _PreferencePageState extends State<PreferencePage> {
         notifyInteraction: _notifyInteraction,
         notifyWeekly: _notifyWeekly,
         notifyUpdates: _notifyUpdates,
+        interests: []
       );
       String updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
@@ -202,9 +176,6 @@ class _PreferencePageState extends State<PreferencePage> {
   Widget build(BuildContext context) {
     if(_isLoading){
       return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: CircularProgressIndicator(),),);
-    }
-    if(!_hasInternetConnection){
-      return Scaffold(backgroundColor: mainBackgroundColor,body: Center(child: Text("NO INTERNET CONNECTION",style: TextStyle(color: Colors.white),)),);
     }
     return Scaffold(
       backgroundColor: mainBackgroundColor,

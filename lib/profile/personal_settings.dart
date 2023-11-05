@@ -1,5 +1,4 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -25,7 +24,6 @@ class PersonalSettingsPage extends StatefulWidget {
   @override
   State<PersonalSettingsPage> createState() => _PersonalSettingsPageState();
 }
-Connectivity connectivity = Connectivity();
 
 final _formKey = GlobalKey<FormState>();
 String? first_name, last_name, biography,education;
@@ -47,8 +45,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
 
   ProfileController profileController = Get.put(ProfileController());
 
-  late int age;
-  late String gender;
+  int? age;
+  String? gender;
   String social = " ";
   List<String> _socialMediaLinks = [];
 
@@ -205,7 +203,6 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       gender = choice;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
