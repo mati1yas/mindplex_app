@@ -5,6 +5,8 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/blogs/screens/blog_detail_page.dart';
+import 'package:mindplex_app/mindplex_profile/about/about_mindplex.dart';
+import 'package:mindplex_app/mindplex_profile/moderators/moderators_page.dart';
 import 'package:mindplex_app/utils/colors.dart';
 import 'package:shimmer_effect/shimmer_effect.dart';
 import 'package:mindplex_app/blogs/widgets/blog_card.dart';
@@ -312,8 +314,42 @@ class _LandingPageState extends State<LandingPage> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.people_alt_sharp,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    'Moderators',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
                   onTap: () {
-                    // ...
+                    Navigator.of(context).pop();
+                    Get.to(() => ModeratorsPage());
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.people_alt_sharp,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    'About Us',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Get.to(() => AboutMindPlex());
                   },
                 ),
                 SizedBox(
