@@ -46,6 +46,7 @@ class ProfileController extends GetxController {
 
   final localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+
   Future<void> getAuthenticatedUser() async {
     authenticatedUser.value = await localStorage.value.readUserInfo();
   }
