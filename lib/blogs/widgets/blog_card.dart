@@ -172,7 +172,8 @@ class BlogCard extends StatelessWidget {
                                 width: 3,
                               ),
                               Text(
-                                "165",
+                                blogsController.filteredBlogs[index].comments
+                                    .toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -187,7 +188,8 @@ class BlogCard extends StatelessWidget {
                                 width: 3,
                               ),
                               Text(
-                                "1,071",
+                                blogsController.filteredBlogs[index].views
+                                    .toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
