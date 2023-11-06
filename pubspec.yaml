@@ -36,6 +36,7 @@ dependencies:
   another_flushbar: 
   flutter_highlight:
   flutter_html:
+  html:
   youtube_player_flutter:
   url_launcher: ^6.0.0
 
