@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../models/auth_model.dart';
@@ -30,6 +32,9 @@ class LocalStorage {
     required String firstName,
     required String lastName,
     required String userNiceName,
+    required String followings,
+    required String followers,
+    required String friends,
   }) async {
     writeToStorage("email", email);
     writeToStorage("image", image);
@@ -38,6 +43,9 @@ class LocalStorage {
     writeToStorage("firstName", firstName);
     writeToStorage("lastName", lastName);
     writeToStorage("userNiceName", userNiceName);
+    writeToStorage("followings", followings);
+    writeToStorage("followers", followers);
+    writeToStorage("friends", friends);
   }
 
   Future<void> updateUserInfo({
@@ -62,7 +70,7 @@ class LocalStorage {
       await writeToStorage("username", username);
     }
     if (firstName != null) {
-      print("firstName"+firstName);
+      print("firstName" + firstName);
       writeToStorage("firstName", firstName);
     }
     if (lastName != null) {
@@ -99,6 +107,16 @@ class LocalStorage {
     String userNiceName = await readFromStorage(
       "userNiceName",
     );
+    String followers = await readFromStorage(
+      "followers",
+    );
+    String followings = await readFromStorage(
+      "followings",
+    );
+    String friends = await readFromStorage(
+      "friends",
+    );
+
     var userData = {
       "user_email": email,
       'image': image,
@@ -108,6 +126,9 @@ class LocalStorage {
       'username': userName,
       'first_name': firstName,
       'last_name': lastName,
+      'friends': int.parse(friends),
+      'followers': int.parse(followers),
+      'followings': int.parse(followings),
     };
 
     print(userData);
