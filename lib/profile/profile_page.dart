@@ -215,9 +215,20 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget buildStatus() {
     var status = [
-      {"amount": "20", "value": "Friends"},
-      {"amount": "120", "value": "Following"},
-      {"amount": "100", "value": "Followers"},
+      {
+        "amount": profileController.authenticatedUser.value.friends.toString(),
+        "value": "Friends"
+      },
+      {
+        "amount":
+            profileController.authenticatedUser.value.followings.toString(),
+        "value": "Following"
+      },
+      {
+        "amount":
+            profileController.authenticatedUser.value.followers.toString(),
+        "value": "Followers"
+      },
       {"amount": "100", "value": " MPXR"}
     ];
     return Container(

@@ -20,6 +20,9 @@ class AuthService {
         }),
       );
 
+      print('RIGHT AFTER LOGIN ');
+      print(response.data);
+
       return AuthModel.fromJson(response.data);
     } catch (e) {
       throw e;

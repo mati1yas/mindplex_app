@@ -104,14 +104,16 @@ class _LandingPageState extends State<LandingPage> {
                                   Row(
                                     children: [
                                       Text(
-                                        "20",
+                                        profileController
+                                            .authenticatedUser.value.friends
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 10,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Friends",
+                                        " Friends",
                                         style: TextStyle(
                                             fontSize: 10, color: Colors.grey),
                                       ),
@@ -123,14 +125,16 @@ class _LandingPageState extends State<LandingPage> {
                                   Row(
                                     children: [
                                       Text(
-                                        "120",
+                                        profileController
+                                            .authenticatedUser.value.followings
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 10,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Following",
+                                        " Following",
                                         style: TextStyle(
                                             fontSize: 10, color: Colors.grey),
                                       ),
@@ -142,14 +146,16 @@ class _LandingPageState extends State<LandingPage> {
                                   Row(
                                     children: [
                                       Text(
-                                        "100",
+                                        profileController
+                                            .authenticatedUser.value.followers
+                                            .toString(),
                                         style: TextStyle(
                                             fontSize: 10,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Followers",
+                                        " Followers",
                                         style: TextStyle(
                                             fontSize: 10, color: Colors.grey),
                                       ),
