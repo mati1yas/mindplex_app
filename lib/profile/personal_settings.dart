@@ -1,11 +1,14 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:html/parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mindplex_app/models/social_link.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
@@ -28,7 +31,7 @@ class PersonalSettingsPage extends StatefulWidget {
 final _formKey = GlobalKey<FormState>();
 String? first_name, last_name, biography,education;
 List<String>? interests = [];
-List<String> genderChoices = ['Male','Female','Non-binary','Prefer not to say', 'Other'];
+List<String> genderChoices = ['Male','Female','Non Binary','Prefer not to say', 'Other'];
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
 String? nameError, lastNameError, ageError,socialLinkError;
 
@@ -61,22 +64,34 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     last_name = profileController.authenticatedUser.value.lastName??" ";
     fetchUserProfile();
   }
-  int mapEducation(String apiResponse){
-    if(apiResponse == "Degree"){
-      return 2;
+  int mapEducationFromApi(String apiResponse){
+    return 38 - int.parse(apiResponse);
+  }
+
+  int mapGenderFromApi(String apiResponse){
+    for(int i = 0;i<genderChoices.length;i++){
+      if(apiResponse == genderChoices[i]){
+        return i;
+      }
     }
     return -1;
   }
-  void addSocialMediaLink() {
-    String platform = detectSocialMediaPlatform(social);
+  
+  int mapEducationToApi(String education){
+    for(int i = 0;i<educationChoices.length;i++){
+      if(education == educationChoices[i]){
+        return 38-i;
+      }
+    }
+    return -1;
+  }
 
-    if (platform.isNotEmpty) {
+  void addSocialMediaLink() {
       setState(() {
         _socialMediaLinks.add(
-          social
+            social
         );
       });
-    }
   }
 
   String detectSocialMediaPlatform(String url) {
@@ -126,10 +141,10 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
 
       setState(() {
         age = userProfile.age!;
-        gender = userProfile.gender == ""?genderChoices[3]:userProfile.gender!;
-        biography = userProfile.biography!;
+        gender = genderChoices[mapGenderFromApi(userProfile.gender!)];
+        biography = Html(data: htmlParser.parse(parse(userProfile.biography).documentElement!.text).body?.text).data;
         interests = userProfile.interests!;
-        education = educationChoices[mapEducation(userProfile.education!.educationalBackground!)];
+        education = educationChoices[mapEducationFromApi(userProfile.education!.id!)];
         _socialMediaLinks = userProfile.socialLink!;
         _isLoading = false;
       });
@@ -159,9 +174,10 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
         age: age,
         gender: gender,
         biography: biography,
+        interests: interests,
+        educationRequest: mapEducationToApi(education!),
         socialLink: _socialMediaLinks
       );
-      print(updatedProfile.biography);
       String? updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
       );
@@ -194,6 +210,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
 
 
   void _saveSelectedChoice(String choice) {
+    print(choice);
     setState(() {
       education = choice;
     });
@@ -377,7 +394,13 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       ),
                     ],
                   ),
-                  InterestDropdown(selectedItems: interests!,),
+                  InterestDropdown(
+                    selectedItems: interests!,
+                    onSelectionChanged: (List<String> newSelectedItems) {
+                      setState(() {
+                        interests = newSelectedItems;
+                      });
+                    },),
                   _container(context, false, null, "", TextInputType.name, null, "social", "Enter your social links here",() { }),
                   socialLinkError != null && isLinkAdded ? errorMessage(socialLinkError.toString()) : Container(),
                   SizedBox(height: 10,),
@@ -707,7 +730,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         if(value == ""){
                           return null;
                         }
-                        if(value != null && !value.startsWith("https://",0)){
+                        final urlPattern = RegExp(
+                          r'^(https?|ftp)://[^\s/$.?#].[^\s]*$',
+                          caseSensitive: false,
+                        );
+                        if(value != null && !urlPattern.hasMatch(value)){
                           socialLinkError = "invalid link make sure your link start with https://";
                           return socialLinkError;
                         }
@@ -769,8 +796,10 @@ Widget errorMessage(String? error) {
 }
 
 class InterestDropdown extends StatefulWidget {
-  late final List<String> selectedItems;
-  InterestDropdown({required this.selectedItems});
+   late final List<String> selectedItems;
+   final ValueChanged<List<String>> onSelectionChanged;
+
+   InterestDropdown({required this.selectedItems, required this.onSelectionChanged});
 
   @override
   _InterestDropdownState createState() => _InterestDropdownState();
@@ -813,6 +842,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
 
   bool showDropDown = false;
   TextEditingController searchText = TextEditingController();
+
   void updateInterests(String query) {
     setState(() {
       searchOutputs = dropdownItems
@@ -820,6 +850,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
           .toList();
     });
   }
+
 @override
   void initState() {
     searchOutputs = dropdownItems;
@@ -962,6 +993,7 @@ class _InterestDropdownState extends State<InterestDropdown> {
                                         widget.selectedItems.remove(searchOutputs[index]);
                                       }
                                       print(widget.selectedItems);
+                                      widget.onSelectionChanged(widget.selectedItems);
                                     });
                                   },
                                 ),

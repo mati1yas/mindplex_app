@@ -24,6 +24,7 @@ class UserProfile {
   bool? notifyUpdates;
   String? biography;
   Education? education;
+  int? educationRequest;
   List<String>? interests;
   List<String>? socialLink;
 
@@ -37,6 +38,7 @@ class UserProfile {
     this.gender,
     this.biography,
     this.education,
+    this.educationRequest,
     this.interests,
     this.socialLink,
     this.recPopularity,
@@ -102,7 +104,8 @@ class UserProfile {
     data['notify_weekly'] = this.notifyWeekly;
     data['notify_updates'] = this.notifyUpdates;
     data['biography'] = this.biography;
-    data['interests'] = this.interests;
+    data['interest'] = this.interests;
+    data['education'] = this.educationRequest;
     data['social_media'] = this.socialLink;
     return data;
   }
