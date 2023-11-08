@@ -50,7 +50,11 @@ class AuthController extends GetxController {
           username: userData.username.toString(),
           firstName: userData.firstName.toString(),
           lastName: userData.lastName.toString(),
-          userNiceName: userData.userNicename.toString());
+          userNiceName: userData.userNicename.toString(),
+          followers: userData.followers.toString(),
+          followings: userData.followings.toString(),
+          friends: userData.friends.toString());
+
       isAuthenticated.value = true;
     } catch (e) {
       if (e is DioException) {
