@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                         ]),
                       ),
                       SizedBox(
-                        height: screenHeight * 0.020,
+                        height: screenHeight * 0.025,
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -111,10 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height: screenHeight * 0.017,
+                                height: screenHeight * 0.02,
                               ),
                               Container(
-                                height: screenHeight * 0.091,
                                 decoration: BoxDecoration(
                                   color: secondbackgroundColor,
                                   boxShadow: const [
@@ -184,10 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                               //     : Container(),
 
                               SizedBox(
-                                height: screenHeight * 0.025,
+                                height: screenHeight * 0.04,
                               ),
                               Container(
-                                height: screenHeight * 0.091,
                                 decoration: BoxDecoration(
                                   color: secondbackgroundColor,
                                   boxShadow: const [
@@ -274,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                               //     ? errorMessage(passwordError.toString())
                               //     : Container(),
                               SizedBox(
-                                height: screenHeight * 0.025,
+                                height: screenHeight * 0.04,
                               ),
                               Align(
                                 alignment: Alignment.center,
@@ -309,7 +307,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text('Login'),
                       ),
                       SizedBox(
-                        height: screenHeight * 0.025,
+                        height: screenHeight * 0.1,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 50.0),
