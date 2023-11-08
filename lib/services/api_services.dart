@@ -28,7 +28,6 @@ class ApiService {
           await dio.get("${AppUrls.blogUrl}/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
-        print(blog);
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {}
@@ -186,7 +185,6 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       final responseBody = response.data;
-      print(responseBody);
       UserProfile userProfile = UserProfile.fromJson(responseBody);
       return userProfile;
     } else {
@@ -196,7 +194,6 @@ class ApiService {
 
   Future<String> updateUserProfile(
       {required UserProfile updatedProfile}) async {
-
     var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
