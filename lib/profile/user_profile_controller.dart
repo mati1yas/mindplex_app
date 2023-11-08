@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/models/auth_model.dart';
+import 'package:mindplex_app/models/user_profile.dart';
 import 'package:mindplex_app/profile/draft_screen.dart';
+import 'package:mindplex_app/services/api_services.dart';
 import 'package:mindplex_app/services/local_storage.dart';
 
 import '../models/popularModel.dart';
@@ -16,6 +18,11 @@ class ProfileController extends GetxController {
   RxBool isLoading = true.obs;
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
+  RxBool isWalletConnected = false.obs;
+
+  Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
+
+  final apiService = ApiService().obs;
 
   var screens = [
     {'name': 'About', 'active': true, 'widget': const AboutScreen(), "num": 1},
@@ -40,6 +47,10 @@ class ProfileController extends GetxController {
     fetchBlogs();
   }
 
+  void switchWallectConnectedState() {
+    isWalletConnected.value = true;
+  }
+
   void switchTab({required String tab}) {
     selectedTabCategory.value = tab;
   }
@@ -49,6 +60,14 @@ class ProfileController extends GetxController {
 
   Future<void> getAuthenticatedUser() async {
     authenticatedUser.value = await localStorage.value.readUserInfo();
+  }
+
+  Future<void> getUserProfile({required String username}) async {
+    isLoading.value = true;
+    final res = await apiService.value.fetchUserProfile(userName: username);
+    isLoading.value = false;
+
+    userProfile = Rx(res);
   }
 
   void fetchBlogs() async {
