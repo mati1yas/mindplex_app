@@ -66,333 +66,336 @@ class _LoginPageState extends State<LoginPage> {
           ? CircularProgressIndicator(color: Colors.green[900])
           : Material(
               color: Color.fromARGB(252, 5, 34, 40),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 80),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(children: [
-                          Image.asset('assets/images/logo_with_name.png'),
-                          SizedBox(
-                            height: screenHeight * 0.020,
-                          ),
-                          Text(
-                            "Hey there,",
-                            style: textTheme.displayMedium?.copyWith(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.007,
-                          ),
-                          Text(
-                            "Welcome Back",
-                            style: textTheme.displayMedium?.copyWith(
-                                color: Colors.white,
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ]),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.025,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
-                        child: Form(
-                          key: formkey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: screenHeight * 0.02,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: secondbackgroundColor,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      blurRadius: 10,
-                                      offset: const Offset(1, 1),
-                                      color: Color.fromARGB(54, 188, 187, 187),
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(15),
+              child: Container(
+                height: screenHeight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 70),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(children: [
+                            Image.asset('assets/images/logo_with_name.png'),
+                            SizedBox(
+                              height: screenHeight * 0.020,
+                            ),
+                            Text(
+                              "Hey there,",
+                              style: textTheme.displayMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(
+                              height: screenHeight * 0.007,
+                            ),
+                            Text(
+                              "Welcome Back",
+                              style: textTheme.displayMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.025,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          child: Form(
+                            key: formkey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: screenHeight * 0.02,
                                 ),
-                                child: TextFormField(
-                                    controller: emailController,
-                                    focusNode: emailFocusNode,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: secondbackgroundColor,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        offset: const Offset(1, 1),
+                                        color: Color.fromARGB(54, 188, 187, 187),
+                                      )
+                                    ],
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: TextFormField(
+                                      controller: emailController,
+                                      focusNode: emailFocusNode,
+                                      cursorColor:
+                                          Color.fromARGB(224, 14, 187, 158),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.mail_outline,
+                                          color: emailFocusNode.hasFocus
+                                              ? Color.fromARGB(224, 14, 187, 158)
+                                              : Colors.grey,
+                                        ),
+                                        hintText: "Email",
+                                        hintStyle: TextStyle(
+                                            color: Colors.grey[400],
+                                            fontSize: 14),
+                                        fillColor: secondbackgroundColor,
+                                        filled: true,
+                                        border: inputBorder,
+                                        enabledBorder: inputBorder,
+                                        errorStyle:
+                                            const TextStyle(fontSize: 0.01),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide:
+                                              const BorderSide(color: Colors.red),
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Color.fromARGB(
+                                                  224, 14, 187, 158)),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                      style: textTheme.displayMedium?.copyWith(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400),
+                                      keyboardType: TextInputType.emailAddress,
+                                      textInputAction: TextInputAction.next,
+                                      validator: (value) {
+                                        if (value != null &&
+                                                !value.contains('@') ||
+                                            !value!.contains('.')) {
+                                          emailError = "Enter a valid Email";
+                                          return emailError;
+                                        } else {
+                                          emailError = null;
+                                          return null;
+                                        }
+                                      }),
+                                ),
+                                // emailError != null && isSaved
+                                //     ? errorMessage(emailError.toString())
+                                //     : Container(),
+
+                                SizedBox(
+                                  height: screenHeight * 0.04,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: secondbackgroundColor,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        offset: Offset(1, 1),
+                                        color: Color.fromARGB(54, 188, 187, 187),
+                                      )
+                                    ],
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: TextFormField(
+                                    controller: passwordController,
+                                    focusNode: passwordFocusNode,
                                     cursorColor:
                                         Color.fromARGB(224, 14, 187, 158),
                                     decoration: InputDecoration(
                                       prefixIcon: Icon(
-                                        Icons.mail_outline,
-                                        color: emailFocusNode.hasFocus
+                                        Icons.lock_outline,
+                                        color: passwordFocusNode.hasFocus
                                             ? Color.fromARGB(224, 14, 187, 158)
                                             : Colors.grey,
                                       ),
-                                      hintText: "Email",
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isPressed = !isPressed;
+                                          });
+                                        },
+                                        icon: isPressed
+                                            ? Icon(Icons.visibility_off_outlined,
+                                                color: passwordFocusNode.hasFocus
+                                                    ? const Color.fromARGB(
+                                                        224, 14, 187, 158)
+                                                    : Colors.grey)
+                                            : Icon(Icons.visibility_outlined,
+                                                color: passwordFocusNode.hasFocus
+                                                    ? const Color.fromARGB(
+                                                        224, 14, 187, 158)
+                                                    : Colors.grey),
+                                      ),
+                                      hintText: "Password",
                                       hintStyle: TextStyle(
-                                          color: Colors.grey[400],
-                                          fontSize: 14),
+                                          color: Colors.grey[400], fontSize: 14),
                                       fillColor: secondbackgroundColor,
                                       filled: true,
                                       border: inputBorder,
                                       enabledBorder: inputBorder,
-                                      errorStyle:
-                                          const TextStyle(fontSize: 0.01),
+                                      errorStyle: const TextStyle(fontSize: 0.01),
                                       errorBorder: OutlineInputBorder(
                                         borderSide:
                                             const BorderSide(color: Colors.red),
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
+                                        borderRadius: BorderRadius.circular(15.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                             color: Color.fromARGB(
                                                 224, 14, 187, 158)),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                     style: textTheme.displayMedium?.copyWith(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w400),
-                                    keyboardType: TextInputType.emailAddress,
-                                    textInputAction: TextInputAction.next,
+                                    keyboardType: TextInputType.text,
+                                    obscureText: isPressed,
+                                    textInputAction: TextInputAction.done,
                                     validator: (value) {
-                                      if (value != null &&
-                                              !value.contains('@') ||
-                                          !value!.contains('.')) {
-                                        emailError = "Enter a valid Email";
-                                        return emailError;
+                                      if (value != null && value.isEmpty) {
+                                        passwordError = 'Enter a password';
+                                        return passwordError;
+                                      } else if (value!.length < 8) {
+                                        passwordError =
+                                            'password length can\'t be lessthan 8';
+                                        return passwordError;
                                       } else {
-                                        emailError = null;
+                                        passwordError = null;
                                         return null;
                                       }
-                                    }),
-                              ),
-                              // emailError != null && isSaved
-                              //     ? errorMessage(emailError.toString())
-                              //     : Container(),
-
-                              SizedBox(
-                                height: screenHeight * 0.04,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: secondbackgroundColor,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      blurRadius: 10,
-                                      offset: Offset(1, 1),
-                                      color: Color.fromARGB(54, 188, 187, 187),
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: TextFormField(
-                                  controller: passwordController,
-                                  focusNode: passwordFocusNode,
-                                  cursorColor:
-                                      Color.fromARGB(224, 14, 187, 158),
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.lock_outline,
-                                      color: passwordFocusNode.hasFocus
-                                          ? Color.fromARGB(224, 14, 187, 158)
-                                          : Colors.grey,
-                                    ),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isPressed = !isPressed;
-                                        });
-                                      },
-                                      icon: isPressed
-                                          ? Icon(Icons.visibility_off_outlined,
-                                              color: passwordFocusNode.hasFocus
-                                                  ? const Color.fromARGB(
-                                                      224, 14, 187, 158)
-                                                  : Colors.grey)
-                                          : Icon(Icons.visibility_outlined,
-                                              color: passwordFocusNode.hasFocus
-                                                  ? const Color.fromARGB(
-                                                      224, 14, 187, 158)
-                                                  : Colors.grey),
-                                    ),
-                                    hintText: "Password",
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey[400], fontSize: 14),
-                                    fillColor: secondbackgroundColor,
-                                    filled: true,
-                                    border: inputBorder,
-                                    enabledBorder: inputBorder,
-                                    errorStyle: const TextStyle(fontSize: 0.01),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide:
-                                          const BorderSide(color: Colors.red),
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              224, 14, 187, 158)),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  style: textTheme.displayMedium?.copyWith(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400),
-                                  keyboardType: TextInputType.text,
-                                  obscureText: isPressed,
-                                  textInputAction: TextInputAction.done,
-                                  validator: (value) {
-                                    if (value != null && value.isEmpty) {
-                                      passwordError = 'Enter a password';
-                                      return passwordError;
-                                    } else if (value!.length < 8) {
-                                      passwordError =
-                                          'password length can\'t be lessthan 8';
-                                      return passwordError;
-                                    } else {
-                                      passwordError = null;
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                              // passwordError != null && isSaved
-                              //     ? errorMessage(passwordError.toString())
-                              //     : Container(),
-                              SizedBox(
-                                height: screenHeight * 0.04,
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: InkWell(
-                                  // onTap: () =>
-                                  // Get.toNamed(AppRoute.forgotpasswordPage),
-                                  child: Text(
-                                    "Forgot your password?",
-                                    style: textTheme.titleLarge?.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        decoration: TextDecoration.underline,
-                                        fontWeight: FontWeight.normal),
+                                    },
                                   ),
                                 ),
+                                // passwordError != null && isSaved
+                                //     ? errorMessage(passwordError.toString())
+                                //     : Container(),
+                                SizedBox(
+                                  height: screenHeight * 0.04,
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: InkWell(
+                                    // onTap: () =>
+                                    // Get.toNamed(AppRoute.forgotpasswordPage),
+                                    child: Text(
+                                      "Forgot your password?",
+                                      style: textTheme.titleLarge?.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.036,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              fixedSize: Size(260, 50),
+                              backgroundColor: Color.fromARGB(224, 14, 187, 158)),
+                          onPressed: login,
+                          child: Text('Login'),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.04,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  color: Colors.grey,
+                                  height: 1,
+                                ),
                               ),
+                              SizedBox(
+                                width: screenWidth * 0.016,
+                              ),
+                              const Text(
+                                "Or",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17),
+                              ),
+                              SizedBox(
+                                width: screenWidth * 0.016,
+                              ),
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  color: Colors.grey,
+                                  height: 1,
+                                ),
+                              )
                             ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.036,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            fixedSize: Size(260, 50),
-                            backgroundColor: Color.fromARGB(224, 14, 187, 158)),
-                        onPressed: login,
-                        child: Text('Login'),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: Container(
-                                color: Colors.grey,
-                                height: 1,
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenWidth * 0.016,
-                            ),
-                            const Text(
-                              "Or",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17),
-                            ),
-                            SizedBox(
-                              width: screenWidth * 0.016,
-                            ),
-                            Flexible(
-                              flex: 1,
-                              child: Container(
-                                color: Colors.grey,
-                                height: 1,
-                              ),
-                            )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  //TODO implement other option logins
+                                },
+                                child: Container(
+                                    width: 40,
+                                    height: screenHeight * 0.067,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            width: 2,
+                                            color: const Color.fromARGB(
+                                                208, 178, 178, 178))),
+                                    child: Image.asset(
+                                        "assets/images/google_logo.png")),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                //TODO implement other option logins
-                              },
-                              child: Container(
-                                  width: 40,
-                                  height: screenHeight * 0.067,
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          width: 2,
-                                          color: const Color.fromARGB(
-                                              208, 178, 178, 178))),
-                                  child: Image.asset(
-                                      "assets/images/google_logo.png")),
-                            )
-                          ],
+                        SizedBox(
+                          height: screenHeight * 0.032,
                         ),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.032,
-                      ),
-                      RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: "Don't have an account?",
-                              style: textTheme.displayMedium?.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w400)),
-                          TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = widget.changePage,
-                              text: " Register",
-                              style: const TextStyle(
-                                  color: Colors.pink,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700))
-                        ]),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.05,
-                      ),
-                    ],
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                                text: "Don't have an account?",
+                                style: textTheme.displayMedium?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w400)),
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = widget.changePage,
+                                text: " Register",
+                                style: const TextStyle(
+                                    color: Colors.pink,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700))
+                          ]),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.05,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -76,7 +76,6 @@ class _RecommendationPageState extends State<RecommendationPage> {
         recQuality: _highQualitySliderValue.floor(),
         recRandom: _randomSliderValue.floor(),
         recTimeliness: _timelinessSliderValue.floor(),
-        interests: []
       );
       String updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
