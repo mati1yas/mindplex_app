@@ -24,8 +24,6 @@ class _ProfilePage extends State<ProfilePage> {
   //array og pages
   final double coverHeight = 280;
 
-  bool isWalletConnected = false;
-
   Widget activeScreen = const AboutScreen();
 
   //make this an object with 3 values
@@ -37,7 +35,8 @@ class _ProfilePage extends State<ProfilePage> {
     setState(() {
       switch (num) {
         case 1:
-          activeScreen = const AboutScreen();
+          activeScreen = AboutScreen();
+
           break;
         case 2:
           activeScreen = const BookmarkScreen();
@@ -50,17 +49,20 @@ class _ProfilePage extends State<ProfilePage> {
     });
   }
 
-  void switchWallectConnectedState() {
-    setState(() {
-      isWalletConnected = true;
-    });
-  }
-
   ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+    Map<String, String?> params = Get.parameters;
+
+    if (params['me'] == 'me') {
+      profileController.getUserProfile(
+          username: profileController.authenticatedUser.value.username ?? "");
+    } else {
+      profileController.getUserProfile(username: params["username"] ?? "");
+    }
+
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
@@ -79,17 +81,12 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget buildCoverImage() {
     // decoration:BoxDecoration()), add curves to the image
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(coverHeight * 0.5),
-      child: FadeInImage(
-        placeholder: MemoryImage(kTransparentImage),
-        image: NetworkImage(
-          profileController.authenticatedUser.value.image ??
-              "assets/images/profile.PNG",
-        ),
-        fit: BoxFit.cover,
-        width: coverHeight,
-        height: coverHeight,
+    return CircleAvatar(
+      backgroundColor: Colors.green,
+      radius: MediaQuery.of(context).size.width * 0.25,
+      backgroundImage: NetworkImage(
+        profileController.authenticatedUser.value.image ??
+            "assets/images/profile.PNG",
       ),
     );
   }
@@ -189,25 +186,29 @@ class _ProfilePage extends State<ProfilePage> {
               // OutlinedButton(onPressed: onPressed, child: child)
             ],
           ),
-          if (!isWalletConnected)
-            OutlinedButton(
-              onPressed: switchWallectConnectedState,
-              style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+          Obx(() => profileController.isWalletConnected.value
+              ? SizedBox(
+                  width: 0,
+                  height: 0,
+                )
+              : OutlinedButton(
+                  onPressed: profileController.switchWallectConnectedState,
+                  style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      minimumSize: Size(117, 37),
+                      backgroundColor: const Color.fromARGB(255, 225, 62, 111),
+                      foregroundColor: Colors.white),
+                  child: const Text(
+                    'Connect Wallet',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400),
                   ),
-                  minimumSize: Size(117, 37),
-                  backgroundColor: const Color.fromARGB(255, 225, 62, 111),
-                  foregroundColor: Colors.white),
-              child: const Text(
-                'Connect Wallet',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
+                )),
         ],
       ),
     );
@@ -238,46 +239,6 @@ class _ProfilePage extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          /*
-        ...status.map(
-          (item) {
-            return Row(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      item['amount'].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      item['value'].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 190, 190, 190),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  height: 40.0,
-                  width: 1.0,
-                  color: const Color.fromARGB(255, 73, 150, 154),
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                ), //straight line after each value
-              ],
-            );
-          },
-        ),
-
-*/
-
           for (var item in status)
             Row(
               children: [

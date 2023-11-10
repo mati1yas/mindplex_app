@@ -28,7 +28,6 @@ class UserProfile {
   List<String>? interests;
   List<String>? socialLink;
 
-
   UserProfile({
     this.firstName,
     this.lastName,
@@ -77,9 +76,14 @@ class UserProfile {
     notifyWeekly = json['notify_weekly'];
     notifyUpdates = json['notify_updates'];
     biography = json['biography'];
-    education = Education.fromJson(json['education']);
-    interests = List<String>.from(json['interest']);
-    socialLink = List<String>.from(json['social_media']);
+    education = json['education'] != null
+        ? Education.fromJson(json['education'])
+        : null;
+    interests =
+        json['interest'] != null ? List<String>.from(json['interest']) : [];
+    socialLink = json['social_media'] != null
+        ? List<String>.from(json['social_media'])
+        : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -109,8 +113,8 @@ class UserProfile {
     data['social_media'] = this.socialLink;
     return data;
   }
-
 }
+
 class Education {
   String id;
   String educationalBackground;
