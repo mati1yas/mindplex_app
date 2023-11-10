@@ -65,24 +65,56 @@ class _RecommendationPageState extends State<RecommendationPage> {
     }
   }
   Future<String> updateUserProfile() async {
+    if(await checkSeekBarValues() == false) {
+      Flushbar(
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+        titleSize: 20,
+        messageSize: 17,
+        messageColor: Colors.white,
+        backgroundColor: Colors.red,
+        borderRadius: BorderRadius.circular(8),
+        message: "Sum of Recommendation values must be below 100",
+        duration: const Duration(seconds: 2),
+      ).show(context);
+    }
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(color: Colors.green[900]),
+        ));
     setState(() {
       _isUpdating = true;
     });
     try {
       UserProfile updatedProfile = UserProfile(
         // Set the updated values for the profile properties
-        recPopularity: _popularitySliderValue.floor(),
-        recPattern: _patternSliderValue.floor(),
-        recQuality: _highQualitySliderValue.floor(),
-        recRandom: _randomSliderValue.floor(),
-        recTimeliness: _timelinessSliderValue.floor(),
+        recPopularity: _popularitySliderValue.round(),
+        recPattern: _patternSliderValue.round(),
+        recQuality: _highQualitySliderValue.round(),
+        recRandom: _randomSliderValue.round(),
+        recTimeliness: _timelinessSliderValue.round(),
       );
-      String updatedValues = await _apiService.updateUserProfile(
+      String? updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
       );
-    setState(() {
-      _isUpdating = false;
-    });
+      print(updatedValues);
+      setState(() {
+        _isUpdating = false;
+      });
+      Navigator.of(context).pop();
+      Flushbar(
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+        titleSize: 20,
+        messageSize: 17,
+        messageColor: Colors.white,
+        backgroundColor: Colors.green,
+        borderRadius: BorderRadius.circular(8),
+        message: "Saved",
+        duration: const Duration(seconds: 2),
+      ).show(context);
       return updatedValues;
     } catch (e) {
       setState(() {
@@ -179,7 +211,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
     }
   }
 
-  bool checkSeekBarValues(){
+  Future<bool> checkSeekBarValues() async{
     int totalValues = 0;
     for(int i = 1;i<6;i++){
       totalValues +=getSeekBarValue(i).round();
@@ -383,55 +415,11 @@ class _RecommendationPageState extends State<RecommendationPage> {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: buildButton("Save", (() async {
-              if(!checkSeekBarValues()) {
-                var snackBar = SnackBar(
-                   content: Text(
-                       'Sum of Recommendation values must be below 100!',
-                       style: TextStyle(color: Colors.white),
-                     ),
-                   backgroundColor: Colors.redAccent,
-                   behavior: SnackBarBehavior.floating,
-                   margin: EdgeInsets.only(
-                     bottom: MediaQuery.of(context).size.height - 100,
-                     left: 10,
-                     right: 10,
-                   ),
-                     action: SnackBarAction(
-                     label: 'ok',
-                     textColor: Colors.white,
-                     onPressed: () {
-                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                     },
-                   ),);
-                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-              else {
                 updateUserProfile().then((String updatedValues) {
                   print('Updated values: $updatedValues');
-                  var snackBar = SnackBar(
-                    content: Text(
-                      'Recommendation values successfully set',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height - 100,
-                      left: 10,
-                      right: 10,
-                    ),
-                    action: SnackBarAction(
-                      label: 'ok',
-                      textColor: Colors.white,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      },
-                    ),);
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }).catchError((error) {
                   print('Error updating user profile: $error');
                 });
-              }
             }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
           ),],),),);
   }

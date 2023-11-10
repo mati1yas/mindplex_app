@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +32,7 @@ class PersonalSettingsPage extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
-String? first_name, last_name, biography,education;
+String? first_name, last_name, biography,education,profilePic;
 List<String>? interests = [];
 List<String> genderChoices = ['Male','Female','Non Binary','Prefer not to say', 'Other'];
 List<String> educationChoices = ['Doctorate Degree', 'Master\'s Degree', 'Bachelor\'s Degree' , 'Certificate or Diploma' , 'High School'];
@@ -62,6 +65,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     profileController.getAuthenticatedUser();
     first_name = profileController.authenticatedUser.value.firstName??" ";
     last_name = profileController.authenticatedUser.value.lastName??" ";
+    profilePic = profileController.authenticatedUser.value.image??"";
     fetchUserProfile();
   }
   int mapEducationFromApi(String apiResponse){
@@ -95,11 +99,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   }
 
   String detectSocialMediaPlatform(String url) {
-    if (RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/?$').hasMatch(url)) {
+    if (RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/.*').hasMatch(url)) {
       return "facebook";
-    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/?$').hasMatch(url)) {
+    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/.*').hasMatch(url)) {
       return "twitter";
-    } else if (RegExp(r'^https?:\/\/(?:www\.)?linkedin\.com\/?$').hasMatch(url)) {
+    } else if (RegExp(r'^https?:\/\/(?:www\.)?linkedin\.com\/.*').hasMatch(url)) {
       return "linkedin";
     } else {
       return "";
@@ -130,6 +134,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     }
       return "";
   }
+
   Future<void> fetchUserProfile() async {
     setState(() {
       _isLoading = true;
@@ -157,6 +162,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       print('Error fetching user profile: $e');
     }
   }
+
   Future<String> updateUserProfile(firstName,lastName) async {
     showDialog(
         context: context,
@@ -536,22 +542,21 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
               if (filePath != null) {
                 // let's try to upload the image
 
-                // try {
-                //   String imageUrl = await ApiProvider().changeProfilePicture(filePath);
-                //   setState(() {
-                //     image = imageUrl;
-                //   });
-                //   UserPreferences.setProfilePicture(imageUrl);
-                //   var landingPageController = Get.find<LandingPageController>();
-                //   landingPageController.profileImage = imageUrl;
-                // } catch (error) {
-                //   // let's show an error message
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(
-                //       content: Text("Failed to upload image. Try again later."),
-                //     ),
-                //   );
-                // }
+                try {
+                  String? imageUrl = await _apiService.changeProfilePicture(filePath);
+                  print(imageUrl);
+                  setState(() {
+                    profilePic = imageUrl;
+                  });
+                  localStorage.value.updateUserInfo(image: imageUrl);
+                } catch (error) {
+                  // let's show an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Failed to upload image. Try again later."),
+                    ),
+                  );
+                }
               } else {
                 // display a snackbar with error message (to the user)
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -569,16 +574,19 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   Future<String?> pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-    String filepath = '';
+
     if (pickedImage != null) {
-      filepath = pickedImage.path;
-      return filepath;
+      File imageFile = File(pickedImage.path);
+      List<int> imageBytes = await imageFile.readAsBytes();
+      String base64Image = base64Encode(imageBytes);
+      return base64Image;
     }
+
     return null;
   }
   Widget buildImage() {
     ImageProvider<Object> image = NetworkImage(
-      profileController.authenticatedUser.value.image ??
+          profilePic??
           "assets/images/profile.PNG",
     );
     return CircleAvatar(
