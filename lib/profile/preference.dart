@@ -108,7 +108,6 @@ class _PreferencePageState extends State<PreferencePage> {
         notifyInteraction: _notifyInteraction,
         notifyWeekly: _notifyWeekly,
         notifyUpdates: _notifyUpdates,
-        interests: []
       );
       String updatedValues = await _apiService.updateUserProfile(
         updatedProfile: updatedProfile,
