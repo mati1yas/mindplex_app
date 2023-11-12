@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/profile/profile_page.dart';
+import 'package:mindplex_app/profile/user_profile_displays/profile_page.dart';
 
 import '../../routes/app_routes.dart';
 import '../blogs_controller.dart';
