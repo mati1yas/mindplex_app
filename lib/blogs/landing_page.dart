@@ -495,45 +495,6 @@ class _LandingPageState extends State<LandingPage>
                   ]),
             ),
           ),
-          // Container(
-          //   height: 40,
-          //   child: ListView.builder(
-          //     scrollDirection: Axis.horizontal,
-          //     itemCount: blogsController.categories.length,
-          //     itemBuilder: (context, index) {
-          //       String category = blogsController.categories[index];
-
-          //       return GestureDetector(
-          //         onTap: () {
-          //           isIntialLoading = true;
-          //           blogsController.filterBlogsByRecommender(
-          //               category: category);
-          //         },
-          //         child: Obx(
-          //           () => Container(
-          //             margin: const EdgeInsets.only(left: 5, right: 5),
-          //             padding: const EdgeInsets.only(
-          //                 left: 20, right: 20, top: 8, bottom: 8),
-          //             decoration: BoxDecoration(
-          //                 color: blogsController.recommender.value ==
-          //                         blogsController.recommenderMaps[category]
-          //                     ? Color(0xFF46b4b5)
-          //                     : Color(0xFF0f567c),
-          //                 borderRadius:
-          //                     const BorderRadius.all(Radius.circular(10))),
-          //             child: Center(
-          //               child: Text(
-          //                 category,
-          //                 style: const TextStyle(
-          //                     fontSize: 12, color: Colors.white),
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
 
           Obx(() {
             return blogsController.isLoading.value == true && isIntialLoading
