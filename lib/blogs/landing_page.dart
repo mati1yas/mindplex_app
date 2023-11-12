@@ -22,13 +22,27 @@ class LandingPage extends StatefulWidget {
   State<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends State<LandingPage> {
+class _LandingPageState extends State<LandingPage>
+    with SingleTickerProviderStateMixin {
   BlogsController blogsController = Get.put(BlogsController());
 
   GlobalKey<ScaffoldState> _globalkey = GlobalKey<ScaffoldState>();
 
   ProfileController profileController = Get.put(ProfileController());
   bool isIntialLoading = true;
+
+  late TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      String category = blogsController.categories[_tabController.index];
+      isIntialLoading = true;
+      blogsController.filterBlogsByRecommender(category: category);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
@@ -63,8 +77,9 @@ class _LandingPageState extends State<LandingPage> {
                                 EdgeInsets.only(top: 40, left: 10, bottom: 15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
-                              color: Colors.green,
+                              color: Color(0xFF0c2b46),
                               image: DecorationImage(
+                                fit: BoxFit.cover,
                                 image: NetworkImage(profileController
                                         .authenticatedUser.value.image ??
                                     ""),
@@ -413,8 +428,9 @@ class _LandingPageState extends State<LandingPage> {
                       margin: EdgeInsets.only(left: 40),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green,
+                        color: Color(0xFF0c2b46),
                         image: DecorationImage(
+                          fit: BoxFit.cover,
                           image: NetworkImage(
                               profileController.authenticatedUser.value.image ??
                                   ""),
@@ -444,44 +460,80 @@ class _LandingPageState extends State<LandingPage> {
             height: 30,
           ),
           Container(
-            height: 40,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: blogsController.categories.length,
-              itemBuilder: (context, index) {
-                String category = blogsController.categories[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    isIntialLoading = true;
-                    blogsController.filterBlogsByRecommender(
-                        category: category);
-                  },
-                  child: Obx(
-                    () => Container(
-                      margin: const EdgeInsets.only(left: 5, right: 5),
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 8, bottom: 8),
-                      decoration: BoxDecoration(
-                          color: blogsController.recommender.value ==
-                                  blogsController.recommenderMaps[category]
-                              ? Color(0xFF46b4b5)
-                              : Color(0xFF0f567c),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10))),
-                      child: Center(
-                        child: Text(
-                          category,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.white),
-                        ),
+            alignment: Alignment.center,
+            width: 345,
+            height: 35,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(50, 118, 118, 128),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Obx(
+              () => TabBar(
+                  isScrollable: true,
+                  dividerColor: Colors.grey,
+                  indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: blogsController.post_format == 'text'
+                          ? Color(0xFF8aa7da)
+                          : blogsController.post_format == 'video'
+                              ? Color.fromARGB(239, 203, 141, 141)
+                              : blogsController.post_format == "listen"
+                                  ? const Color.fromARGB(255, 131, 235, 100)
+                                  : const Color.fromARGB(255, 131, 235, 100)
+                      // color: const Color.fromARGB(255, 49, 153, 167),
                       ),
+                  indicatorColor: Colors.green,
+                  controller: _tabController,
+                  unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+                  tabs: [
+                    Tab(
+                      text: "All",
                     ),
-                  ),
-                );
-              },
+                    Tab(text: "Popular"),
+                    Tab(text: "Most Recent"),
+                    Tab(text: "Trending"),
+                  ]),
             ),
           ),
+          // Container(
+          //   height: 40,
+          //   child: ListView.builder(
+          //     scrollDirection: Axis.horizontal,
+          //     itemCount: blogsController.categories.length,
+          //     itemBuilder: (context, index) {
+          //       String category = blogsController.categories[index];
+
+          //       return GestureDetector(
+          //         onTap: () {
+          //           isIntialLoading = true;
+          //           blogsController.filterBlogsByRecommender(
+          //               category: category);
+          //         },
+          //         child: Obx(
+          //           () => Container(
+          //             margin: const EdgeInsets.only(left: 5, right: 5),
+          //             padding: const EdgeInsets.only(
+          //                 left: 20, right: 20, top: 8, bottom: 8),
+          //             decoration: BoxDecoration(
+          //                 color: blogsController.recommender.value ==
+          //                         blogsController.recommenderMaps[category]
+          //                     ? Color(0xFF46b4b5)
+          //                     : Color(0xFF0f567c),
+          //                 borderRadius:
+          //                     const BorderRadius.all(Radius.circular(10))),
+          //             child: Center(
+          //               child: Text(
+          //                 category,
+          //                 style: const TextStyle(
+          //                     fontSize: 12, color: Colors.white),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
 
           Obx(() {
             return blogsController.isLoading.value == true && isIntialLoading
