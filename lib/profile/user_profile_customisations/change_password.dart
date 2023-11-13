@@ -1,14 +1,16 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
+import 'package:mindplex_app/profile/user_profile_customisations/general_settings.dart';
+import 'package:mindplex_app/services/api_services.dart';
 
 import '../../auth/auth_controller/auth_controller.dart';
 import '../../blogs/widgets/gradient_button.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/colors.dart';
-import 'general_settings.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -17,38 +19,79 @@ class ChangePasswordPage extends StatefulWidget {
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-String? oldPasswordError, newPasswordError;
+String? newPasswordError, confirmPasswordError;
 bool _oldPasswordVisible = false;
-bool _newPasswordVisible = false;
+bool _confirmPasswordVisible = false;
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   AuthController authController = Get.put(AuthController());
 
   ProfileController profileController = Get.put(ProfileController());
-  final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  late FocusNode oldPasswordFocusNode, newPasswordFocusNode;
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  late FocusNode newPasswordFocusNode, confirmPasswordFocusNode;
 
   @override
   void initState() {
     _oldPasswordVisible = false;
-    _newPasswordVisible = false;
+    _confirmPasswordVisible = false;
     super.initState();
 
-    oldPasswordFocusNode = FocusNode();
     newPasswordFocusNode = FocusNode();
-    oldPasswordFocusNode.addListener(() => setState(() {}));
+    confirmPasswordFocusNode = FocusNode();
     newPasswordFocusNode.addListener(() => setState(() {}));
+    confirmPasswordFocusNode.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    oldPasswordController.dispose();
     newPasswordController.dispose();
-    oldPasswordFocusNode.dispose();
+    confirmPasswordController.dispose();
     newPasswordFocusNode.dispose();
+    confirmPasswordFocusNode.dispose();
 
     super.dispose();
+  }
+
+  bool _isUpdating = false;
+  ApiService _apiService = ApiService();
+  Future<String> changePassword(String password) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+              child: CircularProgressIndicator(color: Colors.green[900]),
+            ));
+    setState(() {
+      _isUpdating = true;
+    });
+    try {
+      String? message = await _apiService.changePassword(password);
+      print(message);
+      setState(() {
+        _isUpdating = false;
+      });
+      Navigator.of(context).pop();
+      Flushbar(
+        flushbarPosition: FlushbarPosition.BOTTOM,
+        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+        titleSize: 20,
+        messageSize: 17,
+        messageColor: Colors.white,
+        backgroundColor: Colors.green,
+        borderRadius: BorderRadius.circular(8),
+        message: "Password Changed",
+        duration: const Duration(seconds: 2),
+      ).show(context);
+      return message;
+    } catch (e) {
+      setState(() {
+        _isUpdating = false;
+      });
+      print('Error updating user profile: $e');
+      return '';
+    }
   }
 
   bool isSaved = false;
@@ -71,7 +114,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 Container(
                   alignment: Alignment.topLeft,
                   margin: const EdgeInsets.only(top: 20),
-                  child: Text("Old Password",
+                  child: Text("New Password",
                       style: textTheme.displayMedium?.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -83,36 +126,42 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     children: [
                       _container(
                           context,
-                          oldPasswordController,
-                          "Old Password",
-                          "password",
-                          oldPasswordFocusNode,
+                          newPasswordController,
+                          "New Password",
+                          "new",
                           newPasswordFocusNode,
+                          confirmPasswordFocusNode,
                           null, () {
                         setState(() {
                           _oldPasswordVisible = !_oldPasswordVisible;
                         });
                       }),
-                      oldPasswordError != null && isSaved
-                          ? errorMessage(oldPasswordError.toString())
+                      newPasswordError != null && isSaved
+                          ? errorMessage(newPasswordError.toString())
                           : Container(),
                       Container(
                         alignment: Alignment.topLeft,
                         margin: const EdgeInsets.only(top: 20),
-                        child: Text("New Password",
+                        child: Text("Confirm Password",
                             style: textTheme.displayMedium?.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.amber)),
                       ),
-                      _container(context, newPasswordController, "New Password",
-                          "new", newPasswordFocusNode, null, null, () {
+                      _container(
+                          context,
+                          confirmPasswordController,
+                          "Confirm Password",
+                          "confirm",
+                          confirmPasswordFocusNode,
+                          null,
+                          newPasswordController.text, () {
                         setState(() {
-                          _newPasswordVisible = !_newPasswordVisible;
+                          _confirmPasswordVisible = !_confirmPasswordVisible;
                         });
                       }),
-                      newPasswordError != null && isSaved
-                          ? errorMessage(newPasswordError.toString())
+                      confirmPasswordError != null && isSaved
+                          ? errorMessage(confirmPasswordError.toString())
                           : Container(),
                       const SizedBox(
                         height: 30,
@@ -124,7 +173,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     buildButton("Cancel", () async {
-                      print("account deleted");
+                      newPasswordController.text = "";
+                      confirmPasswordController.text = "";
                     }, Colors.blueAccent, false),
                     buildButton("Save", (() async {
                       isSaved = false;
@@ -133,9 +183,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         isSaved = true;
                       });
                       if (isValidForm) {
-                        print(newPasswordController.text! +
-                            " " +
-                            oldPasswordController.text!);
+                        changePassword(confirmPasswordController.text);
                       }
                     }), Colors.blueAccent.shade200, true)
                   ],
@@ -182,8 +230,8 @@ Widget _container(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           obscureText:
-              type == "password" ? !_oldPasswordVisible : !_newPasswordVisible,
-          style: type == "password"
+              type == "new" ? !_oldPasswordVisible : !_confirmPasswordVisible,
+          style: type == "new"
               ? _oldPasswordVisible
                   ? textTheme.displayMedium?.copyWith(
                       fontSize: 15,
@@ -191,7 +239,7 @@ Widget _container(
                       color: Colors.white)
                   : TextStyle(color: Colors.amber, fontSize: 30)
               : //font size to be changed later on
-              _newPasswordVisible
+              _confirmPasswordVisible
                   ? textTheme.displayMedium?.copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
@@ -209,11 +257,11 @@ Widget _container(
               borderRadius: BorderRadius.circular(15.0),
             ),
             errorStyle: const TextStyle(fontSize: 0.01),
-            contentPadding: type == "password"
+            contentPadding: type == "new"
                 ? _oldPasswordVisible
                     ? EdgeInsets.only(left: 10, top: 10, bottom: 10)
                     : EdgeInsets.only(left: 5, bottom: 5)
-                : _newPasswordVisible
+                : _confirmPasswordVisible
                     ? EdgeInsets.only(left: 10, top: 10, bottom: 10)
                     : EdgeInsets.only(left: 5, bottom: 5),
             focusedBorder: OutlineInputBorder(
@@ -232,11 +280,11 @@ Widget _container(
             suffixIcon: IconButton(
               onPressed: onTap,
               icon: Icon(
-                type == "password"
+                type == "new"
                     ? _oldPasswordVisible
                         ? Icons.visibility
                         : Icons.visibility_off
-                    : _newPasswordVisible
+                    : _confirmPasswordVisible
                         ? Icons.visibility
                         : Icons.visibility_off,
                 color: focus.hasFocus ? Colors.blue : Colors.amber,
@@ -245,27 +293,39 @@ Widget _container(
             ),
           ),
           onFieldSubmitted: ((value) {
-            if (type == "password") {
+            if (type == "new") {
               FocusScope.of(context).requestFocus(focusNext);
             } else {
               FocusScope.of(context).unfocus();
             }
           }),
           validator: ((value) {
-            if (type == "password") {
-              if (value != null && value.length < 8) {
-                oldPasswordError = "Must be at least 8 characters";
-                return oldPasswordError;
-              } else {
-                oldPasswordError = null;
-                return null;
-              }
-            } else if (type == "new") {
+            if (type == "new") {
               if (value != null && value.length < 8) {
                 newPasswordError = "Must be at least 8 characters";
                 return newPasswordError;
+              } else if (!value!.contains(RegExp(r'[a-z]'))) {
+                newPasswordError = "Must have at least 1 lower case alphabet";
+                return newPasswordError;
+              } else if (!value!.contains(RegExp(r'[A-Z]'))) {
+                newPasswordError = "Must have at least 1 upper case alphabet";
+                return newPasswordError;
+              } else if (!value!.contains(RegExp(r'[0-9]'))) {
+                newPasswordError = "Must have at least 1 number";
+                return newPasswordError;
               } else {
                 newPasswordError = null;
+                return null;
+              }
+            } else if (type == "confirm") {
+              if (value != null && value.length < 8) {
+                confirmPasswordError = "Must be at least 8 characters";
+                return confirmPasswordError;
+              } else if (value != confirmPassword) {
+                confirmPasswordError = "Passwords do not match";
+                return confirmPasswordError;
+              } else {
+                confirmPasswordError = null;
                 return null;
               }
             } else {
