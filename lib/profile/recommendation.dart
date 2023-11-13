@@ -65,7 +65,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
     }
   }
   Future<String> updateUserProfile() async {
-    if(await checkSeekBarValues() == false) {
+    if (await checkSeekBarValues() == false) {
       Flushbar(
         flushbarPosition: FlushbarPosition.BOTTOM,
         margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
@@ -77,54 +77,57 @@ class _RecommendationPageState extends State<RecommendationPage> {
         message: "Sum of Recommendation values must be below 100",
         duration: const Duration(seconds: 2),
       ).show(context);
-    }
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: CircularProgressIndicator(color: Colors.green[900]),
-        ));
-    setState(() {
-      _isUpdating = true;
-    });
-    try {
-      UserProfile updatedProfile = UserProfile(
-        // Set the updated values for the profile properties
-        recPopularity: _popularitySliderValue.round(),
-        recPattern: _patternSliderValue.round(),
-        recQuality: _highQualitySliderValue.round(),
-        recRandom: _randomSliderValue.round(),
-        recTimeliness: _timelinessSliderValue.round(),
-      );
-      String? updatedValues = await _apiService.updateUserProfile(
-        updatedProfile: updatedProfile,
-      );
-      print(updatedValues);
-      setState(() {
-        _isUpdating = false;
-      });
-      Navigator.of(context).pop();
-      Flushbar(
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-        titleSize: 20,
-        messageSize: 17,
-        messageColor: Colors.white,
-        backgroundColor: Colors.green,
-        borderRadius: BorderRadius.circular(8),
-        message: "Saved",
-        duration: const Duration(seconds: 2),
-      ).show(context);
-      return updatedValues;
-    } catch (e) {
-      setState(() {
-        _isUpdating = false;
-      });
-      print('Error updating user profile: $e');
       return '';
     }
+    else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) =>
+              Center(
+                child: CircularProgressIndicator(color: Colors.green[900]),
+              ));
+      setState(() {
+        _isUpdating = true;
+      });
+      try {
+        UserProfile updatedProfile = UserProfile(
+          // Set the updated values for the profile properties
+          recPopularity: _popularitySliderValue.round(),
+          recPattern: _patternSliderValue.round(),
+          recQuality: _highQualitySliderValue.round(),
+          recRandom: _randomSliderValue.round(),
+          recTimeliness: _timelinessSliderValue.round(),
+        );
+        String? updatedValues = await _apiService.updateUserProfile(
+          updatedProfile: updatedProfile,
+        );
+        print(updatedValues);
+        setState(() {
+          _isUpdating = false;
+        });
+        Navigator.of(context).pop();
+        Flushbar(
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+          titleSize: 20,
+          messageSize: 17,
+          messageColor: Colors.white,
+          backgroundColor: Colors.green,
+          borderRadius: BorderRadius.circular(8),
+          message: "Saved",
+          duration: const Duration(seconds: 2),
+        ).show(context);
+        return updatedValues;
+      } catch (e) {
+        setState(() {
+          _isUpdating = false;
+        });
+        print('Error updating user profile: $e');
+        return '';
+      }
+    }
   }
-
   void updateSeekBarValue(int seekBarIndex, double newValue) {
     setState(() {
       double totalAmount = 0;
@@ -259,7 +262,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
             padding: const EdgeInsets.all(16.0),
             child: Text("Here, you can set the intensity of our recommendation engine's parameters. "
                 "Mindplex empowers you to own your own model, and we recommend content based on a model of your choice. "
-                "Edit your model here, and enjoy our content from the read pages." , textAlign: TextAlign.justify,style: TextStyle(color: Colors.white,fontSize: 15),),
+                "Edit your model here, and enjoy our content from the read pages." , textAlign: TextAlign.justify,style: TextStyle(color: Colors.white,fontSize: 14),),
           ),),
           Column(
             children: [
@@ -270,14 +273,16 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   child: Text(
                     "Popularity",
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 255, 226, 121),
+                        fontWeight: FontWeight.w400,
                         fontSize: 20
                     ),
                   ),
                 ),
               ),
               Slider(
+                thumbColor: Color.fromARGB(255, 0, 207, 195),
+                activeColor: Color.fromARGB(255, 0, 207, 195),
                 value: editedSeekbars.isEmpty&&_popularitySliderValue == 0.0?50.0:_popularitySliderValue,
                 max: 100,
                 divisions: 100,
@@ -285,9 +290,9 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 onChanged: (newValue) => updateSeekBarValue(1, newValue),
               ),
              Center(child: Text((editedSeekbars.isEmpty&&_popularitySliderValue == 0.0?" ":_popularitySliderValue.round().toString())+"%",style: TextStyle(
-                 color: Colors.amber,
+                 color: Color.fromARGB(255, 255, 226, 121),
                  fontWeight: FontWeight.w500,
-                 fontSize: 20),)
+                 fontSize: 18),)
              ),
             ],
           ),
@@ -300,14 +305,16 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   child: Text(
                     "Pattern",
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 255, 226, 121),
+                        fontWeight: FontWeight.w400,
                         fontSize: 20
                     ),
                   ),
                 ),
               ),
               Slider(
+                thumbColor: Color.fromARGB(255, 0, 207, 195),
+                activeColor: Color.fromARGB(255, 0, 207, 195),
                 value: editedSeekbars.isEmpty&&_patternSliderValue == 0.0?50.0:_patternSliderValue,
                 max: 100,
                 divisions: 100,
@@ -315,9 +322,9 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 onChanged: (newValue) => updateSeekBarValue(2, newValue),
               ),
               Center(child: Text((editedSeekbars.isEmpty&&_patternSliderValue == 0.0?" ":_patternSliderValue.round().toString().toString())+"%",style: TextStyle(
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 255, 226, 121),
                   fontWeight: FontWeight.w500,
-                  fontSize: 20),)
+                  fontSize: 18),)
               ),
             ],
           ),
@@ -330,14 +337,16 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   child: Text(
                     "High Quality",
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 255, 226, 121),
+                        fontWeight: FontWeight.w400,
                         fontSize: 20
                     ),
                   ),
                 ),
               ),
               Slider(
+                thumbColor: Color.fromARGB(255, 0, 207, 195),
+                activeColor: Color.fromARGB(255, 0, 207, 195),
                 value: editedSeekbars.isEmpty&&_highQualitySliderValue == 0.0?50.0:_highQualitySliderValue,
                 max: 100,
                 divisions: 100,
@@ -345,9 +354,9 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 onChanged: (newValue) => updateSeekBarValue(3, newValue),
               ),
               Center(child: Text((editedSeekbars.isEmpty&&_highQualitySliderValue == 0.0?" ":_highQualitySliderValue.round().toString())+"%",style: TextStyle(
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 255, 226, 121),
                   fontWeight: FontWeight.w500,
-                  fontSize: 20),)
+                  fontSize: 18),)
               ),
             ],
           ),
@@ -360,14 +369,16 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   child: Text(
                     "Random",
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 255, 226, 121),
+                        fontWeight: FontWeight.w400,
                         fontSize: 20
                     ),
                   ),
                 ),
               ),
               Slider(
+                thumbColor: Color.fromARGB(255, 0, 207, 195),
+                activeColor: Color.fromARGB(255, 0, 207, 195),
                 value: editedSeekbars.isEmpty&&_randomSliderValue == 0.0?50.0:_randomSliderValue,
                 max: 100,
                 divisions: 100,
@@ -375,9 +386,9 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 onChanged: (newValue) => updateSeekBarValue(4, newValue),
               ),
               Center(child: Text((editedSeekbars.isEmpty&&_randomSliderValue == 0.0?"":_randomSliderValue.round().toString())+"%",style: TextStyle(
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 255, 226, 121),
                   fontWeight: FontWeight.w500,
-                  fontSize: 20),)
+                  fontSize: 18),)
               ),
             ],
           ),
@@ -390,14 +401,16 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   child: Text(
                     "Timeliness",
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 255, 226, 121),
+                        fontWeight: FontWeight.w400,
                         fontSize: 20
                     ),
                   ),
                 ),
               ),
               Slider(
+                thumbColor: Color.fromARGB(255, 0, 207, 195),
+                activeColor: Color.fromARGB(255, 0, 207, 195),
                 value: editedSeekbars.isEmpty&&_timelinessSliderValue == 0.0?50.0:_timelinessSliderValue!,
                 max: 100,
                 divisions: 100,
@@ -405,53 +418,47 @@ class _RecommendationPageState extends State<RecommendationPage> {
                 onChanged: (newValue) => updateSeekBarValue(5, newValue),
               ),
               Center(child: Text((editedSeekbars.isEmpty&&_timelinessSliderValue == 0.0?" ":_timelinessSliderValue.round().toString())+"%",style: TextStyle(
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 255, 226, 121),
                   fontWeight: FontWeight.w500,
-                  fontSize: 20),)
+                  fontSize: 18),)
               ),
               SizedBox(height: 10,)
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 15.0),
+          Center(
             child: buildButton("Save", (() async {
                 updateUserProfile().then((String updatedValues) {
                   print('Updated values: $updatedValues');
                 }).catchError((error) {
                   print('Error updating user profile: $error');
                 });
-            }), const Color(0xFFF400D7), const Color(0xFFFF00D7)),
+            })),
           ),],),),);
   }
 
-  Widget buildButton(String label, VoidCallback onTap, Color color1, Color color2) {
-    return SizedBox(
-      key: UniqueKey(),
-      width: 150,
-      height: 50,
-      child: GestureDetector(
-        onTap: _isUpdating?null:onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: _isUpdating?LinearGradient(
-              colors: [Colors.white, Colors.white, Colors.white, Colors.white],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ):LinearGradient(
-              colors: [color1, color1, color1, color2],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+  Widget buildButton(String label, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      child: SizedBox(
+        key: UniqueKey(),
+        width: 150,
+        height: 50,
+        child: GestureDetector(
+          onTap: _isUpdating?null:onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 0, 207, 195),
+              borderRadius: BorderRadius.circular(10),
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: !_isUpdating?Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 20),
-            ):Text(
-              "saving...",
-              style: const TextStyle(color: Colors.purpleAccent, fontSize: 20),
-            )
+            child: Center(
+              child: !_isUpdating?Text(
+                label,
+                style: const TextStyle(color: Colors.white, fontSize: 20),
+              ):Text(
+                "saving...",
+                style: const TextStyle(color: Colors.white, fontSize: 20),
+              )
+            ),
           ),
         ),
       ),

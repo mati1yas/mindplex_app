@@ -101,7 +101,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   String detectSocialMediaPlatform(String url) {
     if (RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/.*').hasMatch(url)) {
       return "facebook";
-    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/.*').hasMatch(url)) {
+    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/.*').hasMatch(url) || RegExp(r'^https?:\/\/(?:www\.)?x\.com\/.*').hasMatch(url)) {
       return "twitter";
     } else if (RegExp(r'^https?:\/\/(?:www\.)?linkedin\.com\/.*').hasMatch(url)) {
       return "linkedin";
