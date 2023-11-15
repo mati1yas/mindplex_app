@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/profile/user_profile_controller.dart';
 import 'package:mindplex_app/utils/colors.dart';
 
@@ -70,11 +67,20 @@ class _AboutScreen extends State<AboutScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            profileController.userProfile.value.age.toString() +
-                                ' years',
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                          profileController.userProfile.value.age != null
+                              ? Text(
+                                  profileController.userProfile.value.age
+                                          .toString() +
+                                      ' years',
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              : Tooltip(
+                                  message: "Private data",
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ],
                       ),
                       const Spacer(),
@@ -85,10 +91,19 @@ class _AboutScreen extends State<AboutScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            profileController.userProfile.value.gender ?? "",
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                          profileController.userProfile.value.gender != null
+                              ? Text(
+                                  profileController.userProfile.value.gender
+                                      .toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              : Tooltip(
+                                  message: "Private data",
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ],
                       ),
                     ],
