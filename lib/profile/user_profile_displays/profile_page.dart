@@ -49,31 +49,38 @@ class _ProfilePage extends State<ProfilePage>
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              buildTop(),
-              buildUserName(),
-              buildStatus(),
-              buidScreens(),
-            ],
-          ),
+          child: Obx(() => profileController.isLoading.value
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    buildTop(params),
+                    buildUserName(params),
+                    buildStatus(params),
+                    buidScreens(),
+                  ],
+                )),
         ));
   }
 
-  Widget buildCoverImage() {
+  Widget buildCoverImage(dynamic params) {
     // decoration:BoxDecoration()), add curves to the image
     return CircleAvatar(
       backgroundColor: Colors.green,
       radius: MediaQuery.of(context).size.width * 0.25,
       backgroundImage: NetworkImage(
-        profileController.authenticatedUser.value.image ??
-            "assets/images/profile.PNG",
+        params['me'] == 'me'
+            ? profileController.authenticatedUser.value.image ??
+                "assets/images/profile.PNG"
+            : profileController.userProfile.value.avatarUrl ??
+                "assets/images/profile.PNG",
       ),
     );
   }
 
-  Widget buildTop() {
+  Widget buildTop(dynamic params) {
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.only(bottom: 20, top: 20),
@@ -81,7 +88,7 @@ class _ProfilePage extends State<ProfilePage>
           clipBehavior: Clip.none,
           alignment: Alignment.center,
           children: [
-            buildCoverImage(),
+            buildCoverImage(params),
             Positioned(
               top: 0,
               left: 5,
@@ -104,7 +111,7 @@ class _ProfilePage extends State<ProfilePage>
                         PopupMenuItem(
                           onTap: () {
                             authController.logout();
-                            Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                           },
                           child: Row(
                             children: [
@@ -132,10 +139,9 @@ class _ProfilePage extends State<ProfilePage>
     );
   }
 
-  Widget buildUserName() {
-    final firstName =
-        profileController.authenticatedUser.value.firstName ?? " ";
-    final lastName = profileController.authenticatedUser.value.lastName ?? " ";
+  Widget buildUserName(dynamic params) {
+    final firstName = profileController.userProfile.value.firstName ?? " ";
+    final lastName = profileController.userProfile.value.lastName ?? " ";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -158,7 +164,7 @@ class _ProfilePage extends State<ProfilePage>
                 ),
               ),
               Text(
-                profileController.authenticatedUser.value.username ?? "",
+                profileController.userProfile.value.username ?? "",
                 style: TextStyle(
                   color: Color.fromARGB(255, 190, 190, 190),
                   fontSize: 15,
@@ -168,35 +174,37 @@ class _ProfilePage extends State<ProfilePage>
               // OutlinedButton(onPressed: onPressed, child: child)
             ],
           ),
-          Obx(() => profileController.isWalletConnected.value
-              ? SizedBox(
-                  width: 0,
-                  height: 0,
-                )
-              : OutlinedButton(
-                  onPressed: profileController.switchWallectConnectedState,
-                  style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      minimumSize: Size(117, 37),
-                      backgroundColor: const Color.fromARGB(255, 225, 62, 111),
-                      foregroundColor: Colors.white),
-                  child: const Text(
-                    'Connect Wallet',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
-                  ),
-                )),
+          if (params['me'] == 'me')
+            Obx(() => profileController.isWalletConnected.value
+                ? SizedBox(
+                    width: 0,
+                    height: 0,
+                  )
+                : OutlinedButton(
+                    onPressed: profileController.switchWallectConnectedState,
+                    style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        minimumSize: Size(117, 37),
+                        backgroundColor:
+                            const Color.fromARGB(255, 225, 62, 111),
+                        foregroundColor: Colors.white),
+                    child: const Text(
+                      'Connect Wallet',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  )),
         ],
       ),
     );
   }
 
-  Widget buildStatus() {
+  Widget buildStatus(dynamic params) {
     var status = [
       {
         "amount": profileController.authenticatedUser.value.friends.toString(),
