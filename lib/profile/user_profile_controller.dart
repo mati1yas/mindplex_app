@@ -15,7 +15,7 @@ import 'user_profile_displays/bookmark_screen.dart';
 class ProfileController extends GetxController {
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
   RxString selectedTabCategory = "About".obs;
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
@@ -65,9 +65,8 @@ class ProfileController extends GetxController {
   Future<void> getUserProfile({required String username}) async {
     isLoading.value = true;
     final res = await apiService.value.fetchUserProfile(userName: username);
+    userProfile.value = res;
     isLoading.value = false;
-
-    userProfile = Rx(res);
   }
 
   void fetchBlogs() async {
