@@ -28,10 +28,10 @@ class AuthController extends GetxController {
 
   void checkFirstTime() async {}
 
-  void logout() {
-    localStorage.value.deleteFromStorage("Token");
+  void logout() async {
+    await localStorage.value.deleteFromStorage("Token");
     isAuthenticated.value = false;
-    Get.toNamed(AppRoutes.authPage);
+    Get.offAllNamed(AppRoutes.authPage);
   }
 
   Future<void> loginUser(
