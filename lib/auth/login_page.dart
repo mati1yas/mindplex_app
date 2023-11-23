@@ -122,7 +122,8 @@ class _LoginPageState extends State<LoginPage> {
                                       BoxShadow(
                                         blurRadius: 10,
                                         offset: const Offset(1, 1),
-                                        color: Color.fromARGB(54, 188, 187, 187),
+                                        color:
+                                            Color.fromARGB(54, 188, 187, 187),
                                       )
                                     ],
                                     borderRadius: BorderRadius.circular(15),
@@ -136,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
                                         prefixIcon: Icon(
                                           Icons.mail_outline,
                                           color: emailFocusNode.hasFocus
-                                              ? Color.fromARGB(224, 14, 187, 158)
+                                              ? Color.fromARGB(
+                                                  224, 14, 187, 158)
                                               : Colors.grey,
                                         ),
                                         hintText: "Email",
@@ -150,8 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                                         errorStyle:
                                             const TextStyle(fontSize: 0.01),
                                         errorBorder: OutlineInputBorder(
-                                          borderSide:
-                                              const BorderSide(color: Colors.red),
+                                          borderSide: const BorderSide(
+                                              color: Colors.red),
                                           borderRadius:
                                               BorderRadius.circular(15.0),
                                         ),
@@ -194,7 +196,8 @@ class _LoginPageState extends State<LoginPage> {
                                       BoxShadow(
                                         blurRadius: 10,
                                         offset: Offset(1, 1),
-                                        color: Color.fromARGB(54, 188, 187, 187),
+                                        color:
+                                            Color.fromARGB(54, 188, 187, 187),
                                       )
                                     ],
                                     borderRadius: BorderRadius.circular(15),
@@ -218,35 +221,42 @@ class _LoginPageState extends State<LoginPage> {
                                           });
                                         },
                                         icon: isPressed
-                                            ? Icon(Icons.visibility_off_outlined,
-                                                color: passwordFocusNode.hasFocus
-                                                    ? const Color.fromARGB(
-                                                        224, 14, 187, 158)
-                                                    : Colors.grey)
+                                            ? Icon(
+                                                Icons.visibility_off_outlined,
+                                                color:
+                                                    passwordFocusNode.hasFocus
+                                                        ? const Color.fromARGB(
+                                                            224, 14, 187, 158)
+                                                        : Colors.grey)
                                             : Icon(Icons.visibility_outlined,
-                                                color: passwordFocusNode.hasFocus
-                                                    ? const Color.fromARGB(
-                                                        224, 14, 187, 158)
-                                                    : Colors.grey),
+                                                color:
+                                                    passwordFocusNode.hasFocus
+                                                        ? const Color.fromARGB(
+                                                            224, 14, 187, 158)
+                                                        : Colors.grey),
                                       ),
                                       hintText: "Password",
                                       hintStyle: TextStyle(
-                                          color: Colors.grey[400], fontSize: 14),
+                                          color: Colors.grey[400],
+                                          fontSize: 14),
                                       fillColor: secondbackgroundColor,
                                       filled: true,
                                       border: inputBorder,
                                       enabledBorder: inputBorder,
-                                      errorStyle: const TextStyle(fontSize: 0.01),
+                                      errorStyle:
+                                          const TextStyle(fontSize: 0.01),
                                       errorBorder: OutlineInputBorder(
                                         borderSide:
                                             const BorderSide(color: Colors.red),
-                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                             color: Color.fromARGB(
                                                 224, 14, 187, 158)),
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                     ),
                                     style: textTheme.displayMedium?.copyWith(
@@ -304,7 +314,8 @@ class _LoginPageState extends State<LoginPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                               fixedSize: Size(260, 50),
-                              backgroundColor: Color.fromARGB(224, 14, 187, 158)),
+                              backgroundColor:
+                                  Color.fromARGB(224, 14, 187, 158)),
                           onPressed: login,
                           child: Text('Login'),
                         ),

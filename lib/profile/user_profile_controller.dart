@@ -4,18 +4,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/models/auth_model.dart';
 import 'package:mindplex_app/models/user_profile.dart';
-import 'package:mindplex_app/profile/draft_screen.dart';
+import 'package:mindplex_app/profile/user_profile_displays/draft_screen.dart';
 import 'package:mindplex_app/services/api_services.dart';
 import 'package:mindplex_app/services/local_storage.dart';
 
 import '../models/popularModel.dart';
-import 'about_screen.dart';
-import 'bookmark_screen.dart';
+import 'user_profile_displays/about_screen.dart';
+import 'user_profile_displays/bookmark_screen.dart';
 
 class ProfileController extends GetxController {
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
   RxString selectedTabCategory = "About".obs;
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
@@ -65,9 +65,8 @@ class ProfileController extends GetxController {
   Future<void> getUserProfile({required String username}) async {
     isLoading.value = true;
     final res = await apiService.value.fetchUserProfile(userName: username);
+    userProfile.value = res;
     isLoading.value = false;
-
-    userProfile = Rx(res);
   }
 
   void fetchBlogs() async {
