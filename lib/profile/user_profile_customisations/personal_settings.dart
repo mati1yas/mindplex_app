@@ -493,9 +493,12 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                             .map((text) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      text!,
-                                      style: TextStyle(color: Colors.white,fontSize: 13),
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        text,
+                                        style: TextStyle(color: Colors.white,fontSize: 14),
+                                      ),
                                     ),
                                     GestureDetector(
                                       onTap: (){
@@ -556,7 +559,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                                       },
                                       icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
                                 ],
-                              ):SizedBox(width: 30,),
+                              ):SizedBox(width:0,),
                             searchSocialMediaPlaform(
                                 _socialMediaLinks, 2) !=
                                 ""?Row(
@@ -593,7 +596,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                                     },
                                     icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
                               ],
-                            ):SizedBox(width: 30,),
+                            ):SizedBox(width: 0,),
                             searchSocialMediaPlaform(
                                 _socialMediaLinks, 3) !=
                                 ""?Row(
@@ -627,10 +630,11 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                                     },
                                     icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
                               ],
-                            ):SizedBox(width: 30,),
+                            ):SizedBox(width:0,),
                           ],
                         ),
-                        Expanded(
+                        Flexible(
+                          fit:FlexFit.loose,
                           child: buildButton("Add link", () {
                             isLinkAdded = false;
                             final isValidLink = socialLinkError == null;
@@ -923,9 +927,6 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           return null;
                         }
                       } else if (type == "social") {
-                        if (value == "") {
-                          return null;
-                        }
                         final urlPattern = RegExp(
                           r'^(https?|ftp)://[^\s/$.?#].[^\s]*$',
                           caseSensitive: false,
