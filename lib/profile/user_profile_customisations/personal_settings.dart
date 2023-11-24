@@ -484,6 +484,37 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                   SizedBox(
                     height: 10,
                   ),
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        children: _socialMediaLinks
+                            .where(
+                                (text) => detectSocialMediaPlatform(text) == "")
+                            .map((text) => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        text,
+                                        style: TextStyle(color: Colors.white,fontSize: 14),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: (){
+                                        setState(() {
+                                          _socialMediaLinks.remove(text);
+                                        });
+                                    },
+                                      child: Text("Delete Link",style: TextStyle(color: Colors.redAccent),),
+                                    )
+                                  ],
+                                ))
+                            .toList(),
+                      )),
+                  SizedBox(
+                    height: 15,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -492,115 +523,135 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              child: Icon(
-                                  searchSocialMediaPlaform(
+                        searchSocialMediaPlaform(
+                        _socialMediaLinks, 1) !=
+                        ""?Row(
+                                children: [
+                                  GestureDetector(
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration:BoxDecoration(
+                                          border: Border.all(color: Colors.amber),
+                                          borderRadius: BorderRadius.circular(8)
+                                      ),
+                                      child: Icon(
+                                          searchSocialMediaPlaform(
                                               _socialMediaLinks, 1) !=
-                                          ""
-                                      ? FontAwesome.linkedin
-                                      : null,
-                                  size: 35,
-                                  color: Colors.amber),
-                              onTap: () async {
-                                await launchUrl(Uri.parse(
-                                    searchSocialMediaPlaform(
-                                        _socialMediaLinks, 1)));
-                              },
-                            ),
-                            SizedBox(
-                              width: searchSocialMediaPlaform(
-                                          _socialMediaLinks, 1) ==
-                                      ""
-                                  ? 0
-                                  : 10,
-                            ),
-                            GestureDetector(
-                              child: Icon(
-                                  searchSocialMediaPlaform(
-                                              _socialMediaLinks, 2) !=
-                                          ""
-                                      ? FontAwesome.facebook
-                                      : null,
-                                  size: 35,
-                                  color: Colors.amber),
-                              onTap: () async {
-                                await launchUrl(Uri.parse(
-                                    searchSocialMediaPlaform(
-                                        _socialMediaLinks, 2)));
-                              },
-                            ),
-                            SizedBox(
-                              width: searchSocialMediaPlaform(
-                                          _socialMediaLinks, 2) ==
-                                      ""
-                                  ? 0
-                                  : 10,
-                            ),
-                            GestureDetector(
-                              child: SvgPicture.asset(
-                                'assets/icons/x-twitter.svg',
-                                width: searchSocialMediaPlaform(
-                                            _socialMediaLinks, 3) !=
-                                        ""
-                                    ? 35
-                                    : 0,
-                                height: searchSocialMediaPlaform(
-                                            _socialMediaLinks, 3) !=
-                                        ""
-                                    ? 35
-                                    : 0,
-                                color: Colors.amber,
-                              ),
-                              onTap: () async {
-                                await launchUrl(Uri.parse(
-                                    searchSocialMediaPlaform(
-                                        _socialMediaLinks, 3)));
-                              },
-                            )
+                                              ""
+                                              ? FontAwesome.linkedin
+                                              : null,
+                                          size: 24,
+                                          color: Colors.amber),
+                                    ),
+                                    onTap: () async {
+                                      await launchUrl(Uri.parse(
+                                          searchSocialMediaPlaform(
+                                              _socialMediaLinks, 1)));
+                                    },
+                                  ),
+                                  IconButton(
+
+                                      alignment: Alignment.bottomLeft,
+                                      onPressed: (){
+                                        setState(() {
+                                          _socialMediaLinks.remove(searchSocialMediaPlaform(_socialMediaLinks, 1));
+                                        });
+                                      },
+                                      icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
+                                ],
+                              ):SizedBox(width:0,),
+                            searchSocialMediaPlaform(
+                                _socialMediaLinks, 2) !=
+                                ""?Row(
+                              children: [
+                                GestureDetector(
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration:BoxDecoration(
+                                        border: Border.all(color: Colors.amber),
+                                        borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    child: Icon(
+                                        searchSocialMediaPlaform(
+                                            _socialMediaLinks, 2) !=
+                                            ""
+                                            ? FontAwesome.facebook
+                                            : null,
+                                        size: 24,
+                                        color: Colors.amber),
+                                  ),
+                                  onTap: () async {
+                                    await launchUrl(Uri.parse(
+                                        searchSocialMediaPlaform(
+                                            _socialMediaLinks, 2)));
+                                  },
+                                ),
+                                IconButton(
+
+                                    alignment: Alignment.bottomLeft,
+                                    onPressed: (){
+                                      setState(() {
+                                        _socialMediaLinks.remove(searchSocialMediaPlaform(_socialMediaLinks, 2));
+                                      });
+                                    },
+                                    icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
+                              ],
+                            ):SizedBox(width: 0,),
+                            searchSocialMediaPlaform(
+                                _socialMediaLinks, 3) !=
+                                ""?Row(
+                              children: [
+                                GestureDetector(
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration:BoxDecoration(
+                                        border: Border.all(color: Colors.amber),
+                                        borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icons/x-twitter.svg',
+                                      width: 22, // Set the desired width
+                                      height: 22,
+                                      color: Colors.amber,// Set the desired height
+                                    )
+                                  ),
+                                  onTap: () async {
+                                    await launchUrl(Uri.parse(
+                                        searchSocialMediaPlaform(
+                                            _socialMediaLinks, 3)));
+                                  },
+                                ),
+                                IconButton(
+                                    alignment: Alignment.bottomLeft,
+                                    onPressed: (){
+                                      setState(() {
+                                        _socialMediaLinks.remove(searchSocialMediaPlaform(_socialMediaLinks, 3));
+                                      });
+                                    },
+                                    icon: Icon(Icons.delete_forever,size: 16,color: Colors.redAccent,))
+                              ],
+                            ):SizedBox(width:0,),
                           ],
                         ),
-                        buildButton("Add link", () {
-                          isLinkAdded = false;
-                          final isValidLink = socialLinkError == null;
-                          setState(() {
-                            isLinkAdded = true;
-                          });
-                          if (isValidLink) {
-                            addSocialMediaLink();
-                            _socialMediaLinks.forEach((element) {
-                              print(element);
+                        Flexible(
+                          fit:FlexFit.loose,
+                          child: buildButton("Add link", () {
+                            isLinkAdded = false;
+                            final isValidLink = socialLinkError == null;
+                            setState(() {
+                              isLinkAdded = true;
                             });
-                          }
-                        }, Colors.amber, true),
+                            if (isValidLink) {
+                              addSocialMediaLink();
+                              _socialMediaLinks.forEach((element) {
+                                print(element);
+                              });
+                            }
+                          }, Colors.amber, true),
+                        ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        children: _socialMediaLinks
-                            .where(
-                                (text) => detectSocialMediaPlatform(text) == "")
-                            .map((text) => Row(
-                                  children: [
-                                    Icon(
-                                      Icons.language_outlined,
-                                      color: Colors.amber,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      text!,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ))
-                            .toList(),
-                      )),
                 ])),
           ),
           Padding(
@@ -876,9 +927,6 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                           return null;
                         }
                       } else if (type == "social") {
-                        if (value == "") {
-                          return null;
-                        }
                         final urlPattern = RegExp(
                           r'^(https?|ftp)://[^\s/$.?#].[^\s]*$',
                           caseSensitive: false,

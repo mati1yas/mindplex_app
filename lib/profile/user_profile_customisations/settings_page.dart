@@ -105,6 +105,7 @@ class _SettingsPage extends State<SettingsPage>
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TabBar(
+                dividerColor: Colors.transparent,
                 controller: _tabController,
                 isScrollable: true,
                 indicator: BoxDecoration(
