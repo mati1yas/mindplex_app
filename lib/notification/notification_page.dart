@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex_app/blogs/widgets/blog_card.dart';
-import 'package:mindplex_app/notification/widgets/notification_card.dart';
+import 'package:mindplex_app/notification/controller/notification_controller.dart';
+import 'package:mindplex_app/notification/widgets/notification_card_widget.dart';
 
 import '../blogs/blogs_controller.dart';
 import '../profile/user_profile_controller.dart';
@@ -19,7 +19,7 @@ class _NotificationPageState extends State<NotificationPage>
   late TabController tabController;
   BlogsController blogsController = Get.put(BlogsController());
   ProfileController profileController = Get.find();
-  GlobalKey<ScaffoldState> _globalkey = GlobalKey<ScaffoldState>();
+  NotificationController notificationController = Get.find();
 
   @override
   void initState() {
@@ -104,44 +104,46 @@ class _NotificationPageState extends State<NotificationPage>
               ],
             ),
           ),
-          Obx(
-            () => blogsController.isLoading.value == false
-                ? Container(
-                    height: height * 0.795,
-                    child: TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: tabController,
-                        children: [
-                          Container(
-                            height: 510,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: 5,
-                                itemBuilder: (ctx, index) {
-                                  return NotificationCard(
-                                      blogsController: blogsController,
-                                      index: index,
-                                      pageType: "All");
-                                }),
-                          ),
-                          Container(
-                            height: height * 0.795,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: 5,
-                                itemBuilder: (ctx, index) {
-                                  return NotificationCard(
-                                      blogsController: blogsController,
-                                      index: index,
-                                      pageType: "Mentions");
-                                }),
-                          ),
-                        ]),
-                  )
-                : Center(
+          Obx(() => notificationController.isLoadingNotifications.value == false
+              ? Container(
+                  height: height * 0.795,
+                  child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: tabController,
+                      children: [
+                        Container(
+                          height: 510,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: notificationController
+                                  .notificationList.length,
+                              itemBuilder: (ctx, index) {
+                                return NotificationCard(
+                                  notification: notificationController
+                                      .notificationList[index],
+                                );
+                              }),
+                        ),
+                        Container(
+                          height: height * 0.795,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: notificationController
+                                  .notificationList.length,
+                              itemBuilder: (ctx, index) {
+                                return NotificationCard(
+                                  notification: notificationController
+                                      .notificationList[index],
+                                );
+                              }),
+                        ),
+                      ]),
+                )
+              : Container(
+                  child: Center(
                     child: CircularProgressIndicator(),
                   ),
-          ),
+                )),
         ],
       ),
     );
