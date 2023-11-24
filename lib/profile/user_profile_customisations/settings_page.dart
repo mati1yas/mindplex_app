@@ -106,7 +106,6 @@ class _SettingsPage extends State<SettingsPage>
               ),
               child: TabBar(
                 dividerColor: Colors.transparent,
-                tabAlignment: TabAlignment.start,
                 controller: _tabController,
                 isScrollable: true,
                 indicator: BoxDecoration(
