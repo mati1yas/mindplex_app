@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:mindplex_app/models/notification_model.dart';
 import 'package:mindplex_app/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -228,7 +230,8 @@ class ApiService {
         ),
       });
 
-      Response response = await dio.post('${AppUrls.changeProfilePictureUrl}', data: formData);
+      Response response =
+          await dio.post('${AppUrls.changeProfilePictureUrl}', data: formData);
 
       if (response.statusCode == 200) {
         return response.data['message'];
@@ -241,7 +244,7 @@ class ApiService {
     }
   }
 
-  Future<String> changePassword(String password) async{
+  Future<String> changePassword(String password) async {
     var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -263,5 +266,28 @@ class ApiService {
     } else {
       throw Exception('Failed to change password.');
     }
+  }
+
+  Future<Map<String, dynamic>> loadNotification(String token) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response =
+        await dio.get(AppUrls.baseUrl + "/mp_rp/v1/user/notifications");
+    print(response.data);
+
+    Map<String, dynamic> notificationsMap = {};
+
+    List<NotificationModel> notifications = [];
+
+    for (var notif in response.data['notifs']) {
+      notifications.add(NotificationModel.fromJson(notif));
+    }
+    notificationsMap['notificationList'] = notifications;
+    notificationsMap['unseen'] = response.data['not_seen'];
+    return notificationsMap;
   }
 }
