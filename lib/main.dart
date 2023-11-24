@@ -8,6 +8,7 @@ import 'package:mindplex_app/groups/groups_page.dart';
 import 'package:mindplex_app/notification/notification_page.dart';
 import 'package:mindplex_app/message/message_page.dart';
 
+import 'notification/controller/notification_controller.dart';
 import 'splash_screen.dart';
 
 void main() {
@@ -46,6 +47,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   PageNavigationController pageNavigationController =
       Get.put(PageNavigationController());
+  NotificationController notificationController =
+      Get.put(NotificationController());
+
   final pages = [
     LandingPage(),
     SearchPage(),
@@ -133,6 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           GestureDetector(
                             onTap: () {
                               pageNavigationController.navigatePage(3);
+
+                              notificationController.loadNotifications();
                             },
                             child: Icon(
                               Icons.notifications_outlined,
