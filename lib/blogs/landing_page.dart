@@ -49,14 +49,14 @@ class _LandingPageState extends State<LandingPage>
     profileController.getAuthenticatedUser();
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
-      key: Keys.globalkey,
-      drawer: Drawer(
-        child: DrawerWidget(),
-      ),
+      // key: Keys.globalkey,
+      // drawer: Drawer(
+      //   child: DrawerWidget(),
+      // ),
       body: Column(
         children: [
           Container(
-            height: 110,
+            height: 90,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

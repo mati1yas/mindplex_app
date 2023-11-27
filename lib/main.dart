@@ -8,6 +8,7 @@ import 'package:mindplex_app/search/search_page.dart';
 import 'package:mindplex_app/groups/groups_page.dart';
 import 'package:mindplex_app/notification/notification_page.dart';
 import 'package:mindplex_app/message/message_page.dart';
+import 'package:mindplex_app/utils/constatns.dart';
 
 import 'blogs/blogs_controller.dart';
 import 'notification/controller/notification_controller.dart';
@@ -67,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Keys.globalkey,
       drawer: Drawer(
         child: DrawerWidget(),
       ),

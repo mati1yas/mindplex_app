@@ -36,10 +36,6 @@ class _NotificationPageState extends State<NotificationPage>
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      key: Keys.globalkey,
-      drawer: Drawer(
-        child: DrawerWidget(),
-      ),
       body: Container(
         color: Color(0xFF0c2b46),
         child: Column(

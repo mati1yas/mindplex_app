@@ -53,10 +53,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
-      key: Keys.globalkey,
-      drawer: Drawer(
-        child: DrawerWidget(),
-      ),
       body: Container(
         height: 2000,
         child: SingleChildScrollView(
