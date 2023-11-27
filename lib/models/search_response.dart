@@ -1,6 +1,8 @@
+import 'package:mindplex_app/models/user_profile.dart';
+
 import 'blog_model.dart';
 
-class SearchResponse{
+class SearchResponseLanding{
 
   List<Category>? categories;
   List<Blog>? blogs;
@@ -24,4 +26,9 @@ class Category {
       posts: json['posts'],
     );
   }
+}
+
+class SearchResponse{
+  List<UserProfile>? users;
+  List<Blog>? blogs;
 }

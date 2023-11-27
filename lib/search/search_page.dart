@@ -45,7 +45,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       isIntialLoading = false;
     });
-
   }
   @override
   void initState() {
@@ -453,43 +452,45 @@ class _SearchPageState extends State<SearchPage> {
               ),
                 SizedBox(width: 30),
                 Expanded(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _searchController,
-                        textAlign: TextAlign.center,
-                        onFieldSubmitted: (String value){
-
-                        },
-                        keyboardType: TextInputType.text,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black),
-                        textAlignVertical: TextAlignVertical.center,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.black,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(30.0),
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(30)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextFormField(
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            controller: _searchController,
+                            textAlign: TextAlign.end,
+                            onFieldSubmitted: (String value){
+                               Get.toNamed(AppRoutes.searchResultPage,parameters: {"query":_searchController.text});
+                            },
+                            keyboardType: TextInputType.text,
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.black,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              contentPadding: const EdgeInsets.all(10),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              border: InputBorder.none,
+                              hintText: 'Search',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            onChanged: (value) {},
+                            validator: (value) {},
                           ),
-                          contentPadding: const EdgeInsets.all(10),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          border: InputBorder.none,
-                          hintText: 'Search',
-                          hintStyle: TextStyle(color: Colors.grey),
-                      ),
-                        onChanged: (value) {},
-                        validator: (value) {},
-                      ),
-                      Positioned(
-                        right: 55,
-                        child: Icon(Icons.search,color: Colors.grey,size: 20,),
-                      ),
-                    ],
+                        ),
+                        Flexible(flex:1,fit:FlexFit.loose,child: Icon(Icons.search,color: Colors.grey,))
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(width: 20),
