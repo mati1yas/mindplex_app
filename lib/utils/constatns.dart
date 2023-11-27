@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppUrls {
   static var baseUrl = "https://staging.mindplex.ai/wp-json";
   static var loginUrl = '$baseUrl/auth/v1/token';
@@ -29,6 +31,11 @@ final List<String> emojis = [
   "🤮",
   "💩"
 ];
+
+class Keys {
+  static final globalkey = GlobalKey<ScaffoldState>();
+}
+
 List<String> countryList = [
   "Afghanistan",
   "Albania",
