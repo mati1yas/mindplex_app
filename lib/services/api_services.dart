@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:mindplex_app/models/search_response.dart';
 import 'package:mindplex_app/models/notification_model.dart';
 import 'package:mindplex_app/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import '../utils/constatns.dart';
 import 'local_storage.dart';
 
 class ApiService {
+
   Future<List<Blog>> loadBlogs(
       {required String recommender,
       required String post_format,
@@ -267,6 +269,36 @@ class ApiService {
       throw Exception('Failed to change password.');
     }
   }
+  Future<SearchResponse> fetchSearchLanding() async {
+    var blogs = <Blog>[];
+    var categories = <Category>[];
+    SearchResponse searchResponse = SearchResponse();
+    try {
+      var dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+
+      Response response =
+      await dio.get(AppUrls.searchLandingUrl);
+
+      for (var blog in response.data['popular_posts']) {
+        blogs.add(Blog.fromJson(blog));
+      }
+      for (var category in response.data['categories']) {
+        categories.add(Category.fromJson(category));
+      }
+      searchResponse.categories = categories;
+      searchResponse.blogs = blogs;
+    } catch (e) {}
+
+    return searchResponse;
+  }
+
+
 
   Future<Map<String, dynamic>> loadNotification(String token) async {
     var dio = Dio();

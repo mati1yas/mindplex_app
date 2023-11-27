@@ -10,6 +10,7 @@ class BlogsController extends GetxController {
   RxString post_format = "text".obs;
   RxInt page = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
+  RxList<Blog> popularPosts = <Blog>[].obs;
   final apiSerivice = ApiService().obs;
   final categories = ['All', 'Popular', 'Most Recent', 'Trending'];
 
@@ -82,6 +83,13 @@ class BlogsController extends GetxController {
     isLoading.value = false;
   }
 
+  void fetchPopularBlogs() async{
+    final res = await apiSerivice.value.fetchSearchLanding();
+
+    popularPosts.value = res.blogs!;
+    isLoading.value = false;
+  }
+
   void filterBlogsByRecommender({required String category}) {
     reachedEndOfList = false;
     page.value = 1;
@@ -98,5 +106,8 @@ class BlogsController extends GetxController {
 
   List<Blog> get filteredBlogs {
     return blogs;
+  }
+  List<Blog> get popularBlogs {
+    return popularPosts;
   }
 }

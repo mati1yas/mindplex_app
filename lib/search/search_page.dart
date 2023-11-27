@@ -13,8 +13,10 @@ import '../blogs/widgets/blog_card.dart';
 import '../blogs/widgets/blog_shimmer.dart';
 import '../mindplex_profile/about/about_mindplex.dart';
 import '../mindplex_profile/moderators/moderators_page.dart';
+import '../models/search_response.dart';
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
+import '../services/api_services.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -31,7 +33,27 @@ class _SearchPageState extends State<SearchPage> {
 
   ProfileController profileController = Get.put(ProfileController());
   TextEditingController _searchController = TextEditingController();
+  final apiService = ApiService().obs;
   bool isIntialLoading = true;
+  bool showAllCategories = false;
+  List<Category> categories = [];
+
+  void fetchCategories() async{
+    final res = await apiService.value.fetchSearchLanding();
+    print(res.categories?[0].posts);
+    categories = res.categories!;
+    setState(() {
+      isIntialLoading = false;
+    });
+
+  }
+  @override
+  void initState() {
+    fetchCategories();
+    blogsController.fetchPopularBlogs();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -400,7 +422,7 @@ class _SearchPageState extends State<SearchPage> {
     ),
     ),
     ),
-    body:Container(
+    body:isIntialLoading?Center(child: CircularProgressIndicator(),):Container(
       height: 2000,
       child: SingleChildScrollView(
           child: Column(
@@ -491,21 +513,26 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.all(18.0),
                   child: Container(alignment:Alignment.centerLeft,child: Text("Trends for you",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),)),
                 ),
-                _container("News Trending", "Crypto", "2.9"),
-                _container("Trending in USA", "AI", "1"),
-                _container("Development Trending", "Machine learning", "1"),
-                _container("Crypto News Trending", "Crypto currency", "4.5"),
+                Column(
+                    children: [
+                      for (int i = 0; i < (showAllCategories ? categories.length : 5); i++)
+                        _container(categories[i].name, categories[i].posts.toString()),
+                    ]
+                ),
+
                  InkWell(
                    onTap: (){
-
+                     setState(() {
+                       showAllCategories =!showAllCategories; // Toggle the flag to show all categories
+                     });
                    },
                    child: Container(
                      padding: EdgeInsets.all(18),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                        children: [
-                         Text("Show More",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.blue,fontSize: 18),),
-                         InkWell(child: Icon(Icons.arrow_forward_ios,color: Colors.blue,size: 30,),)
+                         Text(showAllCategories?"Show Less":"Show More",style: TextStyle(fontWeight: FontWeight.w600,color: Colors.blue,fontSize: 18),),
+                         InkWell(child: Icon(showAllCategories?Icons.keyboard_arrow_up_sharp:Icons.arrow_forward_ios,color: Colors.blue,size: 30,),)
                        ],
                      ),
                    ),
@@ -519,15 +546,15 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 8),
                   child: Container(alignment:Alignment.centerLeft,child: Text("Check out these popular and trending articles for you",style: TextStyle(fontWeight: FontWeight.w200,color: Colors.white,fontSize: 15),)),
                 ),
-               SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        for(int i = 0;i <5;i++)
-                          ArticleCard(blogsController: blogsController, index: i)
-                      ],
-                    ),
-                  ),
+               Obx(() => blogsController.isLoading.value == false ?SingleChildScrollView(
+                 scrollDirection: Axis.horizontal,
+                 child: Row(
+                   children: [
+                     for(int i = 0;i <blogsController.popularBlogs.length;i++)
+                       ArticleCard(blogsController: blogsController, index: i)
+                   ],
+                 ),
+               ):Container(),),
                 SizedBox(height: 80,)
               ]
               ),
@@ -535,22 +562,22 @@ class _SearchPageState extends State<SearchPage> {
     ),
     );
   }
-  Widget _container(String header,String mainContent,String posts){
+  Widget _container(String mainContent,String posts){
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Text(header,style: TextStyle(fontWeight: FontWeight.w200,color: Colors.white,fontSize: 16),),
-            SizedBox(height: 10,),
-            Text(mainContent,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),),
-            SizedBox(height: 6,),
-            Text(posts + "k posts",style: TextStyle(fontWeight: FontWeight.w100,color: Colors.white,fontSize: 15),)
-          ],),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              Text(mainContent,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),),
+              SizedBox(height: 6,),
+              Text(posts + "k posts",style: TextStyle(fontWeight: FontWeight.w100,color: Colors.white,fontSize: 15),)
+            ],),
+          ),
             InkWell(
               child: Icon(
                 Icons.more_horiz,
@@ -584,162 +611,164 @@ class ArticleCard extends StatelessWidget {
         border: Border.all(color: Colors.white),
         color: blogContainerColor
       ),
-      width: 260,
-        height: 250,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(blogsController
-                                .filteredBlogs[index]
-                                .thumbnailImage ??
-                                ""))),
-                    height: 100,
-                    width: 300,
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding:
-                      const EdgeInsets.only(top: 1, right: 8.0),
-                      child: Container(
-                          height: 60,
-                          width: 35,
-                          margin: EdgeInsets.only(left: 10, top: 0),
-                          decoration: const BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(5),
-                                bottomRight: Radius.circular(5),
-                              )),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                margin:
-                                const EdgeInsets.only(bottom: 10),
-                                child: blogsController
-                                    .filteredBlogs[index]
-                                    .postTypeFormat ==
-                                    "text"
-                                    ? const Icon(
-                                  Icons.description_outlined,
-                                  color: Color(0xFF8aa7da),
-                                  size: 20,
-                                )
-                                    : blogsController
-                                    .filteredBlogs[index]
-                                    .postTypeFormat ==
-                                    "video"
-                                    ? const Icon(
-                                  Icons.videocam,
-                                  color: Color.fromARGB(
-                                      255, 185, 127, 127),
-                                  size: 20,
-                                )
-                                    : const Icon(
-                                  Icons.headphones,
-                                  color: Colors.green,
-                                  size: 20,
-                                ),
-                              )
-                            ],
-                          )),
+        child: Container(
+          width: MediaQuery.of(context).size.width *0.65,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(10)),
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(blogsController
+                                  .filteredBlogs[index]
+                                  .thumbnailImage ??
+                                  ""))),
+                      height: 100,
+                      width: 300,
                     ),
-                  )
-                ],
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding:
+                        const EdgeInsets.only(top: 1, right: 8.0),
+                        child: Container(
+                            height: 60,
+                            width: 35,
+                            margin: EdgeInsets.only(left: 10, top: 0),
+                            decoration: const BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5),
+                                )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin:
+                                  const EdgeInsets.only(bottom: 10),
+                                  child: blogsController
+                                      .filteredBlogs[index]
+                                      .postTypeFormat ==
+                                      "text"
+                                      ? const Icon(
+                                    Icons.description_outlined,
+                                    color: Color(0xFF8aa7da),
+                                    size: 20,
+                                  )
+                                      : blogsController
+                                      .filteredBlogs[index]
+                                      .postTypeFormat ==
+                                      "video"
+                                      ? const Icon(
+                                    Icons.videocam,
+                                    color: Color.fromARGB(
+                                        255, 185, 127, 127),
+                                    size: 20,
+                                  )
+                                      : const Icon(
+                                    Icons.headphones,
+                                    color: Colors.green,
+                                    size: 20,
+                                  ),
+                                )
+                              ],
+                            )),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            Row(children: [
-              SizedBox(width: 10,),
-              GestureDetector(
-                onTap: () {
-                  //  will be modified in detail .
+              Row(children: [
+                SizedBox(width: 10,),
+                GestureDetector(
+                  onTap: () {
+                    //  will be modified in detail .
 
-                  Get.toNamed(AppRoutes.profilePage, parameters: {
-                    "me": "notme",
-                    "username":
-                    blogsController.filteredBlogs[index].authorUsername ??
-                        ""
-                  });
-                },
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      blogsController.filteredBlogs[index].authorAvatar ??
-                          ""),
-                  radius: 15,
-                  backgroundColor: Colors.black,
+                    Get.toNamed(AppRoutes.profilePage, parameters: {
+                      "me": "notme",
+                      "username":
+                      blogsController.popularBlogs[index].authorUsername ??
+                          ""
+                    });
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        blogsController.popularBlogs[index].authorAvatar ??
+                            ""),
+                    radius: 15,
+                    backgroundColor: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(width: 10,),
-              Text(
-                blogsController
-                    .filteredBlogs[index].authorDisplayName ??
-                    "",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(width: 20,),
-              Text(
-                blogsController
-                    .filteredBlogs[index].publishedAt ??
-                    "",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ],),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                    blogsController.filteredBlogs[index].postTitle ??
-                        ""),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                    blogsController.filteredBlogs[index].overview ??
-                        ""),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
+                SizedBox(width: 10,),
                 Text(
-                  blogsController.filteredBlogs[index].minToRead ?? "",
-                  style: TextStyle(color: Colors.white),
+                  blogsController
+                      .popularBlogs[index].authorDisplayName ??
+                      "",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(width: 20,),
+                Text(
+                  blogsController
+                      .popularBlogs[index].publishedAt ??
+                      "",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                      blogsController.popularBlogs[index].postTitle ??
+                          ""),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      blogsController.popularBlogs[index].overview ??
+                          ""),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
                   Text(
-                    "19.9k views",
+                    blogsController.popularBlogs[index].minToRead ?? "",
                     style: TextStyle(color: Colors.white),
                   ),
-              ],),
-            )
-          ],
+                  SizedBox(width: 20,),
+                    Text(
+                      "19.9k views",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                ],),
+              )
+            ],
+          ),
         ),
     );
   }
