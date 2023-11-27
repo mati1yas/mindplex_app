@@ -53,203 +53,212 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
-      body: Container(
-        height: 2000,
-        child: SingleChildScrollView(
-          child: Column(children: [
-            Container(
-              height: 110,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: () => {Keys.globalkey.currentState!.openDrawer()},
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      margin: EdgeInsets.only(left: 40),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Color(0xFF0c2b46),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              profileController.authenticatedUser.value.image ??
-                                  ""),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 30),
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.center,
+      body: isIntialLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              height: 2000,
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  Container(
+                    height: 110,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _searchController,
-                          textAlign: TextAlign.center,
-                          onFieldSubmitted: (String value) {},
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.black,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(30.0),
+                        GestureDetector(
+                          onTap: () =>
+                              {Keys.globalkey.currentState!.openDrawer()},
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            margin: EdgeInsets.only(left: 40),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF0c2b46),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(profileController
+                                        .authenticatedUser.value.image ??
+                                    ""),
+                              ),
                             ),
-                            contentPadding: const EdgeInsets.all(10),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            border: InputBorder.none,
-                            hintText: 'Search',
-                            hintStyle: TextStyle(color: Colors.grey),
                           ),
-                          onChanged: (value) {},
-                          validator: (value) {},
                         ),
-                        Positioned(
-                          right: 55,
+                        SizedBox(width: 30),
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              TextFormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                controller: _searchController,
+                                textAlign: TextAlign.center,
+                                onFieldSubmitted: (String value) {},
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black),
+                                textAlignVertical: TextAlignVertical.center,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.black,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  contentPadding: const EdgeInsets.all(10),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.blue),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  border: InputBorder.none,
+                                  hintText: 'Search',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                ),
+                                onChanged: (value) {},
+                                validator: (value) {},
+                              ),
+                              Positioned(
+                                right: 55,
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        InkWell(
                           child: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                            size: 20,
+                            Icons.settings,
+                            size: 38,
+                            color: Colors.white,
                           ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Get.toNamed(AppRoutes.settingsPage);
+                          },
                         ),
+                        SizedBox(width: 30),
                       ],
                     ),
                   ),
-                  SizedBox(width: 20),
-                  InkWell(
-                    child: Icon(
-                      Icons.settings,
-                      size: 38,
-                      color: Colors.white,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Get.toNamed(AppRoutes.settingsPage);
-                    },
+                  SizedBox(
+                    height: 30,
                   ),
-                  SizedBox(width: 30),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Trends for you",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                  )),
-            ),
-            Column(children: [
-              for (int i = 0;
-                  i < (showAllCategories ? categories.length : 5);
-                  i++)
-                _container(categories[i].name, categories[i].posts.toString())
-            ]),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  showAllCategories =
-                      !showAllCategories; // Toggle the flag to show all categories
-                });
-              },
-              child: Container(
-                padding: EdgeInsets.all(18),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      showAllCategories ? "Show Less" : "Show More",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue,
-                          fontSize: 18),
-                    ),
-                    InkWell(
-                      child: Icon(
-                        showAllCategories
-                            ? Icons.keyboard_arrow_up_sharp
-                            : Icons.arrow_forward_ios,
-                        color: Colors.blue,
-                        size: 30,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Divider(
-              thickness: 2.0,
-              color: Colors.white,
-              indent: 18,
-              endIndent: 18,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, top: 8),
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Articles for you",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                  )),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Check out these popular and trending articles for you",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
-                        fontSize: 15),
-                  )),
-            ),
-            Obx(
-              () => blogsController.isLoading.value == false
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Trends for you",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 20),
+                        )),
+                  ),
+                  Column(children: [
+                    for (int i = 0;
+                        i < (showAllCategories ? categories.length : 5);
+                        i++)
+                      _container(
+                          categories[i].name, categories[i].posts.toString())
+                  ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        showAllCategories =
+                            !showAllCategories; // Toggle the flag to show all categories
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(18),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (int i = 0;
-                              i < blogsController.popularBlogs.length;
-                              i++)
-                            ArticleCard(
-                                blogsController: blogsController, index: i)
+                          Text(
+                            showAllCategories ? "Show Less" : "Show More",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue,
+                                fontSize: 18),
+                          ),
+                          InkWell(
+                            child: Icon(
+                              showAllCategories
+                                  ? Icons.keyboard_arrow_up_sharp
+                                  : Icons.arrow_forward_ios,
+                              color: Colors.blue,
+                              size: 30,
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  : Container(),
+                    ),
+                  ),
+                  Divider(
+                    thickness: 2.0,
+                    color: Colors.white,
+                    indent: 18,
+                    endIndent: 18,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0, top: 8),
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Articles for you",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 20),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0, vertical: 8),
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Check out these popular and trending articles for you",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              color: Colors.white,
+                              fontSize: 15),
+                        )),
+                  ),
+                  Obx(
+                    () => blogsController.isLoading.value == false
+                        ? SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (int i = 0;
+                                    i < blogsController.popularBlogs.length;
+                                    i++)
+                                  ArticleCard(
+                                      blogsController: blogsController,
+                                      index: i)
+                              ],
+                            ),
+                          )
+                        : Container(),
+                  ),
+                  SizedBox(
+                    height: 80,
+                  )
+                ]),
+              ),
             ),
-            SizedBox(
-              height: 80,
-            )
-          ]),
-        ),
-      ),
     );
   }
 
