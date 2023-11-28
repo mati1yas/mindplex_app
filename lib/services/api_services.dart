@@ -15,7 +15,6 @@ import '../utils/constatns.dart';
 import 'local_storage.dart';
 
 class ApiService {
-
   Future<List<Blog>> loadBlogs(
       {required String recommender,
       required String post_format,
@@ -269,6 +268,7 @@ class ApiService {
       throw Exception('Failed to change password.');
     }
   }
+
   Future<SearchResponse> fetchSearchLanding() async {
     var blogs = <Blog>[];
     var categories = <Category>[];
@@ -282,8 +282,7 @@ class ApiService {
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
 
-      Response response =
-      await dio.get(AppUrls.searchLandingUrl);
+      Response response = await dio.get(AppUrls.searchLandingUrl);
 
       for (var blog in response.data['popular_posts']) {
         blogs.add(Blog.fromJson(blog));
@@ -298,23 +297,23 @@ class ApiService {
     return searchResponse;
   }
 
-
-
-  Future<Map<String, dynamic>> loadNotification(String token) async {
+  Future<Map<String, dynamic>> loadNotification(
+      {required int pageNumber}) async {
     var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
     final token = await localStorage.value.readFromStorage('Token');
     dio.options.headers["Authorization"] = "Bearer $token";
 
-    Response response =
-        await dio.get(AppUrls.baseUrl + "/mp_rp/v1/user/notifications");
+    Response response = await dio
+        .get(AppUrls.baseUrl + "/mp_rp/v1/user/notifications?page=$pageNumber");
     print(response.data);
 
     Map<String, dynamic> notificationsMap = {};
 
     List<NotificationModel> notifications = [];
 
+    //  builds map of string with real notification model list and integers which is count of unseen notification
     for (var notif in response.data['notifs']) {
       notifications.add(NotificationModel.fromJson(notif));
     }
