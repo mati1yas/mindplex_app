@@ -124,14 +124,34 @@ class _NotificationPageState extends State<NotificationPage>
                               Container(
                                 height: 510,
                                 child: ListView.builder(
+                                    controller: notificationController
+                                        .notificationPageScrollController,
                                     shrinkWrap: true,
                                     itemCount: notificationController
-                                        .notificationList.length,
+                                            .notificationList.length +
+                                        1,
                                     itemBuilder: (ctx, index) {
-                                      return NotificationCard(
-                                        notification: notificationController
-                                            .notificationList[index],
-                                      );
+                                      if (index <
+                                          notificationController
+                                              .notificationList.length)
+                                        return NotificationCard(
+                                          notification: notificationController
+                                              .notificationList[index],
+                                        );
+                                      else {
+                                        if (index ==
+                                                notificationController
+                                                    .notificationList.length &&
+                                            !notificationController
+                                                .reachedEndofNotifications
+                                                .value) {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
                                     }),
                               ),
                               Container(
