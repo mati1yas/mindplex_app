@@ -163,7 +163,12 @@ class _LandingPageState extends State<LandingPage>
                             if (index == blogsController.filteredBlogs.length &&
                                 !blogsController.reachedEndOfList) {
                               // Display CircularProgressIndicator under the last card
-                              return Center(child: CircularProgressIndicator());
+                              return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: 5,
+                                itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                              );
                             } else {
                               return Container(); // Return an empty container otherwise
                             }
