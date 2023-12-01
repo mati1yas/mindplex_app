@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/blogs/landing_page.dart';
 import 'package:mindplex_app/bottom_nav_bar/bottom_page_navigation_controller.dart';
+import 'package:mindplex_app/drawer/drawer_widget.dart';
 import 'package:mindplex_app/routes/app_routes.dart';
 import 'package:mindplex_app/search/search_page.dart';
 import 'package:mindplex_app/groups/groups_page.dart';
 import 'package:mindplex_app/notification/notification_page.dart';
 import 'package:mindplex_app/message/message_page.dart';
+import 'package:mindplex_app/utils/constatns.dart';
 
+import 'blogs/blogs_controller.dart';
+import 'notification/controller/notification_controller.dart';
+import 'profile/user_profile_controller.dart';
 import 'splash_screen.dart';
 
 void main() {
@@ -46,6 +51,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   PageNavigationController pageNavigationController =
       Get.put(PageNavigationController());
+  NotificationController notificationController =
+      Get.put(NotificationController());
+
+  BlogsController blogsController = Get.put(BlogsController());
+
+  ProfileController profileController = Get.put(ProfileController());
+
   final pages = [
     LandingPage(),
     SearchPage(),
@@ -56,6 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Keys.globalkey,
+      drawer: Drawer(
+        child: DrawerWidget(),
+      ),
       body: Stack(
         children: [
           //  main page to be display
@@ -133,6 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           GestureDetector(
                             onTap: () {
                               pageNavigationController.navigatePage(3);
+
+                              notificationController.loadNotifications();
                             },
                             child: Icon(
                               Icons.notifications_outlined,
