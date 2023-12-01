@@ -36,7 +36,7 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
   TextEditingController _searchController = TextEditingController();
   late TabController _tabController;
   final apiService = ApiService().obs;
-  bool isIntialLoading = true;
+  bool isLoading = true;
   Map<String, String?> params = Get.parameters;
   List<UserProfile> users = [];
 
@@ -49,13 +49,13 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
   }
   void fetchSearchResults() async{
     setState(() {
-      isIntialLoading = true;
+      isLoading = true;
     });
     blogsController.fetchSearchResults(_searchController.text);
     final res = await apiService.value.fetchSearchResponse(_searchController.text);
     users = res.users!;
     setState(() {
-      isIntialLoading = false;
+      isLoading = false;
     });
   }
 
@@ -546,7 +546,7 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                     controller: _tabController,
                     children: [
                       Obx(() {
-                        return blogsController.isLoading.value == true && isIntialLoading
+                        return blogsController.isLoading.value == true && isLoading
                             ? Expanded(
                           child: ListView.builder(
                             itemCount: 5,
@@ -554,32 +554,19 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                           ),
                         )
                             : Expanded(
-                          child: ListView.builder(
+                          child: blogsController.searchedBlogs.length == 0?Center(child: Text("No content was found matching your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
                               itemCount: blogsController.searchedBlogs.length,
                               itemBuilder: (ctx, index) {
-                                if (index < blogsController.searchedBlogs.length) {
                                   final thumbnailUrl = blogsController
                                       .searchedBlogs[index].thumbnailImage;
-                                  isIntialLoading = false;
-                                  final isDefaultThumbnail =
-                                      thumbnailUrl == "default.jpg";
+                                  isLoading = false;
                                   return SearchBlogCard(
                                       blogsController: blogsController, index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index == blogsController.searchedBlogs.length &&
-                                      !blogsController.reachedEndOfList) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container(); // Return an empty container otherwise
-                                  }
-                                }
                               }),
                         );
                       }),
-                      Expanded(
-                        child: ListView.builder(
+                      isLoading?Center(child: CircularProgressIndicator(),):Expanded(
+                        child: users.length == 0?Center(child: Text("No users match your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
                             itemCount: users.length,
                             itemBuilder: (ctx, index) {
                                 return UserCard(
