@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex_app/auth/auth.dart';
@@ -15,6 +16,8 @@ class AuthController extends GetxController {
   final RxBool isRegistered = false.obs;
   final RxBool isVerified = false.obs;
   final RxString statusMessage = ''.obs;
+  final RxString guestUserImage = ''.obs;
+  final RxBool isGuestUser = false.obs;
 
   void checkAuthentication() async {
     final hasToken = await localStorage.value.readFromStorage('Token');
@@ -27,11 +30,49 @@ class AuthController extends GetxController {
   }
 
   void checkFirstTime() async {}
+  void guestReminder(context) async {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            alignment: Alignment.center,
+            content: Text("Guest User , Please Login first !!"),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Continue as Guest")),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        backgroundColor: Color.fromARGB(224, 14, 187, 158)),
+                    onPressed: () {
+                      Get.offAllNamed(AppRoutes.authPage);
+                    },
+                    child: Text('Login'),
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  }
 
   void logout() async {
     await localStorage.value.deleteFromStorage("Token");
     isAuthenticated.value = false;
     Get.offAllNamed(AppRoutes.authPage);
+  }
+
+  void loginAsGueast() {
+    isGuestUser.value = true;
+    guestUserImage.value =
+        "https://secure.gravatar.com/avatar/3e942ed60cd7c63ba7fab0611917b259?s=96&d=retro&r=g";
   }
 
   Future<void> loginUser(

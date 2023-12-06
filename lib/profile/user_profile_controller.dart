@@ -8,6 +8,7 @@ import 'package:mindplex_app/profile/user_profile_displays/draft_screen.dart';
 import 'package:mindplex_app/services/api_services.dart';
 import 'package:mindplex_app/services/local_storage.dart';
 
+import '../auth/auth_controller/auth_controller.dart';
 import '../models/popularModel.dart';
 import 'user_profile_displays/about_screen.dart';
 import 'user_profile_displays/bookmark_screen.dart';
@@ -23,6 +24,8 @@ class ProfileController extends GetxController {
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
   final apiService = ApiService().obs;
+
+  AuthController authController = Get.find();
 
   var screens = [
     {'name': 'About', 'active': true, 'widget': const AboutScreen(), "num": 1},
@@ -59,7 +62,9 @@ class ProfileController extends GetxController {
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
 
   Future<void> getAuthenticatedUser() async {
-    authenticatedUser.value = await localStorage.value.readUserInfo();
+    if (authController.isGuestUser.isFalse) {
+      authenticatedUser.value = await localStorage.value.readUserInfo();
+    }
   }
 
   Future<void> getUserProfile({required String username}) async {
