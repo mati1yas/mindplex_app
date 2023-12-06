@@ -377,7 +377,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 208, 178, 178, 178))),
                                     child: Image.asset(
                                         "assets/images/google_logo.png")),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -405,6 +405,20 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: screenHeight * 0.05,
                         ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              fixedSize: Size(260, 50),
+                              backgroundColor:
+                                  Color.fromARGB(224, 14, 187, 158)),
+                          onPressed: loginAsGuest,
+                          child: Text('Continue as Guest'),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.04,
+                        ),
                       ],
                     ),
                   ),
@@ -412,6 +426,14 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
     );
+  }
+
+  Future loginAsGuest() async {
+    print("about to login as guest");
+    AuthController authController = Get.put(AuthController());
+
+    authController.loginAsGueast();
+    Get.offAllNamed(AppRoutes.landingPage);
   }
 
   Future login() async {
