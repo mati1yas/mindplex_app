@@ -3,6 +3,7 @@ import 'package:mindplex_app/auth/auth.dart';
 import 'package:mindplex_app/main.dart';
 import 'package:mindplex_app/profile/user_profile_customisations/personal_settings.dart';
 import 'package:mindplex_app/profile/user_profile_customisations/settings_page.dart';
+import 'package:mindplex_app/search/search_result_page.dart';
 import 'package:mindplex_app/splash_screen.dart';
 
 import '../profile/user_profile_customisations/Notifications_page.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String preferencePage = '/preferencePage';
   static const String notificationsPage = '/notificationsPage';
   static const String privacyPolicyPage = '/privacyPolicyPage';
+  static const String searchResultPage = '/searchResultPage';
 
   static final List<GetPage> pages = [
     GetPage(name: home, page: () => SplashScreen()),
@@ -48,5 +50,6 @@ class AppRoutes {
               title: "Mindplex",
             )),
     GetPage(name: profilePage, page: () => const ProfilePage()),
+    GetPage(name: searchResultPage,page: () =>SearchResultPage())
   ];
 }
