@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex_app/blogs/landing_page.dart';
 import 'package:mindplex_app/main.dart';
 
+import '../auth/auth_controller/auth_controller.dart';
 import '../blogs/blogs_controller.dart';
 import '../bottom_nav_bar/bottom_page_navigation_controller.dart';
 import '../mindplex_profile/about/about_mindplex.dart';
@@ -21,6 +22,7 @@ class DrawerWidget extends StatelessWidget {
   ProfileController profileController = Get.find();
   BlogsController blogsController = Get.find();
   PageNavigationController pageNavigationController = Get.find();
+  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -39,124 +41,147 @@ class DrawerWidget extends StatelessWidget {
           padding: EdgeInsets.only(top: 20, left: 20),
           children: [
             Obx(
-              () => Container(
-                height: 200,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        height: 50,
-                        width: 50,
-                        margin: EdgeInsets.only(top: 40, left: 10, bottom: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Color(0xFF0c2b46),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(profileController
-                                    .authenticatedUser.value.image ??
-                                ""),
+              () => authController.isGuestUser.value
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 190,
+                          child: Center(
+                            child: Text(
+                              "Hello Guest , 👋",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 30,
+                                  color: Colors.white),
+                            ),
                           ),
                         ),
-                        child: Container()),
-                    Container(
-                      margin: const EdgeInsets.only(left: 5),
+                        Divider(
+                          thickness: 1.4,
+                          color: Colors.white,
+                        )
+                      ],
+                    )
+                  : Container(
+                      height: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            profileController
-                                    .authenticatedUser.value.firstName ??
-                                " " +
-                                    '${profileController.authenticatedUser.value.lastName}' ??
-                                " ",
-                            style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            profileController
-                                    .authenticatedUser.value.username ??
-                                " ",
-                            style: TextStyle(fontSize: 15, color: Colors.grey),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    profileController
-                                        .authenticatedUser.value.friends
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    " Friends",
-                                    style: TextStyle(
-                                        fontSize: 10, color: Colors.grey),
-                                  ),
-                                ],
+                          Container(
+                              height: 50,
+                              width: 50,
+                              margin: EdgeInsets.only(
+                                  top: 40, left: 10, bottom: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: Color(0xFF0c2b46),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(profileController
+                                          .authenticatedUser.value.image ??
+                                      ""),
+                                ),
                               ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    profileController
-                                        .authenticatedUser.value.followings
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    " Following",
-                                    style: TextStyle(
-                                        fontSize: 10, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    profileController
-                                        .authenticatedUser.value.followers
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    " Followers",
-                                    style: TextStyle(
-                                        fontSize: 10, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
+                              child: Container()),
+                          Container(
+                            margin: const EdgeInsets.only(left: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  profileController
+                                          .authenticatedUser.value.firstName ??
+                                      " " +
+                                          '${profileController.authenticatedUser.value.lastName}' ??
+                                      " ",
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  profileController
+                                          .authenticatedUser.value.username ??
+                                      " ",
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.grey),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          profileController
+                                              .authenticatedUser.value.friends
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          " Friends",
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          profileController.authenticatedUser
+                                              .value.followings
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          " Following",
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          profileController
+                                              .authenticatedUser.value.followers
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          " Followers",
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
             ),
             const SizedBox(
               height: 20,
@@ -181,9 +206,14 @@ class DrawerWidget extends StatelessWidget {
                       color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.of(context).pop();
-                  Get.toNamed(AppRoutes.profilePage,
-                      parameters: {"me": "me", "username": ""});
+                  if (authController.isGuestUser.value) {
+                    authController.guestReminder(context);
+                  } else {
+                    Navigator.of(context).pop();
+                    Get.toNamed(AppRoutes.profilePage,
+                        parameters: {"me": "me", "username": ""});
+                  }
+
                   // ...
                 },
               ),
