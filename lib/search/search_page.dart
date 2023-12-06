@@ -10,6 +10,7 @@ import 'package:mindplex_app/utils/colors.dart';
 
 import '../blogs/blogs_controller.dart';
 
+import '../blogs/screens/blog_detail_page.dart';
 import '../models/search_response.dart';
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
@@ -92,16 +93,17 @@ class _SearchPageState extends State<SearchPage> {
                             alignment: Alignment.center,
                             children: [
                               TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                                 controller: _searchController,
                                 textAlign: TextAlign.center,
-                                onFieldSubmitted: (String value) {},
+                                onFieldSubmitted: (String value) {
+                                  Get.toNamed(AppRoutes.searchResultPage,parameters: {"query":_searchController.text});
+                                },
                                 keyboardType: TextInputType.text,
                                 style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400,
-                                    color: Colors.black),
+                                    color: Colors.grey),
                                 textAlignVertical: TextAlignVertical.center,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -170,8 +172,7 @@ class _SearchPageState extends State<SearchPage> {
                     for (int i = 0;
                         i < (showAllCategories ? categories.length : 5);
                         i++)
-                      _container(
-                          categories[i].name, categories[i].posts.toString())
+                      _container(categories[i])
                   ]),
                   InkWell(
                     onTap: () {
@@ -240,15 +241,17 @@ class _SearchPageState extends State<SearchPage> {
                     () => blogsController.isLoading.value == false
                         ? SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                for (int i = 0;
-                                    i < blogsController.popularBlogs.length;
-                                    i++)
-                                  ArticleCard(
-                                      blogsController: blogsController,
-                                      index: i)
-                              ],
+                            child: IntrinsicHeight(
+                              child: Row(
+                                children: [
+                                  for (int i = 0;
+                                      i < blogsController.popularBlogs.length;
+                                      i++)
+                                    ArticleCard(
+                                        blogsController: blogsController,
+                                        index: i)
+                                ],
+                              ),
                             ),
                           )
                         : Container(),
@@ -262,46 +265,49 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _container(String mainContent, String posts) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mainContent,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                  ),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    posts + "k posts",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w100,
-                        color: Colors.white,
-                        fontSize: 15),
-                  )
-                ],
+  Widget _container(Category category) {
+    return GestureDetector(
+      onTap: (){Get.toNamed(AppRoutes.searchResultPage,parameters: {"query":category.slug});},
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      category.name,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      category.posts.toString() + "posts",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w100,
+                          color: Colors.white,
+                          fontSize: 15),
+                    )
+                  ],
+                ),
               ),
-            ),
-            InkWell(
-              child: Icon(
-                Icons.more_horiz,
-                size: 22,
-                color: Colors.white,
+              InkWell(
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 22,
+                  color: Colors.white,
+                ),
+                onTap: () {},
               ),
-              onTap: () {},
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -331,69 +337,76 @@ class ArticleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(blogsController
-                                    .filteredBlogs[index].thumbnailImage ??
-                                ""))),
-                    height: 100,
-                    width: 300,
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 1, right: 8.0),
-                      child: Container(
-                          height: 60,
-                          width: 35,
-                          margin: EdgeInsets.only(left: 10, top: 0),
-                          decoration: const BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(5),
-                                bottomRight: Radius.circular(5),
-                              )),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: blogsController.filteredBlogs[index]
-                                            .postTypeFormat ==
-                                        "text"
-                                    ? const Icon(
-                                        Icons.description_outlined,
-                                        color: Color(0xFF8aa7da),
-                                        size: 20,
-                                      )
-                                    : blogsController.filteredBlogs[index]
-                                                .postTypeFormat ==
-                                            "video"
-                                        ? const Icon(
-                                            Icons.videocam,
-                                            color: Color.fromARGB(
-                                                255, 185, 127, 127),
-                                            size: 20,
-                                          )
-                                        : const Icon(
-                                            Icons.headphones,
-                                            color: Colors.green,
-                                            size: 20,
-                                          ),
-                              )
-                            ],
-                          )),
+            GestureDetector(
+              onTap: (){
+                Get.to(DetailsPage(
+                    index: index,
+                    details: blogsController.popularBlogs[index]));
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(blogsController
+                                      .popularBlogs[index].thumbnailImage ??
+                                  ""))),
+                      height: 100,
+                      width: 300,
                     ),
-                  )
-                ],
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1, right: 8.0),
+                        child: Container(
+                            height: 60,
+                            width: 35,
+                            margin: EdgeInsets.only(left: 10, top: 0),
+                            decoration: const BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5),
+                                )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: blogsController.popularBlogs[index]
+                                              .postTypeFormat ==
+                                          "text"
+                                      ? const Icon(
+                                          Icons.description_outlined,
+                                          color: Color(0xFF8aa7da),
+                                          size: 20,
+                                        )
+                                      : blogsController.popularBlogs[index]
+                                                  .postTypeFormat ==
+                                              "video"
+                                          ? const Icon(
+                                              Icons.videocam,
+                                              color: Color.fromARGB(
+                                                  255, 185, 127, 127),
+                                              size: 20,
+                                            )
+                                          : const Icon(
+                                              Icons.headphones,
+                                              color: Colors.green,
+                                              size: 20,
+                                            ),
+                                )
+                              ],
+                            )),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             Row(

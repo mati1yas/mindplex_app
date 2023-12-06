@@ -269,10 +269,10 @@ class ApiService {
     }
   }
 
-  Future<SearchResponse> fetchSearchLanding() async {
+  Future<SearchResponseLanding> fetchSearchLanding() async {
     var blogs = <Blog>[];
     var categories = <Category>[];
-    SearchResponse searchResponse = SearchResponse();
+    SearchResponseLanding searchResponse = SearchResponseLanding();
     try {
       var dio = Dio();
 
@@ -291,6 +291,37 @@ class ApiService {
         categories.add(Category.fromJson(category));
       }
       searchResponse.categories = categories;
+      searchResponse.blogs = blogs;
+    } catch (e) {}
+
+    return searchResponse;
+  }
+  Future<SearchResponse> fetchSearchResponse(String query) async{
+    var blogs = <Blog>[];
+    var users = <UserProfile>[];
+    SearchResponse searchResponse = SearchResponse();
+    Map<String, dynamic> queryParameter = {
+      'search_query': query,
+    };
+    try {
+      var dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+
+      Response response =
+      await dio.get(AppUrls.searchLandingUrl,queryParameters: queryParameter);
+
+      for (var blog in response.data['posts']) {
+        blogs.add(Blog.fromJson(blog));
+      }
+      for (var user in response.data['users']) {
+        users.add(UserProfile.fromJson(user));
+      }
+      searchResponse.users = users;
       searchResponse.blogs = blogs;
     } catch (e) {}
 
