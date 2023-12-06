@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 
 import 'package:mindplex_app/drawer/drawer_widget.dart';
 import 'package:mindplex_app/utils/colors.dart';
 
 import '../blogs/blogs_controller.dart';
 
+import '../drawer/top_user_profile_icon.dart';
 import '../models/search_response.dart';
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
@@ -28,6 +30,7 @@ class _SearchPageState extends State<SearchPage> {
 
   ProfileController profileController = Get.put(ProfileController());
   TextEditingController _searchController = TextEditingController();
+  AuthController authController = Get.find();
   final apiService = ApiService().obs;
   bool isIntialLoading = true;
   bool showAllCategories = false;
@@ -67,25 +70,9 @@ class _SearchPageState extends State<SearchPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        GestureDetector(
-                          onTap: () =>
-                              {Keys.globalkey.currentState!.openDrawer()},
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            margin: EdgeInsets.only(left: 40),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Color(0xFF0c2b46),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(profileController
-                                        .authenticatedUser.value.image ??
-                                    ""),
-                              ),
-                            ),
-                          ),
-                        ),
+                        TopUserProfileIcon(
+                            profileController: profileController,
+                            authController: authController),
                         SizedBox(width: 30),
                         Expanded(
                           child: Stack(

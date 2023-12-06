@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex_app/blogs/blogs_controller.dart';
 import 'package:mindplex_app/blogs/screens/blog_detail_page.dart';
 import 'package:mindplex_app/blogs/widgets/blog_shimmer.dart';
@@ -12,6 +13,7 @@ import 'package:mindplex_app/utils/colors.dart';
 import 'package:shimmer_effect/shimmer_effect.dart';
 import 'package:mindplex_app/blogs/widgets/blog_card.dart';
 
+import '../drawer/top_user_profile_icon.dart';
 import '../profile/user_profile_controller.dart';
 import '../utils/constatns.dart';
 import '../routes/app_routes.dart';
@@ -32,6 +34,8 @@ class _LandingPageState extends State<LandingPage>
 
   ProfileController profileController = Get.find();
 
+  AuthController authController = Get.find();
+
   late TabController _tabController;
   @override
   void initState() {
@@ -47,6 +51,7 @@ class _LandingPageState extends State<LandingPage>
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       // key: Keys.globalkey,
@@ -60,26 +65,9 @@ class _LandingPageState extends State<LandingPage>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onTap: () => {Keys.globalkey.currentState!.openDrawer()},
-                  child: Obx(
-                    () => Container(
-                      height: 40,
-                      width: 40,
-                      margin: EdgeInsets.only(left: 40),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Color(0xFF0c2b46),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              profileController.authenticatedUser.value.image ??
-                                  ""),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                TopUserProfileIcon(
+                    profileController: profileController,
+                    authController: authController),
                 const SizedBox(
                   width: 80,
                 ),
