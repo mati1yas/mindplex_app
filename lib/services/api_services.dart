@@ -3,18 +3,22 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex_app/models/search_response.dart';
 import 'package:mindplex_app/models/notification_model.dart';
 import 'package:mindplex_app/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../auth/auth_controller/auth_controller.dart';
 import '../models/blog_model.dart';
 import '../models/comment.dart';
 import '../utils/constatns.dart';
 import 'local_storage.dart';
 
 class ApiService {
+  AuthController authenticationController = getxprefix.Get.find();
+
   Future<List<Blog>> loadBlogs(
       {required String recommender,
       required String post_format,
@@ -26,8 +30,9 @@ class ApiService {
       Rx<LocalStorage> localStorage =
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
-
-      dio.options.headers["Authorization"] = "Bearer ${token}";
+      ;
+      if (authenticationController.isGuestUser.value == false)
+        dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response =
           await dio.get("${AppUrls.blogUrl}/$recommender/$post_format/$page");
@@ -280,7 +285,7 @@ class ApiService {
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
 
-      dio.options.headers["Authorization"] = "Bearer ${token}";
+      // dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio.get(AppUrls.searchLandingUrl);
 
