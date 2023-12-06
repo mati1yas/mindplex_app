@@ -10,6 +10,7 @@ import 'package:mindplex_app/notification/notification_page.dart';
 import 'package:mindplex_app/message/message_page.dart';
 import 'package:mindplex_app/utils/constatns.dart';
 
+import 'auth/auth_controller/auth_controller.dart';
 import 'blogs/blogs_controller.dart';
 import 'notification/controller/notification_controller.dart';
 import 'profile/user_profile_controller.dart';
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
   BlogsController blogsController = Get.put(BlogsController());
 
   ProfileController profileController = Get.put(ProfileController());
-
+  AuthController authController = Get.find();
   final pages = [
     LandingPage(),
     SearchPage(),
@@ -148,9 +149,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              pageNavigationController.navigatePage(3);
+                              if (authController.isGuestUser.value) {
+                                authController.guestReminder(context);
+                              } else {
+                                pageNavigationController.navigatePage(3);
 
-                              notificationController.loadNotifications();
+                                notificationController.loadNotifications();
+                              }
                             },
                             child: Icon(
                               Icons.notifications_outlined,
@@ -168,7 +173,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              pageNavigationController.navigatePage(4);
+                              if (authController.isGuestUser.value) {
+                                authController.guestReminder(context);
+                              } else {
+                                pageNavigationController.navigatePage(4);
+                              }
                             },
                             child: Icon(
                               Icons.email_outlined,
