@@ -285,7 +285,8 @@ class ApiService {
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
 
-      // dio.options.headers["Authorization"] = "Bearer ${token}";
+      if (authenticationController.isGuestUser.value == false)
+        dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio.get(AppUrls.searchLandingUrl);
 
