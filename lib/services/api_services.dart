@@ -284,8 +284,8 @@ class ApiService {
       Rx<LocalStorage> localStorage =
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
-
-      // dio.options.headers["Authorization"] = "Bearer ${token}";
+      if (authenticationController.isGuestUser.value == false)
+        dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio.get(AppUrls.searchLandingUrl);
 
@@ -301,7 +301,8 @@ class ApiService {
 
     return searchResponse;
   }
-  Future<SearchResponse> fetchSearchResponse(String query) async{
+
+  Future<SearchResponse> fetchSearchResponse(String query) async {
     var blogs = <Blog>[];
     var users = <UserProfile>[];
     SearchResponse searchResponse = SearchResponse();
@@ -317,8 +318,8 @@ class ApiService {
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
 
-      Response response =
-      await dio.get(AppUrls.searchLandingUrl,queryParameters: queryParameter);
+      Response response = await dio.get(AppUrls.searchLandingUrl,
+          queryParameters: queryParameter);
 
       for (var blog in response.data['posts']) {
         blogs.add(Blog.fromJson(blog));
@@ -339,7 +340,8 @@ class ApiService {
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
     final token = await localStorage.value.readFromStorage('Token');
-    dio.options.headers["Authorization"] = "Bearer $token";
+    if (authenticationController.isGuestUser.value == false)
+      dio.options.headers["Authorization"] = "Bearer ${token}";
 
     Response response = await dio
         .get(AppUrls.baseUrl + "/mp_rp/v1/user/notifications?page=$pageNumber");
