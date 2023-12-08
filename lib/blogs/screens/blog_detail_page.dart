@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:html/parser.dart';
 import 'package:mindplex_app/blogs/widgets/reaction_emoji.dart';
 import 'package:share/share.dart';
 
@@ -7,6 +9,7 @@ import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_control
 import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
 import 'package:mindplex_app/models/blog_model.dart';
 
+import '../../auth/auth_controller/auth_controller.dart';
 import '../../utils/constatns.dart';
 import '../blogs_controller.dart';
 import '../comments/comment.dart';
@@ -20,6 +23,10 @@ class DetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
     BlogsController blogsController = Get.find();
+    AuthController authController = Get.find();
+
+    final decodedHtml = parse(details.authorBio).documentElement!.text;
+    print(decodedHtml);
 
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
@@ -159,19 +166,16 @@ class DetailsPage extends StatelessWidget {
                               data: details.content ?? [],
                             ),
                           ),
+                          //  author details and follow button
+
                           Row(
                             children: [
                               Container(
-                                height: 40,
-                                width: 40,
                                 margin: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.green,
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        details.authorAvatar ?? ""),
-                                  ),
+                                child: CircleAvatar(
+                                  radius: 21,
+                                  backgroundImage:
+                                      NetworkImage(details.authorAvatar ?? ""),
                                 ),
                               ),
                               Container(
@@ -195,12 +199,9 @@ class DetailsPage extends StatelessWidget {
                                         height: 10,
                                       ),
                                       Text(
-                                        details.authorBio ?? "",
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w200),
-                                      )
+                                        decodedHtml,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -270,18 +271,22 @@ class DetailsPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      if (details.isUserLiked.value == true) {
-                        likeDislikeConroller.removePreviousInteraction(
-                            blog: details,
-                            index: index,
-                            articleSlug: details.slug ?? "",
-                            interction: "L");
-                      } else if (details.isUserLiked.value == false) {
-                        likeDislikeConroller.likeDislikeArticle(
-                            blog: details,
-                            index: index,
-                            articleSlug: details.slug ?? "",
-                            interction: "L");
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        if (details.isUserLiked.value == true) {
+                          likeDislikeConroller.removePreviousInteraction(
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
+                              interction: "L");
+                        } else if (details.isUserLiked.value == false) {
+                          likeDislikeConroller.likeDislikeArticle(
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
+                              interction: "L");
+                        }
                       }
                     },
                     icon: (details.isUserLiked.value)
@@ -299,21 +304,25 @@ class DetailsPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      if (details.isUserDisliked.value == true) {
-                        likeDislikeConroller.removePreviousInteraction(
-                            blog: details,
-                            index: index,
-                            articleSlug: details.slug ?? "",
-                            interction: "L");
-                      } else if (details.isUserDisliked.value == false) {
-                        likeDislikeConroller.likeDislikeArticle(
-                            blog: details,
-                            index: index,
-                            articleSlug: details.slug ?? "",
-                            interction: "D");
-                      }
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        if (details.isUserDisliked.value == true) {
+                          likeDislikeConroller.removePreviousInteraction(
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
+                              interction: "L");
+                        } else if (details.isUserDisliked.value == false) {
+                          likeDislikeConroller.likeDislikeArticle(
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
+                              interction: "D");
+                        }
 
-                      ;
+                        ;
+                      }
                     },
                     icon: details.isUserDisliked.value
                         ? Icon(
@@ -357,8 +366,12 @@ class DetailsPage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      likeDislikeConroller.showEmoji.value =
-                          !likeDislikeConroller.showEmoji.value;
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        likeDislikeConroller.showEmoji.value =
+                            !likeDislikeConroller.showEmoji.value;
+                      }
                     },
                     child: Obx(
                       () => likeDislikeConroller.reactedWithEmoji.value
@@ -373,16 +386,48 @@ class DetailsPage extends StatelessWidget {
                   SizedBox(
                     width: 8,
                   ),
-                  Icon(
-                    Icons.check_box_outline_blank,
-                    color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        likeDislikeConroller.addVote();
+                      }
+                    },
+                    child: Obx(
+                      () => likeDislikeConroller.hasVoted.value
+                          ? Icon(
+                              Icons.check_box_outlined,
+                              color: Color.fromARGB(255, 73, 255, 179),
+                            )
+                          : Icon(
+                              Icons.check_box_outline_blank,
+                              color: Colors.white,
+                            ),
+                    ),
                   ),
                   SizedBox(
                     width: 8,
                   ),
-                  Icon(
-                    Icons.bookmark_add,
-                    color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        likeDislikeConroller.addToBookmark();
+                      }
+                    },
+                    child: Obx(
+                      () => likeDislikeConroller.hasBookMarked.value
+                          ? Icon(
+                              Icons.bookmark_add,
+                              color: Color.fromARGB(255, 73, 255, 179),
+                            )
+                          : Icon(
+                              Icons.bookmark_add,
+                              color: Colors.white,
+                            ),
+                    ),
                   ),
                   SizedBox(
                     width: 8,

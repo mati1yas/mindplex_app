@@ -5,6 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 
 import 'package:mindplex_app/blogs/comments/controller.dart';
 
@@ -20,6 +21,7 @@ class MyWidgetComment extends GetView<CommentController> {
   Widget build(BuildContext context) {
     final controller = Get.put(CommentController(post_slug: post_slug));
     final theme = Theme.of(context);
+    AuthController authController = Get.find();
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -52,11 +54,13 @@ class MyWidgetComment extends GetView<CommentController> {
                       children: [
                         CircleAvatar(
                           maxRadius: 24,
+                          backgroundColor: Colors.white,
                           /*
+
                           foregroundImage: CachedNetworkImageProvider(
                               controller.profileImage!),
                               */
-                          foregroundImage: AssetImage('assets/images/logo.png'),
+                          backgroundImage: AssetImage('assets/images/logo.png'),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -85,6 +89,12 @@ class MyWidgetComment extends GetView<CommentController> {
                                 contentPadding: EdgeInsets.all(14),
                                 border: InputBorder.none,
                               ),
+                              onTap: () {
+                                if (authController.isGuestUser.value) {
+                                  authController.guestReminder(context);
+                                  controller.focusNode!.unfocus();
+                                }
+                              },
                               onChanged: (val) {
                                 // TODO: handle this callback using the textFieldController in the controller
                               },
@@ -113,7 +123,11 @@ class MyWidgetComment extends GetView<CommentController> {
                         */
                         child: OutlinedButton(
                           onPressed: () {
-                            controller.onClickPost();
+                            if (authController.isGuestUser.value) {
+                              authController.guestReminder(context);
+                            } else {
+                              controller.onClickPost();
+                            }
                           },
                           child: Text(
                             'Post',
