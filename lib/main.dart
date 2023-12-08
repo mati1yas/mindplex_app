@@ -129,24 +129,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                       : 24,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              pageNavigationController.navigatePage(2);
-                            },
-                            child: Icon(
-                              Icons.people_outline,
-                              color:
-                                  pageNavigationController.currentPage.value ==
-                                          2
-                                      ? Colors.green
-                                      : Colors.white,
-                              size:
-                                  pageNavigationController.currentPage.value ==
-                                          2
-                                      ? 29
-                                      : 24,
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     pageNavigationController.navigatePage(2);
+                          //   },
+                          //   child: Icon(
+                          //     Icons.people_outline,
+                          //     color:
+                          //         pageNavigationController.currentPage.value ==
+                          //                 2
+                          //             ? Colors.green
+                          //             : Colors.white,
+                          //     size:
+                          //         pageNavigationController.currentPage.value ==
+                          //                 2
+                          //             ? 29
+                          //             : 24,
+                          //   ),
+                          // ),
                           GestureDetector(
                             onTap: () {
                               if (authController.isGuestUser.value) {
@@ -171,28 +171,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                       : 24,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              if (authController.isGuestUser.value) {
-                                authController.guestReminder(context);
-                              } else {
-                                pageNavigationController.navigatePage(4);
-                              }
-                            },
-                            child: Icon(
-                              Icons.email_outlined,
-                              color:
-                                  pageNavigationController.currentPage.value ==
-                                          4
-                                      ? Colors.green
-                                      : Colors.white,
-                              size:
-                                  pageNavigationController.currentPage.value ==
-                                          4
-                                      ? 29
-                                      : 24,
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     if (authController.isGuestUser.value) {
+                          //       authController.guestReminder(context);
+                          //     } else {
+                          //       pageNavigationController.navigatePage(4);
+                          //     }
+                          //   },
+                          //   child: Icon(
+                          //     Icons.email_outlined,
+                          //     color:
+                          //         pageNavigationController.currentPage.value ==
+                          //                 4
+                          //             ? Colors.green
+                          //             : Colors.white,
+                          //     size:
+                          //         pageNavigationController.currentPage.value ==
+                          //                 4
+                          //             ? 29
+                          //             : 24,
+                          //   ),
+                          // ),
                         ]),
                   ),
                 ),
