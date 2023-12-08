@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex_app/profile/user_profile_displays/profile_page.dart';
 
 import '../../routes/app_routes.dart';
@@ -7,7 +8,7 @@ import '../blogs_controller.dart';
 import '../screens/blog_detail_page.dart';
 
 class BlogCard extends StatelessWidget {
-  const BlogCard({
+  BlogCard({
     super.key,
     required this.blogsController,
     required this.index,
@@ -15,6 +16,8 @@ class BlogCard extends StatelessWidget {
 
   final BlogsController blogsController;
   final int index;
+
+  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +31,18 @@ class BlogCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //  will be modified in detail .
-
-                    Get.toNamed(AppRoutes.profilePage, parameters: {
-                      "me": "notme",
-                      "username":
-                          blogsController.filteredBlogs[index].authorUsername ??
-                              ""
-                    });
+                    //  will be modified in detail
+                    //
+                    if (authController.isGuestUser.value) {
+                      authController.guestReminder(context);
+                    } else {
+                      Get.toNamed(AppRoutes.profilePage, parameters: {
+                        "me": "notme",
+                        "username": blogsController
+                                .filteredBlogs[index].authorUsername ??
+                            ""
+                      });
+                    }
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(

@@ -401,8 +401,12 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
+                    if (authController.isGuestUser.value) {
+                      authController.guestReminder(context);
+                    } else {
+                      Navigator.of(context).pop();
+                      Get.toNamed(AppRoutes.settingsPage);
+                    }
                   },
                 ),
                 SizedBox(
