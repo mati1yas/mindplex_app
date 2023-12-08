@@ -10,6 +10,8 @@ class LikeDislikeConroller extends GetxController {
   final apiService = ApiService().obs;
   RxBool showEmoji = false.obs;
   RxBool reactedWithEmoji = false.obs;
+  RxBool hasVoted = false.obs;
+  RxBool hasBookMarked = false.obs;
   RxList currentEmoji = [
     "😅",
   ].obs;
@@ -52,6 +54,14 @@ class LikeDislikeConroller extends GetxController {
     currentEmoji[0] = icon;
     showEmoji.value = !showEmoji.value;
     reactedWithEmoji.value = true;
+  }
+
+  void addVote() {
+    hasVoted.value = !hasVoted.value;
+  }
+
+  void addToBookmark() {
+    hasBookMarked.value = !hasBookMarked.value;
   }
 
   Future<void> removePreviousInteraction(
