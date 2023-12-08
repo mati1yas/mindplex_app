@@ -82,10 +82,12 @@ class ApiService {
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
     final token = await localStorage.value.readFromStorage('Token');
 
-    dio.options.headers["Authorization"] = "Bearer ${token}";
+    if (authenticationController.isGuestUser.value == false)
+      dio.options.headers["Authorization"] = "Bearer ${token}";
     Response response = await dio.get(
       '${AppUrls.commentsFetch}/$post_slug/$parent?page=$page&per_page=$perPage',
     );
+
     if (response.statusCode == 200) {
       final responseBody = response.data as List<dynamic>;
       final comments = responseBody.map((e) => Comment.fromMap(e)).toList();
