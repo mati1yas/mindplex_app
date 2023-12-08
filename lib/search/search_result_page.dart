@@ -18,6 +18,7 @@ import '../models/user_profile.dart';
 import '../profile/user_profile_controller.dart';
 import '../routes/app_routes.dart';
 import '../services/api_services.dart';
+import '../utils/constatns.dart';
 
 class SearchResultPage extends StatefulWidget {
   const SearchResultPage({super.key});
@@ -46,13 +47,14 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
     _searchController.text = params['query']!;
     fetchSearchResults();
     super.initState();
+    print("aaaaaaaaaaaaagh");
   }
   void fetchSearchResults() async{
     setState(() {
       isLoading = true;
     });
     blogsController.fetchSearchResults(_searchController.text);
-    final res = await apiService.value.fetchSearchResponse(_searchController.text);
+    final res = await apiService.value.fetchSearchResponse(_searchController.text,1);
     users = res.users!;
     setState(() {
       isLoading = false;
@@ -64,369 +66,6 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       key: _globalkey,
-      drawer: Drawer(
-        child: BackdropFilter(
-          blendMode: BlendMode.srcOver,
-          filter: ImageFilter.blur(
-              sigmaX: 13.0, sigmaY: 13.0, tileMode: TileMode.clamp),
-          child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF062f46), Color(0xFF1d253d)],
-                )),
-            child: ListView(
-              padding: EdgeInsets.only(top: 20, left: 20),
-              children: [
-                Obx(
-                      () => Container(
-                    height: 200,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            height: 50,
-                            width: 50,
-                            margin:
-                            EdgeInsets.only(top: 40, left: 10, bottom: 15),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Color(0xFF0c2b46),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(profileController
-                                    .authenticatedUser.value.image ??
-                                    ""),
-                              ),
-                            ),
-                            child: Container()),
-                        Container(
-                          margin: const EdgeInsets.only(left: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                profileController
-                                    .authenticatedUser.value.firstName ??
-                                    " " +
-                                        '${profileController.authenticatedUser.value.lastName}' ??
-                                    " ",
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                profileController
-                                    .authenticatedUser.value.username ??
-                                    " ",
-                                style:
-                                TextStyle(fontSize: 15, color: Colors.grey),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        profileController
-                                            .authenticatedUser.value.friends
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        " Friends",
-                                        style: TextStyle(
-                                            fontSize: 10, color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        profileController
-                                            .authenticatedUser.value.followings
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        " Following",
-                                        style: TextStyle(
-                                            fontSize: 10, color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        profileController
-                                            .authenticatedUser.value.followers
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        " Followers",
-                                        style: TextStyle(
-                                            fontSize: 10, color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                  margin: const EdgeInsets.only(right: 40),
-                  decoration: const BoxDecoration(
-                      color: Color(0xFF0f3e57),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: const Text(
-                      'Profile',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Get.toNamed(AppRoutes.profilePage,
-                          parameters: {"me": "me", "username": ""});
-                      // ...
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.upgrade_rounded,
-                    size: 25,
-                    color: Color(0xFFf55586),
-                  ),
-                  title: const Text(
-                    'Upgrade',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFf55586)),
-                  ),
-                  onTap: () {
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.description_outlined,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'Read',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    blogsController.filterBlogsByPostType(postType: 'text');
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.videocam,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'Watch',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    blogsController.filterBlogsByPostType(postType: 'video');
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.headphones,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'Listen',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    blogsController.filterBlogsByPostType(postType: 'audio');
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.new_label_rounded,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'News',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    FontAwesome.cube,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'Topics',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.help_outline,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'FAQ',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.people_alt_sharp,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'Moderators',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Get.to(() => ModeratorsPage());
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.people_alt_sharp,
-                    size: 25,
-                    color: Colors.white,
-                  ),
-                  title: const Text(
-                    'About Us',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Get.to(() => AboutMindPlex());
-                  },
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      "© 2023 MindPlex. All rights reserved",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      child: Icon(
-                        Icons.settings,
-                        size: 32,
-                        color: Colors.white,
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        Get.toNamed(AppRoutes.settingsPage);
-                      },
-                    ),
-                    SizedBox(
-                      width: 15,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 60,
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
       body:Column(
               children: [
                 Container(
@@ -436,7 +75,8 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GestureDetector(
-                        onTap: () => {_globalkey.currentState!.openDrawer()},
+                        onTap: () =>
+                        {Keys.globalkey.currentState!.openDrawer()},
                         child: Container(
                           height: 40,
                           width: 40,
@@ -446,9 +86,9 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                             color: Color(0xFF0c2b46),
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  profileController.authenticatedUser.value.image ??
-                                      ""),
+                              image: NetworkImage(profileController
+                                  .authenticatedUser.value.image ??
+                                  ""),
                             ),
                           ),
                         ),
@@ -554,18 +194,27 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                           ),
                         )
                             : Expanded(
-                          child: blogsController.searchedBlogs.length == 0?Center(child: Text("No content was found matching your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
-                              itemCount: blogsController.searchedBlogs.length,
+                          child: ListView.builder(
+                              controller: blogsController.searchScrollController,
+                              itemCount: blogsController.searchedBlogs.length + 1,
                               itemBuilder: (ctx, index) {
-                                  final thumbnailUrl = blogsController
-                                      .searchedBlogs[index].thumbnailImage;
-                                  isLoading = false;
+                                if (index < blogsController.searchedBlogs.length) {
                                   return SearchBlogCard(
                                       blogsController: blogsController, index: index);
+                                } else {
+                                  print("executing else statement");
+                                  if (index == blogsController.searchedBlogs.length &&
+                                      !blogsController.reachedEndOfListSearch) {
+                                    // Display CircularProgressIndicator under the last card
+                                    return Center(child: CircularProgressIndicator());
+                                  } else {
+                                    return Container(child: Center(child: Text("No Content",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),),); // Return an empty container otherwise
+                                  }
+                                }
                               }),
                         );
                       }),
-                      isLoading?Center(child: CircularProgressIndicator(),):Expanded(
+                      isLoading?Center(child: CircularProgressIndicator(),):Container(
                         child: users.length == 0?Center(child: Text("No users match your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
                             itemCount: users.length,
                             itemBuilder: (ctx, index) {
@@ -885,73 +534,77 @@ class SearchBlogCard extends StatelessWidget {
     );
   }
 }
+
 class UserCard extends StatelessWidget {
   const UserCard({super.key,required this.user});
   final UserProfile user;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  //  will be modified in detail .
+    return GestureDetector(
+      onTap: () {
+        //  will be modified in detail .
 
-                  Get.toNamed(AppRoutes.profilePage, parameters: {
-                    "me": "notme",
-                    "username":
-                    user.username??
-                        ""
-                  });
-                },
-                child: CircleAvatar(
-                  foregroundImage:NetworkImage(user.avatarUrl??""),
-                  radius: 20,
-                  child: const Material(
-                    color: Color.fromARGB(0, 231, 6, 6), //
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Text(user.firstName!+" "+user.lastName!,style: TextStyle(color: Colors.white,fontSize: 17),),
-                Text("MPXR 1234",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-              ],)
-            ],
-          ),
-          SizedBox(
-            key: UniqueKey(),
-            width: 60,
-            height: 30,
-            child: GestureDetector(
-              onTap: (){
-
-              },
-              child: Container(
-                decoration:BoxDecoration(
-                  color: Color.fromARGB(255, 49, 153, 167),
-                  borderRadius: BorderRadius.circular(10),
+        Get.toNamed(AppRoutes.profilePage, parameters: {
+          "me": "notme",
+          "username":
+          user.username??
+              ""
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [ CircleAvatar(
+                      foregroundImage:NetworkImage(user.avatarUrl??""),
+                      radius: 20,
+                      child: const Material(
+                        color: Color.fromARGB(0, 231, 6, 6), //
+                      ),
                     ),
-                padding: EdgeInsets.all(8),
-                child: Center(
-                  child: Text(
-                    "follow",
-                    style: TextStyle(color: Colors.white, fontSize: 15)
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Text(user.firstName!+" "+user.lastName!,style: TextStyle(color: Colors.white,fontSize: 17),),
+                      Text(user.username!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                    ],),
+                  )
+                ],
               ),
             ),
-          )
-        ],
+            SizedBox(
+              key: UniqueKey(),
+              width: 60,
+              height: 30,
+              child: GestureDetector(
+                onTap: (){
+
+                },
+                child: Container(
+                  decoration:BoxDecoration(
+                    color: Color.fromARGB(255, 49, 153, 167),
+                    borderRadius: BorderRadius.circular(10),
+                      ),
+                  padding: EdgeInsets.all(8),
+                  child: Center(
+                    child: Text(
+                      "follow",
+                      style: TextStyle(color: Colors.white, fontSize: 15)
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

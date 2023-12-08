@@ -9,9 +9,11 @@ class BlogsController extends GetxController {
   RxString recommender = "default".obs;
   RxString post_format = "text".obs;
   RxInt page = 1.obs;
+  RxInt searchPage = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
   RxList<Blog> popularPosts = <Blog>[].obs;
   RxList<Blog> searchResults = <Blog>[].obs;
+  RxString searchQuery = "".obs;
   final apiSerivice = ApiService().obs;
   final categories = ['All', 'Popular', 'Most Recent', 'Trending'];
 
@@ -30,6 +32,8 @@ class BlogsController extends GetxController {
 
   ScrollController scrollController = ScrollController();
   bool reachedEndOfList = false;
+  ScrollController searchScrollController = ScrollController();
+  bool reachedEndOfListSearch = false;
 
   @override
   void onInit() {
@@ -43,6 +47,14 @@ class BlogsController extends GetxController {
               scrollController.position.maxScrollExtent) {
         // Load more data
         loadMoreBlogs();
+      }
+    });
+    searchScrollController.addListener(() {
+      if (!reachedEndOfListSearch &&
+          searchScrollController.position.pixels >=
+              searchScrollController.position.maxScrollExtent) {
+        // Load more data
+        loadMoreSearchResults(searchQuery.value);
       }
     });
   }
@@ -73,6 +85,29 @@ class BlogsController extends GetxController {
     update(); // Trigger UI update
   }
 
+  void loadMoreSearchResults(String query) async {
+
+    if (isLoading.value || reachedEndOfListSearch) {
+      return;
+    }
+
+    isLoading.value = true;
+    searchPage.value++; // Increment the page number
+
+    final res = await apiSerivice.value.fetchSearchResponse(query,searchPage.value.toInt());
+
+    if (res.blogs!.isEmpty) {
+      reachedEndOfListSearch = true;
+      // Notify the user that there are no more posts for now
+    } else {
+      searchResults.addAll(res.blogs!);
+    }
+
+    isLoading.value = false;
+
+    update(); // Trigger UI update
+  }
+
   void fetchBlogs() async {
     isLoading.value = true;
     final res = await apiSerivice.value.loadBlogs(
@@ -92,11 +127,16 @@ class BlogsController extends GetxController {
   }
 
   void fetchSearchResults(String query) async{
+    reachedEndOfListSearch = false;
     isLoading.value = true;
-    final res = await apiSerivice.value.fetchSearchResponse(query);
-
-    searchResults.value = res.blogs!;
-    isLoading.value = false;
+    searchPage.value = 1;
+    final res = await apiSerivice.value.fetchSearchResponse(query,searchPage.value.toInt());
+    if(res.blogs!.isEmpty){
+      reachedEndOfListSearch = true;
+    }
+      searchResults.value = res.blogs!;
+      searchQuery.value = query;
+     isLoading.value = false;
   }
 
   void filterBlogsByRecommender({required String category}) {

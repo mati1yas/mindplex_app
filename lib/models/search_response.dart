@@ -31,4 +31,5 @@ class Category {
 class SearchResponse{
   List<UserProfile>? users;
   List<Blog>? blogs;
+
 }

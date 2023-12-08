@@ -302,12 +302,13 @@ class ApiService {
     return searchResponse;
   }
 
-  Future<SearchResponse> fetchSearchResponse(String query) async {
+  Future<SearchResponse> fetchSearchResponse(String query,int page) async{
     var blogs = <Blog>[];
     var users = <UserProfile>[];
     SearchResponse searchResponse = SearchResponse();
     Map<String, dynamic> queryParameter = {
       'search_query': query,
+      'page':page
     };
     try {
       var dio = Dio();
