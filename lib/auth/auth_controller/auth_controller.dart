@@ -97,6 +97,7 @@ class AuthController extends GetxController {
           friends: userData.friends.toString());
 
       isAuthenticated.value = true;
+      isGuestUser.value = false;
     } catch (e) {
       if (e is DioException) {
         var message = e.response!.data['message'].toString();
