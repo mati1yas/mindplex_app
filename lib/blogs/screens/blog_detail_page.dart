@@ -249,8 +249,10 @@ class DetailsPage extends StatelessWidget {
                               crossAxisSpacing: 10,
                             ),
                             itemCount: emojis.length,
-                            itemBuilder: (context, index) =>
-                                ReactionEmoji(emoji: emojis[index]),
+                            itemBuilder: (context, index) => ReactionEmoji(
+                                emojiIndex: index,
+                                blog: details,
+                                blogIndex: index),
                           ),
                         ),
                       )
@@ -374,8 +376,8 @@ class DetailsPage extends StatelessWidget {
                       }
                     },
                     child: Obx(
-                      () => likeDislikeConroller.reactedWithEmoji.value
-                          ? Text(likeDislikeConroller.currentEmoji.value[0],
+                      () => details.interactedEmoji.value != ''
+                          ? Text(codeToEmojiMap[details.interactedEmoji.value]!,
                               style: TextStyle(fontSize: 24))
                           : Icon(
                               Icons.add_reaction_outlined,
