@@ -35,7 +35,7 @@ class ApiService {
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response =
-          await dio.get("${AppUrls.blogUrl}/$recommender/$post_format/$page");
+          await dio.get("${AppUrls.blogUrl}/articles/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
         ret.add(Blog.fromJson(blog));
