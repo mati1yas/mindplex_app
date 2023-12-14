@@ -34,13 +34,17 @@ class ApiService {
       if (authenticationController.isGuestUser.value == false)
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
-      Response response =
-          await dio.get("${AppUrls.blogUrl}/articles/$recommender/$post_format/$page");
+      Response response = await dio
+          .get("${AppUrls.blogUrl}/articles/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
+        if (blog['interacted_emoji'] == null) blog['interacted_emoji'] = '';
+
         ret.add(Blog.fromJson(blog));
       }
-    } catch (e) {}
+    } catch (e) {
+      throw e.toString();
+    }
 
     return ret;
   }
@@ -56,6 +60,24 @@ class ApiService {
 
     Response response = await dio
         .post("${AppUrls.likeDislike}$articleSlug?like_or_dislike=$interction");
+  }
+
+  Future<void> reactWithEmoji(
+      {required String articleSlug, required String emoji_value}) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+
+    Response response = await dio.post("${AppUrls.reactWithEmoji}$articleSlug",
+        data: <String, String>{
+          "reaction_type": "post",
+          "emoji_value": emoji_value
+        });
+
+    print(response.data);
   }
 
   Future<void> removePreviousInteraction(
@@ -304,14 +326,11 @@ class ApiService {
     return searchResponse;
   }
 
-  Future<SearchResponse> fetchSearchResponse(String query,int page) async{
+  Future<SearchResponse> fetchSearchResponse(String query, int page) async {
     var blogs = <Blog>[];
     var users = <UserProfile>[];
     SearchResponse searchResponse = SearchResponse();
-    Map<String, dynamic> queryParameter = {
-      'search_query': query,
-      'page':page
-    };
+    Map<String, dynamic> queryParameter = {'search_query': query, 'page': page};
     try {
       var dio = Dio();
 
