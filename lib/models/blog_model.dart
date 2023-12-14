@@ -22,6 +22,8 @@ class Blog {
   RxBool isUserLiked = false.obs;
   RxBool isUserDisliked = false.obs;
 
+  RxString interactedEmoji = ''.obs;
+
   Blog(
       {this.slug,
       this.url,
@@ -42,10 +44,12 @@ class Blog {
       this.minToRead,
       this.content,
       bool? isUserLiked,
-      bool? isUserDisliked}) {
+      bool? isUserDisliked,
+      String? interactedEmoji}) {
     this.isUserDisliked.value = isUserDisliked ?? false;
     this.isUserLiked.value = isUserLiked ?? false;
     this.likes.value = likes ?? 0;
+    this.interactedEmoji.value = interactedEmoji ?? '';
   }
 
   Blog.fromJson(Map<String, dynamic> json) {
@@ -74,6 +78,7 @@ class Blog {
     }
     isUserLiked = RxBool(json['is_user_liked']);
     isUserDisliked = RxBool(json['is_user_disliked']);
+    interactedEmoji = RxString(json['interacted_emoji']);
   }
 
   Map<String, dynamic> toJson() {
@@ -100,6 +105,7 @@ class Blog {
     }
     data['is_user_liked'] = this.isUserLiked.value;
     data['is_user_disliked'] = this.isUserDisliked.value;
+    data['interacted_emoji'] = this.interactedEmoji.value;
     return data;
   }
 }
