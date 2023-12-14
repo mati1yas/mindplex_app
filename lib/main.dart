@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/blogs/landing_page.dart';
-import 'package:mindplex_app/bottom_nav_bar/bottom_page_navigation_controller.dart';
-import 'package:mindplex_app/drawer/drawer_widget.dart';
-import 'package:mindplex_app/routes/app_routes.dart';
-import 'package:mindplex_app/search/search_page.dart';
-import 'package:mindplex_app/groups/groups_page.dart';
-import 'package:mindplex_app/notification/notification_page.dart';
-import 'package:mindplex_app/message/message_page.dart';
-import 'package:mindplex_app/utils/constatns.dart';
+import 'package:mindplex/blogs/landing_page.dart';
+import 'package:mindplex/bottom_nav_bar/bottom_page_navigation_controller.dart';
+import 'package:mindplex/drawer/drawer_widget.dart';
+import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/search/search_page.dart';
+import 'package:mindplex/groups/groups_page.dart';
+import 'package:mindplex/notification/notification_page.dart';
+import 'package:mindplex/message/message_page.dart';
+import 'package:mindplex/utils/constatns.dart';
 
 import 'auth/auth_controller/auth_controller.dart';
 import 'blogs/blogs_controller.dart';

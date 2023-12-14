@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:mindplex_app/mindplex_profile/moderators/widgets/moderator_applicationform_widget.dart';
-import 'package:mindplex_app/mindplex_profile/moderators/widgets/moderator_card.dart';
+import 'package:mindplex/mindplex_profile/moderators/widgets/moderator_applicationform_widget.dart';
+import 'package:mindplex/mindplex_profile/moderators/widgets/moderator_card.dart';
 
 class ModeratorsPage extends StatelessWidget {
   const ModeratorsPage({super.key});

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
+import 'package:mindplex/auth/auth_controller/auth_controller.dart';
 
-import 'package:mindplex_app/drawer/drawer_widget.dart';
-import 'package:mindplex_app/search/search_result_page.dart';
-import 'package:mindplex_app/utils/colors.dart';
+import 'package:mindplex/drawer/drawer_widget.dart';
+import 'package:mindplex/search/search_result_page.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import '../blogs/blogs_controller.dart';
 

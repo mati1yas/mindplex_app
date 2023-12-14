@@ -5,9 +5,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
+import 'package:mindplex/auth/auth_controller/auth_controller.dart';
 
-import 'package:mindplex_app/blogs/comments/controller.dart';
+import 'package:mindplex/blogs/comments/controller.dart';
 
 import '../../models/comment.dart';
 import '../../utils/colors.dart';

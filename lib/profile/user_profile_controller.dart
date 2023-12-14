@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/models/auth_model.dart';
-import 'package:mindplex_app/models/user_profile.dart';
-import 'package:mindplex_app/profile/user_profile_displays/draft_screen.dart';
-import 'package:mindplex_app/services/api_services.dart';
-import 'package:mindplex_app/services/local_storage.dart';
+import 'package:mindplex/models/auth_model.dart';
+import 'package:mindplex/models/user_profile.dart';
+import 'package:mindplex/profile/user_profile_displays/draft_screen.dart';
+import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/services/local_storage.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import '../models/popularModel.dart';

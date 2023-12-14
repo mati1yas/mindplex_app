@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
-import 'package:mindplex_app/blogs/widgets/reaction_emoji.dart';
+import 'package:mindplex/blogs/widgets/reaction_emoji.dart';
 import 'package:share/share.dart';
 
-import 'package:mindplex_app/blogs/like_dislike_interaction/like_dislike_controller.dart';
-import 'package:mindplex_app/blogs/widgets/blog_content_display.dart';
-import 'package:mindplex_app/models/blog_model.dart';
+import 'package:mindplex/blogs/like_dislike_interaction/like_dislike_controller.dart';
+import 'package:mindplex/blogs/widgets/blog_content_display.dart';
+import 'package:mindplex/models/blog_model.dart';
 
 import '../../auth/auth_controller/auth_controller.dart';
 import '../../utils/constatns.dart';

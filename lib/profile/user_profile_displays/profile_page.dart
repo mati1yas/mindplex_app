@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/auth/auth.dart';
-import 'package:mindplex_app/profile/user_profile_controller.dart';
-import 'package:mindplex_app/routes/app_routes.dart';
-import 'package:mindplex_app/utils/colors.dart';
+import 'package:mindplex/auth/auth.dart';
+import 'package:mindplex/profile/user_profile_controller.dart';
+import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/utils/colors.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../auth/auth_controller/auth_controller.dart';

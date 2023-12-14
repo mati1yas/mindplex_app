@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/blogs/blogs_controller.dart';
-import 'package:mindplex_app/models/blog_model.dart';
-import 'package:mindplex_app/services/api_services.dart';
+import 'package:mindplex/blogs/blogs_controller.dart';
+import 'package:mindplex/models/blog_model.dart';
+import 'package:mindplex/services/api_services.dart';
 
 class LikeDislikeConroller extends GetxController {
   RxBool isLoading = true.obs;

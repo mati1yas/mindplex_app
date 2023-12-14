@@ -1,6 +1,6 @@
 {
-    "name": "mindplex_app",
-    "short_name": "mindplex_app",
+    "name": "mindplex",
+    "short_name": "mindplex",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

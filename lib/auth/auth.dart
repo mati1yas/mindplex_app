@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mindplex_app/auth/login_page.dart';
-import 'package:mindplex_app/auth/register_page.dart';
+import 'package:mindplex/auth/login_page.dart';
+import 'package:mindplex/auth/register_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);

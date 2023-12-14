@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/auth/auth_controller/auth_controller.dart';
-import 'package:mindplex_app/profile/user_profile_displays/profile_page.dart';
+import 'package:mindplex/auth/auth_controller/auth_controller.dart';
+import 'package:mindplex/profile/user_profile_displays/profile_page.dart';
 
 import '../../routes/app_routes.dart';
 import '../blogs_controller.dart';

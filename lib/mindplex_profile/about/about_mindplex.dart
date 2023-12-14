@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/about_card.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/contact_form.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/team_member_card.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/mission_card.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/values_card.dart';
-import 'package:mindplex_app/mindplex_profile/about/widgets/vission_card.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/about_card.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/contact_form.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/team_member_card.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/mission_card.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/values_card.dart';
+import 'package:mindplex/mindplex_profile/about/widgets/vission_card.dart';
 
 class AboutMindPlex extends StatelessWidget {
   const AboutMindPlex({super.key});

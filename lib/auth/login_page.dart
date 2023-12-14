@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/routes/app_routes.dart';
+import 'package:mindplex/routes/app_routes.dart';
 
 import '../profile/user_profile_controller.dart';
 import 'auth_controller/auth_controller.dart';

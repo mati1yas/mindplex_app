@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
-import 'package:mindplex_app/models/blog_model.dart';
+import 'package:mindplex/models/blog_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class BlogContentDisplay extends StatelessWidget {

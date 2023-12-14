@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:mindplex_app/models/search_response.dart';
-import 'package:mindplex_app/models/notification_model.dart';
-import 'package:mindplex_app/models/user_profile.dart';
+import 'package:mindplex/models/search_response.dart';
+import 'package:mindplex/models/notification_model.dart';
+import 'package:mindplex/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/auth_controller/auth_controller.dart';

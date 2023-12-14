@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:mindplex_app/auth/auth.dart';
-import 'package:mindplex_app/main.dart';
-import 'package:mindplex_app/profile/user_profile_customisations/personal_settings.dart';
-import 'package:mindplex_app/profile/user_profile_customisations/settings_page.dart';
-import 'package:mindplex_app/search/search_result_page.dart';
-import 'package:mindplex_app/splash_screen.dart';
+import 'package:mindplex/auth/auth.dart';
+import 'package:mindplex/main.dart';
+import 'package:mindplex/profile/user_profile_customisations/personal_settings.dart';
+import 'package:mindplex/profile/user_profile_customisations/settings_page.dart';
+import 'package:mindplex/search/search_result_page.dart';
+import 'package:mindplex/splash_screen.dart';
 
 import '../profile/user_profile_customisations/Notifications_page.dart';
 import '../profile/user_profile_customisations/change_password.dart';

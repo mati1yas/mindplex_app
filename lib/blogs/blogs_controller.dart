@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/models/blog_model.dart';
-import 'package:mindplex_app/services/api_services.dart';
+import 'package:mindplex/models/blog_model.dart';
+import 'package:mindplex/services/api_services.dart';
 
 class BlogsController extends GetxController {
   RxBool isLoading = true.obs;
