@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/blogs/blogs_controller.dart';
 import 'package:mindplex/models/blog_model.dart';
 import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/utils/constatns.dart';
 
 class LikeDislikeConroller extends GetxController {
   RxBool isLoading = true.obs;
@@ -50,10 +51,18 @@ class LikeDislikeConroller extends GetxController {
     }
   }
 
-  void changeEmoji(String icon) {
-    currentEmoji[0] = icon;
+  void reactWithEmoji(
+      {required int emojiIndex, required int blogIndex, required Blog blog}) {
+    final BlogsController blogsController = Get.find();
+
+    apiService.value.reactWithEmoji(
+        articleSlug: blog.slug ?? "", emoji_value: emojiCodes[emojiIndex]);
+
+    blog.interactedEmoji.value = emojiCodes[emojiIndex];
+
+    blogsController.blogs[blogIndex] = blog;
+
     showEmoji.value = !showEmoji.value;
-    reactedWithEmoji.value = true;
   }
 
   void addVote() {
