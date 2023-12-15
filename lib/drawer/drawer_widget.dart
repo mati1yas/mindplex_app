@@ -252,7 +252,7 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white),
               ),
               onTap: () {
-                blogsController.filterBlogsByPostType(postType: 'text');
+                blogsController.filterBlogsByPostType(postFormat: 'text');
                 Navigator.pop(context);
                 pageNavigationController.navigatePage(0);
               },
@@ -271,7 +271,7 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white),
               ),
               onTap: () {
-                blogsController.filterBlogsByPostType(postType: 'video');
+                blogsController.filterBlogsByPostType(postFormat: 'video');
 
                 pageNavigationController.navigatePage(0);
                 Navigator.pop(context);
@@ -291,7 +291,7 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white),
               ),
               onTap: () {
-                blogsController.filterBlogsByPostType(postType: 'audio');
+                blogsController.filterBlogsByPostType(postFormat: 'audio');
                 Navigator.pop(context);
                 pageNavigationController.navigatePage(0);
               },
@@ -310,6 +310,9 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white),
               ),
               onTap: () {
+                blogsController.loadArticles();
+                Navigator.pop(context);
+                pageNavigationController.navigatePage(0);
                 // ...
               },
             ),

@@ -72,9 +72,11 @@ class _LandingPageState extends State<LandingPage>
                   width: 80,
                 ),
                 Obx(() => Text(
-                    blogsController.postFormatMaps[
-                            blogsController.post_format.value] ??
-                        "",
+                    blogsController.post_type != 'news'
+                        ? blogsController.postFormatMaps[
+                                blogsController.post_format.value] ??
+                            ""
+                        : "News",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,

@@ -8,6 +8,7 @@ class BlogsController extends GetxController {
 
   RxString recommender = "default".obs;
   RxString post_format = "text".obs;
+  RxString post_type = "articles".obs;
   RxInt page = 1.obs;
   RxInt searchPage = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
@@ -66,8 +67,8 @@ class BlogsController extends GetxController {
 
     isLoading.value = true;
     page.value++; // Increment the page number
-
     final res = await apiSerivice.value.loadBlogs(
+        post_type: post_type.value,
         recommender: recommender.value,
         post_format: post_format.value,
         page: page.value.toInt());
@@ -86,7 +87,6 @@ class BlogsController extends GetxController {
   }
 
   void loadMoreSearchResults(String query) async {
-
     if (isLoading.value || reachedEndOfListSearch) {
       return;
     }
@@ -94,7 +94,8 @@ class BlogsController extends GetxController {
     isLoading.value = true;
     searchPage.value++; // Increment the page number
 
-    final res = await apiSerivice.value.fetchSearchResponse(query,searchPage.value.toInt());
+    final res = await apiSerivice.value
+        .fetchSearchResponse(query, searchPage.value.toInt());
 
     if (res.blogs!.isEmpty) {
       reachedEndOfListSearch = true;
@@ -108,9 +109,17 @@ class BlogsController extends GetxController {
     update(); // Trigger UI update
   }
 
+  void loadArticles() async {
+    isLoading.value = true;
+    post_type.value = 'news';
+    post_format.value = 'text';
+    fetchBlogs();
+  }
+
   void fetchBlogs() async {
     isLoading.value = true;
     final res = await apiSerivice.value.loadBlogs(
+        post_type: post_type.value,
         recommender: recommender.value,
         post_format: post_format.value,
         page: page.value.toInt());
@@ -119,24 +128,25 @@ class BlogsController extends GetxController {
     isLoading.value = false;
   }
 
-  void fetchPopularBlogs() async{
+  void fetchPopularBlogs() async {
     final res = await apiSerivice.value.fetchSearchLanding();
 
     popularPosts.value = res.blogs!;
     isLoading.value = false;
   }
 
-  void fetchSearchResults(String query) async{
+  void fetchSearchResults(String query) async {
     reachedEndOfListSearch = false;
     isLoading.value = true;
     searchPage.value = 1;
-    final res = await apiSerivice.value.fetchSearchResponse(query,searchPage.value.toInt());
-    if(res.blogs!.isEmpty){
+    final res = await apiSerivice.value
+        .fetchSearchResponse(query, searchPage.value.toInt());
+    if (res.blogs!.isEmpty) {
       reachedEndOfListSearch = true;
     }
-      searchResults.value = res.blogs!;
-      searchQuery.value = query;
-     isLoading.value = false;
+    searchResults.value = res.blogs!;
+    searchQuery.value = query;
+    isLoading.value = false;
   }
 
   void filterBlogsByRecommender({required String category}) {
@@ -146,19 +156,22 @@ class BlogsController extends GetxController {
     fetchBlogs();
   }
 
-  void filterBlogsByPostType({required String postType}) {
+  void filterBlogsByPostType({required String postFormat}) {
     reachedEndOfList = false;
     page.value = 1;
-    post_format.value = postType;
+    post_format.value = postFormat;
+    post_type.value = 'articles';
     fetchBlogs();
   }
 
   List<Blog> get filteredBlogs {
     return blogs;
   }
+
   List<Blog> get popularBlogs {
     return popularPosts;
   }
+
   List<Blog> get searchedBlogs {
     return searchResults;
   }
