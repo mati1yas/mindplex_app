@@ -452,6 +452,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
         _searchController.text = category.slug;
         setState(() {
           isSearchResultPage = true;
+          fetchSearchResults();
         });
       },
       child: Container(
