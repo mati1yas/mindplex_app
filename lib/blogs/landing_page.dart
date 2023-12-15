@@ -28,7 +28,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage>
     with SingleTickerProviderStateMixin {
-  bool isIntialLoading = true;
+  // bool isIntialLoading = true;
 
   BlogsController blogsController = Get.find();
 
@@ -43,7 +43,7 @@ class _LandingPageState extends State<LandingPage>
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       String category = blogsController.categories[_tabController.index];
-      isIntialLoading = true;
+      // isIntialLoading = true;
       blogsController.filterBlogsByRecommender(category: category);
     });
   }
@@ -72,9 +72,11 @@ class _LandingPageState extends State<LandingPage>
                   width: 80,
                 ),
                 Obx(() => Text(
-                    blogsController.postFormatMaps[
-                            blogsController.post_format.value] ??
-                        "",
+                    blogsController.post_type != 'news'
+                        ? blogsController.postFormatMaps[
+                                blogsController.post_format.value] ??
+                            ""
+                        : "News",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -126,7 +128,7 @@ class _LandingPageState extends State<LandingPage>
           ),
 
           Obx(() {
-            return blogsController.isLoading.value == true && isIntialLoading
+            return blogsController.isLoading.value == true
                 ? Expanded(
                     child: ListView.builder(
                       itemCount: 5,
@@ -141,7 +143,7 @@ class _LandingPageState extends State<LandingPage>
                           if (index < blogsController.filteredBlogs.length) {
                             final thumbnailUrl = blogsController
                                 .filteredBlogs[index].thumbnailImage;
-                            isIntialLoading = false;
+                            // isIntialLoading = false;
                             final isDefaultThumbnail =
                                 thumbnailUrl == "default.jpg";
                             return BlogCard(
