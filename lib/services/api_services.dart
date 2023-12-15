@@ -22,6 +22,7 @@ class ApiService {
   Future<List<Blog>> loadBlogs(
       {required String recommender,
       required String post_format,
+      required String post_type,
       required int page}) async {
     var ret = <Blog>[];
     try {
@@ -35,7 +36,7 @@ class ApiService {
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio
-          .get("${AppUrls.blogUrl}/articles/$recommender/$post_format/$page");
+          .get("${AppUrls.blogUrl}/$post_type/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
         if (blog['interacted_emoji'] == null) blog['interacted_emoji'] = '';
