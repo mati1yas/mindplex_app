@@ -31,7 +31,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
   BlogsController blogsController = Get.put(BlogsController());
-
   ProfileController profileController = Get.put(ProfileController());
   TextEditingController _searchController = TextEditingController();
   AuthController authController = Get.find();
@@ -40,7 +39,6 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   bool isIntialLoading = true;
   bool showAllCategories = false;
   List<Category> categories = [];
-  List<UserProfile> users = [];
   bool isLoading = true;
   bool isSearchResultPage = false;
 
@@ -57,8 +55,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       isLoading = true;
     });
     blogsController.fetchSearchResults(_searchController.text);
-    final res = await apiService.value.fetchSearchResponse(_searchController.text,1);
-    users = res.users!;
+    profileController.fetchSearchResults(_searchController.text);
     setState(() {
       isLoading = false;
     });
@@ -430,14 +427,35 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                               }),
                         );
                       }),
-                      isLoading?Center(child: CircularProgressIndicator(),):Container(
-                        child: users.length == 0?Center(child: Text("No users match your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
-                            itemCount: users.length,
-                            itemBuilder: (ctx, index) {
-                              return UserCard(
-                                  user: users[index]);
-                            }),
-                      )
+                      Obx(() {
+                        return profileController.isLoading.value == true && isLoading
+                            ? Expanded(
+                          child: ListView.builder(
+                            itemCount: 5,
+                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                          ),
+                        )
+                            : Expanded(
+                          child: ListView.builder(
+                              controller: profileController.searchScrollController,
+                              itemCount: profileController.searchedUsers.length + 1,
+                              itemBuilder: (ctx, index) {
+                                if (index < profileController.searchedUsers.length) {
+                                  return UserCard(
+                                      user: profileController, index: index);
+                                } else {
+                                  print("executing else statement");
+                                  if (index == profileController.searchedUsers.length &&
+                                      !profileController.reachedEndOfListSearch) {
+                                    // Display CircularProgressIndicator under the last card
+                                    return Center(child: CircularProgressIndicator());
+                                  } else {
+                                    return Container(child: Center(child: Text("No Content",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),),); // Return an empty container otherwise
+                                  }
+                                }
+                              }),
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -677,6 +695,82 @@ class ArticleCard extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  const UserCard({super.key,required this.user,required this.index});
+  final ProfileController user;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        //  will be modified in detail .
+
+        Get.toNamed(AppRoutes.profilePage, parameters: {
+          "me": "notme",
+          "username":
+          user.searchedUsers[index].username??
+              ""
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [ CircleAvatar(
+                  foregroundImage:NetworkImage(user.searchedUsers[index].avatarUrl??""),
+                  radius: 20,
+                  child: const Material(
+                    color: Color.fromARGB(0, 231, 6, 6), //
+                  ),
+                ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(user.searchedUsers[index].firstName!+" "+user.searchedUsers[index].lastName!,style: TextStyle(color: Colors.white,fontSize: 17),),
+                        Text(user.searchedUsers[index].username!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                      ],),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              key: UniqueKey(),
+              width: 60,
+              height: 30,
+              child: GestureDetector(
+                onTap: (){
+
+                },
+                child: Container(
+                  decoration:BoxDecoration(
+                    color: Color.fromARGB(255, 49, 153, 167),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(8),
+                  child: Center(
+                    child: Text(
+                        "follow",
+                        style: TextStyle(color: Colors.white, fontSize: 15)
+                    ),
+                  ),
+                ),
               ),
             )
           ],
