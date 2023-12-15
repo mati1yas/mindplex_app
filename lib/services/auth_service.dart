@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:mindplex_app/models/auth_model.dart';
-import 'package:mindplex_app/utils/constatns.dart';
+import 'package:mindplex/models/auth_model.dart';
+import 'package:mindplex/utils/constatns.dart';
 
 class AuthService {
   Future<AuthModel> loginUser(

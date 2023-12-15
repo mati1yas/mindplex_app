@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindplex_app/profile/user_profile_controller.dart';
+import 'package:mindplex/profile/user_profile_controller.dart';
 
 class UserInterest extends StatelessWidget {
   const UserInterest({

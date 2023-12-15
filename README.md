@@ -1,4 +1,4 @@
-# mindplex_app
+# mindplex
 
 A mobile app for mindplex.ai
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex_app/blogs/landing_page.dart';
-import 'package:mindplex_app/main.dart';
+import 'package:mindplex/blogs/landing_page.dart';
+import 'package:mindplex/main.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
 import '../blogs/blogs_controller.dart';
@@ -401,8 +401,12 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed(AppRoutes.settingsPage);
+                    if (authController.isGuestUser.value) {
+                      authController.guestReminder(context);
+                    } else {
+                      Navigator.of(context).pop();
+                      Get.toNamed(AppRoutes.settingsPage);
+                    }
                   },
                 ),
                 SizedBox(

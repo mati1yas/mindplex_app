@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/auth/auth.dart';
-import 'package:mindplex_app/routes/app_routes.dart';
-import 'package:mindplex_app/services/local_storage.dart';
+import 'package:mindplex/auth/auth.dart';
+import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/services/local_storage.dart';
 
 import '../../services/auth_service.dart';
 
@@ -97,6 +97,7 @@ class AuthController extends GetxController {
           friends: userData.friends.toString());
 
       isAuthenticated.value = true;
+      isGuestUser.value = false;
     } catch (e) {
       if (e is DioException) {
         var message = e.response!.data['message'].toString();

@@ -29,9 +29,9 @@ class TopUserProfileIcon extends StatelessWidget {
             color: Color(0xFF0c2b46),
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: NetworkImage(
-                  profileController.authenticatedUser.value.image ??
-                      authController.guestUserImage.value),
+              image: NetworkImage(authController.isGuestUser.value
+                  ? authController.guestUserImage.value
+                  : profileController.authenticatedUser.value.image ?? ""),
             ),
           ),
         ),

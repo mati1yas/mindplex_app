@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mindplex_app/models/social_link.dart';
+import 'package:mindplex/models/social_link.dart';
 
 class UserProfile {
   String? firstName;

@@ -1,4 +1,4 @@
-import 'package:mindplex_app/models/user_profile.dart';
+import 'package:mindplex/models/user_profile.dart';
 
 import 'blog_model.dart';
 

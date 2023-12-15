@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:mindplex_app/models/search_response.dart';
-import 'package:mindplex_app/models/notification_model.dart';
-import 'package:mindplex_app/models/user_profile.dart';
+import 'package:mindplex/models/search_response.dart';
+import 'package:mindplex/models/notification_model.dart';
+import 'package:mindplex/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
@@ -35,7 +35,7 @@ class ApiService {
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response =
-          await dio.get("${AppUrls.blogUrl}/$recommender/$post_format/$page");
+          await dio.get("${AppUrls.blogUrl}/articles/$recommender/$post_format/$page");
 
       for (var blog in response.data['post']) {
         ret.add(Blog.fromJson(blog));
@@ -82,10 +82,12 @@ class ApiService {
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
     final token = await localStorage.value.readFromStorage('Token');
 
-    dio.options.headers["Authorization"] = "Bearer ${token}";
+    if (authenticationController.isGuestUser.value == false)
+      dio.options.headers["Authorization"] = "Bearer ${token}";
     Response response = await dio.get(
       '${AppUrls.commentsFetch}/$post_slug/$parent?page=$page&per_page=$perPage',
     );
+
     if (response.statusCode == 200) {
       final responseBody = response.data as List<dynamic>;
       final comments = responseBody.map((e) => Comment.fromMap(e)).toList();

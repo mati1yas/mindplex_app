@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex_app/profile/user_profile_controller.dart';
-import 'package:mindplex_app/utils/colors.dart';
+import 'package:mindplex/profile/user_profile_controller.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import 'widgets/user_interest_widget.dart';
 

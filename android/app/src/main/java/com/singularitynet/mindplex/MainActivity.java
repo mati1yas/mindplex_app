@@ -1,4 +1,4 @@
-package com.example.mindplex_app;
+package com.singularitynet.mindplex;
 
 import io.flutter.embedding.android.FlutterActivity;
 

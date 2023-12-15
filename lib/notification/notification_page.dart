@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex_app/notification/controller/notification_controller.dart';
-import 'package:mindplex_app/notification/widgets/notification_card_widget.dart';
+import 'package:mindplex/notification/controller/notification_controller.dart';
+import 'package:mindplex/notification/widgets/notification_card_widget.dart';
 
 import '../blogs/blogs_controller.dart';
 import '../drawer/drawer_widget.dart';
