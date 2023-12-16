@@ -16,13 +16,24 @@ class BlogsController extends GetxController {
   RxList<Blog> searchResults = <Blog>[].obs;
   RxString searchQuery = "".obs;
   final apiSerivice = ApiService().obs;
-  final categories = ['All', 'Popular', 'Most Recent', 'Trending'];
+  final categories = [
+    'All',
+    'Popular',
+    'Most Recent',
+    'Trending',
+    'Article',
+    "Video",
+    "Podcast"
+  ];
 
   final recommenderMaps = {
     'All': 'default',
     'Popular': 'popularity',
     'Most Recent': 'recent',
-    'Trending': 'trending'
+    'Trending': 'trending',
+    'Article': 'Article',
+    "Video": "Video",
+    "Podcast": "Podcast",
   };
 
   final postFormatMaps = {
@@ -109,10 +120,19 @@ class BlogsController extends GetxController {
     update(); // Trigger UI update
   }
 
+  void loadCommunityContents() async {
+    post_type.value = "community_content";
+    recommender.value = 'default';
+    post_format.value = 'all';
+    fetchBlogs();
+  }
+
   void loadArticles() async {
     isLoading.value = true;
     post_type.value = 'news';
     post_format.value = 'text';
+    recommender.value = 'default';
+
     fetchBlogs();
   }
 
@@ -150,9 +170,25 @@ class BlogsController extends GetxController {
   }
 
   void filterBlogsByRecommender({required String category}) {
+    print(category);
     reachedEndOfList = false;
     page.value = 1;
-    recommender.value = recommenderMaps[category] as String;
+
+    if (["Article", "Video", "Podcast"].contains(category)) {
+      Map<String, String> postMap = {
+        'Article': 'text',
+        "Video": "video",
+        "Podcast": "audio",
+      };
+      recommender.value = 'default';
+      post_format.value = postMap[category]!;
+    } else if (post_type == 'community_content') {
+      post_format.value = 'all';
+      recommender.value = recommenderMaps[category] as String;
+    } else {
+      recommender.value = recommenderMaps[category] as String;
+    }
+
     fetchBlogs();
   }
 
