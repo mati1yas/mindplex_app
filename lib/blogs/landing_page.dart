@@ -50,10 +50,8 @@ class _LandingPageState extends State<LandingPage>
 
     _tabController2 = TabController(length: 7, vsync: this);
     _tabController2.addListener(() {
-      print('SECOND TYPE BAR');
-      print(_tabController2.index);
       String category = blogsController.categories[_tabController2.index];
-      print(category);
+
       isIntialLoading = true;
       blogsController.filterBlogsByRecommender(category: category);
     });
@@ -63,7 +61,6 @@ class _LandingPageState extends State<LandingPage>
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
 
-    print(blogsController.post_type);
     _tabController.index = 0;
     _tabController2.index = 0;
 
