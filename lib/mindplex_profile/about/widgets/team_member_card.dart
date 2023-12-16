@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mindplex/models/TeamMember.dart';
 
 class TeamMemberCard extends StatelessWidget {
-  const TeamMemberCard({super.key});
+  final TeamMember teamMember;
+  const TeamMemberCard({super.key,required this.teamMember});
 
   @override
   Widget build(BuildContext context) {
@@ -22,21 +24,21 @@ class TeamMemberCard extends StatelessWidget {
                 Center(
                   child: CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage('assets/images/Dr ben.webp'),
+                    backgroundImage: NetworkImage(teamMember.profilePic!),
                   ),
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  "Dr. Ben Goertzel",
+                  teamMember.name!,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 Container(
                   child: Text(
-                    "Editor in Chief",
+                    teamMember.position!,
                     textAlign: TextAlign.start,
                     style:
                         TextStyle(fontSize: width * 0.04, color: Colors.white),

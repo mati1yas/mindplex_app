@@ -5,6 +5,7 @@ import 'package:mindplex/mindplex_profile/about/widgets/team_member_card.dart';
 import 'package:mindplex/mindplex_profile/about/widgets/mission_card.dart';
 import 'package:mindplex/mindplex_profile/about/widgets/values_card.dart';
 import 'package:mindplex/mindplex_profile/about/widgets/vission_card.dart';
+import 'package:mindplex/models/TeamMember.dart';
 
 class AboutMindPlex extends StatelessWidget {
   const AboutMindPlex({super.key});
@@ -56,12 +57,18 @@ class AboutMindPlex extends StatelessWidget {
               crossAxisCount: 3,
               childAspectRatio: 0.6,
               children: [
-                TeamMemberCard(),
-                TeamMemberCard(),
-                TeamMemberCard(),
-                TeamMemberCard(),
-                TeamMemberCard(),
-                TeamMemberCard(),
+                TeamMemberCard(teamMember: TeamMember(name: "Dr. Ben Goertzel",position: "Editor in chief",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/ben.png")),
+                TeamMemberCard(teamMember: TeamMember(name: "Amara Angelica",position: "Senior Editor",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/amara.png")),
+                TeamMemberCard(teamMember: TeamMember(name: "Lisa Rein",position: "Editor in Large",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/lisa.png")),
+                TeamMemberCard(teamMember: TeamMember(name: "Conor O`Higgins",position: "Managing Editor",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/conor.png")),
+                TeamMemberCard(teamMember: TeamMember(name: "Hruy Tsegaye",position: "CEO of Mindplex",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/hruy.png")),
+                TeamMemberCard(teamMember: TeamMember(name: "Leykun Ejigu",position: "Developer",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/leykun.jpg")),
+                TeamMemberCard(teamMember: TeamMember(name: "Debashis Saha",position: "UX Designer",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/debashis.jpg")),
+                TeamMemberCard(teamMember: TeamMember(name: "Esubalew Amenu",position: "Lead Backend Developer",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/esubalew.jpg")),
+                TeamMemberCard(teamMember: TeamMember(name: "Dawit Mekonnen",position: "Web developer",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/dawit.jpg")),
+                TeamMemberCard(teamMember: TeamMember(name: "Anna Ostrovska",position: "Illustrator & UI Designer",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/anna.jpg")),
+                TeamMemberCard(teamMember: TeamMember(name: "Tesfaye Assefa (Tesfu)",position: "Illustrator",profilePic: "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/tesfaye.jpg")),
+
               ],
             ),
           ),

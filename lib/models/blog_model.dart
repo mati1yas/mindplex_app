@@ -78,7 +78,7 @@ class Blog {
     }
     isUserLiked = RxBool(json['is_user_liked']);
     isUserDisliked = RxBool(json['is_user_disliked']);
-    interactedEmoji = RxString(json['interacted_emoji']);
+    interactedEmoji = RxString(json['interacted_emoji']??"");
   }
 
   Map<String, dynamic> toJson() {
