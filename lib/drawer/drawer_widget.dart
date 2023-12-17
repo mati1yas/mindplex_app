@@ -335,6 +335,25 @@ class DrawerWidget extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(
+                Icons.groups,
+                size: 25,
+                color: Colors.white,
+              ),
+              title: const Text(
+                'Community Content',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              onTap: () {
+                blogsController.loadCommunityContents();
+                Navigator.pop(context);
+                pageNavigationController.navigatePage(0);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
                 Icons.help_outline,
                 size: 25,
                 color: Colors.white,
