@@ -7,6 +7,7 @@ import 'package:mindplex/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex/blogs/blogs_controller.dart';
 import 'package:mindplex/blogs/screens/blog_detail_page.dart';
 import 'package:mindplex/blogs/widgets/blog_shimmer.dart';
+import 'package:mindplex/blogs/widgets/post_topic_widget.dart';
 import 'package:mindplex/mindplex_profile/about/about_mindplex.dart';
 import 'package:mindplex/mindplex_profile/moderators/moderators_page.dart';
 import 'package:mindplex/utils/colors.dart';
@@ -64,6 +65,8 @@ class _LandingPageState extends State<LandingPage>
     _tabController.index = 0;
     _tabController2.index = 0;
 
+    blogsController.fetchBlogs();
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       // key: Keys.globalkey,
@@ -88,9 +91,11 @@ class _LandingPageState extends State<LandingPage>
                         ? "News"
                         : blogsController.post_type == 'community_content'
                             ? "Community"
-                            : blogsController.postFormatMaps[
-                                    blogsController.post_format.value] ??
-                                "",
+                            : blogsController.post_type == 'topics'
+                                ? "Topics"
+                                : blogsController.postFormatMaps[
+                                        blogsController.post_format.value] ??
+                                    "",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -101,6 +106,16 @@ class _LandingPageState extends State<LandingPage>
 
           // top navigation bar
 
+          Obx(() => blogsController.post_type == 'topics'
+              ? Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    PostTopics(blogsController: blogsController),
+                  ],
+                )
+              : SizedBox.shrink()),
           SizedBox(
             height: 30,
           ),
@@ -173,7 +188,9 @@ class _LandingPageState extends State<LandingPage>
           ),
 
           Obx(() {
-            return blogsController.isLoading.value == true && isIntialLoading
+            return (blogsController.isLoadingMore.value == true &&
+                        isIntialLoading) ||
+                    blogsController.newPostTypeLoading.value
                 ? Expanded(
                     child: ListView.builder(
                       itemCount: 5,
