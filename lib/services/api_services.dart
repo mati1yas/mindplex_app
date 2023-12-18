@@ -51,7 +51,7 @@ class ApiService {
       }
       for (var blog in response.data['post']) {
         if (blog['interacted_emoji'] == null) blog['interacted_emoji'] = '';
-
+        if (blog["post_type_format"].runtimeType == List) continue;
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {

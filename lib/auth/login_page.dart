@@ -456,7 +456,9 @@ class _LoginPageState extends State<LoginPage> {
           loginType: 'email_password');
 
       if (authController.isAuthenticated.value) {
-        Get.offAllNamed(AppRoutes.landingPage);
+        Navigator.pop(context);
+
+        Get.offAll(AppRoutes.landingPage);
         ProfileController profileController = Get.put(ProfileController());
         await profileController.getAuthenticatedUser();
       } else {
