@@ -27,8 +27,8 @@ class SearchResultPage extends StatefulWidget {
   State<SearchResultPage> createState() => _SearchResultPageState();
 }
 
-class _SearchResultPageState extends State<SearchResultPage> with SingleTickerProviderStateMixin{
-
+class _SearchResultPageState extends State<SearchResultPage>
+    with SingleTickerProviderStateMixin {
   BlogsController blogsController = Get.put(BlogsController());
 
   GlobalKey<ScaffoldState> _globalkey = GlobalKey<ScaffoldState>();
@@ -49,12 +49,14 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
     super.initState();
     print("aaaaaaaaaaaaagh");
   }
-  void fetchSearchResults() async{
+
+  void fetchSearchResults() async {
     setState(() {
       isLoading = true;
     });
     blogsController.fetchSearchResults(_searchController.text);
-    final res = await apiService.value.fetchSearchResponse(_searchController.text,1);
+    final res =
+        await apiService.value.fetchSearchResponse(_searchController.text, 1);
     users = res.users!;
     setState(() {
       isLoading = false;
@@ -66,173 +68,209 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       key: _globalkey,
-      body:Column(
-              children: [
-                Container(
-                  height: 110,
+      body: Column(children: [
+        Container(
+          height: 110,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: () => {Keys.globalkey.currentState!.openDrawer()},
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  margin: EdgeInsets.only(left: 40),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Color(0xFF0c2b46),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                          profileController.authenticatedUser.value.image ??
+                              ""),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 30),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(30)),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      GestureDetector(
-                        onTap: () =>
-                        {Keys.globalkey.currentState!.openDrawer()},
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          margin: EdgeInsets.only(left: 40),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Color(0xFF0c2b46),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(profileController
-                                  .authenticatedUser.value.image ??
-                                  ""),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 30),
                       Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(30)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: TextFormField(
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        controller: _searchController,
-                                        textAlign: TextAlign.end,
-                                        onFieldSubmitted: (String value){
-                                           fetchSearchResults();
-                                        },
-                                        keyboardType: TextInputType.text,
-                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
-                                        textAlignVertical: TextAlignVertical.center,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.black,
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(30.0),
-                                          ),
-                                          contentPadding: const EdgeInsets.all(10),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(30.0),
-                                          ),
-                                          border: InputBorder.none,
-                                          hintText: 'Search',
-                                          hintStyle: TextStyle(color: Colors.grey),
-                                        ),
-                                        onChanged: (value) {},
-                                        validator: (value) {},
-                                  ),
-                              ),
-                              Flexible(flex:1,fit:FlexFit.loose,child: Icon(Icons.search,color: Colors.grey,))
-                            ],
+                        flex: 2,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: _searchController,
+                          textAlign: TextAlign.end,
+                          onFieldSubmitted: (String value) {
+                            fetchSearchResults();
+                          },
+                          keyboardType: TextInputType.text,
+                          style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey),
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.black,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            contentPadding: const EdgeInsets.all(10),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            border: InputBorder.none,
+                            hintText: 'Search',
+                            hintStyle: TextStyle(color: Colors.grey),
                           ),
+                          onChanged: (value) {},
+                          validator: (value) {},
                         ),
                       ),
-                      SizedBox(width: 20),
-                      InkWell(
-                        child: Icon(
-                          Icons.settings,
-                          size: 38,
-                          color: Colors.white,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.settingsPage);
-                        },
-                      ),
-                      SizedBox(width: 30),
+                      Flexible(
+                          flex: 1,
+                          fit: FlexFit.loose,
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ))
                     ],
                   ),
                 ),
-                SizedBox(height:10),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(50, 118, 118, 128),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TabBar(
-                      dividerColor: Colors.transparent,
-                      controller: _tabController,
-                      isScrollable: false,
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 49, 153, 167)),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.white,
-                      tabs: [
-                        Tab(
-                          text: 'Content',
-                        ),
-                        Tab(
-                          text: 'Users',
-                        ),
-                      ],
-                    ),
-                  ),
+              ),
+              SizedBox(width: 20),
+              InkWell(
+                child: Icon(
+                  Icons.settings,
+                  size: 38,
+                  color: Colors.white,
                 ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      Obx(() {
-                        return blogsController.isLoading.value == true && isLoading
-                            ? Expanded(
-                          child: ListView.builder(
-                            itemCount: 5,
-                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                          ),
-                        )
-                            : Expanded(
-                          child: ListView.builder(
-                              controller: blogsController.searchScrollController,
-                              itemCount: blogsController.searchedBlogs.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index < blogsController.searchedBlogs.length) {
-                                  return SearchBlogCard(
-                                      blogsController: blogsController, index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index == blogsController.searchedBlogs.length &&
-                                      !blogsController.reachedEndOfListSearch) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container(child: Center(child: Text("No Content",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),),); // Return an empty container otherwise
-                                  }
-                                }
-                              }),
-                        );
-                      }),
-                      isLoading?Center(child: CircularProgressIndicator(),):Container(
-                        child: users.length == 0?Center(child: Text("No users match your search query",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),):ListView.builder(
-                            itemCount: users.length,
-                            itemBuilder: (ctx, index) {
-                                return UserCard(
-                                    user: users[index]);
-                            }),
-                      )
-                    ],
-                  ),
-                ),
-              ]
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Get.toNamed(AppRoutes.settingsPage);
+                },
+              ),
+              SizedBox(width: 30),
+            ],
           ),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            height: 35,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(50, 118, 118, 128),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TabBar(
+              dividerColor: Colors.transparent,
+              controller: _tabController,
+              isScrollable: false,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color.fromARGB(255, 49, 153, 167)),
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white,
+              tabs: [
+                Tab(
+                  text: 'Content',
+                ),
+                Tab(
+                  text: 'Users',
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              Obx(() {
+                return blogsController.isLoadingMore.value == true && isLoading
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                            controller: blogsController.searchScrollController,
+                            itemCount: blogsController.searchedBlogs.length + 1,
+                            itemBuilder: (ctx, index) {
+                              if (index <
+                                  blogsController.searchedBlogs.length) {
+                                return SearchBlogCard(
+                                    blogsController: blogsController,
+                                    index: index);
+                              } else {
+                                print("executing else statement");
+                                if (index ==
+                                        blogsController.searchedBlogs.length &&
+                                    !blogsController.reachedEndOfListSearch) {
+                                  // Display CircularProgressIndicator under the last card
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  return Container(
+                                    child: Center(
+                                      child: Text(
+                                        "No Content",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ); // Return an empty container otherwise
+                                }
+                              }
+                            }),
+                      );
+              }),
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(
+                      child: users.length == 0
+                          ? Center(
+                              child: Text(
+                                "No users match your search query",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: users.length,
+                              itemBuilder: (ctx, index) {
+                                return UserCard(user: users[index]);
+                              }),
+                    )
+            ],
+          ),
+        ),
+      ]),
     );
   }
-  Widget _container(String mainContent,String posts){
+
+  Widget _container(String mainContent, String posts) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 15.0),
+        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -240,10 +278,25 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(mainContent,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),),
-                  SizedBox(height: 6,),
-                  Text(posts + "k posts",style: TextStyle(fontWeight: FontWeight.w100,color: Colors.white,fontSize: 15),)
-                ],),
+                  Text(
+                    mainContent,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Text(
+                    posts + "k posts",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w100,
+                        color: Colors.white,
+                        fontSize: 15),
+                  )
+                ],
+              ),
             ),
             InkWell(
               child: Icon(
@@ -251,14 +304,15 @@ class _SearchResultPageState extends State<SearchResultPage> with SingleTickerPr
                 size: 22,
                 color: Colors.white,
               ),
-              onTap: () {
-              },
+              onTap: () {},
             ),
-          ],),
+          ],
+        ),
       ),
     );
   }
 }
+
 class SearchBlogCard extends StatelessWidget {
   const SearchBlogCard({
     super.key,
@@ -286,8 +340,8 @@ class SearchBlogCard extends StatelessWidget {
                     Get.toNamed(AppRoutes.profilePage, parameters: {
                       "me": "notme",
                       "username":
-                      blogsController.searchedBlogs[index].authorUsername ??
-                          ""
+                          blogsController.searchedBlogs[index].authorUsername ??
+                              ""
                     });
                   },
                   child: CircleAvatar(
@@ -316,7 +370,7 @@ class SearchBlogCard extends StatelessWidget {
                           children: [
                             Text(
                               blogsController
-                                  .searchedBlogs[index].authorDisplayName ??
+                                      .searchedBlogs[index].authorDisplayName ??
                                   "",
                               style: TextStyle(
                                   color: Colors.white,
@@ -324,7 +378,7 @@ class SearchBlogCard extends StatelessWidget {
                             ),
                             Text(
                               blogsController
-                                  .searchedBlogs[index].authorUsername ??
+                                      .searchedBlogs[index].authorUsername ??
                                   "",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 123, 122, 122),
@@ -332,7 +386,7 @@ class SearchBlogCard extends StatelessWidget {
                             ),
                             Text(
                               blogsController
-                                  .searchedBlogs[index].publishedAt ??
+                                      .searchedBlogs[index].publishedAt ??
                                   "",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 123, 122, 122),
@@ -373,12 +427,12 @@ class SearchBlogCard extends StatelessWidget {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.white),
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                      BorderRadius.all(Radius.circular(10)),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
                                       image: NetworkImage(blogsController
-                                          .searchedBlogs[index]
-                                          .thumbnailImage ??
+                                              .searchedBlogs[index]
+                                              .thumbnailImage ??
                                           ""))),
                               height: 170,
                               width: 400,
@@ -387,7 +441,7 @@ class SearchBlogCard extends StatelessWidget {
                               alignment: Alignment.topRight,
                               child: Padding(
                                 padding:
-                                const EdgeInsets.only(top: 1, right: 8.0),
+                                    const EdgeInsets.only(top: 1, right: 8.0),
                                 child: Container(
                                     height: 60,
                                     width: 35,
@@ -403,31 +457,31 @@ class SearchBlogCard extends StatelessWidget {
                                       children: [
                                         Container(
                                           margin:
-                                          const EdgeInsets.only(bottom: 10),
+                                              const EdgeInsets.only(bottom: 10),
                                           child: blogsController
-                                              .searchedBlogs[index]
-                                              .postTypeFormat ==
-                                              "text"
+                                                      .searchedBlogs[index]
+                                                      .postTypeFormat ==
+                                                  "text"
                                               ? const Icon(
-                                            Icons.description_outlined,
-                                            color: Color(0xFF8aa7da),
-                                            size: 20,
-                                          )
+                                                  Icons.description_outlined,
+                                                  color: Color(0xFF8aa7da),
+                                                  size: 20,
+                                                )
                                               : blogsController
-                                              .searchedBlogs[index]
-                                              .postTypeFormat ==
-                                              "video"
-                                              ? const Icon(
-                                            Icons.videocam,
-                                            color: Color.fromARGB(
-                                                255, 185, 127, 127),
-                                            size: 20,
-                                          )
-                                              : const Icon(
-                                            Icons.headphones,
-                                            color: Colors.green,
-                                            size: 20,
-                                          ),
+                                                          .searchedBlogs[index]
+                                                          .postTypeFormat ==
+                                                      "video"
+                                                  ? const Icon(
+                                                      Icons.videocam,
+                                                      color: Color.fromARGB(
+                                                          255, 185, 127, 127),
+                                                      size: 20,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.headphones,
+                                                      color: Colors.green,
+                                                      size: 20,
+                                                    ),
                                         )
                                       ],
                                     )),
@@ -457,7 +511,7 @@ class SearchBlogCard extends StatelessWidget {
                                 ),
                                 Text(
                                   blogsController.searchedBlogs[index].likes
-                                      .toString() +
+                                          .toString() +
                                       " Likes",
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -490,7 +544,7 @@ class SearchBlogCard extends StatelessWidget {
                                 ),
                                 Text(
                                   blogsController.searchedBlogs[index].comments
-                                      .toString() +
+                                          .toString() +
                                       " comments",
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -536,7 +590,7 @@ class SearchBlogCard extends StatelessWidget {
 }
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key,required this.user});
+  const UserCard({super.key, required this.user});
   final UserProfile user;
 
   @override
@@ -545,12 +599,8 @@ class UserCard extends StatelessWidget {
       onTap: () {
         //  will be modified in detail .
 
-        Get.toNamed(AppRoutes.profilePage, parameters: {
-          "me": "notme",
-          "username":
-          user.username??
-              ""
-        });
+        Get.toNamed(AppRoutes.profilePage,
+            parameters: {"me": "notme", "username": user.username ?? ""});
       },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -559,13 +609,14 @@ class UserCard extends StatelessWidget {
           children: [
             Expanded(
               child: Row(
-                children: [ CircleAvatar(
-                      foregroundImage:NetworkImage(user.avatarUrl??""),
-                      radius: 20,
-                      child: const Material(
-                        color: Color.fromARGB(0, 231, 6, 6), //
-                      ),
+                children: [
+                  CircleAvatar(
+                    foregroundImage: NetworkImage(user.avatarUrl ?? ""),
+                    radius: 20,
+                    child: const Material(
+                      color: Color.fromARGB(0, 231, 6, 6), //
                     ),
+                  ),
                   SizedBox(
                     width: 10,
                   ),
@@ -573,9 +624,17 @@ class UserCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      Text(user.firstName!+" "+user.lastName!,style: TextStyle(color: Colors.white,fontSize: 17),),
-                      Text(user.username!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-                    ],),
+                        Text(
+                          user.firstName! + " " + user.lastName!,
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        ),
+                        Text(
+                          user.username!,
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -585,20 +644,16 @@ class UserCard extends StatelessWidget {
               width: 60,
               height: 30,
               child: GestureDetector(
-                onTap: (){
-
-                },
+                onTap: () {},
                 child: Container(
-                  decoration:BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Color.fromARGB(255, 49, 153, 167),
                     borderRadius: BorderRadius.circular(10),
-                      ),
+                  ),
                   padding: EdgeInsets.all(8),
                   child: Center(
-                    child: Text(
-                      "follow",
-                      style: TextStyle(color: Colors.white, fontSize: 15)
-                    ),
+                    child: Text("follow",
+                        style: TextStyle(color: Colors.white, fontSize: 15)),
                   ),
                 ),
               ),
