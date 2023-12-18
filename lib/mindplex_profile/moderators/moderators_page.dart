@@ -33,26 +33,10 @@ class ModeratorsPage extends StatelessWidget {
               height: 10,
             ),
             ModeratorCard(
-              moderatorImage: 'assets/images/person1.jpg',
-              moderatorName: "Matiyas Seifu",
-              moderatorRole: "Mobile Developer",
-              moderatorBio:
-                  "I am 5th year software Engineering student I am really passionate about Machine learning and AI .",
-            ),
-            ModeratorCard(
-              moderatorImage: 'assets/images/cover_image.PNG',
-              moderatorName: "Matiyas Seifu",
-              moderatorRole: "ML Engineer",
-              moderatorBio:
-                  "I am 5th year software Engineering student I am really passionate about Machine learning and AI .",
-            ),
-            ModeratorCard(
-              moderatorImage: 'assets/images/profile.PNG',
-              moderatorName: "Matiyas Seifu",
-              moderatorRole: "Mobile Developer",
-              moderatorBio:
-                  "I am 5th year software Engineering student I am really passionate about Machine learning and AI .",
-            ),
+              moderatorImage: 'assets/images/default_user.jpeg',
+              moderatorName: "Henderson Robert",
+              moderatorRole: "Moderator",
+              moderatorBio:"My name is Henderson Robert, I’ve been an online content moderator for mindplex..."),
             ModeratorApplicationForm()
           ],
         ),
