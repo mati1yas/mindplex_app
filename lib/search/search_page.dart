@@ -29,7 +29,8 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
+class _SearchPageState extends State<SearchPage>
+    with SingleTickerProviderStateMixin {
   BlogsController blogsController = Get.put(BlogsController());
   ProfileController profileController = Get.put(ProfileController());
   TextEditingController _searchController = TextEditingController();
@@ -50,7 +51,8 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       isIntialLoading = false;
     });
   }
-  void fetchSearchResults() async{
+
+  void fetchSearchResults() async {
     setState(() {
       isLoading = true;
     });
@@ -60,6 +62,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       isLoading = false;
     });
   }
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -70,57 +73,309 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return !isSearchResultPage?Scaffold(
-      backgroundColor: Color(0xFF0c2b46),
-      body: isIntialLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          :Container(
-              height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: Column(children: [
+    return !isSearchResultPage
+        ? Scaffold(
+            backgroundColor: Color(0xFF0c2b46),
+            body: isIntialLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        Container(
+                          height: 110,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              TopUserProfileIcon(
+                                  profileController: profileController,
+                                  authController: authController),
+                              SizedBox(width: 30),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: TextFormField(
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
+                                          controller: _searchController,
+                                          textAlign: TextAlign.end,
+                                          onFieldSubmitted: (String value) {
+                                            setState(() {
+                                              isSearchResultPage = true;
+                                            });
+                                            fetchSearchResults();
+                                          },
+                                          keyboardType: TextInputType.text,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.grey),
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.black,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent),
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            contentPadding:
+                                                const EdgeInsets.all(10),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent),
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            border: InputBorder.none,
+                                            hintText: 'Search',
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                          onChanged: (value) {},
+                                          validator: (value) {},
+                                        ),
+                                      ),
+                                      Flexible(
+                                          flex: 1,
+                                          fit: FlexFit.loose,
+                                          child: Icon(
+                                            Icons.search,
+                                            color: Colors.grey,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 20),
+                              InkWell(
+                                child: Icon(
+                                  Icons.settings,
+                                  size: 38,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  Get.toNamed(AppRoutes.settingsPage);
+                                },
+                              ),
+                              SizedBox(width: 30),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: !isSearchResultPage ? 30 : 15,
+                        ),
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Trends for you",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 20),
+                                  )),
+                            ),
+                            Column(children: [
+                              for (int i = 0;
+                                  i <
+                                      (showAllCategories
+                                          ? categories.length
+                                          : 5);
+                                  i++)
+                                _container(categories[i])
+                            ]),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  showAllCategories =
+                                      !showAllCategories; // Toggle the flag to show all categories
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(18),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      showAllCategories
+                                          ? "Show Less"
+                                          : "Show More",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.blue,
+                                          fontSize: 18),
+                                    ),
+                                    InkWell(
+                                      child: Icon(
+                                        showAllCategories
+                                            ? Icons.keyboard_arrow_up_sharp
+                                            : Icons.arrow_forward_ios,
+                                        color: Colors.blue,
+                                        size: 30,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              thickness: 2.0,
+                              color: Colors.white,
+                              indent: 18,
+                              endIndent: 18,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 18.0, top: 8),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Articles for you",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 20),
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 18.0, vertical: 8),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Check out these popular and trending articles for you",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  )),
+                            ),
+                            Obx(
+                              () => blogsController.isLoadingMore.value == false
+                                  ? SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          children: [
+                                            for (int i = 0;
+                                                i <
+                                                    blogsController
+                                                        .popularBlogs.length;
+                                                i++)
+                                              ArticleCard(
+                                                  blogsController:
+                                                      blogsController,
+                                                  index: i)
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 80,
+                        )
+                      ]),
+                    ),
+                  ),
+          )
+        : WillPopScope(
+            onWillPop: () async {
+              if (isSearchResultPage) {
+                setState(() {
+                  isSearchResultPage = false;
+                });
+              } else {
+                Navigator.pop(context);
+              }
+              return true;
+            },
+            child: Scaffold(
+                backgroundColor: Color(0xFF0c2b46),
+                body: Column(children: [
                   Container(
                     height: 110,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        TopUserProfileIcon(
-                            profileController: profileController,
-                            authController: authController),
+                        GestureDetector(
+                          onTap: () =>
+                              {Keys.globalkey.currentState!.openDrawer()},
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            margin: EdgeInsets.only(left: 40),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xFF0c2b46),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(profileController
+                                        .authenticatedUser.value.image ??
+                                    ""),
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(width: 30),
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(30)),
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(30)),
                             child: Row(
                               children: [
                                 Expanded(
                                   flex: 2,
                                   child: TextFormField(
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
                                     controller: _searchController,
                                     textAlign: TextAlign.end,
-                                    onFieldSubmitted: (String value){
-                                      setState(() {
-                                        isSearchResultPage = true;
-                                      });
+                                    onFieldSubmitted: (String value) {
                                       fetchSearchResults();
                                     },
                                     keyboardType: TextInputType.text,
-                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey),
                                     textAlignVertical: TextAlignVertical.center,
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: Colors.black,
                                       enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent),
-                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
                                       ),
                                       contentPadding: const EdgeInsets.all(10),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent),
-                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
                                       ),
                                       border: InputBorder.none,
                                       hintText: 'Search',
@@ -130,7 +385,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                     validator: (value) {},
                                   ),
                                 ),
-                                Flexible(flex:1,fit:FlexFit.loose,child: Icon(Icons.search,color: Colors.grey,))
+                                Flexible(
+                                    flex: 1,
+                                    fit: FlexFit.loose,
+                                    child: Icon(
+                                      Icons.search,
+                                      color: Colors.grey,
+                                    ))
                               ],
                             ),
                           ),
@@ -151,317 +412,148 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height:  !isSearchResultPage?30:15,
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(50, 118, 118, 128),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TabBar(
+                        dividerColor: Colors.transparent,
+                        controller: _tabController,
+                        isScrollable: false,
+                        indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color.fromARGB(255, 49, 153, 167)),
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white,
+                        tabs: [
+                          Tab(
+                            text: 'Content',
+                          ),
+                          Tab(
+                            text: 'Users',
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                   Column(
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Trends for you",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20),
-                              )),
-                        ),
-                        Column(children: [
-                          for (int i = 0;
-                          i < (showAllCategories ? categories.length : 5);
-                          i++)
-                            _container(categories[i])
-                        ]),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              showAllCategories =
-                              !showAllCategories; // Toggle the flag to show all categories
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(18),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  showAllCategories ? "Show Less" : "Show More",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.blue,
-                                      fontSize: 18),
-                                ),
-                                InkWell(
-                                  child: Icon(
-                                    showAllCategories
-                                        ? Icons.keyboard_arrow_up_sharp
-                                        : Icons.arrow_forward_ios,
-                                    color: Colors.blue,
-                                    size: 30,
+                        Obx(() {
+                          return blogsController.isLoadingMore.value == true &&
+                                  isLoading
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: 5,
+                                    itemBuilder: (ctx, inx) =>
+                                        const BlogSkeleton(),
                                   ),
                                 )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 2.0,
-                          color: Colors.white,
-                          indent: 18,
-                          endIndent: 18,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 18.0, top: 8),
-                          child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Articles for you",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20),
-                              )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18.0, vertical: 8),
-                          child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Check out these popular and trending articles for you",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              )),
-                        ),
-                        Obx(
-                              () => blogsController.isLoading.value == false
-                              ? SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: IntrinsicHeight(
-                              child: Row(
-                                children: [
-                                  for (int i = 0;
-                                  i < blogsController.popularBlogs.length;
-                                  i++)
-                                    ArticleCard(
-                                        blogsController: blogsController,
-                                        index: i)
-                                ],
-                              ),
-                            ),
-                          )
-                              : Container(),
-                        ),
-                      ],
-                  ),
-                  SizedBox(
-                    height: 80,
-                  )
-                ]),
-              ),
-            ),
-    ):
-    WillPopScope(
-      onWillPop: () async{
-        if(isSearchResultPage){
-          setState(() {
-            isSearchResultPage = false;
-          });
-        }
-        else{
-          Navigator.pop(context);
-        }
-        return true;
-      },
-      child: Scaffold(
-          backgroundColor: Color(0xFF0c2b46),
-          body:Column(
-              children: [
-                Container(
-                  height: 110,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(
-                        onTap: () =>
-                        {Keys.globalkey.currentState!.openDrawer()},
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          margin: EdgeInsets.only(left: 40),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Color(0xFF0c2b46),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(profileController
-                                  .authenticatedUser.value.image ??
-                                  ""),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 30),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(30)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  controller: _searchController,
-                                  textAlign: TextAlign.end,
-                                  onFieldSubmitted: (String value){
-                                    fetchSearchResults();
-                                  },
-                                  keyboardType: TextInputType.text,
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
-                                  textAlignVertical: TextAlignVertical.center,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.black,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(color: Colors.transparent),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    contentPadding: const EdgeInsets.all(10),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(color: Colors.transparent),
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    border: InputBorder.none,
-                                    hintText: 'Search',
-                                    hintStyle: TextStyle(color: Colors.grey),
+                              : Expanded(
+                                  child: ListView.builder(
+                                      controller: blogsController
+                                          .searchScrollController,
+                                      itemCount:
+                                          blogsController.searchedBlogs.length +
+                                              1,
+                                      itemBuilder: (ctx, index) {
+                                        if (index <
+                                            blogsController
+                                                .searchedBlogs.length) {
+                                          return SearchBlogCard(
+                                              blogsController: blogsController,
+                                              index: index);
+                                        } else {
+                                          print("executing else statement");
+                                          if (index ==
+                                                  blogsController
+                                                      .searchedBlogs.length &&
+                                              !blogsController
+                                                  .reachedEndOfListSearch) {
+                                            // Display CircularProgressIndicator under the last card
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else {
+                                            return Container(
+                                              child: Center(
+                                                child: Text(
+                                                  "No Content",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ); // Return an empty container otherwise
+                                          }
+                                        }
+                                      }),
+                                );
+                        }),
+                        Obx(() {
+                          return profileController.isLoading.value == true &&
+                                  isLoading
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: 5,
+                                    itemBuilder: (ctx, inx) =>
+                                        const BlogSkeleton(),
                                   ),
-                                  onChanged: (value) {},
-                                  validator: (value) {},
-                                ),
-                              ),
-                              Flexible(flex:1,fit:FlexFit.loose,child: Icon(Icons.search,color: Colors.grey,))
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      InkWell(
-                        child: Icon(
-                          Icons.settings,
-                          size: 38,
-                          color: Colors.white,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Get.toNamed(AppRoutes.settingsPage);
-                        },
-                      ),
-                      SizedBox(width: 30),
-                    ],
-                  ),
-                ),
-                SizedBox(height:10),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(50, 118, 118, 128),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TabBar(
-                      dividerColor: Colors.transparent,
-                      controller: _tabController,
-                      isScrollable: false,
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 49, 153, 167)),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.white,
-                      tabs: [
-                        Tab(
-                          text: 'Content',
-                        ),
-                        Tab(
-                          text: 'Users',
-                        ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                      controller: profileController
+                                          .searchScrollController,
+                                      itemCount: profileController
+                                              .searchedUsers.length +
+                                          1,
+                                      itemBuilder: (ctx, index) {
+                                        if (index <
+                                            profileController
+                                                .searchedUsers.length) {
+                                          return UserCard(
+                                              user: profileController,
+                                              index: index);
+                                        } else {
+                                          print("executing else statement");
+                                          if (index ==
+                                                  profileController
+                                                      .searchedUsers.length &&
+                                              !profileController
+                                                  .reachedEndOfListSearch) {
+                                            // Display CircularProgressIndicator under the last card
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else {
+                                            return Container(
+                                              child: Center(
+                                                child: Text(
+                                                  "No Content",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ); // Return an empty container otherwise
+                                          }
+                                        }
+                                      }),
+                                );
+                        }),
                       ],
                     ),
                   ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      Obx(() {
-                        return blogsController.isLoading.value == true && isLoading
-                            ? Expanded(
-                          child: ListView.builder(
-                            itemCount: 5,
-                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                          ),
-                        )
-                            : Expanded(
-                          child: ListView.builder(
-                              controller: blogsController.searchScrollController,
-                              itemCount: blogsController.searchedBlogs.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index < blogsController.searchedBlogs.length) {
-                                  return SearchBlogCard(
-                                      blogsController: blogsController, index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index == blogsController.searchedBlogs.length &&
-                                      !blogsController.reachedEndOfListSearch) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container(child: Center(child: Text("No Content",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),),); // Return an empty container otherwise
-                                  }
-                                }
-                              }),
-                        );
-                      }),
-                      Obx(() {
-                        return profileController.isLoading.value == true && isLoading
-                            ? Expanded(
-                          child: ListView.builder(
-                            itemCount: 5,
-                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                          ),
-                        )
-                            : Expanded(
-                          child: ListView.builder(
-                              controller: profileController.searchScrollController,
-                              itemCount: profileController.searchedUsers.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index < profileController.searchedUsers.length) {
-                                  return UserCard(
-                                      user: profileController, index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index == profileController.searchedUsers.length &&
-                                      !profileController.reachedEndOfListSearch) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container(child: Center(child: Text("No Content",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),),); // Return an empty container otherwise
-                                  }
-                                }
-                              }),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ]
-          )),
-    );
+                ])),
+          );
   }
 
   Widget _container(Category category) {
@@ -705,7 +797,7 @@ class ArticleCard extends StatelessWidget {
 }
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key,required this.user,required this.index});
+  const UserCard({super.key, required this.user, required this.index});
   final ProfileController user;
   final int index;
 
@@ -717,9 +809,7 @@ class UserCard extends StatelessWidget {
 
         Get.toNamed(AppRoutes.profilePage, parameters: {
           "me": "notme",
-          "username":
-          user.searchedUsers[index].username??
-              ""
+          "username": user.searchedUsers[index].username ?? ""
         });
       },
       child: Padding(
@@ -729,13 +819,15 @@ class UserCard extends StatelessWidget {
           children: [
             Expanded(
               child: Row(
-                children: [ CircleAvatar(
-                  foregroundImage:NetworkImage(user.searchedUsers[index].avatarUrl??""),
-                  radius: 20,
-                  child: const Material(
-                    color: Color.fromARGB(0, 231, 6, 6), //
+                children: [
+                  CircleAvatar(
+                    foregroundImage:
+                        NetworkImage(user.searchedUsers[index].avatarUrl ?? ""),
+                    radius: 20,
+                    child: const Material(
+                      color: Color.fromARGB(0, 231, 6, 6), //
+                    ),
                   ),
-                ),
                   SizedBox(
                     width: 10,
                   ),
@@ -743,9 +835,19 @@ class UserCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(user.searchedUsers[index].firstName!+" "+user.searchedUsers[index].lastName!,style: TextStyle(color: Colors.white,fontSize: 17),),
-                        Text(user.searchedUsers[index].username!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-                      ],),
+                        Text(
+                          user.searchedUsers[index].firstName! +
+                              " " +
+                              user.searchedUsers[index].lastName!,
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        ),
+                        Text(
+                          user.searchedUsers[index].username!,
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -755,20 +857,16 @@ class UserCard extends StatelessWidget {
               width: 60,
               height: 30,
               child: GestureDetector(
-                onTap: (){
-
-                },
+                onTap: () {},
                 child: Container(
-                  decoration:BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Color.fromARGB(255, 49, 153, 167),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.all(8),
                   child: Center(
-                    child: Text(
-                        "follow",
-                        style: TextStyle(color: Colors.white, fontSize: 15)
-                    ),
+                    child: Text("follow",
+                        style: TextStyle(color: Colors.white, fontSize: 15)),
                   ),
                 ),
               ),

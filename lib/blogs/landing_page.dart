@@ -7,6 +7,7 @@ import 'package:mindplex/auth/auth_controller/auth_controller.dart';
 import 'package:mindplex/blogs/blogs_controller.dart';
 import 'package:mindplex/blogs/screens/blog_detail_page.dart';
 import 'package:mindplex/blogs/widgets/blog_shimmer.dart';
+import 'package:mindplex/blogs/widgets/post_topic_widget.dart';
 import 'package:mindplex/mindplex_profile/about/about_mindplex.dart';
 import 'package:mindplex/mindplex_profile/moderators/moderators_page.dart';
 import 'package:mindplex/utils/colors.dart';
@@ -27,7 +28,7 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   bool isIntialLoading = true;
 
   BlogsController blogsController = Get.find();
@@ -37,6 +38,7 @@ class _LandingPageState extends State<LandingPage>
   AuthController authController = Get.find();
 
   late TabController _tabController;
+  late TabController _tabController2;
   @override
   void initState() {
     super.initState();
@@ -46,11 +48,24 @@ class _LandingPageState extends State<LandingPage>
       isIntialLoading = true;
       blogsController.filterBlogsByRecommender(category: category);
     });
+
+    _tabController2 = TabController(length: 7, vsync: this);
+    _tabController2.addListener(() {
+      String category = blogsController.categories[_tabController2.index];
+
+      isIntialLoading = true;
+      blogsController.filterBlogsByRecommender(category: category);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+
+    _tabController.index = 0;
+    _tabController2.index = 0;
+
+    blogsController.fetchBlogs();
 
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
@@ -72,11 +87,15 @@ class _LandingPageState extends State<LandingPage>
                   width: 80,
                 ),
                 Obx(() => Text(
-                    blogsController.post_type != 'news'
-                        ? blogsController.postFormatMaps[
-                                blogsController.post_format.value] ??
-                            ""
-                        : "News",
+                    blogsController.post_type == 'news'
+                        ? "News"
+                        : blogsController.post_type == 'community_content'
+                            ? "Community"
+                            : blogsController.post_type == 'topics'
+                                ? "Topics"
+                                : blogsController.postFormatMaps[
+                                        blogsController.post_format.value] ??
+                                    "",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -87,6 +106,16 @@ class _LandingPageState extends State<LandingPage>
 
           // top navigation bar
 
+          Obx(() => blogsController.post_type == 'topics'
+              ? Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    PostTopics(blogsController: blogsController),
+                  ],
+                )
+              : SizedBox.shrink()),
           SizedBox(
             height: 30,
           ),
@@ -99,36 +128,69 @@ class _LandingPageState extends State<LandingPage>
               borderRadius: BorderRadius.circular(8),
             ),
             child: Obx(
-              () => TabBar(
-                  isScrollable: true,
-                  dividerColor: Colors.grey,
-                  indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: blogsController.post_format == 'text'
-                          ? Color(0xFF8aa7da)
-                          : blogsController.post_format == 'video'
-                              ? Color.fromARGB(239, 203, 141, 141)
-                              : blogsController.post_format == "listen"
-                                  ? const Color.fromARGB(255, 131, 235, 100)
-                                  : const Color.fromARGB(255, 131, 235, 100)
-                      // color: const Color.fromARGB(255, 49, 153, 167),
-                      ),
-                  indicatorColor: Colors.green,
-                  controller: _tabController,
-                  unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
-                  tabs: [
-                    Tab(
-                      text: "All",
-                    ),
-                    Tab(text: "Popular"),
-                    Tab(text: "Most Recent"),
-                    Tab(text: "Trending"),
-                  ]),
+              () => blogsController.post_type != 'community_content'
+                  ? TabBar(
+                      isScrollable: true,
+                      dividerColor: Colors.grey,
+                      indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: blogsController.post_format == 'text'
+                              ? Color(0xFF8aa7da)
+                              : blogsController.post_format == 'video'
+                                  ? Color.fromARGB(239, 203, 141, 141)
+                                  : blogsController.post_format == "listen"
+                                      ? const Color.fromARGB(255, 131, 235, 100)
+                                      : const Color.fromARGB(255, 131, 235, 100)
+                          // color: const Color.fromARGB(255, 49, 153, 167),
+                          ),
+                      indicatorColor: Colors.green,
+                      controller: _tabController,
+                      unselectedLabelStyle:
+                          TextStyle(fontWeight: FontWeight.w300),
+                      tabs: [
+                          Tab(
+                            text: "All",
+                          ),
+                          Tab(text: "Popular"),
+                          Tab(text: "Most Recent"),
+                          Tab(text: "Trending"),
+                        ])
+                  : TabBar(
+                      isScrollable: true,
+                      dividerColor: Colors.grey,
+                      indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: blogsController.post_format == 'text'
+                              ? Color(0xFF8aa7da)
+                              : blogsController.post_format == 'video'
+                                  ? Color.fromARGB(239, 203, 141, 141)
+                                  : blogsController.post_format == "listen"
+                                      ? const Color.fromARGB(255, 131, 235, 100)
+                                      : const Color.fromARGB(255, 131, 235, 100)
+                          // color: const Color.fromARGB(255, 49, 153, 167),
+                          ),
+                      indicatorColor: Colors.green,
+                      controller: _tabController2,
+                      unselectedLabelStyle:
+                          TextStyle(fontWeight: FontWeight.w300),
+                      tabs: [
+                          Tab(
+                            text: "All",
+                          ),
+                          Tab(text: "Popular"),
+                          Tab(text: "Most Recent"),
+                          Tab(text: "Trending"),
+                          Tab(text: "Article"),
+                          Tab(text: "Video"),
+                          Tab(text: "Podcast"),
+                        ]),
             ),
           ),
 
           Obx(() {
-            return blogsController.isLoading.value == true && isIntialLoading
+            return (blogsController.isLoadingMore.value == true &&
+                        isIntialLoading) ||
+                    blogsController.newPostTypeLoading.value
                 ? Expanded(
                     child: ListView.builder(
                       itemCount: 5,

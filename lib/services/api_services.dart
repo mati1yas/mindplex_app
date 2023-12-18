@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:mindplex/blogs/blogs_controller.dart';
 import 'package:mindplex/models/search_response.dart';
 import 'package:mindplex/models/notification_model.dart';
 import 'package:mindplex/models/user_profile.dart';
@@ -25,6 +26,9 @@ class ApiService {
       required String post_type,
       required int page}) async {
     var ret = <Blog>[];
+
+    BlogsController blogsController = getxprefix.Get.find();
+
     try {
       var dio = Dio();
 
@@ -32,12 +36,19 @@ class ApiService {
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
       ;
+
+      //  condition to check if the  user is guest user or not to extract token
       if (authenticationController.isGuestUser.value == false)
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio
           .get("${AppUrls.blogUrl}/$post_type/$recommender/$post_format/$page");
 
+      //  THIS checks if there is categories feild on the response
+      if (response.data['categories'] != null) {
+        blogsController.topicPostCategories.value =
+            RxList(response.data['categories']);
+      }
       for (var blog in response.data['post']) {
         if (blog['interacted_emoji'] == null) blog['interacted_emoji'] = '';
 
@@ -339,7 +350,7 @@ class ApiService {
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
       if (authenticationController.isGuestUser.value == false)
-      dio.options.headers["Authorization"] = "Bearer ${token}";
+        dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response = await dio.get(AppUrls.searchLandingUrl,
           queryParameters: queryParameter);
