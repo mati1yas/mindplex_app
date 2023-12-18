@@ -330,7 +330,9 @@ class DrawerWidget extends StatelessWidget {
                     color: Colors.white),
               ),
               onTap: () {
-                // ...
+                blogsController.loadTopics();
+                Navigator.pop(context);
+                pageNavigationController.navigatePage(0);
               },
             ),
             ListTile(
