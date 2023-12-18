@@ -50,12 +50,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  PageNavigationController pageNavigationController =
-      Get.put(PageNavigationController());
+  BlogsController blogsController = Get.put(BlogsController());
   NotificationController notificationController =
       Get.put(NotificationController());
 
-  BlogsController blogsController = Get.put(BlogsController());
+  PageNavigationController pageNavigationController =
+      Get.put(PageNavigationController());
 
   ProfileController profileController = Get.put(ProfileController());
   AuthController authController = Get.find();
