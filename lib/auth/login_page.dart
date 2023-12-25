@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/routes/app_routes.dart';
 
 import '../profile/user_profile_controller.dart';
+import '../profile/user_profile_customisations/change_password.dart';
 import 'auth_controller/auth_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -171,10 +172,12 @@ class _LoginPageState extends State<LoginPage> {
                                       keyboardType: TextInputType.emailAddress,
                                       textInputAction: TextInputAction.next,
                                       validator: (value) {
-                                        if (value != null &&
-                                                !value.contains('@') ||
-                                            !value!.contains('.')) {
-                                          emailError = "Enter a valid Email";
+                                        if(value != null && value.isEmpty){
+                                          emailError = "please enter username or email";
+                                          return emailError;
+                                        }
+                                        if (value!.trim().contains(' ')) {
+                                          emailError = "You can't use space when writing your username or email";
                                           return emailError;
                                         } else {
                                           emailError = null;
@@ -182,9 +185,9 @@ class _LoginPageState extends State<LoginPage> {
                                         }
                                       }),
                                 ),
-                                // emailError != null && isSaved
-                                //     ? errorMessage(emailError.toString())
-                                //     : Container(),
+                                emailError != null && isSaved
+                                    ? errorMessage(emailError.toString())
+                                    : Container(),
 
                                 SizedBox(
                                   height: screenHeight * 0.04,
@@ -271,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                         return passwordError;
                                       } else if (value!.length < 8) {
                                         passwordError =
-                                            'password length can\'t be lessthan 8';
+                                            'password length can\'t be less than 8';
                                         return passwordError;
                                       } else {
                                         passwordError = null;
@@ -280,9 +283,9 @@ class _LoginPageState extends State<LoginPage> {
                                     },
                                   ),
                                 ),
-                                // passwordError != null && isSaved
-                                //     ? errorMessage(passwordError.toString())
-                                //     : Container(),
+                                passwordError != null && isSaved
+                                    ? errorMessage(passwordError.toString())
+                                    : Container(),
                                 SizedBox(
                                   height: screenHeight * 0.04,
                                 ),
