@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mindplex/blogs/blogs_controller.dart';
 
 import '../../models/notification_model.dart';
+import '../../routes/app_routes.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({super.key, required this.notification});
@@ -10,12 +13,15 @@ class NotificationCard extends StatelessWidget {
 
   String buildReactionType(String type) {
     final reactionTypePhrase = {
-      "friendship_req": "has sent you a friend request ",
-      "content_react": "reacted to your post",
+      "friendship_req": "has sent you a friend request",
       "content_like": "liked your post",
-      "content_dislike": "disliked your post "
+      "follow": "started following you",
+      "post_comment": "commented on your post",
+      "content_react": "reacted to your post",
+      "content_share": "shared your post",
+      "moderator_approved": "Your post has been approved by a moderator"
     };
-    return reactionTypePhrase[type] ?? "";
+    return reactionTypePhrase[type] ?? type;
   }
 
   String formatNotificationTime(String reactionTime) {
@@ -33,9 +39,18 @@ class NotificationCard extends StatelessWidget {
           Container(
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(notification.avatar ?? ""),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.profilePage, parameters: {
+                      "me": "notme",
+                      "username": notification.username ?? ""
+                    });
+                  },
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(notification.avatar ??
+                        "https://secure.gravatar.com/avatar/44cb6ed8fa0451a09a6387dc8bf2533a?s=260&d=mm&r=g"),
+                  ),
                 ),
                 SizedBox(
                   width: 10,
