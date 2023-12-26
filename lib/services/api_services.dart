@@ -377,20 +377,23 @@ class ApiService {
     if (authenticationController.isGuestUser.value == false)
       dio.options.headers["Authorization"] = "Bearer ${token}";
 
-    Response response = await dio
-        .get(AppUrls.baseUrl + "/mp_rp/v1/user/notifications?page=$pageNumber");
-    print(response.data);
+    try {
+      Response response = await dio.get(
+          AppUrls.baseUrl + "/mp_rp/v1/user/notifications?page=$pageNumber");
 
-    Map<String, dynamic> notificationsMap = {};
+      Map<String, dynamic> notificationsMap = {};
 
-    List<NotificationModel> notifications = [];
+      List<NotificationModel> notifications = [];
 
-    //  builds map of string with real notification model list and integers which is count of unseen notification
-    for (var notif in response.data['notifs']) {
-      notifications.add(NotificationModel.fromJson(notif));
+      //  builds map of string with real notification model list and integers which is count of unseen notification
+      for (var notif in response.data['notifs']) {
+        notifications.add(NotificationModel.fromJson(notif));
+      }
+      notificationsMap['notificationList'] = notifications;
+      notificationsMap['unseen'] = response.data['not_seen'];
+      return notificationsMap;
+    } catch (e) {
+      throw e.toString();
     }
-    notificationsMap['notificationList'] = notifications;
-    notificationsMap['unseen'] = response.data['not_seen'];
-    return notificationsMap;
   }
 }
