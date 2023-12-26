@@ -67,6 +67,9 @@ class _LandingPageState extends State<LandingPage>
 
     blogsController.fetchBlogs();
 
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       // key: Keys.globalkey,
@@ -75,32 +78,45 @@ class _LandingPageState extends State<LandingPage>
       // ),
       body: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
           Container(
-            height: 90,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                TopUserProfileIcon(
-                    profileController: profileController,
-                    authController: authController),
-                const SizedBox(
-                  width: 80,
-                ),
-                Obx(() => Text(
-                    blogsController.post_type == 'news'
-                        ? "News"
-                        : blogsController.post_type == 'community_content'
-                            ? "Community"
-                            : blogsController.post_type == 'topics'
-                                ? "Topics"
-                                : blogsController.postFormatMaps[
-                                        blogsController.post_format.value] ??
-                                    "",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.white))),
-              ],
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TopUserProfileIcon(
+                      profileController: profileController,
+                      authController: authController),
+                  SizedBox(
+                    width: width * 0.14,
+                  ),
+                  Obx(() => Container(
+                        width: width * 0.40,
+                        child: Center(
+                          child: Text(
+                              blogsController.post_type == 'news'
+                                  ? "News"
+                                  : blogsController.post_type ==
+                                          'community_content'
+                                      ? "Community"
+                                      : blogsController.post_type == 'topics'
+                                          ? "Topics"
+                                          : blogsController.postFormatMaps[
+                                                  blogsController
+                                                      .post_format.value] ??
+                                              "",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.white)),
+                        ),
+                      )),
+                ],
+              ),
             ),
           ),
 
@@ -117,73 +133,79 @@ class _LandingPageState extends State<LandingPage>
                 )
               : SizedBox.shrink()),
           SizedBox(
-            height: 30,
+            height: 10,
           ),
-          Container(
-            alignment: Alignment.center,
-            width: 345,
-            height: 35,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(50, 118, 118, 128),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Obx(
-              () => blogsController.post_type != 'community_content'
-                  ? TabBar(
-                      isScrollable: true,
-                      dividerColor: Colors.grey,
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: blogsController.post_format == 'text'
-                              ? Color(0xFF8aa7da)
-                              : blogsController.post_format == 'video'
-                                  ? Color.fromARGB(239, 203, 141, 141)
-                                  : blogsController.post_format == "listen"
-                                      ? const Color.fromARGB(255, 131, 235, 100)
-                                      : const Color.fromARGB(255, 131, 235, 100)
-                          // color: const Color.fromARGB(255, 49, 153, 167),
-                          ),
-                      indicatorColor: Colors.green,
-                      controller: _tabController,
-                      unselectedLabelStyle:
-                          TextStyle(fontWeight: FontWeight.w300),
-                      tabs: [
-                          Tab(
-                            text: "All",
-                          ),
-                          Tab(text: "Popular"),
-                          Tab(text: "Most Recent"),
-                          Tab(text: "Trending"),
-                        ])
-                  : TabBar(
-                      isScrollable: true,
-                      dividerColor: Colors.grey,
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: blogsController.post_format == 'text'
-                              ? Color(0xFF8aa7da)
-                              : blogsController.post_format == 'video'
-                                  ? Color.fromARGB(239, 203, 141, 141)
-                                  : blogsController.post_format == "listen"
-                                      ? const Color.fromARGB(255, 131, 235, 100)
-                                      : const Color.fromARGB(255, 131, 235, 100)
-                          // color: const Color.fromARGB(255, 49, 153, 167),
-                          ),
-                      indicatorColor: Colors.green,
-                      controller: _tabController2,
-                      unselectedLabelStyle:
-                          TextStyle(fontWeight: FontWeight.w300),
-                      tabs: [
-                          Tab(
-                            text: "All",
-                          ),
-                          Tab(text: "Popular"),
-                          Tab(text: "Most Recent"),
-                          Tab(text: "Trending"),
-                          Tab(text: "Article"),
-                          Tab(text: "Video"),
-                          Tab(text: "Podcast"),
-                        ]),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              alignment: Alignment.centerLeft,
+              height: 35,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(50, 118, 118, 128),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Obx(
+                () => blogsController.post_type != 'community_content'
+                    ? TabBar(
+                        isScrollable: false,
+                        dividerColor: Colors.grey,
+                        indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: blogsController.post_format == 'text'
+                                ? Color(0xFF8aa7da)
+                                : blogsController.post_format == 'video'
+                                    ? Color.fromARGB(239, 203, 141, 141)
+                                    : blogsController.post_format == "listen"
+                                        ? const Color.fromARGB(
+                                            255, 131, 235, 100)
+                                        : const Color.fromARGB(
+                                            255, 131, 235, 100)
+                            // color: const Color.fromARGB(255, 49, 153, 167),
+                            ),
+                        indicatorColor: Colors.green,
+                        controller: _tabController,
+                        unselectedLabelStyle:
+                            TextStyle(fontWeight: FontWeight.w300),
+                        tabs: [
+                            Tab(
+                              text: "All",
+                            ),
+                            Tab(text: "Popular"),
+                            Tab(text: "Most Recent"),
+                            Tab(text: "Trending"),
+                          ])
+                    : TabBar(
+                        isScrollable: true,
+                        dividerColor: Colors.grey,
+                        indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: blogsController.post_format == 'text'
+                                ? Color(0xFF8aa7da)
+                                : blogsController.post_format == 'video'
+                                    ? Color.fromARGB(239, 203, 141, 141)
+                                    : blogsController.post_format == "listen"
+                                        ? const Color.fromARGB(
+                                            255, 131, 235, 100)
+                                        : const Color.fromARGB(
+                                            255, 131, 235, 100)
+                            // color: const Color.fromARGB(255, 49, 153, 167),
+                            ),
+                        indicatorColor: Colors.green,
+                        controller: _tabController2,
+                        unselectedLabelStyle:
+                            TextStyle(fontWeight: FontWeight.w300),
+                        tabs: [
+                            Tab(
+                              text: "All",
+                            ),
+                            Tab(text: "Popular"),
+                            Tab(text: "Most Recent"),
+                            Tab(text: "Trending"),
+                            Tab(text: "Article"),
+                            Tab(text: "Video"),
+                            Tab(text: "Podcast"),
+                          ]),
+              ),
             ),
           ),
 
