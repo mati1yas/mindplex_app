@@ -121,7 +121,7 @@ class _NotificationPageState extends State<NotificationPage>
                     child: CircularProgressIndicator(),
                   )
                 : Container(
-                    height: height * 0.77,
+                    height: height * 0.80,
                     child: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
                         controller: tabController,
