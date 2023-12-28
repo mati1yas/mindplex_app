@@ -8,6 +8,8 @@ import '../../models/notification_model.dart';
 
 class NotificationController extends GetxController {
   RxInt unseenNotification = 0.obs;
+
+  RxBool firstTimeLoading = true.obs;
   RxList<NotificationModel> notificationList = <NotificationModel>[].obs;
 
   RxBool isLoadingNotifications = false.obs;
@@ -23,25 +25,34 @@ class NotificationController extends GetxController {
           notificationPageScrollController.position.pixels >=
               notificationPageScrollController.position.maxScrollExtent) {
         page.value++;
+
+        isLoadingNotifications.value = true;
         Map<String, dynamic> notificationMap =
             await apiService.value.loadNotification(pageNumber: page.value);
-        if (notificationMap['notificationList'].isEmpty) {
+        if (notificationMap['notificationList'].length == 0) {
           reachedEndofNotifications.value = true;
         } else {
+          if (notificationMap['notificationList'].length < 10)
+            reachedEndofNotifications.value = true;
           notificationList.addAll(notificationMap['notificationList']);
         }
       }
+
+      isLoadingNotifications.value = false;
     });
   }
 
   Future<void> loadNotifications() async {
     isLoadingNotifications.value = true;
+    page.value += 1;
 
     Map<String, dynamic> notificationMap =
         await apiService.value.loadNotification(pageNumber: page.value);
-    print(notificationMap);
 
-    notificationList.value = notificationMap['notificationList'];
+    notificationList.addAll(notificationMap['notificationList']);
+    if (notificationMap['notificationList'].length < 10)
+      reachedEndofNotifications.value = true;
     isLoadingNotifications.value = false;
+    firstTimeLoading.value = false;
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex/blogs/landing_page.dart';
+import 'package:mindplex/drawer/top_user_profile_icon.dart';
 import 'package:mindplex/main.dart';
 
 import '../auth/auth_controller/auth_controller.dart';
@@ -26,6 +27,9 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
     return BackdropFilter(
       blendMode: BlendMode.srcOver,
       filter: ImageFilter.blur(
@@ -68,21 +72,11 @@ class DrawerWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                              height: 50,
-                              width: 50,
-                              margin: EdgeInsets.only(
-                                  top: 40, left: 10, bottom: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Color(0xFF0c2b46),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(profileController
-                                          .authenticatedUser.value.image ??
-                                      ""),
-                                ),
-                              ),
-                              child: Container()),
+                            margin: EdgeInsets.only(top: 40, bottom: 15),
+                            child: TopUserProfileIcon(
+                                profileController: profileController,
+                                authController: authController),
+                          ),
                           Container(
                             margin: const EdgeInsets.only(left: 5),
                             child: Column(
@@ -121,14 +115,15 @@ class DrawerWidget extends StatelessWidget {
                                               .authenticatedUser.value.friends
                                               .toString(),
                                           style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: width * 0.04,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           " Friends",
                                           style: TextStyle(
-                                              fontSize: 10, color: Colors.grey),
+                                              fontSize: width * 0.04,
+                                              color: Colors.grey),
                                         ),
                                       ],
                                     ),
@@ -142,14 +137,15 @@ class DrawerWidget extends StatelessWidget {
                                               .value.followings
                                               .toString(),
                                           style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: width * 0.04,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           " Following",
                                           style: TextStyle(
-                                              fontSize: 10, color: Colors.grey),
+                                              fontSize: width * 0.04,
+                                              color: Colors.grey),
                                         ),
                                       ],
                                     ),
@@ -163,14 +159,15 @@ class DrawerWidget extends StatelessWidget {
                                               .authenticatedUser.value.followers
                                               .toString(),
                                           style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: width * 0.04,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           " Followers",
                                           style: TextStyle(
-                                              fontSize: 10, color: Colors.grey),
+                                              fontSize: width * 0.04,
+                                              color: Colors.grey),
                                         ),
                                       ],
                                     ),

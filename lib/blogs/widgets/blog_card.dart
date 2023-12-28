@@ -105,6 +105,9 @@ class BlogCard extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                             blogsController.filteredBlogs[index].postTitle ??
                                 ""),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                             style: TextStyle(
                               color: Colors.white,
