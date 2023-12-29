@@ -1,18 +1,17 @@
 import 'package:get/get.dart';
-import 'package:mindplex/auth/auth.dart';
+import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/main.dart';
-import 'package:mindplex/profile/user_profile_customisations/personal_settings.dart';
-import 'package:mindplex/profile/user_profile_customisations/settings_page.dart';
-import 'package:mindplex/search/search_result_page.dart';
+import 'package:mindplex/features/user_profile_settings/view/screens/settings_page.dart';
+import 'package:mindplex/features/search/view/screens/search_result_page.dart';
 import 'package:mindplex/splash_screen.dart';
 
-import '../profile/user_profile_customisations/Notifications_page.dart';
-import '../profile/user_profile_customisations/change_password.dart';
-import '../profile/user_profile_customisations/general_settings.dart';
-import '../profile/user_profile_customisations/preference.dart';
-import '../profile/user_profile_customisations/privacy_policy_page.dart';
-import '../profile/user_profile_displays/profile_page.dart';
-import '../profile/user_profile_customisations/recommendation.dart';
+import '../features/notification/view/screens/notification_page.dart';
+import '../features/user_profile_displays/view/screens/profile_page.dart';
+import '../features/user_profile_settings/view/screens/change_password.dart';
+import '../features/user_profile_settings/view/screens/general_settings.dart';
+import '../features/user_profile_settings/view/screens/personal_settings.dart';
+import '../features/user_profile_settings/view/screens/preference.dart';
+import '../features/user_profile_settings/view/screens/recommendation.dart';
 
 final String email = Get.arguments['email'];
 
@@ -43,13 +42,14 @@ class AppRoutes {
     GetPage(name: recommendationPage, page: () => RecommendationPage()),
     GetPage(name: preferencePage, page: () => PreferencePage()),
     GetPage(name: notificationsPage, page: () => NotificationPage()),
-    GetPage(name: privacyPolicyPage, page: () => PrivacyPolicyPage()),
     GetPage(
         name: landingPage,
         page: () => MyHomePage(
               title: "Mindplex",
             )),
     GetPage(name: profilePage, page: () => const ProfilePage()),
-    GetPage(name: searchResultPage,page: () =>SearchResultPage())
+    GetPage(name: searchResultPage, page: () => SearchResultPage())
   ];
 }
+
+class PrivacyPolicyPage {}

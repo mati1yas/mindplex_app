@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:mindplex/blogs/blogs_controller.dart';
-import 'package:mindplex/models/search_response.dart';
-import 'package:mindplex/models/notification_model.dart';
-import 'package:mindplex/models/user_profile.dart';
+import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
+import 'package:mindplex/features/search/models/search_response.dart';
+import 'package:mindplex/features/notification/models/notification_model.dart';
+import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../auth/auth_controller/auth_controller.dart';
-import '../models/blog_model.dart';
-import '../models/comment.dart';
+import '../features/authentication/controllers/auth_controller.dart';
+import '../features/blogs/models/blog_model.dart';
+import '../features/comment/models/comment.dart';
 import '../utils/constatns.dart';
-import 'local_storage.dart';
+import '../features/local_data_storage/local_storage.dart';
 
 class ApiService {
   AuthController authenticationController = getxprefix.Get.find();

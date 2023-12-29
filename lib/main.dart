@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/blogs/landing_page.dart';
-import 'package:mindplex/bottom_nav_bar/bottom_page_navigation_controller.dart';
-import 'package:mindplex/drawer/drawer_widget.dart';
+import 'package:mindplex/features/blogs/view/screens/landing_page.dart';
+import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
+import 'package:mindplex/features/drawer/view/widgets/drawer_widget.dart';
 import 'package:mindplex/routes/app_routes.dart';
-import 'package:mindplex/search/search_page.dart';
-import 'package:mindplex/groups/groups_page.dart';
-import 'package:mindplex/notification/notification_page.dart';
-import 'package:mindplex/message/message_page.dart';
+import 'package:mindplex/features/search/view/screens/search_page.dart';
+import 'package:mindplex/features/groups/view/screens/groups_page.dart';
+import 'package:mindplex/features/notification/view/screens/notification_page.dart';
+import 'package:mindplex/features/chat/view/screens/message_page.dart';
 import 'package:mindplex/utils/constatns.dart';
 
-import 'auth/auth_controller/auth_controller.dart';
-import 'blogs/blogs_controller.dart';
-import 'notification/controller/notification_controller.dart';
-import 'profile/user_profile_controller.dart';
+import 'features/authentication/controllers/auth_controller.dart';
+import 'features/blogs/controllers/blogs_controller.dart';
+import 'features/notification/controllers/notification_controller.dart';
+import 'features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'splash_screen.dart';
 
 void main() {
