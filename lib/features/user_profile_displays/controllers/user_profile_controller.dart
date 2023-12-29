@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
+import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
@@ -86,6 +88,7 @@ class ProfileController extends GetxController {
     isLoading.value = true;
     final res = await apiService.value.fetchUserProfile(userName: username);
     userProfile.value = res;
+    publishedPosts.value = [];
     isLoading.value = false;
   }
 
@@ -153,5 +156,20 @@ class ProfileController extends GetxController {
 
   List<UserProfile> get searchedUsers {
     return searchResults;
+  }
+
+  RxList<Blog> publishedPosts = <Blog>[].obs;
+  RxBool isPostLoading = false.obs;
+  ProfileServices profileService = ProfileServices();
+  Future<void> getPublishedPosts({required String username}) async {
+    if (publishedPosts.length > 0) {
+      return;
+    }
+
+    isPostLoading.value = true;
+    List<Blog> res = await profileService.getPublishedPosts(username: username);
+
+    publishedPosts.value = res;
+    isPostLoading.value = false;
   }
 }
