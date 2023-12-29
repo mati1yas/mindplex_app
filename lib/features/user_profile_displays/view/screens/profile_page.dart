@@ -59,7 +59,7 @@ class _ProfilePage extends State<ProfilePage>
                     buildTop(params),
                     buildUserName(params),
                     buildStatus(params),
-                    buidScreens(),
+                    buidScreens(params),
                   ],
                 )),
         ));
@@ -268,7 +268,7 @@ class _ProfilePage extends State<ProfilePage>
     );
   }
 
-  Widget buidScreens() {
+  Widget buidScreens(dynamic params) {
     return Column(
       children: [
         Container(
@@ -279,22 +279,30 @@ class _ProfilePage extends State<ProfilePage>
             borderRadius: BorderRadius.circular(8),
           ),
           child: TabBar(
-              isScrollable: true,
-              dividerColor: Colors.grey,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color.fromARGB(255, 49, 153, 167)),
-              indicatorColor: Colors.green,
-              controller: _tabController,
-              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
-              tabs: [
-                Tab(
-                  text: "About",
-                ),
-                Tab(text: "Published Content"),
-                Tab(text: "Bookmarks"),
-                Tab(text: "Drafts"),
-              ]),
+            isScrollable: true,
+            dividerColor: Colors.grey,
+            indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: const Color.fromARGB(255, 49, 153, 167)),
+            indicatorColor: Colors.green,
+            controller: _tabController,
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+            tabs: [
+              Tab(
+                text: "About",
+              ),
+              Tab(text: "Published Content"),
+              Tab(text: "Bookmarks"),
+              Tab(text: "Drafts"),
+            ],
+            onTap: (index) {
+              if (index == 1) {
+                profileController.getPublishedPosts(
+                    username: params["username"]);
+              }
+              ;
+            },
+          ),
         ),
         Container(
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
