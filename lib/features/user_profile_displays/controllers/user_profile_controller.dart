@@ -35,15 +35,10 @@ class ProfileController extends GetxController {
     {
       'name': 'Published Content',
       "active": false,
-      'widget': const BookmarkScreen(),
+      'widget': BookmarkScreen,
       "num": 2
     },
-    {
-      'name': 'Bookmarks',
-      "active": false,
-      'widget': const BookmarkScreen(),
-      "num": 2
-    },
+    {'name': 'Bookmarks', "active": false, 'widget': BookmarkScreen, "num": 2},
     {'name': 'Drafts', "active": false, 'widget': const DraftScreen(), "num": 3}
   ];
 
