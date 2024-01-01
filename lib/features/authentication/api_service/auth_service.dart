@@ -26,6 +26,27 @@ class AuthService {
     }
   }
 
+  Future<String> refreshToken(String refreshToken) async {
+    try {
+      var dio = Dio();
+      final response = await dio.post(
+        AppUrls.refreshTokenUrl,
+        data: {'token': refreshToken},
+      );
+
+      if (response.statusCode == 200) {
+        final newToken = response.data['token'];
+        return newToken;
+      } else {
+        print('Failed to refresh token: ${response.statusCode}');
+        return '';
+      }
+    } catch (e) {
+      print('catch Failed to refresh token:');
+      return '';
+    }
+  }
+
   Future<String> register(
       {required String email,
       required String firstName,
