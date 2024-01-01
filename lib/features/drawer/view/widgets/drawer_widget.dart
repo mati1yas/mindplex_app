@@ -17,10 +17,10 @@ class DrawerWidget extends StatelessWidget {
   DrawerWidget({
     super.key,
   });
-  ProfileController profileController = Get.find();
-  BlogsController blogsController = Get.find();
-  PageNavigationController pageNavigationController = Get.find();
-  AuthController authController = Get.find();
+  final ProfileController profileController = Get.find();
+  final BlogsController blogsController = Get.find();
+  final PageNavigationController pageNavigationController = Get.find();
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
