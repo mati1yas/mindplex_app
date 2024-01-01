@@ -2,14 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 import '../api_service/auth_service.dart';
 
 class AuthController extends GetxController {
+  final networkErrorMessage = "Looks like there is problem with your connection.";
   final authService = AuthService().obs;
+
+  ConnectionInfoImpl connectionChecker = Get.find();
+
   Rx<LocalStorage> localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
@@ -80,6 +84,9 @@ class AuthController extends GetxController {
       required String password,
       required String loginType}) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(networkErrorMessage);
+      }
       final userData = await authService.value
           .loginUser(email: email, password: password, loginType: loginType);
       localStorage.value.writeToStorage("Token", userData.token.toString());
@@ -103,6 +110,8 @@ class AuthController extends GetxController {
         var message = e.response!.data['message'].toString();
 
         statusMessage.value = message;
+      } else if (e is NetworkException) {
+        statusMessage.value = e.message;
       }
       isAuthenticated.value = false;
     }
@@ -114,6 +123,10 @@ class AuthController extends GetxController {
       required String lastName,
       required String password}) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(networkErrorMessage);
+      }
+
       String statusCode = await authService.value.register(
           email: email,
           firstName: firstName,
@@ -132,6 +145,8 @@ class AuthController extends GetxController {
         var message = e.response!.data['message'].toString();
 
         statusMessage.value = message;
+      } else if (e is NetworkException) {
+        statusMessage.value = e.message;
       }
       isAuthenticated.value = false;
       isRegistered.value = false;

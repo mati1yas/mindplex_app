@@ -1,8 +1,10 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'features/authentication/view/screens/auth.dart';
@@ -10,6 +12,9 @@ import 'main.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
+
+  final ConnectionInfoImpl connectionChecker = 
+  Get.put(ConnectionInfoImpl(connectionChecker: InternetConnectionChecker()));
 
   AuthController authController = Get.put(AuthController());
   Future<void> loadUserInfo() async {
