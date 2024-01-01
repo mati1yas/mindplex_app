@@ -25,21 +25,23 @@ class SplashScreen extends StatelessWidget {
     authController.checkAuthentication();
     loadUserInfo();
     return Scaffold(
-      body: AnimatedSplashScreen(
-        splash: Image.asset('assets/images/logo.png'),
-        duration: 3000,
-        curve: Curves.easeInOut,
-        splashIconSize: 350,
-        splashTransition: SplashTransition.slideTransition,
-        animationDuration: const Duration(milliseconds: 1500),
-        backgroundColor: Colors.white,
-        pageTransitionType: PageTransitionType.fade,
-        nextRoute: !authController.isAuthenticated.value
-            ? AppRoutes.authPage
-            : AppRoutes.landingPage,
-        nextScreen: Obx(() => !authController.isAuthenticated.value
-            ? const AuthPage()
-            : const MyHomePage(title: "Mindplex")),
+      body: Obx(
+        () => AnimatedSplashScreen(
+          splash: Image.asset('assets/images/logo.png'),
+          duration: 3000,
+          curve: Curves.easeInOut,
+          splashIconSize: 350,
+          splashTransition: SplashTransition.slideTransition,
+          animationDuration: const Duration(milliseconds: 1500),
+          backgroundColor: Colors.white,
+          pageTransitionType: PageTransitionType.fade,
+          nextRoute: !authController.isAuthenticated.value
+              ? AppRoutes.authPage
+              : AppRoutes.landingPage,
+          nextScreen: Obx(() => !authController.isAuthenticated.value
+              ? const AuthPage()
+              : const MyHomePage(title: "Mindplex")),
+        ),
       ),
     );
   }
