@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mindplex/features/authentication/api_service/auth_service.dart';
 import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/services/api_services.dart';
 
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
 import '../../../user_profile_settings/view/screens/change_password.dart';
@@ -367,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  //TODO implement other option logins
+                                  signin();
                                 },
                                 child: Container(
                                     width: 40,
@@ -432,8 +435,45 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future signin() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    googleSignIn.disconnect();
+    AuthController authController = Get.put(AuthController());
+
+    try {
+      final user = await googleSignIn.signIn();
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(
+                child: CircularProgressIndicator(color: Colors.green[900]),
+              ));
+      String? name = "";
+
+      if (user!.displayName != null) {
+        name = user.displayName;
+      }
+
+      await authController.loginUserWithGoogle(
+          email: user.email,
+          firstName: name!,
+          lastName: name,
+          googleId: user.id);
+
+      if (authController.isAuthenticated.value) {
+        Navigator.pop(context);
+
+        Get.offAllNamed(AppRoutes.landingPage);
+        ProfileController profileController = Get.put(ProfileController());
+        await profileController.getAuthenticatedUser();
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   Future loginAsGuest() async {
-    print("about to login as guest");
     AuthController authController = Get.put(AuthController());
 
     authController.loginAsGueast();
@@ -462,7 +502,7 @@ class _LoginPageState extends State<LoginPage> {
       if (authController.isAuthenticated.value) {
         Navigator.pop(context);
 
-        Get.offAll(AppRoutes.landingPage);
+        Get.offAllNamed(AppRoutes.landingPage);
         ProfileController profileController = Get.put(ProfileController());
         await profileController.getAuthenticatedUser();
       } else {

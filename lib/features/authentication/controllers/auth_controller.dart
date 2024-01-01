@@ -7,6 +7,7 @@ import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
 
 import '../api_service/auth_service.dart';
+import '../models/auth_model.dart';
 
 class AuthController extends GetxController {
   final authService = AuthService().obs;
@@ -82,19 +83,7 @@ class AuthController extends GetxController {
     try {
       final userData = await authService.value
           .loginUser(email: email, password: password, loginType: loginType);
-      localStorage.value.writeToStorage("Token", userData.token.toString());
-
-      localStorage.value.storeUserInfo(
-          email: userData.userEmail.toString(),
-          image: userData.image.toString(),
-          userDisplayName: userData.userDisplayName.toString(),
-          username: userData.username.toString(),
-          firstName: userData.firstName.toString(),
-          lastName: userData.lastName.toString(),
-          userNiceName: userData.userNicename.toString(),
-          followers: userData.followers.toString(),
-          followings: userData.followings.toString(),
-          friends: userData.friends.toString());
+      storeUserInformation(userData: userData);
 
       isAuthenticated.value = true;
       isGuestUser.value = false;
@@ -135,6 +124,52 @@ class AuthController extends GetxController {
       }
       isAuthenticated.value = false;
       isRegistered.value = false;
+    }
+  }
+
+  Future<void> loginUserWithGoogle(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String googleId}) async {
+    try {
+      final userData = await authService.value.registerWithGoogle(
+          email: email,
+          googleId: googleId,
+          firstName: firstName,
+          lastName: lastName);
+
+      storeUserInformation(userData: userData);
+
+      isAuthenticated.value = true;
+      isGuestUser.value = false;
+    } catch (e) {
+      if (e is DioException) {
+        var message = e.response!.data['message'].toString();
+
+        statusMessage.value = message;
+      }
+      isAuthenticated.value = false;
+    }
+  }
+
+  Future<void> storeUserInformation({required AuthModel userData}) async {
+    try {
+      localStorage.value.writeToStorage("Token", userData.token.toString());
+
+      localStorage.value.storeUserInfo(
+          email: userData.userEmail.toString(),
+          image: userData.image.toString(),
+          userDisplayName: userData.userDisplayName.toString(),
+          username: userData.username.toString(),
+          firstName: userData.firstName.toString(),
+          lastName: userData.lastName.toString(),
+          userNiceName: userData.userNicename.toString(),
+          followers: userData.followers.toString(),
+          followings: userData.followings.toString(),
+          friends: userData.friends.toString());
+    } catch (e) {
+      throw e;
     }
   }
 }
