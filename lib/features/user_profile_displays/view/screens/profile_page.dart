@@ -36,6 +36,7 @@ class _ProfilePage extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    print("ok");
     profileController.getAuthenticatedUser();
     Map<String, String?> params = Get.parameters;
 
@@ -298,7 +299,9 @@ class _ProfilePage extends State<ProfilePage>
             onTap: (index) {
               if (index == 1) {
                 profileController.getPublishedPosts(
-                    username: params["username"]);
+                    username: params['me'] == 'me'
+                        ? profileController.authenticatedUser.value.username
+                        : params["username"]);
               }
               ;
             },
