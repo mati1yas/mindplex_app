@@ -101,7 +101,7 @@ class AuthController extends GetxController {
           return false;
         }
       } catch (e) {
-        // this is to handle token refresh failure
+        
         return false;
       }
     } else {

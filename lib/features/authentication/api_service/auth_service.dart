@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
 import 'package:mindplex/utils/constatns.dart';
@@ -38,11 +37,9 @@ class AuthService {
         final newToken = response.data['token'];
         return newToken;
       } else {
-        print('Failed to refresh token: ${response.statusCode}');
         return '';
       }
     } catch (e) {
-      print('catch Failed to refresh token:');
       return '';
     }
   }
