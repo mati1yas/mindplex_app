@@ -3,10 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex/features/blogs/view/screens/landing_page.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
-import 'package:mindplex/main.dart';
 
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../../blogs/controllers/blogs_controller.dart';
