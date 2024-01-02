@@ -29,7 +29,7 @@ class BlogContentDisplay extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
