@@ -5,6 +5,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/routes/app_routes.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'features/authentication/view/screens/auth.dart';
@@ -13,7 +14,7 @@ import 'main.dart';
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
 
-  final ConnectionInfoImpl connectionChecker = 
+  final ConnectionInfoImpl connectionChecker =
   Get.put(ConnectionInfoImpl(connectionChecker: InternetConnectionChecker()));
 
   AuthController authController = Get.put(AuthController());
@@ -29,7 +30,8 @@ class SplashScreen extends StatelessWidget {
     authController.checkAuthentication();
     loadUserInfo();
     return Scaffold(
-      body: AnimatedSplashScreen(
+      body: Obx(
+        () => AnimatedSplashScreen(
           splash: Image.asset('assets/images/logo.png'),
           duration: 3000,
           curve: Curves.easeInOut,
@@ -38,9 +40,14 @@ class SplashScreen extends StatelessWidget {
           animationDuration: const Duration(milliseconds: 1500),
           backgroundColor: Colors.white,
           pageTransitionType: PageTransitionType.fade,
+          nextRoute: !authController.isAuthenticated.value
+              ? AppRoutes.authPage
+              : AppRoutes.landingPage,
           nextScreen: Obx(() => !authController.isAuthenticated.value
               ? const AuthPage()
-              : const MyHomePage(title: "Mindplex"))),
+              : const MyHomePage(title: "Mindplex")),
+        ),
+      ),
     );
   }
 }

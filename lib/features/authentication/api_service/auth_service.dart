@@ -66,4 +66,27 @@ class AuthService {
       throw e;
     }
   }
+
+  Future<AuthModel> registerWithGoogle(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String googleId}) async {
+    try {
+      var dio = Dio();
+
+      Response response = await dio.post(AppUrls.registerationUrl,
+          data: jsonEncode(<String, String>{
+            "registed_with": "google",
+            "email": email,
+            "given_name": firstName,
+            "family_name": lastName,
+            "google_user_id": googleId
+          }));
+
+      return AuthModel.fromJson(response.data);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
