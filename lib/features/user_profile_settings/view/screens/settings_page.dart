@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/features/user_profile_settings/controllers/settings_controller.dart';
 import 'package:mindplex/features/user_profile_settings/view/screens/personal_settings.dart';
 import 'package:mindplex/features/user_profile_settings/view/screens/preference.dart';
 import 'package:mindplex/features/user_profile_settings/view/screens/recommendation.dart';
@@ -44,9 +45,12 @@ class _SettingsPage extends State<SettingsPage>
 
   ProfileController profileController = Get.put(ProfileController());
 
+  SettingsController settingsController = Get.put(SettingsController());
+
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+    settingsController.fetchUserInfo("esubalew");
     final firstName =
         profileController.authenticatedUser.value.firstName ?? " ";
     final userEmail =
