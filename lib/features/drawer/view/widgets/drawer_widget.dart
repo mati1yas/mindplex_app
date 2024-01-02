@@ -46,6 +46,7 @@ class DrawerWidget extends StatelessWidget {
                   ? Column(
                       children: [
                         Container(
+                          height: 190,
                           child: Center(
                             child: Text(
                               "Hello Guest , 👋",
@@ -63,6 +64,7 @@ class DrawerWidget extends StatelessWidget {
                       ],
                     )
                   : Container(
+                height: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
