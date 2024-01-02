@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppUrls {
   static var baseUrl = "https://staging.mindplex.ai/wp-json";
   static var loginUrl = '$baseUrl/auth/v1/token';
+  static var refreshTokenUrl = '$baseUrl/auth/v1/token/refresh';
   static var profileUrl = '$baseUrl/wp/v2/users/profile';
   static var editProfileUrl = '$baseUrl/wp/v2/users/profile';
   static var changePasswordUrl = '$baseUrl/wp/v2/users/change-password';

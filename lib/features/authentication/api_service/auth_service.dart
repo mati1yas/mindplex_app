@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
 import 'package:mindplex/utils/constatns.dart';
@@ -23,6 +22,25 @@ class AuthService {
       return AuthModel.fromJson(response.data);
     } catch (e) {
       throw e;
+    }
+  }
+
+  Future<String> refreshToken(String refreshToken) async {
+    try {
+      var dio = Dio();
+      final response = await dio.post(
+        AppUrls.refreshTokenUrl,
+        data: {'token': refreshToken},
+      );
+
+      if (response.statusCode == 200) {
+        final newToken = response.data['token'];
+        return newToken;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      return '';
     }
   }
 

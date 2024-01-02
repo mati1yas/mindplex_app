@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer_effect/shimmer_effect.dart';
+// import 'package:shimmer_effect/shimmer_effect.dart';
 
 const mainBackgroundColor = Color.fromARGB(255, 12, 45, 68);
 final blogContainerColor = Color(0xFF103e56);

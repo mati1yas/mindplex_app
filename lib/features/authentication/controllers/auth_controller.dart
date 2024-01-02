@@ -23,7 +23,16 @@ class AuthController extends GetxController {
     final hasToken = await localStorage.value.readFromStorage('Token');
 
     if (hasToken != '') {
-      isAuthenticated.value = true;
+      try {
+        bool authstatus = await refreshTokenIfNeeded();
+        if (authstatus) {
+          isAuthenticated.value = true;
+        } else {
+          isAuthenticated.value = false;
+        }
+      } catch (e) {
+        isAuthenticated.value = false;
+      }
     } else {
       isAuthenticated.value = false;
     }
@@ -73,6 +82,31 @@ class AuthController extends GetxController {
     isGuestUser.value = true;
     guestUserImage.value =
         "https://secure.gravatar.com/avatar/3e942ed60cd7c63ba7fab0611917b259?s=96&d=retro&r=g";
+  }
+
+  Future<bool> refreshTokenIfNeeded() async {
+    final refreshToken = await localStorage.value.readFromStorage('Token');
+
+    if (refreshToken.isNotEmpty) {
+      try {
+        final newToken = await authService.value.refreshToken(refreshToken);
+        print('new token');
+        print(newToken);
+        if (newToken.isNotEmpty) {
+          await localStorage.value.writeToStorage('Token', newToken);
+
+          return true;
+        } else {
+          logout();
+          return false;
+        }
+      } catch (e) {
+        
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   Future<void> loginUser(
