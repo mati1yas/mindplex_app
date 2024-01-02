@@ -3,10 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:mindplex/features/blogs/view/screens/landing_page.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
-import 'package:mindplex/main.dart';
 
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../../blogs/controllers/blogs_controller.dart';
@@ -20,10 +17,10 @@ class DrawerWidget extends StatelessWidget {
   DrawerWidget({
     super.key,
   });
-  ProfileController profileController = Get.find();
-  BlogsController blogsController = Get.find();
-  PageNavigationController pageNavigationController = Get.find();
-  AuthController authController = Get.find();
+  final ProfileController profileController = Get.find();
+  final BlogsController blogsController = Get.find();
+  final PageNavigationController pageNavigationController = Get.find();
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +46,6 @@ class DrawerWidget extends StatelessWidget {
                   ? Column(
                       children: [
                         Container(
-                          height: 190,
                           child: Center(
                             child: Text(
                               "Hello Guest , 👋",
@@ -67,7 +63,6 @@ class DrawerWidget extends StatelessWidget {
                       ],
                     )
                   : Container(
-                      height: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
