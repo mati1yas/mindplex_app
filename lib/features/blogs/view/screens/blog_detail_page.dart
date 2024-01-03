@@ -14,6 +14,7 @@ import '../../controllers/blogs_controller.dart';
 import '../../../comment/view/screens/comment.dart';
 import '../widgets/blog_content_display.dart';
 import '../widgets/reaction_emoji.dart';
+import '../widgets/interactions_overlay.dart';
 
 class DetailsPage extends StatelessWidget {
   final int index;
@@ -131,9 +132,20 @@ class DetailsPage extends StatelessWidget {
                                         color: Color.fromARGB(235, 247, 202, 0),
                                       ),
                                     ),
-                                    Icon(
-                                      Icons.tag_faces_outlined,
-                                      color: Color.fromARGB(235, 247, 202, 0),
+                                    IconButton(
+                                      onPressed: () {
+                                        // final interactions =
+                                        //     await blogsController
+                                        //         .getUserInteractions(
+                                        //   articleSlug: details.slug
+                                        //       ?.split(' ')[0] as String,
+                                        // );
+                                        _showInteractionsOverlay(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.tag_faces_outlined,
+                                        color: Color.fromARGB(235, 247, 202, 0),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -441,6 +453,14 @@ class DetailsPage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  void _showInteractionsOverlay(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => InteractionsOverlay(details: details),
+      // isScrollControlled: true,
     );
   }
 }
