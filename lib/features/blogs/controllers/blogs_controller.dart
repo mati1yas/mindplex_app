@@ -163,6 +163,14 @@ class BlogsController extends GetxController {
     fetchBlogs();
   }
 
+  void loadContents(String postType, String postFormat) async {
+    post_type.value = postType;
+    post_format.value = postFormat;
+    recommender.value = 'default';
+    page.value = 1;
+    fetchBlogs();
+  }
+
   void fetchBlogs() async {
     newPostTypeLoading.value = true;
     isLoadingMore.value = true;
