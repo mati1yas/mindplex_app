@@ -30,7 +30,6 @@ class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     final List<DrawerModel> drawers = DrawerItems.drawers;
-
     return BackdropFilter(
       blendMode: BlendMode.srcOver,
       filter: ImageFilter.blur(

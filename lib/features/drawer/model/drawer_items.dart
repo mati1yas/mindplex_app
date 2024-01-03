@@ -78,7 +78,7 @@ class DrawerItems {
       icon: Icons.people_alt_sharp,
       drawerName: "Abous us",
       drawerType: DrawerType.about,
-      pageName: '/aboutMindplex',
+      pageName: '/aboutMindPlex',
     ),
   ];
 }
