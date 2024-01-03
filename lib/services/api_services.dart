@@ -396,4 +396,30 @@ class ApiService {
       throw e.toString();
     }
   }
+
+  Future<List<dynamic>> fetchUserInteractions(
+      {required String articleSlug}) async {
+    var dio = Dio();
+    print("Fetching...");
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+    print(articleSlug);
+
+    Response response =
+        await dio.get("${AppUrls.reactWithEmoji}$articleSlug/all/1");
+
+    if (response.statusCode == 200) {
+      print(response);
+      final interactions = response.data['interaction'];
+      return interactions;
+    } else {
+      throw Exception('Failed to fetch user interactions from the server.');
+    }
+  }
 }
