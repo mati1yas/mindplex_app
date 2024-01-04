@@ -76,7 +76,7 @@ class DrawerItems {
     ),
     DrawerModel(
       icon: Icons.people_alt_sharp,
-      drawerName: "Abous us",
+      drawerName: "About us",
       drawerType: DrawerType.about,
       pageName: '/aboutMindPlex',
     ),

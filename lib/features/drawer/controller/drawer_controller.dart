@@ -3,6 +3,7 @@ import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
 import 'package:mindplex/features/drawer/model/drawer_model.dart';
 import 'package:mindplex/features/drawer/model/drawer_types.dart';
+import 'package:mindplex/utils/colors.dart';
 
 class DrawerButtonController extends GetxController {
   BlogsController _blogsController = Get.find();
@@ -40,6 +41,7 @@ class DrawerButtonController extends GetxController {
       Get.snackbar(
         '🚧Page Under Construction🚧',
         'TODO: IMPLEMENT ${drawerModel.pageName}',
+        backgroundColor: white,
       );
       return;
     } else if (drawerModel.pageName == '/landingPage') {
