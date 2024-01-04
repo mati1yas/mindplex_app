@@ -10,6 +10,10 @@ class SettingsController extends GetxController{
   RxString? emailError = "".obs;
   RxBool isSaved = false.obs;
 
+  RxBool oldPasswordVisible = false.obs;
+  RxBool confirmPasswordVisible = false.obs;
+
+
 
   final apiService = SettingsApiService().obs;
 
@@ -31,6 +35,15 @@ class SettingsController extends GetxController{
     else if(inputLabel == "Email"){
       emailError =  "Please enter a valid email address (ex. abc@gmail.com)".obs;
       return emailError;
+    }
+  }
+
+  void  changePasswordVisibility(int value){
+    if(value == 0){
+      oldPasswordVisible.value = !oldPasswordVisible.value;
+    }
+    else if(value == 1){
+      confirmPasswordVisible.value = ! confirmPasswordVisible.value;
     }
   }
 }
