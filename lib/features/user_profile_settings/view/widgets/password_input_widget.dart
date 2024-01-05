@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/user_profile_settings/controllers/change_password_controller.dart';
 import 'package:mindplex/features/user_profile_settings/controllers/settings_controller.dart';
 
 import '../../../../utils/colors.dart';
@@ -17,10 +18,7 @@ Widget passwordInput(
     VoidCallback onTap) {
   TextTheme textTheme = Theme.of(context).textTheme;
   Color secondbackgroundColor = Theme.of(context).cardColor;
-  SettingsController settingsController = Get.find<SettingsController>();
-
-  String? newPasswordError;
-  String? confirmPasswordError;
+  PasswordController passwordController = Get.put(PasswordController());
 
   return Container(
       height: 48,
@@ -44,16 +42,16 @@ Widget passwordInput(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           obscureText:
-          type == "new" ? !settingsController.oldPasswordVisible.value : !settingsController.confirmPasswordVisible.value,
+          type == "new" ? !passwordController.oldPasswordVisible.value : !passwordController.confirmPasswordVisible.value,
           style: type == "new"
-              ? settingsController.oldPasswordVisible.value
+              ? passwordController.oldPasswordVisible.value
               ? textTheme.displayMedium?.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: Colors.white)
               : TextStyle(color: Colors.amber, fontSize: 30)
               :
-          settingsController.confirmPasswordVisible.value
+          passwordController.confirmPasswordVisible.value
               ? textTheme.displayMedium?.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.w400,
@@ -72,10 +70,10 @@ Widget passwordInput(
             ),
             errorStyle: const TextStyle(fontSize: 0.01),
             contentPadding: type == "new"
-                ? settingsController.oldPasswordVisible.value
+                ? passwordController.oldPasswordVisible.value
                 ? EdgeInsets.only(left: 10, top: 10, bottom: 10)
                 : EdgeInsets.only(left: 5, bottom: 5)
-                : settingsController.confirmPasswordVisible.value
+                : passwordController.confirmPasswordVisible.value
                 ? EdgeInsets.only(left: 10, top: 10, bottom: 10)
                 : EdgeInsets.only(left: 5, bottom: 5),
             focusedBorder: OutlineInputBorder(
@@ -95,10 +93,10 @@ Widget passwordInput(
               onPressed: onTap,
               icon: Icon(
                 type == "new"
-                    ? settingsController.oldPasswordVisible.value
+                    ? passwordController.oldPasswordVisible.value
                     ? Icons.visibility
                     : Icons.visibility_off
-                    : settingsController.confirmPasswordVisible.value
+                    : passwordController.confirmPasswordVisible.value
                     ? Icons.visibility
                     : Icons.visibility_off,
                 color: focus.hasFocus ? Colors.blue : Colors.amber,
@@ -116,30 +114,24 @@ Widget passwordInput(
           validator: ((value) {
             if (type == "new") {
               if (value != null && value.length < 8) {
-                newPasswordError = "Must be at least 8 characters";
-                return newPasswordError;
+                return passwordController.setError(true, "Must be at least 8 characters");
               } else if (!value!.contains(RegExp(r'[a-z]'))) {
-                newPasswordError = "Must have at least 1 lower case alphabet";
-                return newPasswordError;
+                return passwordController.setError(true, "Must have at least 1 lower case alphabet");
               } else if (!value!.contains(RegExp(r'[A-Z]'))) {
-                newPasswordError = "Must have at least 1 upper case alphabet";
-                return newPasswordError;
+                return passwordController.setError(true, "Must have at least 1 upper case alphabet");
+
               } else if (!value!.contains(RegExp(r'[0-9]'))) {
-                newPasswordError = "Must have at least 1 number";
-                return newPasswordError;
+                return passwordController.setError(true, "Must have at least 1 number");
               } else {
-                newPasswordError = null;
-                return null;
+                return passwordController.setError(true, null);
               }
             } else if (type == "confirm") {
               if (value != null && value.length < 8) {
-                confirmPasswordError = "Must be at least 8 characters";
-                return confirmPasswordError;
+                return passwordController.setError(false, "Must be at least 8 characters");
               } else if (value != confirmPassword) {
-                confirmPasswordError = "Passwords do not match";
-                return confirmPasswordError;
+                return passwordController.setError(false, "Passwords do not match");
               } else {
-                confirmPasswordError = null;
+                return passwordController.setError(false, null);
                 return null;
               }
             } else {

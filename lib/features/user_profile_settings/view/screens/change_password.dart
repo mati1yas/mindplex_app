@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/features/user_profile_settings/controllers/change_password_controller.dart';
 import 'package:mindplex/features/user_profile_settings/view/widgets/password_input_widget.dart';
 import 'package:mindplex/services/api_services.dart';
 
@@ -19,15 +20,12 @@ class ChangePasswordPage extends StatefulWidget {
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-String? newPasswordError, confirmPasswordError;
-
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   AuthController authController = Get.put(AuthController());
 
   ProfileController profileController = Get.put(ProfileController());
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   late FocusNode newPasswordFocusNode, confirmPasswordFocusNode;
 
   @override
@@ -50,52 +48,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
     super.dispose();
   }
-
-  bool _isUpdating = false;
-  ApiService _apiService = ApiService();
-  Future<String> changePassword(String password) async {
+  Future<void> changePassword(String password) async {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => Center(
               child: CircularProgressIndicator(color: Colors.green[900]),
             ));
-    setState(() {
-      _isUpdating = true;
-    });
-    try {
-      String? message = await _apiService.changePassword(password);
-      print(message);
-      setState(() {
-        _isUpdating = false;
-      });
-      Navigator.of(context).pop();
-      Flushbar(
-        flushbarPosition: FlushbarPosition.BOTTOM,
-        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-        titleSize: 20,
-        messageSize: 17,
-        messageColor: Colors.white,
-        backgroundColor: Colors.green,
-        borderRadius: BorderRadius.circular(8),
-        message: "Password Changed",
-        duration: const Duration(seconds: 2),
-      ).show(context);
-      return message;
-    } catch (e) {
-      setState(() {
-        _isUpdating = false;
-      });
-      print('Error updating user profile: $e');
-      return '';
-    }
+    passwordController.saveNewPassword(password);
   }
-
-  bool isSaved = false;
 
   final _formKey = GlobalKey<FormState>();
 
-  SettingsController settingsController = Get.find<SettingsController>();
+  PasswordController passwordController = Get.put(PasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -132,11 +97,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           confirmPasswordFocusNode,
                           null, () {
                         setState(() {
-                          settingsController.oldPasswordVisible.value = !settingsController.oldPasswordVisible.value;
+                          passwordController.oldPasswordVisible.value = !passwordController.oldPasswordVisible.value;
                         });
                       }),
-                      newPasswordError != null && isSaved
-                          ? errorMessage(newPasswordError.toString())
+                      passwordController.newPasswordError != null && passwordController.isSaved.value
+                          ? errorMessage( passwordController.newPasswordError?.value)
                           : Container(),
                       Container(
                         alignment: Alignment.topLeft,
@@ -156,11 +121,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           null,
                           newPasswordController.text, () {
                         setState(() {
-                          settingsController.confirmPasswordVisible.value = !settingsController.confirmPasswordVisible.value;
+                          passwordController.confirmPasswordVisible.value = !passwordController.confirmPasswordVisible.value;
                         });
                       }),
-                      confirmPasswordError != null && isSaved
-                          ? errorMessage(confirmPasswordError.toString())
+                      passwordController.confirmPasswordError != null && passwordController.isSaved.value
+                          ? errorMessage(passwordController.confirmPasswordError?.value)
                           : Container(),
                       const SizedBox(
                         height: 30,
@@ -172,14 +137,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     buildButton("Cancel", () async {
+                      newPasswordFocusNode.unfocus();
+                      confirmPasswordFocusNode.unfocus();
                       newPasswordController.text = "";
                       confirmPasswordController.text = "";
                     }, Colors.blueAccent, false),
                     buildButton("Save", (() async {
-                      isSaved = false;
+                      newPasswordFocusNode.unfocus();
+                      confirmPasswordFocusNode.unfocus();
+                      passwordController.setIsSaved(false);
                       final isValidForm = _formKey.currentState!.validate();
                       setState(() {
-                        isSaved = true;
+                        passwordController.setIsSaved(true);
                       });
                       if (isValidForm) {
                         changePassword(confirmPasswordController.text);

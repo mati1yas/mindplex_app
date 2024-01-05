@@ -10,8 +10,6 @@ class SettingsController extends GetxController{
   RxString? emailError = "".obs;
   RxBool isSaved = false.obs;
 
-  RxBool oldPasswordVisible = false.obs;
-  RxBool confirmPasswordVisible = false.obs;
 
 
 
@@ -38,12 +36,4 @@ class SettingsController extends GetxController{
     }
   }
 
-  void  changePasswordVisibility(int value){
-    if(value == 0){
-      oldPasswordVisible.value = !oldPasswordVisible.value;
-    }
-    else if(value == 1){
-      confirmPasswordVisible.value = ! confirmPasswordVisible.value;
-    }
-  }
 }
