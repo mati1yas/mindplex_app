@@ -53,7 +53,6 @@ class Blog {
     this.isUserLiked.value = isUserLiked ?? false;
     this.likes.value = likes ?? 0;
 
-    this.isUserLiked.value = isUserLiked ?? false;
     this.interactedEmoji.value = interactedEmoji ?? '';
   }
 
