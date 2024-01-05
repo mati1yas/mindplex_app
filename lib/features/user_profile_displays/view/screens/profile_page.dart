@@ -82,7 +82,7 @@ class _ProfilePage extends State<ProfilePage>
             left: 5,
             child: IconButton(
               onPressed: () {
-                Get.back();
+                Navigator.pop(context);
               },
               icon: Icon(
                 Icons.arrow_back,
@@ -192,6 +192,8 @@ class _ProfilePage extends State<ProfilePage>
   }
 
   Widget buidScreens(dynamic params) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Column(
       children: [
         Container(
@@ -231,8 +233,8 @@ class _ProfilePage extends State<ProfilePage>
         ),
         Container(
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
-          height: 320,
-          width: 340,
+          height: height * 0.55,
+          width: width * 0.95,
           child: TabBarView(controller: _tabController, children: [
             AboutScreen(),
             BookmarkScreen(),
