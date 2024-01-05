@@ -8,6 +8,7 @@ import 'package:mindplex/features/drawer/model/drawer_model.dart';
 import 'package:mindplex/features/drawer/model/drawer_types.dart';
 import 'package:mindplex/features/drawer/view/widgets/drawer_button.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
+import 'package:mindplex/features/drawer/view/widgets/user_info_widget.dart';
 
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../../blogs/controllers/blogs_controller.dart';
@@ -28,7 +29,6 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
     final List<DrawerModel> drawers = DrawerItems.drawers;
     return BackdropFilter(
       blendMode: BlendMode.srcOver,
@@ -44,140 +44,21 @@ class DrawerWidget extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.only(top: 20, left: 20),
           children: [
-            Obx(
-              () => authController.isGuestUser.value
-                  ? Column(
-                      children: [
-                        Container(
-                          height: 190,
-                          child: Center(
-                            child: Text(
-                              "Hello Guest , 👋",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 30,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 1.4,
-                          color: Colors.white,
-                        )
-                      ],
-                    )
-                  : Container(
-                      height: 200,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 40, bottom: 15),
-                            child: TopUserProfileIcon(
-                                profileController: profileController,
-                                authController: authController),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  profileController
-                                          .authenticatedUser.value.firstName ??
-                                      " " +
-                                          '${profileController.authenticatedUser.value.lastName}',
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  profileController
-                                          .authenticatedUser.value.username ??
-                                      " ",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.grey),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          profileController
-                                              .authenticatedUser.value.friends
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          " Friends",
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          profileController.authenticatedUser
-                                              .value.followings
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          " Following",
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          profileController
-                                              .authenticatedUser.value.followers
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          " Followers",
-                                          style: TextStyle(
-                                              fontSize: width * 0.04,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+            Container(
+              height: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 40, bottom: 15),
+                    child: TopUserProfileIcon(
+                      profileController: profileController,
+                      authController: authController,
                     ),
+                  ),
+                  UserInfoWidget(profileController: profileController),
+                ],
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -257,3 +138,26 @@ class DrawerWidget extends StatelessWidget {
     );
   }
 }
+
+// authController.isGuestUser.value
+//                   ? Column(
+//                       children: [
+//                         Container(
+//                           height: 190,
+//                           child: Center(
+//                             child: Text(
+//                               "Hello Guest , 👋",
+//                               style: TextStyle(
+//                                   fontWeight: FontWeight.w300,
+//                                   fontSize: 30,
+//                                   color: Colors.white),
+//                             ),
+//                           ),
+//                         ),
+//                         Divider(
+//                           thickness: 1.4,
+//                           color: Colors.white,
+//                         )
+//                       ],
+//                     )
+//                   :
