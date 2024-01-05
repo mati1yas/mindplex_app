@@ -5,16 +5,10 @@ import 'package:mindplex/utils/colors.dart';
 
 import '../widgets/user_interest_widget.dart';
 
-class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
-  @override
-  State<AboutScreen> createState() {
-    return _AboutScreen();
-  }
-}
-
-class _AboutScreen extends State<AboutScreen> {
+class AboutScreen extends StatelessWidget {
+  AboutScreen({super.key});
   ProfileController profileController = Get.find();
+
   Widget build(BuildContext context) {
     return Container(
       width: 300,
