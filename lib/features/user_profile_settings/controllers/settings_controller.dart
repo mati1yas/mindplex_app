@@ -3,6 +3,7 @@ import 'package:mindplex/features/user_profile_settings/models/user_profile.dart
 import 'package:mindplex/features/user_profile_settings/services/settings_api_service.dart';
 
 class SettingsController extends GetxController{
+
   RxBool isLoading = true.obs;
   RxString username = "".obs;
   RxString? usernameError = "".obs;

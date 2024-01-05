@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../authentication/controllers/auth_controller.dart';
+import '../widgets/button_widget.dart';
+import '../widgets/error_message_widget.dart';
 import '../widgets/input_box_widget.dart';
 
 class GeneralSettings extends StatefulWidget {
@@ -88,43 +90,4 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       ),
     );
   }
-}
-
-Widget buildButton(String label, VoidCallback onTap, Color color1, bool fill) {
-  return SizedBox(
-    key: UniqueKey(),
-    width: 150,
-    height: 50,
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: fill
-            ? BoxDecoration(
-                color: color1,
-                borderRadius: BorderRadius.circular(10),
-              )
-            : BoxDecoration(
-                border: Border.all(color: color1),
-                borderRadius: BorderRadius.circular(10)),
-        child: Center(
-          child: Text(
-            label,
-            style: fill
-                ? TextStyle(color: Colors.white, fontSize: 20)
-                : TextStyle(color: color1, fontSize: 20),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget errorMessage(String? error) {
-  return Container(
-      alignment: Alignment.topLeft,
-      margin: const EdgeInsets.only(top: 5, left: 2),
-      child: Text(
-        error.toString(),
-        style: const TextStyle(color: Colors.red),
-      ));
 }

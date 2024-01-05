@@ -11,6 +11,7 @@ import 'package:mindplex/services/api_services.dart';
 import '../../../../utils/colors.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../controllers/settings_controller.dart';
+import '../widgets/button_widget.dart';
 import 'general_settings.dart';
 
 class ChangePasswordPage extends StatefulWidget {
