@@ -39,7 +39,7 @@ class BlogSkeleton extends StatelessWidget {
               SkeletonElement(
                 isMarginForAll: true,
                 dimensions: {
-                  'width': MediaQuery.of(context).size.width * .8,
+                  'width': MediaQuery.of(context).size.width,
                   'height': 25,
                   'margin_all': 10,
                   'radius': 8,
@@ -52,7 +52,7 @@ class BlogSkeleton extends StatelessWidget {
               SkeletonElement(
                 isMarginForAll: false,
                 dimensions: {
-                  'width': MediaQuery.of(context).size.width * .8,
+                  'width': MediaQuery.of(context).size.width,
                   'height': 50,
                   'margin_left': 10,
                   'margin_right': 10,

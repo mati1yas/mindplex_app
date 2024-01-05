@@ -9,6 +9,8 @@ class DrawerModel {
   final DrawerType drawerType;
   final IconData icon;
   final Color? color;
+  final bool? requiresPrivilege;
+  final dynamic parameters;
 
   DrawerModel({
     required this.drawerName,
@@ -18,5 +20,7 @@ class DrawerModel {
     required this.drawerType,
     required this.icon,
     this.color,
+    this.requiresPrivilege,
+    this.parameters,
   });
 }

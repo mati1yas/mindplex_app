@@ -10,7 +10,8 @@ import '../api_service/auth_service.dart';
 import '../models/auth_model.dart';
 
 class AuthController extends GetxController {
-  final networkErrorMessage = "Looks like there is problem with your connection.";
+  final networkErrorMessage =
+      "Looks like there is problem with your connection.";
   final authService = AuthService().obs;
 
   ConnectionInfoImpl connectionChecker = Get.find();
@@ -43,7 +44,17 @@ class AuthController extends GetxController {
     }
   }
 
+  bool checkUserPrivellege({bool? requiresPrivilege}) {
+    final canView = requiresPrivilege == null || requiresPrivilege == false;
+    if (!canView && isGuestUser.value) {
+      guestReminder(Get.context!);
+      return false;
+    }
+    return true;
+  }
+
   void checkFirstTime() async {}
+
   void guestReminder(context) async {
     showDialog(
         context: context,
@@ -106,7 +117,6 @@ class AuthController extends GetxController {
           return false;
         }
       } catch (e) {
-        
         return false;
       }
     } else {

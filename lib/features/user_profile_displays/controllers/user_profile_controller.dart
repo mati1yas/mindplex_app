@@ -59,18 +59,6 @@ class ProfileController extends GetxController {
 
   AuthController authController = Get.find();
 
-  var screens = [
-    {'name': 'About', 'active': true, 'widget': const AboutScreen(), "num": 1},
-    {
-      'name': 'Published Content',
-      "active": false,
-      'widget': BookmarkScreen,
-      "num": 2
-    },
-    {'name': 'Bookmarks', "active": false, 'widget': BookmarkScreen, "num": 2},
-    {'name': 'Drafts', "active": false, 'widget': const DraftScreen(), "num": 3}
-  ];
-
   ScrollController searchScrollController = ScrollController();
   bool reachedEndOfListSearch = false;
   RxList<UserProfile> searchResults = <UserProfile>[].obs;

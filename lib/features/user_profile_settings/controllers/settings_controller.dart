@@ -3,6 +3,7 @@ import 'package:mindplex/features/user_profile_settings/models/user_profile.dart
 import 'package:mindplex/features/user_profile_settings/services/settings_api_service.dart';
 
 class SettingsController extends GetxController{
+
   RxBool isLoading = true.obs;
   RxString username = "".obs;
   RxString? usernameError = "".obs;
@@ -10,8 +11,6 @@ class SettingsController extends GetxController{
   RxString? emailError = "".obs;
   RxBool isSaved = false.obs;
 
-  RxBool oldPasswordVisible = false.obs;
-  RxBool confirmPasswordVisible = false.obs;
 
 
 
@@ -38,12 +37,4 @@ class SettingsController extends GetxController{
     }
   }
 
-  void  changePasswordVisibility(int value){
-    if(value == 0){
-      oldPasswordVisible.value = !oldPasswordVisible.value;
-    }
-    else if(value == 1){
-      confirmPasswordVisible.value = ! confirmPasswordVisible.value;
-    }
-  }
 }
