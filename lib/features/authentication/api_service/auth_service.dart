@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
 import 'package:mindplex/utils/constatns.dart';
@@ -26,6 +25,25 @@ class AuthService {
     }
   }
 
+  Future<String> refreshToken(String refreshToken) async {
+    try {
+      var dio = Dio();
+      final response = await dio.post(
+        AppUrls.refreshTokenUrl,
+        data: {'token': refreshToken},
+      );
+
+      if (response.statusCode == 200) {
+        final newToken = response.data['token'];
+        return newToken;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
   Future<String> register(
       {required String email,
       required String firstName,
@@ -44,6 +62,29 @@ class AuthService {
           }));
 
       return response.statusCode.toString();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<AuthModel> registerWithGoogle(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String googleId}) async {
+    try {
+      var dio = Dio();
+
+      Response response = await dio.post(AppUrls.registerationUrl,
+          data: jsonEncode(<String, String>{
+            "registed_with": "google",
+            "email": email,
+            "given_name": firstName,
+            "family_name": lastName,
+            "google_user_id": googleId
+          }));
+
+      return AuthModel.fromJson(response.data);
     } catch (e) {
       throw e;
     }

@@ -2,14 +2,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 import '../api_service/auth_service.dart';
+import '../models/auth_model.dart';
 
 class AuthController extends GetxController {
+  final networkErrorMessage = "Looks like there is problem with your connection.";
   final authService = AuthService().obs;
+
+  ConnectionInfoImpl connectionChecker = Get.find();
+
   Rx<LocalStorage> localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
@@ -23,7 +28,16 @@ class AuthController extends GetxController {
     final hasToken = await localStorage.value.readFromStorage('Token');
 
     if (hasToken != '') {
-      isAuthenticated.value = true;
+      try {
+        bool authstatus = await refreshTokenIfNeeded();
+        if (authstatus) {
+          isAuthenticated.value = true;
+        } else {
+          isAuthenticated.value = false;
+        }
+      } catch (e) {
+        isAuthenticated.value = false;
+      }
     } else {
       isAuthenticated.value = false;
     }
@@ -75,26 +89,42 @@ class AuthController extends GetxController {
         "https://secure.gravatar.com/avatar/3e942ed60cd7c63ba7fab0611917b259?s=96&d=retro&r=g";
   }
 
+  Future<bool> refreshTokenIfNeeded() async {
+    final refreshToken = await localStorage.value.readFromStorage('Token');
+
+    if (refreshToken.isNotEmpty) {
+      try {
+        final newToken = await authService.value.refreshToken(refreshToken);
+        print('new token');
+        print(newToken);
+        if (newToken.isNotEmpty) {
+          await localStorage.value.writeToStorage('Token', newToken);
+
+          return true;
+        } else {
+          logout();
+          return false;
+        }
+      } catch (e) {
+        
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   Future<void> loginUser(
       {required String email,
       required String password,
       required String loginType}) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(networkErrorMessage);
+      }
       final userData = await authService.value
           .loginUser(email: email, password: password, loginType: loginType);
-      localStorage.value.writeToStorage("Token", userData.token.toString());
-
-      localStorage.value.storeUserInfo(
-          email: userData.userEmail.toString(),
-          image: userData.image.toString(),
-          userDisplayName: userData.userDisplayName.toString(),
-          username: userData.username.toString(),
-          firstName: userData.firstName.toString(),
-          lastName: userData.lastName.toString(),
-          userNiceName: userData.userNicename.toString(),
-          followers: userData.followers.toString(),
-          followings: userData.followings.toString(),
-          friends: userData.friends.toString());
+      storeUserInformation(userData: userData);
 
       isAuthenticated.value = true;
       isGuestUser.value = false;
@@ -103,6 +133,8 @@ class AuthController extends GetxController {
         var message = e.response!.data['message'].toString();
 
         statusMessage.value = message;
+      } else if (e is NetworkException) {
+        statusMessage.value = e.message;
       }
       isAuthenticated.value = false;
     }
@@ -114,6 +146,10 @@ class AuthController extends GetxController {
       required String lastName,
       required String password}) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(networkErrorMessage);
+      }
+
       String statusCode = await authService.value.register(
           email: email,
           firstName: firstName,
@@ -132,9 +168,57 @@ class AuthController extends GetxController {
         var message = e.response!.data['message'].toString();
 
         statusMessage.value = message;
+      } else if (e is NetworkException) {
+        statusMessage.value = e.message;
       }
       isAuthenticated.value = false;
       isRegistered.value = false;
+    }
+  }
+
+  Future<void> loginUserWithGoogle(
+      {required String email,
+      required String firstName,
+      required String lastName,
+      required String googleId}) async {
+    try {
+      final userData = await authService.value.registerWithGoogle(
+          email: email,
+          googleId: googleId,
+          firstName: firstName,
+          lastName: lastName);
+
+      storeUserInformation(userData: userData);
+
+      isAuthenticated.value = true;
+      isGuestUser.value = false;
+    } catch (e) {
+      if (e is DioException) {
+        var message = e.response!.data['message'].toString();
+
+        statusMessage.value = message;
+      }
+      isAuthenticated.value = false;
+    }
+  }
+
+  Future<void> storeUserInformation({required AuthModel userData}) async {
+    try {
+      localStorage.value.writeToStorage("Token", userData.token.toString());
+
+      localStorage.value.storeUserInfo(
+          email: userData.userEmail.toString(),
+          image: userData.image.toString(),
+          userDisplayName: userData.userDisplayName.toString(),
+          username: userData.username.toString(),
+          firstName: userData.firstName.toString(),
+          lastName: userData.lastName.toString(),
+          userNiceName: userData.userNicename.toString(),
+          followers: userData.followers.toString(),
+          followings: userData.followings.toString(),
+          friends: userData.friends.toString());
+    } catch (e) {
+      throw e;
     }
   }
 }

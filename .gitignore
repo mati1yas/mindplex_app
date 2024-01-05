@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /pubspec.lock
+
+/windows
+/macos
+/linux
+.metadata
+/android/app/src/main/kotlin/
+/ios/RunnerTests/
+
+
+

@@ -29,7 +29,7 @@ class BlogContentDisplay extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
@@ -143,11 +143,17 @@ class BlogContentDisplay extends StatelessWidget {
                   children: [
                     const Text(
                       '\u2022',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(element.content ?? "")),
+                    Expanded(
+                        child: Text(
+                      element.content ?? "",
+                      style: TextStyle(color: Colors.white),
+                    )),
                   ],
                 ),
               );
