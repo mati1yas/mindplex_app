@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -22,23 +23,16 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePage extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  AuthController authController = Get.put(AuthController());
+  AuthController authController = Get.find();
+  ProfileController profileController = Get.find();
   late TabController _tabController;
+  Map<String, String?> params = Get.parameters;
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-  }
 
-  final double coverHeight = 280;
-
-  ProfileController profileController = Get.put(ProfileController());
-
-  @override
-  Widget build(BuildContext context) {
-    print("ok");
     profileController.getAuthenticatedUser();
-    Map<String, String?> params = Get.parameters;
 
     if (params['me'] == 'me') {
       profileController.getUserProfile(
@@ -46,7 +40,12 @@ class _ProfilePage extends State<ProfilePage>
     } else {
       profileController.getUserProfile(username: params["username"] ?? "");
     }
+  }
 
+  final double coverHeight = 280;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
@@ -296,15 +295,6 @@ class _ProfilePage extends State<ProfilePage>
               Tab(text: "Bookmarks"),
               Tab(text: "Drafts"),
             ],
-            onTap: (index) {
-              if (index == 1) {
-                profileController.getPublishedPosts(
-                    username: params['me'] == 'me'
-                        ? profileController.authenticatedUser.value.username
-                        : params["username"]);
-              }
-              ;
-            },
           ),
         ),
         Container(
@@ -313,7 +303,7 @@ class _ProfilePage extends State<ProfilePage>
           width: 340,
           child: TabBarView(controller: _tabController, children: [
             AboutScreen(),
-            BookmarkScreen(),
+            PublishedPosts(),
             BookmarkScreen(),
             DraftScreen()
           ]),
