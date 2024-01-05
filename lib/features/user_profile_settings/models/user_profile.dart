@@ -27,33 +27,40 @@ class UserProfile {
   int? educationRequest;
   List<String>? interests;
   List<String>? socialLink;
+  int? followers;
+  int? followings;
+  int? friends;
+  int? mpxr;
 
-  UserProfile({
-    this.firstName,
-    this.lastName,
-    this.avatarUrl,
-    this.username,
-    this.age,
-    this.gender,
-    this.biography,
-    this.education,
-    this.educationRequest,
-    this.interests,
-    this.socialLink,
-    this.recPopularity,
-    this.recPattern,
-    this.recQuality,
-    this.recRandom,
-    this.recTimeliness,
-    this.agePreference,
-    this.genderPreference,
-    this.educationPreference,
-    this.notifyPublications,
-    this.notifyFollower,
-    this.notifyInteraction,
-    this.notifyWeekly,
-    this.notifyUpdates,
-  });
+  UserProfile(
+      {this.firstName,
+      this.lastName,
+      this.avatarUrl,
+      this.username,
+      this.age,
+      this.gender,
+      this.biography,
+      this.education,
+      this.educationRequest,
+      this.interests,
+      this.socialLink,
+      this.recPopularity,
+      this.recPattern,
+      this.recQuality,
+      this.recRandom,
+      this.recTimeliness,
+      this.agePreference,
+      this.genderPreference,
+      this.educationPreference,
+      this.notifyPublications,
+      this.notifyFollower,
+      this.notifyInteraction,
+      this.notifyWeekly,
+      this.notifyUpdates,
+      this.followers,
+      this.followings,
+      this.friends,
+      this.mpxr});
 
   UserProfile.fromJson(Map<String, dynamic> json) {
     firstName = json['first_name'];
@@ -76,6 +83,10 @@ class UserProfile {
     notifyWeekly = json['notify_weekly'];
     notifyUpdates = json['notify_updates'];
     biography = json['biography'];
+    followers = json['followers'];
+    followings = json['followings'];
+    friends = json['friends'];
+    mpxr = json['mpxr'];
     education = json['education'] != null
         ? Education.fromJson(json['education'])
         : null;
@@ -111,6 +122,10 @@ class UserProfile {
     data['interest'] = this.interests;
     data['education'] = this.educationRequest;
     data['social_media'] = this.socialLink;
+    data['followers'] = this.followers;
+    data['followings'] = this.followings;
+    data['friends'] = this.friends;
+    data['mpxr'] = this.mpxr;
     return data;
   }
 }

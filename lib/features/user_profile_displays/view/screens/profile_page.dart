@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
-import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import '../../../authentication/controllers/auth_controller.dart';
+import '../widgets/user_profile_image_widget.dart';
+import '../widgets/user_profile_statistics_widget.dart';
 import 'about_screen.dart';
 import 'bookmark_screen.dart';
 import 'draft_screen.dart';
@@ -36,7 +36,6 @@ class _ProfilePage extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    print("ok");
     profileController.getAuthenticatedUser();
     Map<String, String?> params = Get.parameters;
 
@@ -58,89 +57,76 @@ class _ProfilePage extends State<ProfilePage>
                   padding: EdgeInsets.zero,
                   children: <Widget>[
                     buildTop(params),
-                    buildUserName(params),
-                    buildStatus(params),
+                    buildUserNameSection(params),
+                    UserProfileStatistics(profileController: profileController),
                     buidScreens(params),
                   ],
                 )),
         ));
   }
 
-  Widget buildCoverImage(dynamic params) {
-    // decoration:BoxDecoration()), add curves to the image
-    return CircleAvatar(
-      backgroundColor: Colors.green,
-      radius: MediaQuery.of(context).size.width * 0.25,
-      backgroundImage: NetworkImage(
-        params['me'] == 'me'
-            ? profileController.authenticatedUser.value.image ??
-                "assets/images/profile.PNG"
-            : profileController.userProfile.value.avatarUrl ??
-                "assets/images/profile.PNG",
-      ),
-    );
-  }
-
   Widget buildTop(dynamic params) {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20, top: 20),
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            buildCoverImage(params),
-            Positioned(
-              top: 0,
-              left: 5,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20, top: 20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          UserProfileImage(
+            context: context,
+            profileController: profileController,
+            me: params['me'] == 'me',
+          ),
+          Positioned(
+            top: 0,
+            left: 5,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
               ),
             ),
-            Positioned(
-              top: 0,
-              right: 5,
-              child: PopupMenuButton(
-                  color: Colors.white,
-                  itemBuilder: (context) => [
-                        PopupMenuItem(
-                          onTap: () {
-                            authController.logout();
-                            // Navigator.of(context).pop();
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout),
-                              Text("Logout"),
-                            ],
-                          ),
+          ),
+          Positioned(
+            top: 0,
+            right: 5,
+            child: PopupMenuButton(
+                color: Colors.white,
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        onTap: () {
+                          authController.logout();
+                          // Navigator.of(context).pop();
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout),
+                            Text("Logout"),
+                          ],
                         ),
-                        PopupMenuItem(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.info),
-                              Text("Change info"),
-                            ],
-                          ),
+                      ),
+                      PopupMenuItem(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.info),
+                            Text("Change info"),
+                          ],
                         ),
-                      ]),
-            ),
-          ],
-        ),
+                      ),
+                    ]),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildUserName(dynamic params) {
+  Widget buildUserNameSection(dynamic params) {
     final firstName = profileController.userProfile.value.firstName ?? " ";
     final lastName = profileController.userProfile.value.lastName ?? " ";
 
@@ -205,71 +191,9 @@ class _ProfilePage extends State<ProfilePage>
     );
   }
 
-  Widget buildStatus(dynamic params) {
-    var status = [
-      {
-        "amount": profileController.authenticatedUser.value.friends.toString(),
-        "value": "Friends"
-      },
-      {
-        "amount":
-            profileController.authenticatedUser.value.followings.toString(),
-        "value": "Following"
-      },
-      {
-        "amount":
-            profileController.authenticatedUser.value.followers.toString(),
-        "value": "Followers"
-      },
-      {"amount": "100", "value": " MPXR"}
-    ];
-    return Container(
-      height: 46,
-      margin: const EdgeInsets.only(bottom: 18),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          for (var item in status)
-            Row(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      item['amount'].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      item['value'].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 190, 190, 190),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                if (status.indexOf(item) != status.length - 1)
-                  Container(
-                    height: 40.0,
-                    width: 1.0,
-                    color: const Color.fromARGB(255, 73, 150, 154),
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  ), //
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-
   Widget buidScreens(dynamic params) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Column(
       children: [
         Container(
@@ -309,8 +233,8 @@ class _ProfilePage extends State<ProfilePage>
         ),
         Container(
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
-          height: 320,
-          width: 340,
+          height: height * 0.55,
+          width: width * 0.95,
           child: TabBarView(controller: _tabController, children: [
             AboutScreen(),
             BookmarkScreen(),

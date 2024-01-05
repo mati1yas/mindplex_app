@@ -35,23 +35,17 @@ class ProfileController extends GetxController {
 
   AuthController authController = Get.find();
 
-  var screens = [
-    {'name': 'About', 'active': true, 'widget': const AboutScreen(), "num": 1},
-    {
-      'name': 'Published Content',
-      "active": false,
-      'widget': BookmarkScreen,
-      "num": 2
-    },
-    {'name': 'Bookmarks', "active": false, 'widget': BookmarkScreen, "num": 2},
-    {'name': 'Drafts', "active": false, 'widget': const DraftScreen(), "num": 3}
-  ];
-
   ScrollController searchScrollController = ScrollController();
   bool reachedEndOfListSearch = false;
   RxList<UserProfile> searchResults = <UserProfile>[].obs;
   RxString searchQuery = "".obs;
   RxInt searchPage = 1.obs;
+
+  RxList<Blog> publishedPosts = <Blog>[].obs;
+  Rx<Status> status = Status.unknown.obs;
+  RxString errorMessage = "Something is very wrong!".obs;
+
+  ProfileServices profileService = ProfileServices();
 
   @override
   void onInit() {
@@ -158,11 +152,6 @@ class ProfileController extends GetxController {
     return searchResults;
   }
 
-  RxList<Blog> publishedPosts = <Blog>[].obs;
-  Rx<Status> status = Status.unknown.obs;
-  RxString errorMessage = "Something is very wrong!".obs;
-
-  ProfileServices profileService = ProfileServices();
   Future<void> getPublishedPosts({required String username}) async {
     if (publishedPosts.length > 0) {
       return;
