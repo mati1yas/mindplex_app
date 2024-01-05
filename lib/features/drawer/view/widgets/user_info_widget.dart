@@ -14,32 +14,34 @@ class UserInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final String _firstName = "Gedion";
-    final String _lastName = "Someone";
+
+    final String _firstName =
+        profileController.authenticatedUser.value.firstName ?? "";
+    final String _lastName =
+        profileController.authenticatedUser.value.lastName ?? "";
     final String _fullUserName = "$_firstName  $_lastName";
 
     return Container(
-      margin: const EdgeInsets.only(left: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             _fullUserName,
             style: TextStyle(
-              fontSize: 40,
+              fontSize: 20,
               color: white,
               fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(
-            height: ,
+            height: 6,
           ),
           Text(
-            "primequantuM4",
-            // profileController.authenticatedUser.value.username ?? " ",
+            profileController.authenticatedUser.value.username ?? " ",
             style: TextStyle(
-              fontSize: 15,
-              color: Colors.grey,
+              fontSize: 20,
+              color: userNameColor,
+              fontWeight: FontWeight.w400,
             ),
           ),
           SizedBox(
@@ -50,9 +52,9 @@ class UserInfoWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    formatNumber(123),
-                    // profileController.authenticatedUser.value.friends
-                    //     .toString(),
+                    formatNumber(
+                      profileController.authenticatedUser.value.friends ?? 0,
+                    ),
                     style: TextStyle(
                       fontSize: width * 0.04,
                       color: Colors.white,
@@ -72,9 +74,9 @@ class UserInfoWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    formatNumber(100000),
-                    // profileController.authenticatedUser.value.followings
-                    // .toString(),
+                    formatNumber(
+                      profileController.authenticatedUser.value.followings ?? 0,
+                    ),
                     style: TextStyle(
                         fontSize: width * 0.04,
                         color: Colors.white,
@@ -93,9 +95,9 @@ class UserInfoWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    formatNumber(1000000),
-                    // profileController.authenticatedUser.value.followers
-                    //     .toString(),
+                    formatNumber(
+                      profileController.authenticatedUser.value.followers ?? 0,
+                    ),
                     style: TextStyle(
                         fontSize: width * 0.04,
                         color: Colors.white,

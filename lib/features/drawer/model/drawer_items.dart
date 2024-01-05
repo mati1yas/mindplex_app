@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:mindplex/features/drawer/model/drawer_model.dart';
+import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
 
 import 'drawer_types.dart';
 
 class DrawerItems {
   static final List<DrawerModel> drawers = [
+    DrawerModel(
+      drawerName: "Profile",
+      pageName: AppRoutes.profilePage,
+      drawerType: DrawerType.profile,
+      icon: Icons.person,
+      parameters: {'me': 'me', 'username': ''},
+      requiresPrivilege: true,
+    ),
     DrawerModel(
       icon: Icons.upgrade_rounded,
       drawerName: "Upgrade",
@@ -17,7 +26,7 @@ class DrawerItems {
     DrawerModel(
       icon: Icons.description_outlined,
       drawerName: "Read",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.read,
       postType: "articles",
       postFormat: "text",
@@ -25,7 +34,7 @@ class DrawerItems {
     DrawerModel(
       icon: Icons.videocam,
       drawerName: "Watch",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.watch,
       postType: "articles",
       postFormat: "video",
@@ -33,7 +42,7 @@ class DrawerItems {
     DrawerModel(
       icon: Icons.headphones,
       drawerName: "Listen",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.listen,
       postType: "articles",
       postFormat: "audio",
@@ -41,7 +50,7 @@ class DrawerItems {
     DrawerModel(
       icon: Icons.new_label_rounded,
       drawerName: "News",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.news,
       postType: "news",
       postFormat: "text",
@@ -49,7 +58,7 @@ class DrawerItems {
     DrawerModel(
       icon: FontAwesome.cube,
       drawerName: "Topics",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.topics,
       postType: "topics",
       postFormat: "0",
@@ -57,7 +66,7 @@ class DrawerItems {
     DrawerModel(
       icon: Icons.groups,
       drawerName: "Community Contents",
-      pageName: '/landingPage',
+      pageName: AppRoutes.landingPage,
       drawerType: DrawerType.community,
       postType: "community_content",
       postFormat: "all",
@@ -66,19 +75,19 @@ class DrawerItems {
       icon: Icons.help_outline,
       drawerName: "FAQ",
       drawerType: DrawerType.faq,
-      pageName: '/faq',
+      pageName: "/faq",
     ),
     DrawerModel(
       icon: Icons.people_alt_sharp,
       drawerName: "Moderators",
       drawerType: DrawerType.moderators,
-      pageName: '/moderatorsPage',
+      pageName: AppRoutes.moderators,
     ),
     DrawerModel(
       icon: Icons.people_alt_sharp,
       drawerName: "About us",
       drawerType: DrawerType.about,
-      pageName: '/aboutMindPlex',
+      pageName: AppRoutes.aboutPage,
     ),
   ];
 }
