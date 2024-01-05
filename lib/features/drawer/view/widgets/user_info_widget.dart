@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/number_coverter.dart';
 
@@ -22,9 +23,16 @@ class UserInfoWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_fullUserName),
+          Text(
+            _fullUserName,
+            style: TextStyle(
+              fontSize: 40,
+              color: white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           SizedBox(
-            height: 10,
+            height: ,
           ),
           Text(
             "primequantuM4",
