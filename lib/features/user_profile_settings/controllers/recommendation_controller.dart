@@ -71,6 +71,7 @@ class RecommendationController extends GetxController{
         Toster(message: "Saved",color: Colors.green);
       } catch (e) {
         isUpdating.value = false;
+        Navigator.of(Get.context!).pop();
         print('Error updating user profile: $e');
       }
     }
