@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:html/parser.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/colors.dart';
 
@@ -10,6 +12,11 @@ class AboutScreen extends StatelessWidget {
   ProfileController profileController = Get.find();
 
   Widget build(BuildContext context) {
+    final decodedBiography =
+        parse(profileController.userProfile.value.biography ?? "")
+            .documentElement!
+            .text;
+    var width = MediaQuery.of(context).size.width;
     return Container(
       width: 300,
       decoration: BoxDecoration(
@@ -27,12 +34,11 @@ class AboutScreen extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    profileController.userProfile.value.biography ?? "",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
+                  Html(
+                    data: decodedBiography,
+                    style: {
+                      '*': Style(color: Colors.white),
+                    },
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -133,10 +139,13 @@ class AboutScreen extends StatelessWidget {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(
-                                profileController
-                                    .userProfile.value.socialLink![index],
-                                style: TextStyle(color: Colors.white),
+                              Container(
+                                width: width * 0.75,
+                                child: Text(
+                                  profileController
+                                      .userProfile.value.socialLink![index],
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               )
                             ],
                           ),
