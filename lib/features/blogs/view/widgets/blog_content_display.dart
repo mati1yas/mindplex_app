@@ -172,8 +172,8 @@ class BlogContentDisplay extends StatelessWidget {
                   videoLink: element.content ?? "",
                 ),
               );
-            // case 'table':
-            //   return JsonTableWidget(jsonData: element.content);
+            case 'table':
+              return JsonTableWidget(jsonData: element.content);
             default:
               // log('Unknown element type: ${element['type']}');
               return const SizedBox.shrink();
@@ -233,6 +233,7 @@ class JsonTableWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       row[cellIndex].toString(),
+                      style: TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
                   ),
