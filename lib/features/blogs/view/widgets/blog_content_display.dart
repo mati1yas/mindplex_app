@@ -226,19 +226,26 @@ class JsonTableWidget extends StatelessWidget {
           children: List.generate(data.length, (int rowIndex) {
             final List<dynamic> row = data[rowIndex];
 
-            return Row(
-              children: List.generate(row.length, (int cellIndex) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      row[cellIndex].toString(),
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              }),
+            return Column(
+              children: [
+                Row(
+                  children: List.generate(row.length, (int cellIndex) {
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          row[cellIndex].toString(),
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                Divider(
+                  color: Colors.white,
+                )
+              ],
             );
           }),
         ),
