@@ -122,7 +122,7 @@ class Blog {
 
 class Content {
   String? type;
-  String? content;
+  dynamic? content;
 
   Content({this.type, this.content});
 
