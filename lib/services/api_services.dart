@@ -72,6 +72,8 @@ class ApiService {
 
     Response response = await dio
         .post("${AppUrls.likeDislike}$articleSlug?like_or_dislike=$interction");
+
+    print('like$response');
   }
 
   Future<void> reactWithEmoji(
@@ -90,6 +92,25 @@ class ApiService {
         });
 
     print(response.data);
+  }
+
+  Future<void> addToBookmark({
+    required String articleSlug,
+    required bool hasBookmarked,
+  }) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+    dio.options.headers['Authorization'] = "Bearer ${token}";
+
+    Response response = await dio.post(
+      "${AppUrls.bookmark}$articleSlug?",
+      data: <String, String>{
+        "code": "bookmark_posts",
+        "message": hasBookmarked ? 'added' : 'removed',
+      },
+    );
   }
 
   Future<void> removePreviousInteraction(

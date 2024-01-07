@@ -425,23 +425,24 @@ class DetailsPage extends StatelessWidget {
                     width: 8,
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (authController.isGuestUser.value) {
                         authController.guestReminder(context);
                       } else {
-                        likeDislikeConroller.addToBookmark();
+                        await likeDislikeConroller.addToBookmark(
+                          blogIndex: index,
+                          blog: details,
+                          articleSlug: details.slug ?? '',
+                        );
                       }
                     },
                     child: Obx(
-                      () => likeDislikeConroller.hasBookMarked.value
-                          ? Icon(
-                              Icons.bookmark_add,
-                              color: Color.fromARGB(255, 73, 255, 179),
-                            )
-                          : Icon(
-                              Icons.bookmark_add,
-                              color: Colors.white,
-                            ),
+                      () => Icon(
+                        Icons.bookmark_add,
+                        color: details.isBookmarked!.value
+                            ? Color.fromARGB(255, 73, 255, 179)
+                            : Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(
