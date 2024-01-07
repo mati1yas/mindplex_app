@@ -400,7 +400,6 @@ class ApiService {
   Future<List<dynamic>> fetchUserInteractions(
       {required String articleSlug}) async {
     var dio = Dio();
-    print("Fetching...");
 
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -415,7 +414,31 @@ class ApiService {
         await dio.get("${AppUrls.reactWithEmoji}$articleSlug/all/1");
 
     if (response.statusCode == 200) {
-      print(response);
+      final interactions = response.data['interaction'];
+      return interactions;
+    } else {
+      throw Exception('Failed to fetch user interactions from the server.');
+    }
+  }
+
+  dynamic fetchUserInteraction(
+      {required String articleSlug, required String interactionType}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+    print(articleSlug);
+    print("${AppUrls.reactWithEmoji}$articleSlug/$interactionType/1");
+
+    Response response = await dio
+        .get("${AppUrls.reactWithEmoji}$articleSlug/$interactionType/1");
+
+    if (response.statusCode == 200) {
       final interactions = response.data['interaction'];
       return interactions;
     } else {
