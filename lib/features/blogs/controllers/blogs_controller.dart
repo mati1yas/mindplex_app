@@ -70,6 +70,7 @@ class BlogsController extends GetxController {
         loadMoreBlogs();
       }
     });
+
     searchScrollController.addListener(() {
       if (!reachedEndOfListSearch &&
           searchScrollController.position.pixels >=
@@ -130,7 +131,6 @@ class BlogsController extends GetxController {
   }
 
   void changeTopics({required String topicCategory}) async {
-    print("changing topic");
     print(topicCategory);
     post_format.value = topicCategory;
     page.value = 1;
@@ -159,7 +159,15 @@ class BlogsController extends GetxController {
     post_type.value = 'news';
     post_format.value = 'text';
     recommender.value = 'default';
+    page.value = 1;
+    fetchBlogs();
+  }
 
+  void loadSocialFeed() async {
+    post_type.value = 'social';
+    post_format.value = 'all';
+    recommender.value = 'default';
+    page.value = 1;
     fetchBlogs();
   }
 
