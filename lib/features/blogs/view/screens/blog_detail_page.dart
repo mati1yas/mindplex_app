@@ -16,34 +16,10 @@ import '../widgets/blog_content_display.dart';
 import '../widgets/reaction_emoji.dart';
 import '../widgets/interactions_overlay.dart';
 
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends StatelessWidget {
   final int index;
   final Blog details;
   const DetailsPage({super.key, required this.details, required this.index});
-
-  @override
-  State<DetailsPage> createState() => _DetailsPageState();
-}
-
-class _DetailsPageState extends State<DetailsPage> {
-  List<dynamic> interactions = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    super.initState();
-    BlogsController blogsController = Get.find();
-    blogsController
-        .getUserInteractions(
-          articleSlug: widget.details.slug?.split(' ')[0] as String,
-        )
-        .then((value) => {
-              setState(() {
-                this.interactions = value;
-              })
-            });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +27,7 @@ class _DetailsPageState extends State<DetailsPage> {
     BlogsController blogsController = Get.find();
     AuthController authController = Get.find();
 
-    final decodedHtml = parse(widget.details.authorBio).documentElement!.text;
+    final decodedHtml = parse(details.authorBio).documentElement!.text;
     print(decodedHtml);
 
     return Scaffold(
@@ -61,13 +37,13 @@ class _DetailsPageState extends State<DetailsPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            widget.details.postTypeFormat == "text"
+            details.postTypeFormat == "text"
                 ? const Icon(
                     Icons.description_outlined,
                     color: Color(0xFF8aa7da),
                     size: 20,
                   )
-                : widget.details.postTypeFormat == "video"
+                : details.postTypeFormat == "video"
                     ? const Icon(
                         Icons.videocam,
                         color: Color.fromARGB(255, 185, 127, 127),
@@ -82,9 +58,9 @@ class _DetailsPageState extends State<DetailsPage> {
               width: MediaQuery.of(context).size.width * 0.03,
             ),
             Text(
-                widget.details.postTypeFormat == "text"
+                details.postTypeFormat == "text"
                     ? "Read"
-                    : widget.details.postTypeFormat == "video"
+                    : details.postTypeFormat == "video"
                         ? "Watch "
                         : "Listen",
                 style: TextStyle(fontWeight: FontWeight.w300)),
@@ -116,7 +92,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               children: [
                                 Container(
                                   child: Text(
-                                    widget.details.postTitle ?? "",
+                                    details.postTitle ?? "",
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 25.0,
@@ -129,22 +105,20 @@ class _DetailsPageState extends State<DetailsPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${widget.details.publishedAt}' + " " ??
-                                          "",
+                                      '${details.publishedAt}' + " " ?? "",
                                       style: const TextStyle(
                                         color: Color.fromARGB(235, 247, 202, 0),
                                       ),
                                     ),
                                     Text(
-                                      '${widget.details.minToRead}' + "   " ??
-                                          "",
+                                      '${details.minToRead}' + "   " ?? "",
                                       style: const TextStyle(
                                         color: Color.fromARGB(235, 247, 202, 0),
                                       ),
                                     ),
                                     Obx(
                                       () => Text(
-                                        widget.details.likes.value.toString() +
+                                        details.likes.value.toString() +
                                             " likes  ",
                                         style: const TextStyle(
                                           color:
@@ -177,7 +151,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 ),
                                 Container(
                                   child: Text(
-                                    widget.details.overview ?? "",
+                                    details.overview ?? "",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
@@ -193,7 +167,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     width: 600,
                                     child: Image.network(
                                         fit: BoxFit.cover,
-                                        widget.details.banner ?? ""))
+                                        details.banner ?? ""))
                               ],
                             ),
                           ),
@@ -202,7 +176,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           Material(
                             color: Color(0xFF0c2b46),
                             child: BlogContentDisplay(
-                              data: widget.details.content ?? [],
+                              data: details.content ?? [],
                             ),
                           ),
                           //  author details and follow button
@@ -213,8 +187,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                 margin: EdgeInsets.all(20),
                                 child: CircleAvatar(
                                   radius: 21,
-                                  backgroundImage: NetworkImage(
-                                      widget.details.authorAvatar ?? ""),
+                                  backgroundImage:
+                                      NetworkImage(details.authorAvatar ?? ""),
                                 ),
                               ),
                               Container(
@@ -227,7 +201,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.details.authorDisplayName!,
+                                        details.authorDisplayName!,
                                         style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w200,
@@ -290,7 +264,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             itemCount: emojis.length,
                             itemBuilder: (context, index) => ReactionEmoji(
                                 emojiIndex: index,
-                                blog: widget.details,
+                                blog: details,
                                 blogIndex: index),
                           ),
                         ),
@@ -315,22 +289,22 @@ class _DetailsPageState extends State<DetailsPage> {
                       if (authController.isGuestUser.value) {
                         authController.guestReminder(context);
                       } else {
-                        if (widget.details.isUserLiked.value == true) {
+                        if (details.isUserLiked.value == true) {
                           likeDislikeConroller.removePreviousInteraction(
-                              blog: widget.details,
-                              index: widget.index,
-                              articleSlug: widget.details.slug ?? "",
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
                               interction: "L");
-                        } else if (widget.details.isUserLiked.value == false) {
+                        } else if (details.isUserLiked.value == false) {
                           likeDislikeConroller.likeDislikeArticle(
-                              blog: widget.details,
-                              index: widget.index,
-                              articleSlug: widget.details.slug ?? "",
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
                               interction: "L");
                         }
                       }
                     },
-                    icon: (widget.details.isUserLiked.value)
+                    icon: (details.isUserLiked.value)
                         ? Icon(
                             Icons.thumb_up_off_alt_rounded,
                             color: Color.fromARGB(255, 73, 255, 179),
@@ -348,25 +322,24 @@ class _DetailsPageState extends State<DetailsPage> {
                       if (authController.isGuestUser.value) {
                         authController.guestReminder(context);
                       } else {
-                        if (widget.details.isUserDisliked.value == true) {
+                        if (details.isUserDisliked.value == true) {
                           likeDislikeConroller.removePreviousInteraction(
-                              blog: widget.details,
-                              index: widget.index,
-                              articleSlug: widget.details.slug ?? "",
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
                               interction: "L");
-                        } else if (widget.details.isUserDisliked.value ==
-                            false) {
+                        } else if (details.isUserDisliked.value == false) {
                           likeDislikeConroller.likeDislikeArticle(
-                              blog: widget.details,
-                              index: widget.index,
-                              articleSlug: widget.details.slug ?? "",
+                              blog: details,
+                              index: index,
+                              articleSlug: details.slug ?? "",
                               interction: "D");
                         }
 
                         ;
                       }
                     },
-                    icon: widget.details.isUserDisliked.value
+                    icon: details.isUserDisliked.value
                         ? Icon(
                             Icons.thumb_down,
                             color: const Color.fromARGB(255, 230, 96, 86),
@@ -381,7 +354,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Share.share(widget.details.url ?? "",
+                      Share.share(details.url ?? "",
                           subject: 'Sharing blog to your media appearance');
                     },
                     child: Icon(
@@ -394,7 +367,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   ),
                   IconButton(
                     onPressed: () => Get.bottomSheet(
-                      MyWidgetComment(post_slug: widget.details.slug!),
+                      MyWidgetComment(post_slug: details.slug!),
                       isScrollControlled: true,
                       ignoreSafeArea: false,
                     ),
@@ -416,10 +389,8 @@ class _DetailsPageState extends State<DetailsPage> {
                       }
                     },
                     child: Obx(
-                      () => widget.details.interactedEmoji.value != ''
-                          ? Text(
-                              codeToEmojiMap[
-                                  widget.details.interactedEmoji.value]!,
+                      () => details.interactedEmoji.value != ''
+                          ? Text(codeToEmojiMap[details.interactedEmoji.value]!,
                               style: TextStyle(fontSize: 24))
                           : Icon(
                               Icons.add_reaction_outlined,
@@ -489,8 +460,7 @@ class _DetailsPageState extends State<DetailsPage> {
   void _showInteractionsOverlay(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) =>
-          InteractionsOverlay(interactions: this.interactions,slug:widget.details.slug!),
+      builder: (context) => InteractionsOverlay(slug: details.slug!),
       // isScrollControlled: true,
     );
   }
