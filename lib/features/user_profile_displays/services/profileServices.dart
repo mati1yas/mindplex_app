@@ -10,7 +10,7 @@ import "../../authentication/controllers/auth_controller.dart";
 
 class ProfileServices {
   AuthController authenticationController = getxprefix.Get.find();
-  Future<List<Blog>> getPublishedPosts({required String username}) async {
+  Future<List<Blog>> getPublishedPosts({required String username, required int page}) async {
     Dio dio = Dio();
 
     try {
@@ -21,7 +21,7 @@ class ProfileServices {
         dio.options.headers["Authorization"] = "Bearer ${token}";
 
       Response response =
-          await dio.get("${AppUrls.profileUrl}/${username}?type=full");
+          await dio.get("${AppUrls.baseUrl}/mp_gl/v1/posts/publisher/${username}/${page}");
 
       if (response.statusCode == 200) {
         List<Blog> publishedPosts = [];

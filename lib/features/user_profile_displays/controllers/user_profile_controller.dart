@@ -22,6 +22,30 @@ import '../view/screens/bookmark_screen.dart';
 import '../view/screens/draft_screen.dart';
 
 class ProfileController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    fetchBlogs();
+    searchScrollController.addListener(() {
+      if (!reachedEndOfListSearch &&
+          searchScrollController.position.pixels >=
+              searchScrollController.position.maxScrollExtent) {
+        // Load more data
+        loadMoreSearchResults(searchQuery.value);
+      }
+    });
+
+    scrollPostsController.addListener(() {
+      if (!isReachedEndOfPostList &&
+          status != Status.loading &&
+          status != Status.loadingMore &&
+          scrollPostsController.position.pixels >=
+              scrollPostsController.position.maxScrollExtent) {
+        loadPublishedPosts();
+      }
+    });
+  }
+
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
   RxString selectedTabCategory = "About".obs;
   RxBool isLoading = false.obs;
@@ -35,37 +59,11 @@ class ProfileController extends GetxController {
 
   AuthController authController = Get.find();
 
-  var screens = [
-    {'name': 'About', 'active': true, 'widget': const AboutScreen(), "num": 1},
-    {
-      'name': 'Published Content',
-      "active": false,
-      'widget': BookmarkScreen,
-      "num": 2
-    },
-    {'name': 'Bookmarks', "active": false, 'widget': BookmarkScreen, "num": 2},
-    {'name': 'Drafts', "active": false, 'widget': const DraftScreen(), "num": 3}
-  ];
-
   ScrollController searchScrollController = ScrollController();
   bool reachedEndOfListSearch = false;
   RxList<UserProfile> searchResults = <UserProfile>[].obs;
   RxString searchQuery = "".obs;
   RxInt searchPage = 1.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchBlogs();
-    searchScrollController.addListener(() {
-      if (!reachedEndOfListSearch &&
-          searchScrollController.position.pixels >=
-              searchScrollController.position.maxScrollExtent) {
-        // Load more data
-        loadMoreSearchResults(searchQuery.value);
-      }
-    });
-  }
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -87,8 +85,11 @@ class ProfileController extends GetxController {
   Future<void> getUserProfile({required String username}) async {
     isLoading.value = true;
     final res = await apiService.value.fetchUserProfile(userName: username);
+    res.username = username;
     userProfile.value = res;
+    postsPage.value = 1;
     publishedPosts.value = [];
+    isReachedEndOfPostList = false;
     isLoading.value = false;
   }
 
@@ -161,26 +162,36 @@ class ProfileController extends GetxController {
   RxList<Blog> publishedPosts = <Blog>[].obs;
   Rx<Status> status = Status.unknown.obs;
   RxString errorMessage = "Something is very wrong!".obs;
+  ScrollController scrollPostsController = ScrollController();
+  bool isReachedEndOfPostList = false;
+  RxInt postsPage = 1.obs;
 
   ProfileServices profileService = ProfileServices();
-  Future<void> getPublishedPosts({required String username}) async {
-    if (publishedPosts.length > 0) {
-      return;
+  Future<void> loadPublishedPosts({int? page}) async {
+    if (page != null) {
+      publishedPosts([]);
+      postsPage(page);
     }
-    status(Status.loading);
+    if (postsPage.value == 1) {
+      status(Status.loading);
+    } else {
+      status(Status.loadingMore);
+    }
     try {
-      List<Blog> res =
-          await profileService.getPublishedPosts(username: username);
-      publishedPosts.value = res;
+      List<Blog> res = await profileService.getPublishedPosts(
+          username: userProfile.value.username!, page: postsPage.value);
+      if (res.isEmpty) {
+        isReachedEndOfPostList = true;
+      } else {
+        publishedPosts.addAll(res);
+      }
       status(Status.success);
+      postsPage += 1;
     } catch (e) {
       status(Status.error);
-
       if (e is AppError) {
-        print("ok");
         errorMessage(e.message);
       }
-
       Toster(message: errorMessage.value);
     }
   }

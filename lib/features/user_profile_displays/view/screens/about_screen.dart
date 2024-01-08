@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:html/parser.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/colors.dart';
 
 import '../widgets/user_interest_widget.dart';
 
-class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
-  @override
-  State<AboutScreen> createState() {
-    return _AboutScreen();
-  }
-}
-
-class _AboutScreen extends State<AboutScreen> {
+class AboutScreen extends StatelessWidget {
+  AboutScreen({super.key});
   ProfileController profileController = Get.find();
+
   Widget build(BuildContext context) {
+    final decodedBiography =
+        parse(profileController.userProfile.value.biography ?? "")
+            .documentElement!
+            .text;
+    var width = MediaQuery.of(context).size.width;
     return Container(
       width: 300,
       decoration: BoxDecoration(
@@ -33,12 +34,11 @@ class _AboutScreen extends State<AboutScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    profileController.userProfile.value.biography ?? "",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
+                  Html(
+                    data: decodedBiography,
+                    style: {
+                      '*': Style(color: Colors.white),
+                    },
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -139,10 +139,13 @@ class _AboutScreen extends State<AboutScreen> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(
-                                profileController
-                                    .userProfile.value.socialLink![index],
-                                style: TextStyle(color: Colors.white),
+                              Container(
+                                width: width * 0.75,
+                                child: Text(
+                                  profileController
+                                      .userProfile.value.socialLink![index],
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               )
                             ],
                           ),

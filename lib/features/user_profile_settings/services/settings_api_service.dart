@@ -78,7 +78,7 @@ class SettingsApiService{
     }
   }
 
-  Future<String> changePassword(String password) async {
+  Future<bool> changePassword(String password) async {
     var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -93,12 +93,9 @@ class SettingsApiService{
       data: jsonData,
     );
     if (response.statusCode == 200) {
-      final responseBody = response.data;
-      return responseBody.toString();
-      // UserProfile userProfile = UserProfile.fromJson(responseBody);
-      // return userProfile;
+      return true;
     } else {
-      throw Exception('Failed to change password.');
+      return false;
     }
   }
 }

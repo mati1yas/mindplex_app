@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -51,26 +53,40 @@ class LikeDislikeConroller extends GetxController {
     }
   }
 
-  void reactWithEmoji(
-      {required int emojiIndex, required int blogIndex, required Blog blog}) {
+  void reactWithEmoji({
+    required int emojiIndex,
+    required int blogIndex,
+    required Blog blog,
+  }) {
     final BlogsController blogsController = Get.find();
 
     apiService.value.reactWithEmoji(
-        articleSlug: blog.slug ?? "", emoji_value: emojiCodes[emojiIndex]);
+      articleSlug: blog.slug ?? "",
+      emoji_value: emojiCodes[emojiIndex],
+    );
 
     blog.interactedEmoji.value = emojiCodes[emojiIndex];
-
-    blogsController.blogs[blogIndex] = blog;
-
     showEmoji.value = !showEmoji.value;
+    blogsController.blogs[blogIndex] = blog;
   }
 
   void addVote() {
     hasVoted.value = !hasVoted.value;
   }
 
-  void addToBookmark() {
+  Future<void> addToBookmark({
+    required int blogIndex,
+    required Blog blog,
+    required String articleSlug,
+  }) async {
+    apiService.value.addToBookmark(
+        articleSlug: blog.slug ?? '', hasBookmarked: hasBookMarked.value);
+
+    final BlogsController blogsController = Get.find();
+
+    blog.isBookmarked?.value = !(blog.isBookmarked?.value ?? false);
     hasBookMarked.value = !hasBookMarked.value;
+    blogsController.blogs[blogIndex] = blog;
   }
 
   Future<void> removePreviousInteraction(

@@ -3,12 +3,15 @@ import 'package:mindplex/features/user_profile_settings/models/user_profile.dart
 import 'package:mindplex/features/user_profile_settings/services/settings_api_service.dart';
 
 class SettingsController extends GetxController{
+
   RxBool isLoading = true.obs;
   RxString username = "".obs;
   RxString? usernameError = "".obs;
   RxString email = "".obs;
   RxString? emailError = "".obs;
   RxBool isSaved = false.obs;
+
+
 
 
   final apiService = SettingsApiService().obs;
@@ -33,4 +36,5 @@ class SettingsController extends GetxController{
       return emailError;
     }
   }
+
 }
