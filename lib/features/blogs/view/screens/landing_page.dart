@@ -1,24 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
-import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
-
-import 'package:mindplex/features/mindplex_profile/moderators/view/screens/moderators_page.dart';
-import 'package:mindplex/utils/colors.dart';
-import 'package:shimmer_effect/shimmer_effect.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
 import '../widgets/blog_card.dart';
 import '../widgets/blog_shimmer.dart';
 import '../widgets/post_topic_widget.dart';
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
-import '../../../../utils/constatns.dart';
-import '../../../../routes/app_routes.dart';
-import '../../../drawer/view/widgets/drawer_widget.dart';
 
 class LandingPage extends StatefulWidget {
   LandingPage({super.key});
@@ -97,18 +88,7 @@ class _LandingPageState extends State<LandingPage>
                   Obx(() => Container(
                         width: width * 0.40,
                         child: Center(
-                          child: Text(
-                              blogsController.post_type == 'news'
-                                  ? "News"
-                                  : blogsController.post_type ==
-                                          'community_content'
-                                      ? "Community"
-                                      : blogsController.post_type == 'topics'
-                                          ? "Topics"
-                                          : blogsController.postFormatMaps[
-                                                  blogsController
-                                                      .post_format.value] ??
-                                              "",
+                          child: Text(blogsController.landingPageHeader(),
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
