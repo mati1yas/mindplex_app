@@ -137,6 +137,18 @@ class BlogsController extends GetxController {
     fetchBlogs();
   }
 
+  String landingPageHeader() {
+    return post_type == 'social'
+        ? "Social Feed"
+        : post_type == 'news'
+            ? "News"
+            : post_type == 'community_content'
+                ? "Community"
+                : post_type == 'topics'
+                    ? "Topics"
+                    : postFormatMaps[post_format.value] ?? "";
+  }
+
   void loadTopics() async {
     post_type.value = 'topics';
     recommender.value = 'default';
