@@ -149,40 +149,6 @@ class BlogsController extends GetxController {
                     : postFormatMaps[post_format.value] ?? "";
   }
 
-  void loadTopics() async {
-    post_type.value = 'topics';
-    recommender.value = 'default';
-    post_format.value = '0';
-    page.value = 1;
-    fetchBlogs();
-    print("IN BLOG CONTROLLER");
-    print(topicPostCategories);
-  }
-
-  void loadCommunityContents() async {
-    post_type.value = "community_content";
-    recommender.value = 'default';
-    post_format.value = 'all';
-    page.value = 1;
-    fetchBlogs();
-  }
-
-  void loadArticles() async {
-    post_type.value = 'news';
-    post_format.value = 'text';
-    recommender.value = 'default';
-    page.value = 1;
-    fetchBlogs();
-  }
-
-  void loadSocialFeed() async {
-    post_type.value = 'social';
-    post_format.value = 'all';
-    recommender.value = 'default';
-    page.value = 1;
-    fetchBlogs();
-  }
-
   void loadContents(String postType, String postFormat) async {
     post_type.value = postType;
     post_format.value = postFormat;
