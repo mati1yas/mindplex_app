@@ -246,6 +246,13 @@ class BlogsController extends GetxController {
     return interactions;
   }
 
+  Future<List<dynamic>> getUserInteraction(
+      {required String articleSlug, required String interactionType}) async {
+    final interactions = await apiSerivice.value.fetchUserInteraction(
+        articleSlug: articleSlug, interactionType: interactionType);
+    return interactions;
+  }
+
   List<Blog> get filteredBlogs {
     return blogs;
   }
