@@ -7,9 +7,8 @@ import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/constatns.dart';
 
 class InteractionsOverlay extends StatefulWidget {
-  final List<dynamic> interactions;
   final String slug;
-  InteractionsOverlay({required this.interactions, required this.slug});
+  InteractionsOverlay({required this.slug});
 
   @override
   State<InteractionsOverlay> createState() => _InteractionsOverlayState();
@@ -31,7 +30,7 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
       interactionsMap[interactionType] = [];
     }
 
-    this.interactions = widget.interactions;
+    this.interactions = [];
 
     BlogsController blogsController = Get.find();
     blogsController
