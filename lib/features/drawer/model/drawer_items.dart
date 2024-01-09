@@ -72,6 +72,14 @@ class DrawerItems {
       postFormat: "all",
     ),
     DrawerModel(
+      icon: Icons.people_outline_sharp,
+      drawerName: "Social Feed",
+      pageName: AppRoutes.landingPage,
+      drawerType: DrawerType.social,
+      postType: "social",
+      postFormat: "all",
+    ),
+    DrawerModel(
       icon: Icons.help_outline,
       drawerName: "FAQ",
       drawerType: DrawerType.faq,

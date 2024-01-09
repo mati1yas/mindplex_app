@@ -1,24 +1,18 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
-import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
-
-import 'package:mindplex/features/mindplex_profile/moderators/view/screens/moderators_page.dart';
-import 'package:mindplex/utils/colors.dart';
-import 'package:shimmer_effect/shimmer_effect.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
 import '../widgets/blog_card.dart';
 import '../widgets/blog_shimmer.dart';
+import '../widgets/community_content_tabbar.dart';
+import '../widgets/default_tabbar.dart';
 import '../widgets/post_topic_widget.dart';
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
-import '../../../../utils/constatns.dart';
-import '../../../../routes/app_routes.dart';
-import '../../../drawer/view/widgets/drawer_widget.dart';
+import '../widgets/social_feed_post_form_widget.dart';
 
 class LandingPage extends StatefulWidget {
   LandingPage({super.key});
@@ -82,46 +76,45 @@ class _LandingPageState extends State<LandingPage>
             height: 20,
           ),
           Container(
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 15.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  TopUserProfileIcon(
-                      profileController: profileController,
-                      authController: authController),
-                  SizedBox(
-                    width: width * 0.14,
+            child: Column(
+              children: [
+                Container(
+                  height: height * 0.15,
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TopUserProfileIcon(
+                          profileController: profileController,
+                          authController: authController),
+                      SizedBox(
+                        width: width * 0.14,
+                      ),
+                      Obx(() => Container(
+                            width: width * 0.40,
+                            child: Center(
+                              child: Text(blogsController.landingPageHeader(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25,
+                                      color: Colors.white)),
+                            ),
+                          )),
+                    ],
                   ),
-                  Obx(() => Container(
-                        width: width * 0.40,
-                        child: Center(
-                          child: Text(
-                              blogsController.post_type == 'news'
-                                  ? "News"
-                                  : blogsController.post_type ==
-                                          'community_content'
-                                      ? "Community"
-                                      : blogsController.post_type == 'topics'
-                                          ? "Topics"
-                                          : blogsController.postFormatMaps[
-                                                  blogsController
-                                                      .post_format.value] ??
-                                              "",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  color: Colors.white)),
-                        ),
-                      )),
-                ],
-              ),
+                ),
+
+                // section for making a post to social feed .
+                Obx(() => blogsController.post_type == 'social'
+                    ? SocialFeedForm()
+                    : SizedBox.shrink()),
+              ],
             ),
           ),
 
           // top navigation bar
 
+          // this section shows list of topics to be selected by a user
           Obx(() => blogsController.post_type == 'topics'
               ? Column(
                   children: [
@@ -135,79 +128,34 @@ class _LandingPageState extends State<LandingPage>
           SizedBox(
             height: 10,
           ),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              height: 35,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(50, 118, 118, 128),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Obx(
-                () => blogsController.post_type != 'community_content'
-                    ? TabBar(
-                        isScrollable: false,
-                        dividerColor: Colors.grey,
-                        indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: blogsController.post_format == 'text'
-                                ? Color(0xFF8aa7da)
-                                : blogsController.post_format == 'video'
-                                    ? Color.fromARGB(239, 203, 141, 141)
-                                    : blogsController.post_format == "listen"
-                                        ? const Color.fromARGB(
-                                            255, 131, 235, 100)
-                                        : const Color.fromARGB(
-                                            255, 131, 235, 100)
-                            // color: const Color.fromARGB(255, 49, 153, 167),
-                            ),
-                        indicatorColor: Colors.green,
-                        controller: _tabController,
-                        unselectedLabelStyle:
-                            TextStyle(fontWeight: FontWeight.w300),
-                        tabs: [
-                            Tab(
-                              text: "All",
-                            ),
-                            Tab(text: "Popular"),
-                            Tab(text: "Most Recent"),
-                            Tab(text: "Trending"),
-                          ])
-                    : TabBar(
-                        isScrollable: true,
-                        dividerColor: Colors.grey,
-                        indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: blogsController.post_format == 'text'
-                                ? Color(0xFF8aa7da)
-                                : blogsController.post_format == 'video'
-                                    ? Color.fromARGB(239, 203, 141, 141)
-                                    : blogsController.post_format == "listen"
-                                        ? const Color.fromARGB(
-                                            255, 131, 235, 100)
-                                        : const Color.fromARGB(
-                                            255, 131, 235, 100)
-                            // color: const Color.fromARGB(255, 49, 153, 167),
-                            ),
-                        indicatorColor: Colors.green,
-                        controller: _tabController2,
-                        unselectedLabelStyle:
-                            TextStyle(fontWeight: FontWeight.w300),
-                        tabs: [
-                            Tab(
-                              text: "All",
-                            ),
-                            Tab(text: "Popular"),
-                            Tab(text: "Most Recent"),
-                            Tab(text: "Trending"),
-                            Tab(text: "Article"),
-                            Tab(text: "Video"),
-                            Tab(text: "Podcast"),
-                          ]),
-              ),
-            ),
+
+          //  for social feed we dont have tab bar for selecting post format
+          Obx(
+            () => blogsController.post_type != 'social'
+                ? Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(50, 118, 118, 128),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Obx(
+                        () => blogsController.post_type != 'community_content'
+                            ? DefaultTabBar(
+                                blogsController: blogsController,
+                                tabController: _tabController)
+                            : CommunityContentTabBar(
+                                blogsController: blogsController,
+                                tabController2: _tabController2),
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
           ),
+
+          // section for displaying user
 
           Obx(() {
             return (blogsController.isLoadingMore.value == true &&
@@ -225,11 +173,6 @@ class _LandingPageState extends State<LandingPage>
                         itemCount: blogsController.filteredBlogs.length + 1,
                         itemBuilder: (ctx, index) {
                           if (index < blogsController.filteredBlogs.length) {
-                            final thumbnailUrl = blogsController
-                                .filteredBlogs[index].thumbnailImage;
-                            isIntialLoading = false;
-                            final isDefaultThumbnail =
-                                thumbnailUrl == "default.jpg";
                             return BlogCard(
                                 blogsController: blogsController, index: index);
                           } else {

@@ -7,6 +7,7 @@ enum DrawerType {
   news,
   topics,
   community,
+  social,
   faq,
   moderators,
   about,

@@ -70,6 +70,7 @@ class BlogsController extends GetxController {
         loadMoreBlogs();
       }
     });
+
     searchScrollController.addListener(() {
       if (!reachedEndOfListSearch &&
           searchScrollController.position.pixels >=
@@ -130,37 +131,22 @@ class BlogsController extends GetxController {
   }
 
   void changeTopics({required String topicCategory}) async {
-    print("changing topic");
     print(topicCategory);
     post_format.value = topicCategory;
     page.value = 1;
     fetchBlogs();
   }
 
-  void loadTopics() async {
-    post_type.value = 'topics';
-    recommender.value = 'default';
-    post_format.value = '0';
-    page.value = 1;
-    fetchBlogs();
-    print("IN BLOG CONTROLLER");
-    print(topicPostCategories);
-  }
-
-  void loadCommunityContents() async {
-    post_type.value = "community_content";
-    recommender.value = 'default';
-    post_format.value = 'all';
-    page.value = 1;
-    fetchBlogs();
-  }
-
-  void loadArticles() async {
-    post_type.value = 'news';
-    post_format.value = 'text';
-    recommender.value = 'default';
-
-    fetchBlogs();
+  String landingPageHeader() {
+    return post_type == 'social'
+        ? "Social Feed"
+        : post_type == 'news'
+            ? "News"
+            : post_type == 'community_content'
+                ? "Community"
+                : post_type == 'topics'
+                    ? "Topics"
+                    : postFormatMaps[post_format.value] ?? "";
   }
 
   void loadContents(String postType, String postFormat) async {
