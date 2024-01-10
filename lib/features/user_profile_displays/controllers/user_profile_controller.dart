@@ -26,14 +26,6 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     fetchBlogs();
-    searchScrollController.addListener(() {
-      if (!reachedEndOfListSearch &&
-          searchScrollController.position.pixels >=
-              searchScrollController.position.maxScrollExtent) {
-        // Load more data
-        loadMoreSearchResults(searchQuery.value);
-      }
-    });
 
     scrollPostsController.addListener(() {
       if (!isReachedEndOfPostList &&
@@ -58,12 +50,6 @@ class ProfileController extends GetxController {
   final apiService = ApiService().obs;
 
   AuthController authController = Get.find();
-
-  ScrollController searchScrollController = ScrollController();
-  bool reachedEndOfListSearch = false;
-  RxList<UserProfile> searchResults = <UserProfile>[].obs;
-  RxString searchQuery = "".obs;
-  RxInt searchPage = 1.obs;
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -93,43 +79,6 @@ class ProfileController extends GetxController {
     isLoading.value = false;
   }
 
-  void fetchSearchResults(String query) async {
-    reachedEndOfListSearch = false;
-    isLoading.value = true;
-    searchPage.value = 1;
-    final res = await apiService.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
-    if (res.users!.isEmpty) {
-      reachedEndOfListSearch = true;
-    }
-    searchResults.value = res.users!;
-    searchQuery.value = query;
-    isLoading.value = false;
-  }
-
-  void loadMoreSearchResults(String query) async {
-    if (isLoading.value || reachedEndOfListSearch) {
-      return;
-    }
-
-    isLoading.value = true;
-    searchPage.value++; // Increment the page number
-
-    final res = await apiService.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
-
-    if (res.users!.isEmpty) {
-      reachedEndOfListSearch = true;
-      // Notify the user that there are no more posts for now
-    } else {
-      searchResults.addAll(res.users!);
-    }
-
-    isLoading.value = false;
-
-    update(); // Trigger UI update
-  }
-
   void fetchBlogs() async {
     final jsondata = await rootBundle.loadString('assets/demoAPI.json');
 
@@ -153,10 +102,6 @@ class ProfileController extends GetxController {
     return blogs
         .where((blog) => blog.type == selectedBlogCategory.value)
         .toList();
-  }
-
-  List<UserProfile> get searchedUsers {
-    return searchResults;
   }
 
   RxList<Blog> publishedPosts = <Blog>[].obs;

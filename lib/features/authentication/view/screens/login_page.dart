@@ -443,30 +443,33 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final user = await googleSignIn.signIn();
 
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Center(
-                child: CircularProgressIndicator(color: Colors.green[900]),
-              ));
-      String? name = "";
+      if(user != null) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) =>
+                Center(
+                  child: CircularProgressIndicator(color: Colors.green[900]),
+                ));
+        String? name = "";
 
-      if (user!.displayName != null) {
-        name = user.displayName;
-      }
+        if (user!.displayName != null) {
+          name = user.displayName;
+        }
 
-      await authController.loginUserWithGoogle(
-          email: user.email,
-          firstName: name!,
-          lastName: name,
-          googleId: user.id);
+        await authController.loginUserWithGoogle(
+            email: user.email,
+            firstName: name!,
+            lastName: name,
+            googleId: user.id);
 
-      if (authController.isAuthenticated.value) {
-        Navigator.pop(context);
+        if (authController.isAuthenticated.value) {
+          Navigator.pop(context);
 
-        Get.offAllNamed(AppRoutes.landingPage);
-        ProfileController profileController = Get.put(ProfileController());
-        await profileController.getAuthenticatedUser();
+          Get.offAllNamed(AppRoutes.landingPage);
+          ProfileController profileController = Get.put(ProfileController());
+          await profileController.getAuthenticatedUser();
+        }
       }
     } catch (error) {
       throw error;

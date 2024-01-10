@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/routes/app_routes.dart';
 
 import '../../controllers/auth_controller.dart';
@@ -574,8 +576,46 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+
   Future signin() async {
-    //TODO implement signin logic
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    googleSignIn.disconnect();
+    AuthController authController = Get.put(AuthController());
+
+    try {
+      final user = await googleSignIn.signIn();
+
+      if(user != null) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) =>
+                Center(
+                  child: CircularProgressIndicator(color: Colors.green[900]),
+                ));
+        String? name = "";
+
+        if (user!.displayName != null) {
+          name = user.displayName;
+        }
+
+        await authController.loginUserWithGoogle(
+            email: user.email,
+            firstName: name!,
+            lastName: name,
+            googleId: user.id);
+
+        if (authController.isAuthenticated.value) {
+          Navigator.pop(context);
+
+          Get.offAllNamed(AppRoutes.landingPage);
+          ProfileController profileController = Get.put(ProfileController());
+          await profileController.getAuthenticatedUser();
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future register() async {
