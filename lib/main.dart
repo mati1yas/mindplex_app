@@ -55,8 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   NotificationController notificationController =
       Get.put(NotificationController());
 
-  PageNavigationController pageNavigationController =
-      Get.put(PageNavigationController());
+  PageNavigationController pageNavigationController = Get.put(PageNavigationController());
 
   ProfileController profileController = Get.put(ProfileController());
   DrawerButtonController drawerButtonController =
