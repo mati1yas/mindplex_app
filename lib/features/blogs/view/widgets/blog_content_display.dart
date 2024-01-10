@@ -6,8 +6,10 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class BlogContentDisplay extends StatelessWidget {
   final List<Content> data;
+  final double padding;
 
-  const BlogContentDisplay({super.key, required this.data});
+  const BlogContentDisplay(
+      {super.key, required this.data, required this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class BlogContentDisplay extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: data.map((element) {

@@ -177,6 +177,7 @@ class DetailsPage extends StatelessWidget {
                             color: Color(0xFF0c2b46),
                             child: BlogContentDisplay(
                               data: details.content ?? [],
+                              padding: 16,
                             ),
                           ),
                           //  author details and follow button
