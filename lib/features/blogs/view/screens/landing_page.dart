@@ -173,6 +173,7 @@ class _LandingPageState extends State<LandingPage>
                         itemCount: blogsController.filteredBlogs.length + 1,
                         itemBuilder: (ctx, index) {
                           if (index < blogsController.filteredBlogs.length) {
+                            isIntialLoading = false;
                             return BlogCard(
                                 blogsController: blogsController, index: index);
                           } else {
