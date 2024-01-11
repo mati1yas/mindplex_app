@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/social_feed_card.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
 import '../widgets/blog_card.dart';
@@ -176,8 +177,13 @@ class _LandingPageState extends State<LandingPage>
                         itemBuilder: (ctx, index) {
                           if (index < blogsController.filteredBlogs.length) {
                             isIntialLoading = false;
-                            return BlogCard(
-                                blogsController: blogsController, index: index);
+                            return blogsController.post_type != 'social'
+                                ? BlogCard(
+                                    blogsController: blogsController,
+                                    index: index)
+                                : SocialFeedCard(
+                                    blogsController: blogsController,
+                                    index: index);
                           } else {
                             print("executing else statement");
                             if (index == blogsController.filteredBlogs.length &&
