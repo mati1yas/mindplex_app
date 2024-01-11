@@ -55,6 +55,8 @@ class _LandingPageState extends State<LandingPage>
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
+    profileController.fetchFollowers(
+        username: profileController.authenticatedUser.value.username ?? "");
 
     _tabController.index = 0;
     _tabController2.index = 0;
