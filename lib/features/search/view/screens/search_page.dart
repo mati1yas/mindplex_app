@@ -65,11 +65,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       },
       child: Scaffold(
         backgroundColor: Color(0xFF0c2b46),
-        body: searchController.isIntialLoading.value
-            ? Center(
-          child: CircularProgressIndicator(),
-        )
-            : Container(
+        body: Container(
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
             child: Column(children: [
@@ -178,7 +174,14 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                 fontSize: 20),
                           )),
                     ),
-                    Column(children: [
+                    searchController.isIntialLoading.value
+                        ? Container(
+                          height: 320,
+                          child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                        )
+                        :Column(children: [
                       for (int i = 0;
                       i <
                           (searchController.showAllCategories.value
@@ -259,7 +262,11 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                 fontSize: 15),
                           )),
                     ),
-                    Obx(
+                    searchController.isIntialLoading.value
+                        ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                        :Obx(
                           () => searchController.isLoadingMore.value == false
                           ? SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
