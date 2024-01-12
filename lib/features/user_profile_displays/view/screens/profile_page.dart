@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/features/authentication/view/screens/auth.dart';
-import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
-import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
-
 import '../../../authentication/controllers/auth_controller.dart';
 import '../widgets/user_profile_image_widget.dart';
 import '../widgets/user_profile_statistics_widget.dart';
@@ -26,28 +22,26 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePage extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   AuthController authController = Get.find();
-  late ProfileController userProfileController;
   late TabController _tabController;
   Map<String, String?> params = Get.parameters;
+
+  ProfileController userProfileController = Get.find();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-
-    final double coverHeight = 280;
-
-    userProfileController = Get.put(ProfileController());
+    _tabController =
+        TabController(length: params['me'] == 'me' ? 4 : 2, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     userProfileController.getAuthenticatedUser();
-
+    print(["userName", params["username"]]);
     userProfileController.getUserProfile(
-        username: params["username"] ??
-            userProfileController.authenticatedUser.value.username ??
-            "");
+        username: params["me"] == "me"
+            ? userProfileController.authenticatedUser.value.username!
+            : params["username"]!);
 
     final double coverHeight = 280;
 
@@ -141,58 +135,65 @@ class _ProfilePage extends State<ProfilePage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 5),
-                child: Text(
-                  firstName + " " + lastName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
+          Container(
+              padding: const EdgeInsets.only(right: 10),
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      firstName + " " + lastName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ),
-              Text(
-                userProfileController.userProfile.value.username ?? "",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 190, 190, 190),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              // OutlinedButton(onPressed: onPressed, child: child)
-            ],
-          ),
+                  Text(
+                    userProfileController.userProfile.value.username ?? "",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 190, 190, 190),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  // OutlinedButton(onPressed: onPressed, child: child)
+                ],
+              )),
           if (params['me'] == 'me')
             Obx(() => userProfileController.isWalletConnected.value
                 ? SizedBox(
                     width: 0,
                     height: 0,
                   )
-                : OutlinedButton(
-                    onPressed:
-                        userProfileController.switchWallectConnectedState,
-                    style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        minimumSize: Size(117, 37),
-                        backgroundColor:
-                            const Color.fromARGB(255, 225, 62, 111),
-                        foregroundColor: Colors.white),
-                    child: const Text(
-                      'Connect Wallet',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  )),
+                : Container(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: OutlinedButton(
+                      onPressed:
+                          userProfileController.switchWallectConnectedState,
+                      style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          minimumSize: Size(117, 37),
+                          backgroundColor:
+                              const Color.fromARGB(255, 225, 62, 111),
+                          foregroundColor: Colors.white),
+                      child: const Text(
+                        'Connect Wallet',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ))),
         ],
       ),
     );
@@ -211,31 +212,23 @@ class _ProfilePage extends State<ProfilePage>
             borderRadius: BorderRadius.circular(8),
           ),
           child: TabBar(
-              isScrollable: true,
-              dividerColor: Colors.grey,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color.fromARGB(255, 49, 153, 167)),
-              indicatorColor: Colors.green,
-              controller: _tabController,
-              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
-              tabs: [
-                Tab(
-                  text: "About",
-                ),
-                Tab(text: "Published Content"),
-                Tab(text: "Bookmarks"),
-                Tab(text: "Drafts"),
-              ],
-              onTap: (index) {
-                if (index == 1) {
-                  userProfileController.switchBlogType(
-                      type: BlogsType.published_posts);
-                } else if (index == 2) {
-                  userProfileController.switchBlogType(
-                      type: BlogsType.bookmarked_posts);
-                }
-              }),
+            isScrollable: true,
+            dividerColor: Colors.grey,
+            indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: const Color.fromARGB(255, 49, 153, 167)),
+            indicatorColor: Colors.green,
+            controller: _tabController,
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+            tabs: [
+              Tab(
+                text: "About",
+              ),
+              Tab(text: "Published Content"),
+              if (params['me'] == 'me') Tab(text: "Bookmarks"),
+              if (params['me'] == 'me') Tab(text: "Drafts"),
+            ],
+          ),
         ),
         Container(
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
@@ -244,8 +237,8 @@ class _ProfilePage extends State<ProfilePage>
           child: TabBarView(controller: _tabController, children: [
             AboutScreen(),
             PublishedPosts(),
-            BookmarkScreen(),
-            DraftScreen()
+            if (params['me'] == 'me') BookmarkScreen(),
+            if (params['me'] == 'me') DraftScreen(),
           ]),
         ),
       ],
