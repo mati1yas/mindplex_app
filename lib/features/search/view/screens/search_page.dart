@@ -185,7 +185,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                               ? searchController.categories.length
                               : 5);
                       i++)
-                        categoryContainer(searchController.categories[i])
+                        GestureDetector(
+                            onTap: () {
+                              searchController.isSearchResultPage.value = true;
+                              _searchController.text = searchController.categories[i].slug;
+                              searchController.fetchSearchResults(searchController.categories[i].slug);
+                            },
+                            child: categoryContainer(searchController.categories[i]))
                     ]),
                     InkWell(
                       onTap: () {
