@@ -133,9 +133,15 @@ class SearchPageController extends GetxController{
 
     if(res.blogs!.length < 10){
       reachedEndOfListSearch.value = true;
+      if(res.blogs!.length > 1){
+        searchPage++;
+      }
     }
     if (res.users!.length < 10) {
       reachedEndOfListSearchUser.value = true;
+      if (res.users!.length > 1) {
+        searchUserPage++;
+      }
     }
 
     searchResults.value = res.blogs!;

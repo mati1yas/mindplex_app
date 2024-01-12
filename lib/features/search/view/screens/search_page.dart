@@ -348,11 +348,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                       return Container(
                                           height: 250,
                                           child: BlogSkeleton());
-                                    } else {
+                                    }
+                                    else {
                                       return Container(
                                         child: Center(
                                           child: Text(
-                                            "No Content",
+                                            searchController.searchPage == 1?"No Content":"no more content",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight:
@@ -391,7 +392,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                       return Container(
                                         child: Center(
                                           child: Text(
-                                            "No Content",
+                                            searchController.searchUserPage == 1?"No users":"no more users",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight:

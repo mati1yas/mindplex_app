@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
+import 'package:mindplex/utils/number_coverter.dart';
 
 import '../../models/search_response.dart';
 
@@ -27,7 +28,7 @@ Widget categoryContainer(Category category) {
                   height: 6,
                 ),
                 Text(
-                  category.posts.toString() + "posts",
+                  formatNumber(category.posts) + " posts",
                   style: TextStyle(
                       fontWeight: FontWeight.w100,
                       color: Colors.white,
