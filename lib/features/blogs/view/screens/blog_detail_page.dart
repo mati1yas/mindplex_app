@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 
 import 'package:share/share.dart';
 
@@ -26,6 +27,8 @@ class DetailsPage extends StatelessWidget {
     LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
     BlogsController blogsController = Get.find();
     AuthController authController = Get.find();
+    ProfileController profileController = Get.find();
+    profileController.getAuthenticatedUser();
 
     final decodedHtml = parse(details.authorBio).documentElement!.text;
     print(decodedHtml);
@@ -220,7 +223,10 @@ class DetailsPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Obx(() => GestureDetector(
+                              Obx(() =>
+                                  profileController.authenticatedUser.value.username == blogsController.filteredBlogs[index].authorUsername?
+                                      Container():
+                                  GestureDetector(
                                 onTap: (){
                                   if (authController.isGuestUser.value) {
                                     authController.guestReminder(context);
