@@ -44,6 +44,7 @@ class ProfileController extends GetxController {
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
+  RxList followers = [].obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
@@ -73,6 +74,7 @@ class ProfileController extends GetxController {
     final res = await apiService.value.fetchUserProfile(userName: username);
     res.username = username;
     userProfile.value = res;
+    await fetchFollowers(username: username);
     postsPage.value = 1;
     publishedPosts.value = [];
     isReachedEndOfPostList = false;
@@ -139,5 +141,12 @@ class ProfileController extends GetxController {
       }
       Toster(message: errorMessage.value);
     }
+  }
+
+  Future<void> fetchFollowers({required String username}) async {
+    this.followers.value =
+        await apiService.value.fetchUserFollowers(username: username);
+    this.userProfile.value.followers = this.followers.length;
+    this.authenticatedUser.value.followers = this.followers.length;
   }
 }
