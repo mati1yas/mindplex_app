@@ -129,10 +129,10 @@ class SearchPageController extends GetxController{
 
     final res = await apiService.value.fetchSearchResponse(query, searchPage.value.toInt());
 
-    if (res.blogs!.isEmpty) {
+    if(res.blogs!.length < 10){
       reachedEndOfListSearch.value = true;
     }
-    if (res.users!.isEmpty) {
+    if (res.users!.length < 10) {
       reachedEndOfListSearchUser.value = true;
     }
 
