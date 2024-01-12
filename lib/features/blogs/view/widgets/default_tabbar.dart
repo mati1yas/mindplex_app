@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../controllers/blogs_controller.dart';
 
@@ -14,30 +15,32 @@ class DefaultTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabBar(
-        isScrollable: false,
-        dividerColor: Colors.grey,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: blogsController.post_format == 'text'
-                ? Color(0xFF8aa7da)
-                : blogsController.post_format == 'video'
-                    ? Color.fromARGB(239, 203, 141, 141)
-                    : blogsController.post_format == "listen"
-                        ? const Color.fromARGB(255, 131, 235, 100)
-                        : const Color.fromARGB(255, 131, 235, 100)
-            // color: const Color.fromARGB(255, 49, 153, 167),
+    return Obx(
+      () => TabBar(
+          isScrollable: false,
+          dividerColor: Colors.grey,
+          indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: blogsController.post_format == 'text'
+                  ? Color(0xFF8aa7da)
+                  : blogsController.post_format == 'video'
+                      ? Color.fromARGB(239, 203, 141, 141)
+                      : blogsController.post_format == "listen"
+                          ? const Color.fromARGB(255, 131, 235, 100)
+                          : const Color.fromARGB(255, 131, 235, 100)
+              // color: const Color.fromARGB(255, 49, 153, 167),
+              ),
+          indicatorColor: Colors.green,
+          controller: _tabController,
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+          tabs: [
+            Tab(
+              text: "All",
             ),
-        indicatorColor: Colors.green,
-        controller: _tabController,
-        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
-        tabs: [
-          Tab(
-            text: "All",
-          ),
-          Tab(text: "Popular"),
-          Tab(text: "Most Recent"),
-          Tab(text: "Trending"),
-        ]);
+            Tab(text: "Popular"),
+            Tab(text: "Most Recent"),
+            Tab(text: "Trending"),
+          ]),
+    );
   }
 }

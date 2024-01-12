@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 
 import '../../controllers/blogs_controller.dart';
 import '../../../../routes/app_routes.dart';
@@ -76,12 +77,10 @@ class BlogCard extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              blogsController
-                                      .filteredBlogs[index].authorUsername ??
-                                  "",
+                              "MPXR 1.234",
                               style: TextStyle(
-                                color: Color.fromARGB(255, 123, 122, 122),
-                              ),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Text(
                               blogsController
@@ -116,9 +115,21 @@ class BlogCard extends StatelessWidget {
                         SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          blogsController.filteredBlogs[index].minToRead ?? "",
-                          style: TextStyle(color: Colors.white),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              blogsController.filteredBlogs[index].minToRead ??
+                                  "",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "MPXR 12.123",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: 5,
@@ -194,85 +205,9 @@ class BlogCard extends StatelessWidget {
                         SizedBox(
                           height: 5,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    //  like logic will be here
-                                  },
-                                  child: Icon(
-                                    color: Colors.white,
-                                    Icons.thumb_up_off_alt_outlined,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  blogsController.filteredBlogs[index].likes
-                                          .toString() +
-                                      " Likes",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    //  share logic will be here
-                                  },
-                                  child: Icon(
-                                    color: Colors.white,
-                                    Icons.share_outlined,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  color: Colors.white,
-                                  Icons.mode_comment_outlined,
-                                ),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  blogsController.filteredBlogs[index].comments
-                                          .toString() +
-                                      " comments",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    //  dislike logic will be here
-                                  },
-                                  child: Icon(
-                                    color: Colors.white,
-                                    Icons.thumb_down_off_alt_outlined,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  "Dislike",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ],
+                        InteractionStatistics(
+                          blogsController: blogsController,
+                          index: index,
                         )
                       ],
                     ),

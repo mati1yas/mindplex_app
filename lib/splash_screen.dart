@@ -14,9 +14,8 @@ import 'main.dart';
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
 
-  final ConnectionInfoImpl connectionChecker =
-  Get.put(ConnectionInfoImpl(connectionChecker: InternetConnectionChecker()));
-
+  final ConnectionInfoImpl connectionChecker = Get.put(
+      ConnectionInfoImpl(connectionChecker: InternetConnectionChecker()));
   AuthController authController = Get.put(AuthController());
   Future<void> loadUserInfo() async {
     if (authController.isAuthenticated.value) {
@@ -31,22 +30,34 @@ class SplashScreen extends StatelessWidget {
     loadUserInfo();
     return Scaffold(
       body: Obx(
-        () => AnimatedSplashScreen(
-          splash: Image.asset('assets/images/logo.png'),
-          duration: 3000,
-          curve: Curves.easeInOut,
-          splashIconSize: 350,
-          splashTransition: SplashTransition.slideTransition,
-          animationDuration: const Duration(milliseconds: 1500),
-          backgroundColor: Colors.white,
-          pageTransitionType: PageTransitionType.fade,
-          nextRoute: !authController.isAuthenticated.value
-              ? AppRoutes.authPage
-              : AppRoutes.landingPage,
-          nextScreen: Obx(() => !authController.isAuthenticated.value
-              ? const AuthPage()
-              : const MyHomePage(title: "Mindplex")),
-        ),
+        () => authController.checkingTokenValidity.value
+            ? AnimatedContainer(
+                duration: Duration(seconds: 2),
+                curve: Curves.fastOutSlowIn,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                  'assets/images/logo.png',
+                ))),
+              )
+            : AnimatedSplashScreen(
+                splash: Image.asset(
+                  'assets/images/logo.png',
+                ),
+                duration: 2000,
+                curve: Curves.easeInOut,
+                splashIconSize: 350,
+                splashTransition: SplashTransition.rotationTransition,
+                animationDuration: const Duration(milliseconds: 1500),
+                backgroundColor: Colors.white,
+                pageTransitionType: PageTransitionType.fade,
+                nextRoute: !authController.isAuthenticated.value
+                    ? AppRoutes.authPage
+                    : AppRoutes.landingPage,
+                nextScreen: Obx(() => !authController.isAuthenticated.value
+                    ? const AuthPage()
+                    : const MyHomePage(title: "Mindplex")),
+              ),
       ),
     );
   }
