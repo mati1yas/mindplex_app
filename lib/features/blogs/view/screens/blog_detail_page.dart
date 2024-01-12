@@ -225,11 +225,11 @@ class DetailsPage extends StatelessWidget {
                                   if (authController.isGuestUser.value) {
                                     authController.guestReminder(context);
                                   }
-                                  else {
+                                  else if(!likeDislikeConroller.isSendingFollowRequest.value) {
                                     likeDislikeConroller
                                         .followUnfollowBlogAuthor(index,
                                         blogsController.filteredBlogs[index]
-                                            .authorUsername!);
+                                            .authorUsername!,blogsController.filteredBlogs[index].isFollowing!.value);
                                   }
                                 },
                                 child: Container(
@@ -240,14 +240,18 @@ class DetailsPage extends StatelessWidget {
                                       color: Color(0xFF0f3e57),
                                       borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
-                                  child: details.isFollowing!.value?
+                                  child: likeDislikeConroller.isSendingFollowRequest.value?Container(
+                                      height: 24,
+                                      width: 30,
+                                      child: CircularProgressIndicator()):details.isFollowing!.value?
                                   Text(
                                     'Unfollow',
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w200,
                                         color: Colors.white),
-                                  ):Text(
+                                  ):
+                                  Text(
                                     'follow',
                                     style: TextStyle(
                                         fontSize: 20,
