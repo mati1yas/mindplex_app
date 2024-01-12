@@ -4,7 +4,7 @@ import 'package:mindplex/features/mindplex_profile/about_mindplex/view/screens/a
 import 'package:mindplex/features/mindplex_profile/moderators/view/screens/moderators_page.dart';
 import 'package:mindplex/main.dart';
 import 'package:mindplex/features/user_profile_settings/view/screens/settings_page.dart';
-import 'package:mindplex/features/search/view/screens/search_result_page.dart';
+import 'package:mindplex/features/search/view/widgets/search_blog_card_widget.dart';
 import 'package:mindplex/splash_screen.dart';
 
 import '../features/notification/view/screens/notification_page.dart';
@@ -32,7 +32,6 @@ class AppRoutes {
   static const String preferencePage = '/preferencePage';
   static const String notificationsPage = '/notificationsPage';
   static const String privacyPolicyPage = '/privacyPolicyPage';
-  static const String searchResultPage = '/searchResultPage';
   static const String aboutPage = '/aboutMindPlex';
   static const String moderators = '/moderatorsPage';
 
@@ -52,7 +51,6 @@ class AppRoutes {
               title: "Mindplex",
             )),
     GetPage(name: profilePage, page: () => const ProfilePage()),
-    GetPage(name: searchResultPage, page: () => SearchResultPage()),
     GetPage(name: aboutPage, page: () => AboutMindPlex()),
     GetPage(name: moderators, page: () => ModeratorsPage()),
   ];

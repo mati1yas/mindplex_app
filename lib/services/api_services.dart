@@ -72,6 +72,8 @@ class ApiService {
 
     Response response = await dio
         .post("${AppUrls.likeDislike}$articleSlug?like_or_dislike=$interction");
+
+    print('like$response');
   }
 
   Future<void> reactWithEmoji(
@@ -92,6 +94,25 @@ class ApiService {
     print(response.data);
   }
 
+  Future<void> addToBookmark({
+    required String articleSlug,
+    required bool hasBookmarked,
+  }) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+    dio.options.headers['Authorization'] = "Bearer ${token}";
+
+    Response response = await dio.post(
+      "${AppUrls.bookmark}$articleSlug?",
+      data: <String, String>{
+        "code": "bookmark_posts",
+        "message": hasBookmarked ? 'added' : 'removed',
+      },
+    );
+  }
+
   Future<void> removePreviousInteraction(
       {required String articleSlug, required String interction}) async {
     var dio = Dio();
@@ -104,6 +125,47 @@ class ApiService {
     Response response = await dio.post(
         "${AppUrls.likeDislike}$articleSlug?is_remove=1&like_or_dislike=$interction");
   }
+
+  Future<bool> followUser(String username) async {
+    try{
+      var dio = Dio();
+      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post("${AppUrls.followUrl}/$username");
+      print(response.statusCode);
+      if(response.statusCode == 200){
+        return true;
+      }
+      return false;
+    }
+    catch(e){
+      print(e);
+      return false;
+    }
+  }
+  Future<bool> unfollowUser(String username) async {
+    try{
+      var dio = Dio();
+      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post("${AppUrls.unfollowUrl}/$username");
+      print(response.statusCode);
+        return true;
+    }
+    catch(e){
+      if(e is DioException){
+        return true;
+      }
+      return false;
+    }
+  }
+
 
   Future<List<Comment>> fetchComments(
       {required String post_slug,
@@ -400,7 +462,6 @@ class ApiService {
   Future<List<dynamic>> fetchUserInteractions(
       {required String articleSlug}) async {
     var dio = Dio();
-    print("Fetching...");
 
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -415,11 +476,55 @@ class ApiService {
         await dio.get("${AppUrls.reactWithEmoji}$articleSlug/all/1");
 
     if (response.statusCode == 200) {
-      print(response);
       final interactions = response.data['interaction'];
       return interactions;
     } else {
       throw Exception('Failed to fetch user interactions from the server.');
+    }
+  }
+
+  Future<List<dynamic>> fetchUserInteraction(
+      {required String articleSlug, required String interactionType}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+
+    Response response = await dio
+        .get("${AppUrls.reactWithEmoji}$articleSlug/$interactionType/1");
+
+    if (response.statusCode == 200) {
+      final interactions = response.data['interaction'];
+      return interactions;
+    } else {
+      throw Exception('Failed to fetch user interactions from the server.');
+    }
+  }
+
+  Future<List<dynamic>> fetchUserFollowers({required String username}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+    print("${AppUrls.followers}$username/1");
+    Response response = await dio.get("${AppUrls.followers}$username/1");
+
+    if (response.statusCode == 200) {
+      final followers = response.data['data'];
+      print(followers);
+      return followers;
+    } else {
+      throw Exception('Failed to fetch user followers from the server.');
     }
   }
 }

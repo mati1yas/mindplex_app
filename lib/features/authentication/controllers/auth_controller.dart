@@ -24,13 +24,24 @@ class AuthController extends GetxController {
   final RxString statusMessage = ''.obs;
   final RxString guestUserImage = ''.obs;
   final RxBool isGuestUser = false.obs;
+  final RxBool checkingTokenValidity = false.obs;
 
-  void checkAuthentication() async {
+  Future<void> checkAuthentication() async {
+    checkingTokenValidity.value = true;
+
     final hasToken = await localStorage.value.readFromStorage('Token');
 
     if (hasToken != '') {
+      if (!await connectionChecker.isConnected) {
+        isAuthenticated.value = true;
+        checkingTokenValidity.value = false;
+        print("connection problem");
+        return;
+      }
+
       try {
         bool authstatus = await refreshTokenIfNeeded();
+
         if (authstatus) {
           isAuthenticated.value = true;
         } else {
@@ -42,6 +53,7 @@ class AuthController extends GetxController {
     } else {
       isAuthenticated.value = false;
     }
+    checkingTokenValidity.value = false;
   }
 
   bool checkUserPrivellege({bool? requiresPrivilege}) {
@@ -110,7 +122,6 @@ class AuthController extends GetxController {
         print(newToken);
         if (newToken.isNotEmpty) {
           await localStorage.value.writeToStorage('Token', newToken);
-
           return true;
         } else {
           logout();

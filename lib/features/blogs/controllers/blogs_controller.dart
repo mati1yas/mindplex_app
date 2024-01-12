@@ -11,14 +11,9 @@ class BlogsController extends GetxController {
   RxString post_format = "text".obs;
   RxString post_type = "articles".obs;
   RxInt page = 1.obs;
-  RxInt searchPage = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
-  RxList<Blog> popularPosts = <Blog>[].obs;
-  RxList<Blog> searchResults = <Blog>[].obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
-
-  RxString searchQuery = "".obs;
 
   final categories = [
     'All',
@@ -48,8 +43,6 @@ class BlogsController extends GetxController {
 
   ScrollController scrollController = ScrollController();
   bool reachedEndOfList = false;
-  ScrollController searchScrollController = ScrollController();
-  bool reachedEndOfListSearch = false;
   final apiSerivice = ApiService().obs;
 
   @override
@@ -68,14 +61,6 @@ class BlogsController extends GetxController {
               scrollController.position.maxScrollExtent) {
         // Load more data
         loadMoreBlogs();
-      }
-    });
-    searchScrollController.addListener(() {
-      if (!reachedEndOfListSearch &&
-          searchScrollController.position.pixels >=
-              searchScrollController.position.maxScrollExtent) {
-        // Load more data
-        loadMoreSearchResults(searchQuery.value);
       }
     });
   }
@@ -106,61 +91,23 @@ class BlogsController extends GetxController {
     update(); // Trigger UI update
   }
 
-  void loadMoreSearchResults(String query) async {
-    if (isLoadingMore.value || reachedEndOfListSearch) {
-      return;
-    }
-
-    isLoadingMore.value = true;
-    searchPage.value++; // Increment the page number
-
-    final res = await apiSerivice.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
-
-    if (res.blogs!.isEmpty) {
-      reachedEndOfListSearch = true;
-      // Notify the user that there are no more posts for now
-    } else {
-      searchResults.addAll(res.blogs!);
-    }
-
-    isLoadingMore.value = false;
-
-    update(); // Trigger UI update
-  }
-
   void changeTopics({required String topicCategory}) async {
-    print("changing topic");
     print(topicCategory);
     post_format.value = topicCategory;
     page.value = 1;
     fetchBlogs();
   }
 
-  void loadTopics() async {
-    post_type.value = 'topics';
-    recommender.value = 'default';
-    post_format.value = '0';
-    page.value = 1;
-    fetchBlogs();
-    print("IN BLOG CONTROLLER");
-    print(topicPostCategories);
-  }
-
-  void loadCommunityContents() async {
-    post_type.value = "community_content";
-    recommender.value = 'default';
-    post_format.value = 'all';
-    page.value = 1;
-    fetchBlogs();
-  }
-
-  void loadArticles() async {
-    post_type.value = 'news';
-    post_format.value = 'text';
-    recommender.value = 'default';
-
-    fetchBlogs();
+  String landingPageHeader() {
+    return post_type == 'social'
+        ? "Social Feed"
+        : post_type == 'news'
+            ? "News"
+            : post_type == 'community_content'
+                ? "Community"
+                : post_type == 'topics'
+                    ? "Topics"
+                    : postFormatMaps[post_format.value] ?? "";
   }
 
   void loadContents(String postType, String postFormat) async {
@@ -184,27 +131,6 @@ class BlogsController extends GetxController {
     blogs.value = res;
     isLoadingMore.value = false;
     newPostTypeLoading.value = false;
-  }
-
-  void fetchPopularBlogs() async {
-    final res = await apiSerivice.value.fetchSearchLanding();
-
-    popularPosts.value = res.blogs!;
-    isLoadingMore.value = false;
-  }
-
-  void fetchSearchResults(String query) async {
-    reachedEndOfListSearch = false;
-    isLoadingMore.value = true;
-    searchPage.value = 1;
-    final res = await apiSerivice.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
-    if (res.blogs!.isEmpty) {
-      reachedEndOfListSearch = true;
-    }
-    searchResults.value = res.blogs!;
-    searchQuery.value = query;
-    isLoadingMore.value = false;
   }
 
   void filterBlogsByRecommender({required String category}) {
@@ -246,15 +172,14 @@ class BlogsController extends GetxController {
     return interactions;
   }
 
+  Future<List<dynamic>> getUserInteraction(
+      {required String articleSlug, required String interactionType}) async {
+    final interactions = await apiSerivice.value.fetchUserInteraction(
+        articleSlug: articleSlug, interactionType: interactionType);
+    return interactions;
+  }
+
   List<Blog> get filteredBlogs {
     return blogs;
-  }
-
-  List<Blog> get popularBlogs {
-    return popularPosts;
-  }
-
-  List<Blog> get searchedBlogs {
-    return searchResults;
   }
 }

@@ -128,13 +128,10 @@ class _NotificationPageState extends State<NotificationPage>
                         children: [
                           Container(
                             height: 510,
-                            child: ListView.builder(
-                                controller: notificationController
-                                    .notificationPageScrollController,
+                            child: notificationController.notificationList.length == 0 ?Padding(padding:EdgeInsets.only(top: 30,left: 90),child: Container(child: Text("You have no notifications",style: TextStyle(color: Colors.white,fontSize: 20),),)):ListView.builder(
+                                controller: notificationController.notificationPageScrollController,
                                 shrinkWrap: true,
-                                itemCount: notificationController
-                                        .notificationList.length +
-                                    1,
+                                itemCount: notificationController.notificationList.length + 1,
                                 itemBuilder: (ctx, index) {
                                   notificationController
                                       .firstTimeLoading.value = false;

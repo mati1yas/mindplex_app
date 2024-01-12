@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'MindPlex',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue, useMaterial3: false
       ),
       home: SplashScreen(),
     );
@@ -55,8 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   NotificationController notificationController =
       Get.put(NotificationController());
 
-  PageNavigationController pageNavigationController =
-      Get.put(PageNavigationController());
+  PageNavigationController pageNavigationController = Get.put(PageNavigationController());
 
   ProfileController profileController = Get.put(ProfileController());
   DrawerButtonController drawerButtonController =

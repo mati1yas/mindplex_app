@@ -6,8 +6,10 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class BlogContentDisplay extends StatelessWidget {
   final List<Content> data;
+  final double padding;
 
-  const BlogContentDisplay({super.key, required this.data});
+  const BlogContentDisplay(
+      {super.key, required this.data, required this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class BlogContentDisplay extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: data.map((element) {
@@ -172,8 +174,8 @@ class BlogContentDisplay extends StatelessWidget {
                   videoLink: element.content ?? "",
                 ),
               );
-            // case 'table':
-            //   return JsonTableWidget(jsonData: element.content);
+            case 'table':
+              return JsonTableWidget(jsonData: element.content);
             default:
               // log('Unknown element type: ${element['type']}');
               return const SizedBox.shrink();
@@ -233,6 +235,7 @@ class JsonTableWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       row[cellIndex].toString(),
+                      style: TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
                   ),

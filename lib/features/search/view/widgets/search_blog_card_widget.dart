@@ -1,23 +1,24 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
-import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex/features/search/controllers/search_controller.dart';
 
-import '../../controllers/blogs_controller.dart';
+import '../../../blogs/view/screens/blog_detail_page.dart';
+
+import '../../../user_profile_settings/models/user_profile.dart';
 import '../../../../routes/app_routes.dart';
-import '../screens/blog_detail_page.dart';
 
-class BlogCard extends StatelessWidget {
-  BlogCard({
+class SearchBlogCard extends StatelessWidget {
+  const SearchBlogCard({
     super.key,
-    required this.blogsController,
+    required this.searchController,
     required this.index,
   });
 
-  final BlogsController blogsController;
+  final SearchPageController searchController;
   final int index;
-
-  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +32,18 @@ class BlogCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //  will be modified in detail
-                    //
-                    if (authController.isGuestUser.value) {
-                      authController.guestReminder(context);
-                    } else {
-                      Get.toNamed(AppRoutes.profilePage, parameters: {
-                        "me": "notme",
-                        "username": blogsController
-                                .filteredBlogs[index].authorUsername ??
-                            ""
-                      });
-                    }
+                    //  will be modified in detail .
+
+                    Get.toNamed(AppRoutes.profilePage, parameters: {
+                      "me": "notme",
+                      "username":
+                          searchController.searchedBlogs[index].authorUsername ??
+                              ""
+                    });
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        blogsController.filteredBlogs[index].authorAvatar ??
+                        searchController.searchedBlogs[index].authorAvatar ??
                             ""),
                     radius: 20,
                     backgroundColor: Colors.black,
@@ -58,10 +55,9 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print("isFollowing " + blogsController.filteredBlogs[index].isFollowing!.value.toString());
                       Get.to(DetailsPage(
                           index: index,
-                          details: blogsController.filteredBlogs[index]));
+                          details: searchController.searchedBlogs[index]));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,22 +66,24 @@ class BlogCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              blogsController
-                                      .filteredBlogs[index].authorDisplayName ??
+                              searchController
+                                      .searchedBlogs[index].authorDisplayName ??
                                   "",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              "MPXR 1.234",
+                              searchController
+                                      .searchedBlogs[index].authorUsername ??
+                                  "",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                color: Color.fromARGB(255, 123, 122, 122),
+                              ),
                             ),
                             Text(
-                              blogsController
-                                      .filteredBlogs[index].publishedAt ??
+                              searchController
+                                      .searchedBlogs[index].publishedAt ??
                                   "",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 123, 122, 122),
@@ -102,35 +100,20 @@ class BlogCard extends StatelessWidget {
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
-                            blogsController.filteredBlogs[index].postTitle ??
+                            searchController.searchedBlogs[index].postTitle ??
+                                ""),
+                        Text(
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                            searchController.searchedBlogs[index].overview ??
                                 ""),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            blogsController.filteredBlogs[index].overview ??
-                                ""),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              blogsController.filteredBlogs[index].minToRead ??
-                                  "",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "MPXR 12.123",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                          searchController.searchedBlogs[index].minToRead ?? "",
+                          style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
                           height: 5,
@@ -144,8 +127,8 @@ class BlogCard extends StatelessWidget {
                                       BorderRadius.all(Radius.circular(10)),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(blogsController
-                                              .filteredBlogs[index]
+                                      image: NetworkImage(searchController
+                                              .searchedBlogs[index]
                                               .thumbnailImage ??
                                           ""))),
                               height: 170,
@@ -172,8 +155,8 @@ class BlogCard extends StatelessWidget {
                                         Container(
                                           margin:
                                               const EdgeInsets.only(bottom: 10),
-                                          child: blogsController
-                                                      .filteredBlogs[index]
+                                          child: searchController
+                                                      .searchedBlogs[index]
                                                       .postTypeFormat ==
                                                   "text"
                                               ? const Icon(
@@ -181,8 +164,8 @@ class BlogCard extends StatelessWidget {
                                                   color: Color(0xFF8aa7da),
                                                   size: 20,
                                                 )
-                                              : blogsController
-                                                          .filteredBlogs[index]
+                                              : searchController
+                                                          .searchedBlogs[index]
                                                           .postTypeFormat ==
                                                       "video"
                                                   ? const Icon(
@@ -206,9 +189,85 @@ class BlogCard extends StatelessWidget {
                         SizedBox(
                           height: 5,
                         ),
-                        InteractionStatistics(
-                          blogsController: blogsController,
-                          index: index,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    //  like logic will be here
+                                  },
+                                  child: Icon(
+                                    color: Colors.white,
+                                    Icons.thumb_up_off_alt_outlined,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text(
+                                  searchController.searchedBlogs[index].likes
+                                          .toString() +
+                                      " Likes",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    //  share logic will be here
+                                  },
+                                  child: Icon(
+                                    color: Colors.white,
+                                    Icons.share_outlined,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  color: Colors.white,
+                                  Icons.mode_comment_outlined,
+                                ),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text(
+                                  searchController.searchedBlogs[index].comments
+                                          .toString() +
+                                      " comments",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    //  dislike logic will be here
+                                  },
+                                  child: Icon(
+                                    color: Colors.white,
+                                    Icons.thumb_down_off_alt_outlined,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text(
+                                  "Dislike",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ],
                         )
                       ],
                     ),
