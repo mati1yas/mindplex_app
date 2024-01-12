@@ -1,50 +1,43 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/user_profile_displays/view/widgets/blog_card.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/bookmarksController.dart';
 
-import 'package:mindplex/features/user_profile_displays/view/widgets/blog_shimmer.dart';
-import '../../controllers/user_profile_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_shimmer.dart';
 import "../widgets/blog-widget.dart";
 import "../../../../utils/status.dart";
 
 class BookmarkScreen extends StatelessWidget {
   BookmarkScreen({super.key});
 
-  ProfileController userProfileController = Get.find();
-
+  BookmarksController bookmarkController = Get.put(BookmarksController());
   @override
   Widget build(BuildContext context) {
-    // userProfileController.switchBlogType(type: BlogsType.bookmark);
-
+    bookmarkController.loadBlogs();
     return Container(
-      // child: Text("to be Build"),
       child: Obx(() {
-        return userProfileController.status == Status.loading
-            ? Expanded(
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                ),
+        return bookmarkController.status == Status.loading
+            ? ListView.builder(
+                itemCount: 3,
+                itemBuilder: (ctx, inx) => const BlogSkeleton(),
               )
-            : userProfileController.status == Status.error
+            : bookmarkController.status == Status.error
                 ? Center(
                     child: Icon(Icons.error),
                   )
                 : Column(children: [
                     Expanded(
                         child: ListView.separated(
-                            controller: userProfileController.scrollController,
-                            itemCount:
-                                userProfileController.profileBlogs.length + 1,
+                            controller: bookmarkController.scrollController,
+                            itemCount: bookmarkController.blogs.length + 1,
                             separatorBuilder: (context, index) =>
                                 SizedBox(height: 10),
                             itemBuilder: (context, index) {
-                              if (userProfileController.status ==
+                              if (bookmarkController.status ==
                                       Status.loadingMore &&
-                                  index ==
-                                      userProfileController
-                                          .profileBlogs.length) {
+                                  index == bookmarkController.blogs.length) {
                                 return ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
@@ -52,15 +45,15 @@ class BookmarkScreen extends StatelessWidget {
                                   itemBuilder: (ctx, inx) =>
                                       const BlogSkeleton(),
                                 );
-                              } else if (userProfileController.status !=
+                              } else if (bookmarkController.status !=
                                       Status.loadingMore &&
-                                  index == userProfileController.blogs.length) {
+                                  index == bookmarkController.blogs.length) {
                                 return SizedBox(height: 10);
                               }
 
-                              return BlogWidget(
-                                  publishedPost: userProfileController
-                                      .profileBlogs[index]);
+                              return BlogCard(
+                                  blog: bookmarkController.blogs[index],
+                                  index: index);
                             })),
                   ]);
       }),
