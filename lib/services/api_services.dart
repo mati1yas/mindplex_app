@@ -442,7 +442,7 @@ class ApiService {
     }
   }
 
-  dynamic fetchUserInteraction(
+  Future<List<dynamic>> fetchUserInteraction(
       {required String articleSlug, required String interactionType}) async {
     var dio = Dio();
 
@@ -453,8 +453,6 @@ class ApiService {
     if (!authenticationController.isGuestUser.value) {
       dio.options.headers["Authorization"] = "Bearer $token";
     }
-    print(articleSlug);
-    print("${AppUrls.reactWithEmoji}$articleSlug/$interactionType/1");
 
     Response response = await dio
         .get("${AppUrls.reactWithEmoji}$articleSlug/$interactionType/1");
@@ -464,6 +462,28 @@ class ApiService {
       return interactions;
     } else {
       throw Exception('Failed to fetch user interactions from the server.');
+    }
+  }
+
+  Future<List<dynamic>> fetchUserFollowers({required String username}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+    print("${AppUrls.followers}$username/1");
+    Response response = await dio.get("${AppUrls.followers}$username/1");
+
+    if (response.statusCode == 200) {
+      final followers = response.data['data'];
+      print(followers);
+      return followers;
+    } else {
+      throw Exception('Failed to fetch user followers from the server.');
     }
   }
 }

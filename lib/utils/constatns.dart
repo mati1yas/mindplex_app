@@ -19,6 +19,7 @@ class AppUrls {
   static var reactWithEmoji = '$baseUrl/wp/v2/post/react/';
   static var searchLandingUrl = '$baseUrl/mp_rp/v1/search';
   static var bookmark = '$baseUrl/mp_gl/v1/posts/bookmark/';
+  static var followers = '$baseUrl/mp_rp/v1/user/followers/';
 }
 
 final List<String> emojiCodes = [
