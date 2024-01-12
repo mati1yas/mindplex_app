@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:mindplex/services/api_services.dart';
@@ -26,14 +27,12 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     fetchBlogs();
-
-    scrollPostsController.addListener(() {
-      if (!isReachedEndOfPostList &&
-          status != Status.loading &&
-          status != Status.loadingMore &&
-          scrollPostsController.position.pixels >=
-              scrollPostsController.position.maxScrollExtent) {
-        loadPublishedPosts();
+    searchScrollController.addListener(() {
+      if (!reachedEndOfListSearch &&
+          searchScrollController.position.pixels >=
+              searchScrollController.position.maxScrollExtent) {
+        // Load more data
+        loadMoreSearchResults(searchQuery.value);
       }
     });
   }
@@ -44,13 +43,18 @@ class ProfileController extends GetxController {
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
-  RxList followers = [].obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
   final apiService = ApiService().obs;
 
   AuthController authController = Get.find();
+
+  ScrollController searchScrollController = ScrollController();
+  bool reachedEndOfListSearch = false;
+  RxList<UserProfile> searchResults = <UserProfile>[].obs;
+  RxString searchQuery = "".obs;
+  RxInt searchPage = 1.obs;
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -69,16 +73,41 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> getUserProfile({required String username}) async {
+  void fetchSearchResults(String query) async {
+    reachedEndOfListSearch = false;
     isLoading.value = true;
-    final res = await apiService.value.fetchUserProfile(userName: username);
-    res.username = username;
-    userProfile.value = res;
-    await fetchFollowers(username: username);
-    postsPage.value = 1;
-    publishedPosts.value = [];
-    isReachedEndOfPostList = false;
+    searchPage.value = 1;
+    final res = await apiService.value
+        .fetchSearchResponse(query, searchPage.value.toInt());
+    if (res.users!.isEmpty) {
+      reachedEndOfListSearch = true;
+    }
+    searchResults.value = res.users!;
+    searchQuery.value = query;
     isLoading.value = false;
+  }
+
+  void loadMoreSearchResults(String query) async {
+    if (isLoading.value || reachedEndOfListSearch) {
+      return;
+    }
+
+    isLoading.value = true;
+    searchPage.value++; // Increment the page number
+
+    final res = await apiService.value
+        .fetchSearchResponse(query, searchPage.value.toInt());
+
+    if (res.users!.isEmpty) {
+      reachedEndOfListSearch = true;
+      // Notify the user that there are no more posts for now
+    } else {
+      searchResults.addAll(res.users!);
+    }
+
+    isLoading.value = false;
+
+    update(); // Trigger UI update
   }
 
   void fetchBlogs() async {
@@ -100,40 +129,68 @@ class ProfileController extends GetxController {
     selectedBlogCategory.value = category;
   }
 
-  List<PopularDetails> get filteredBlogs {
+  List<PopularDetails> get filteredBlogblogss {
     return blogs
         .where((blog) => blog.type == selectedBlogCategory.value)
         .toList();
   }
 
-  RxList<Blog> publishedPosts = <Blog>[].obs;
+  List<UserProfile> get searchedUsers {
+    return searchResults;
+  }
+
+
+   Future<void> getUserProfile({required String username}) async {
+    isLoading.value = true;
+    final res = await apiService.value.fetchUserProfile(userName: username);
+    res.username = username;
+    userProfile.value = res;
+    page.value = 1;
+    profileBlogs.value = [];
+    isReachedEndOfList = false;
+    isLoading.value = false;
+  }
+
+  RxList<Blog> profileBlogs = <Blog>[].obs;
   Rx<Status> status = Status.unknown.obs;
   RxString errorMessage = "Something is very wrong!".obs;
-  ScrollController scrollPostsController = ScrollController();
-  bool isReachedEndOfPostList = false;
-  RxInt postsPage = 1.obs;
+  ScrollController scrollController = ScrollController();
+  bool isReachedEndOfList = false;
+  RxInt page = 1.obs;
+  Rx<BlogsType> blogType = BlogsType.unKnown.obs;
+
+  void switchBlogType({required BlogsType type}) {
+    blogType.value = type;
+    page.value = 1;
+    blogs.value = [];
+    isReachedEndOfList = false;
+    loadBlog();
+  }
 
   ProfileServices profileService = ProfileServices();
-  Future<void> loadPublishedPosts({int? page}) async {
+  Future<void> loadBlog({int? pageNum}) async {
     if (page != null) {
-      publishedPosts([]);
-      postsPage(page);
+      blogs([]);
+      page(pageNum ?? 1);
     }
-    if (postsPage.value == 1) {
+    if (page.value == 1) {
       status(Status.loading);
     } else {
       status(Status.loadingMore);
     }
     try {
-      List<Blog> res = await profileService.getPublishedPosts(
-          username: userProfile.value.username!, page: postsPage.value);
+      List<Blog> res = await profileService.getBlogs(
+          username: userProfile.value.username!,
+          page: page.value,
+          blogType: blogType.value);
+
       if (res.isEmpty) {
-        isReachedEndOfPostList = true;
+        isReachedEndOfList = true;
       } else {
-        publishedPosts.addAll(res);
+        profileBlogs.addAll(res);
       }
       status(Status.success);
-      postsPage += 1;
+      page += 1;
     } catch (e) {
       status(Status.error);
       if (e is AppError) {
@@ -141,12 +198,5 @@ class ProfileController extends GetxController {
       }
       Toster(message: errorMessage.value);
     }
-  }
-
-  Future<void> fetchFollowers({required String username}) async {
-    this.followers.value =
-        await apiService.value.fetchUserFollowers(username: username);
-    this.userProfile.value.followers = this.followers.length;
-    this.authenticatedUser.value.followers = this.followers.length;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followers_overlay.dart';
 
@@ -6,8 +7,7 @@ class UserProfileStatistics extends StatelessWidget {
   const UserProfileStatistics({
     Key? key,
     required this.profileController,
-  }) : super(key: key);
-
+  });
   final ProfileController profileController;
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/view/screens/auth.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
 import 'package:mindplex/routes/app_routes.dart';
@@ -9,9 +10,9 @@ import 'package:mindplex/utils/colors.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../widgets/user_profile_image_widget.dart';
 import '../widgets/user_profile_statistics_widget.dart';
-import 'about_screen.dart';
-import 'bookmark_screen.dart';
-import 'draft_screen.dart';
+import './about_screen.dart';
+import './bookmark_screen.dart';
+import './draft_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -25,7 +26,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePage extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   AuthController authController = Get.find();
-  ProfileController profileController = Get.find();
+  late ProfileController userProfileController;
   late TabController _tabController;
   Map<String, String?> params = Get.parameters;
 
@@ -36,26 +37,24 @@ class _ProfilePage extends State<ProfilePage>
 
     final double coverHeight = 280;
 
-    ProfileController profileController = Get.put(ProfileController());
+    userProfileController = Get.put(ProfileController());
   }
 
   @override
   Widget build(BuildContext context) {
-    profileController.getAuthenticatedUser();
+    userProfileController.getAuthenticatedUser();
 
-    if (params['me'] == 'me') {
-      profileController.getUserProfile(
-          username: profileController.authenticatedUser.value.username ?? "");
-    } else {
-      profileController.getUserProfile(username: params["username"] ?? "");
-    }
+    userProfileController.getUserProfile(
+        username: params["username"] ??
+            userProfileController.authenticatedUser.value.username ??
+            "");
 
     final double coverHeight = 280;
 
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
-          child: Obx(() => profileController.isLoading.value
+          child: Obx(() => userProfileController.isLoading.value
               ? Center(
                   child: CircularProgressIndicator(),
                 )
@@ -64,7 +63,8 @@ class _ProfilePage extends State<ProfilePage>
                   children: <Widget>[
                     buildTop(params),
                     buildUserNameSection(params),
-                    UserProfileStatistics(profileController: profileController),
+                    UserProfileStatistics(
+                        profileController: userProfileController),
                     buidScreens(params),
                   ],
                 )),
@@ -80,7 +80,7 @@ class _ProfilePage extends State<ProfilePage>
         children: [
           UserProfileImage(
             context: context,
-            profileController: profileController,
+            profileController: userProfileController,
             me: params['me'] == 'me',
           ),
           Positioned(
@@ -133,8 +133,8 @@ class _ProfilePage extends State<ProfilePage>
   }
 
   Widget buildUserNameSection(dynamic params) {
-    final firstName = profileController.userProfile.value.firstName ?? " ";
-    final lastName = profileController.userProfile.value.lastName ?? " ";
+    final firstName = userProfileController.userProfile.value.firstName ?? " ";
+    final lastName = userProfileController.userProfile.value.lastName ?? " ";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -157,7 +157,7 @@ class _ProfilePage extends State<ProfilePage>
                 ),
               ),
               Text(
-                profileController.userProfile.value.username ?? "",
+                userProfileController.userProfile.value.username ?? "",
                 style: TextStyle(
                   color: Color.fromARGB(255, 190, 190, 190),
                   fontSize: 15,
@@ -168,13 +168,14 @@ class _ProfilePage extends State<ProfilePage>
             ],
           ),
           if (params['me'] == 'me')
-            Obx(() => profileController.isWalletConnected.value
+            Obx(() => userProfileController.isWalletConnected.value
                 ? SizedBox(
                     width: 0,
                     height: 0,
                   )
                 : OutlinedButton(
-                    onPressed: profileController.switchWallectConnectedState,
+                    onPressed:
+                        userProfileController.switchWallectConnectedState,
                     style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -210,23 +211,31 @@ class _ProfilePage extends State<ProfilePage>
             borderRadius: BorderRadius.circular(8),
           ),
           child: TabBar(
-            isScrollable: true,
-            dividerColor: Colors.grey,
-            indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: const Color.fromARGB(255, 49, 153, 167)),
-            indicatorColor: Colors.green,
-            controller: _tabController,
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
-            tabs: [
-              Tab(
-                text: "About",
-              ),
-              Tab(text: "Published Content"),
-              Tab(text: "Bookmarks"),
-              Tab(text: "Drafts"),
-            ],
-          ),
+              isScrollable: true,
+              dividerColor: Colors.grey,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: const Color.fromARGB(255, 49, 153, 167)),
+              indicatorColor: Colors.green,
+              controller: _tabController,
+              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+              tabs: [
+                Tab(
+                  text: "About",
+                ),
+                Tab(text: "Published Content"),
+                Tab(text: "Bookmarks"),
+                Tab(text: "Drafts"),
+              ],
+              onTap: (index) {
+                if (index == 1) {
+                  userProfileController.switchBlogType(
+                      type: BlogsType.published_posts);
+                } else if (index == 2) {
+                  userProfileController.switchBlogType(
+                      type: BlogsType.bookmarked_posts);
+                }
+              }),
         ),
         Container(
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
