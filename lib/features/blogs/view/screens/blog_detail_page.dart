@@ -222,7 +222,15 @@ class DetailsPage extends StatelessWidget {
                               ),
                               Obx(() => GestureDetector(
                                 onTap: (){
-
+                                  if (authController.isGuestUser.value) {
+                                    authController.guestReminder(context);
+                                  }
+                                  else {
+                                    likeDislikeConroller
+                                        .followUnfollowBlogAuthor(index,
+                                        blogsController.filteredBlogs[index]
+                                            .authorUsername!);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.only(

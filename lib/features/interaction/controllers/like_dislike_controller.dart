@@ -107,4 +107,12 @@ class LikeDislikeConroller extends GetxController {
     blog.isUserLiked.value = false;
     blogsController.blogs[index] = blog;
   }
+
+  Future<void> followUnfollowBlogAuthor(int index , String userName) async {
+    final BlogsController blogsController = Get.find();
+
+    if( await apiService.value.followUnfollowUser(userName)){
+      blogsController.filteredBlogs[index].isFollowing!.value = true;
+    }
+}
 }

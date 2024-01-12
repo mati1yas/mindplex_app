@@ -126,6 +126,31 @@ class ApiService {
         "${AppUrls.likeDislike}$articleSlug?is_remove=1&like_or_dislike=$interction");
   }
 
+  Future<bool> followUnfollowUser(String username) async {
+    try{
+      var dio = Dio();
+      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      print(username);
+
+      final token = await localStorage.value.readFromStorage('Token');
+      print(token);
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      print("${AppUrls.followUrl}/$username");
+
+      Response response = await dio.post("${AppUrls.followUrl}/$username");
+      print(response.statusCode);
+      if(response.statusCode == 200){
+        return true;
+      }
+      return false;
+    }
+    catch(e){
+      print(e);
+      return false;
+    }
+  }
+
   Future<List<Comment>> fetchComments(
       {required String post_slug,
       int page = 1,
