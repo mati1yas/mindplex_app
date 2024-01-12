@@ -9,32 +9,26 @@ import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/constatns.dart';
 import "../../authentication/controllers/auth_controller.dart";
 
-var urlMap = {
-  BlogsType.published_posts: "/mp_gl/v1/posts/publisher/",
-  BlogsType.bookmarked_posts: "/mp_gl/v1/posts/bookmarks",
+var blogsTypes = {
+  BlogsType.published_posts: "published_posts",
+  BlogsType.bookmarked_posts: "bookmarked_posts",
 };
 
 class ProfileServices {
   AuthController authenticationController = getxprefix.Get.find();
 
-  Future<List<Blog>> getBlogs(
-      {required String username,
-      required int page,
-      required BlogsType blogType}) async {
+  Future<List<Blog>> getBlogs(String url, blogType) async {
     Dio dio = Dio();
-
     try {
       Rx<LocalStorage> localStorage =
           LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
       final token = await localStorage.value.readFromStorage('Token');
       if (authenticationController.isGuestUser.value == false)
         dio.options.headers["Authorization"] = "Bearer ${token}";
-      var url =
-          "${AppUrls.baseUrl}${urlMap[blogType]}${blogType == BlogsType.published_posts ? username : ""}/${page}";
       Response response = await dio.get(url);
       if (response.statusCode == 200) {
         List<Blog> blogs = [];
-        for (var post in response.data[blogType]) {
+        for (var post in response.data[blogsTypes[blogType]]) {
           blogs.add(Blog.fromJson(post));
         }
         return blogs;
@@ -54,5 +48,16 @@ class ProfileServices {
       print("unkownError:\n${e}");
       throw new AppError(message: "Something is very wrong!");
     }
+  }
+
+  Future<List<Blog>> getBookmarkPosts({required int page}) {
+    var url = "${AppUrls.baseUrl}/mp_gl/v1/posts/bookmarks/${page}";
+    return getBlogs(url, BlogsType.bookmarked_posts);
+  }
+
+  Future<List<Blog>> getPublisedPosts(
+      {required String username, required int page}) {
+    var url = "${AppUrls.baseUrl}/mp_gl/v1/posts/publisher/${username}/${page}";
+    return getBlogs(url, BlogsType.published_posts);
   }
 }
