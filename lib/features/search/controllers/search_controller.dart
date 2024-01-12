@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/search/services/search_api_service.dart';
+import 'package:mindplex/services/api_services.dart';
 
 import '../../blogs/models/blog_model.dart';
 import '../../user_profile_settings/models/user_profile.dart';
@@ -30,7 +31,8 @@ class SearchPageController extends GetxController{
   RxList<UserProfile> userSearchResults = <UserProfile>[].obs;
   RxBool isLoadingMoreUsers = true.obs;
 
-  final apiService = SearchApiService().obs;
+  final searchApiService = SearchApiService().obs;
+  final apiService = ApiService().obs;
 
   @override
   void onInit() {
@@ -57,7 +59,7 @@ class SearchPageController extends GetxController{
   }
 
   void fetchCategories() async {
-    final res = await apiService.value.fetchSearchLanding();
+    final res = await searchApiService.value.fetchSearchLanding();
     print(res.categories?[0].posts);
     categories.value = res.categories!;
     isIntialLoading.value = false;
@@ -70,7 +72,7 @@ class SearchPageController extends GetxController{
     isLoadingMore.value = true;
     searchPage.value++; // Increment the page number
 
-    final res = await apiService.value
+    final res = await searchApiService.value
         .fetchSearchResponse(query, searchPage.value.toInt());
 
     if (res.blogs!.isEmpty) {
@@ -93,7 +95,7 @@ class SearchPageController extends GetxController{
     isLoadingMoreUsers.value = true;
     searchUserPage.value++; // Increment the page number
 
-    final res = await apiService.value
+    final res = await searchApiService.value
         .fetchSearchResponse(query, searchPage.value.toInt());
 
     if (res.users!.isEmpty) {
@@ -108,7 +110,7 @@ class SearchPageController extends GetxController{
   }
 
   void fetchPopularBlogs() async {
-    final res = await apiService.value.fetchSearchLanding();
+    final res = await searchApiService.value.fetchSearchLanding();
 
     popularPosts.value = res.blogs!;
     isLoadingMore.value = false;
@@ -127,7 +129,7 @@ class SearchPageController extends GetxController{
     searchPage.value = 1;
     searchUserPage.value = 1;
 
-    final res = await apiService.value.fetchSearchResponse(query, searchPage.value.toInt());
+    final res = await searchApiService.value.fetchSearchResponse(query, searchPage.value.toInt());
 
     if(res.blogs!.length < 10){
       reachedEndOfListSearch.value = true;
@@ -146,6 +148,30 @@ class SearchPageController extends GetxController{
 
     isLoading.value = false;
     isUserLoading.value = false;
+  }
+
+  Future<void> followUnfollowUser(int index, String userName,bool isFollowing) async {
+    getSearchedUsers[index].isSendingFollowRequest!.value = true;
+    if(isFollowing){
+      await unfollowUser(index, userName);
+    }
+    else{
+      await followUser(index, userName);
+    }
+    getSearchedUsers[index].isSendingFollowRequest!.value = false;
+  }
+
+
+  Future<void> followUser(int index , String userName) async {
+    if( await apiService.value.followUser(userName)){
+     getSearchedUsers[index].isFollowing!.value = true;
+    }
+  }
+
+  Future<void> unfollowUser(int index , String userName) async {
+    if( await apiService.value.unfollowUser(userName)){
+      getSearchedUsers[index].isFollowing!.value = false;
+    }
   }
 
   List<Blog> get popularBlogs {

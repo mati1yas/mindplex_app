@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_settings/models/social_link.dart';
 
 class UserProfile {
@@ -31,6 +32,8 @@ class UserProfile {
   int? followings;
   int? friends;
   int? mpxr;
+  RxBool? isFollowing = false.obs;
+  RxBool? isSendingFollowRequest = false.obs;
 
   UserProfile(
       {this.firstName,
@@ -60,7 +63,10 @@ class UserProfile {
       this.followers,
       this.followings,
       this.friends,
-      this.mpxr});
+      this.mpxr,
+        this.isFollowing,
+        this.isSendingFollowRequest // added for the purpose of showing loading animation when a user attempts to follow another user
+      });
 
   UserProfile.fromJson(Map<String, dynamic> json) {
     firstName = json['first_name'];
@@ -95,6 +101,7 @@ class UserProfile {
     socialLink = json['social_media'] != null
         ? List<String>.from(json['social_media'])
         : [];
+    isFollowing = RxBool(json['is_following']??false);
   }
 
   Map<String, dynamic> toJson() {
