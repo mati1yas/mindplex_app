@@ -1,26 +1,16 @@
 import 'dart:convert';
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
-import 'package:mindplex/features/blogs/models/blog_model.dart';
-import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
-import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
-import 'package:mindplex/utils/AppError.dart';
-import 'package:mindplex/utils/Toster.dart';
-import 'package:mindplex/utils/status.dart';
 
 import '../../authentication/controllers/auth_controller.dart';
 import '../../../utils/unkown_models/popularModel.dart';
-import '../view/screens/about_screen.dart';
-import '../view/screens/bookmark_screen.dart';
-import '../view/screens/draft_screen.dart';
 
 class ProfileController extends GetxController {
   @override
@@ -31,7 +21,6 @@ class ProfileController extends GetxController {
       if (!reachedEndOfListSearch &&
           searchScrollController.position.pixels >=
               searchScrollController.position.maxScrollExtent) {
-        // Load more data
         loadMoreSearchResults(searchQuery.value);
       }
     });
@@ -55,6 +44,7 @@ class ProfileController extends GetxController {
   RxList<UserProfile> searchResults = <UserProfile>[].obs;
   RxString searchQuery = "".obs;
   RxInt searchPage = 1.obs;
+  RxList followers = [].obs;
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -139,64 +129,18 @@ class ProfileController extends GetxController {
     return searchResults;
   }
 
+  Future<void> fetchFollowers({required String username}) async {
+    this.followers.value =
+        await apiService.value.fetchUserFollowers(username: username);
+    this.userProfile.value.followers = this.followers.length;
+    this.authenticatedUser.value.followers = this.followers.length;
+  }
 
-   Future<void> getUserProfile({required String username}) async {
+  Future<void> getUserProfile({required String username}) async {
     isLoading.value = true;
     final res = await apiService.value.fetchUserProfile(userName: username);
     res.username = username;
     userProfile.value = res;
-    page.value = 1;
-    profileBlogs.value = [];
-    isReachedEndOfList = false;
     isLoading.value = false;
-  }
-
-  RxList<Blog> profileBlogs = <Blog>[].obs;
-  Rx<Status> status = Status.unknown.obs;
-  RxString errorMessage = "Something is very wrong!".obs;
-  ScrollController scrollController = ScrollController();
-  bool isReachedEndOfList = false;
-  RxInt page = 1.obs;
-  Rx<BlogsType> blogType = BlogsType.unKnown.obs;
-
-  void switchBlogType({required BlogsType type}) {
-    blogType.value = type;
-    page.value = 1;
-    blogs.value = [];
-    isReachedEndOfList = false;
-    loadBlog();
-  }
-
-  ProfileServices profileService = ProfileServices();
-  Future<void> loadBlog({int? pageNum}) async {
-    if (page != null) {
-      blogs([]);
-      page(pageNum ?? 1);
-    }
-    if (page.value == 1) {
-      status(Status.loading);
-    } else {
-      status(Status.loadingMore);
-    }
-    try {
-      List<Blog> res = await profileService.getBlogs(
-          username: userProfile.value.username!,
-          page: page.value,
-          blogType: blogType.value);
-
-      if (res.isEmpty) {
-        isReachedEndOfList = true;
-      } else {
-        profileBlogs.addAll(res);
-      }
-      status(Status.success);
-      page += 1;
-    } catch (e) {
-      status(Status.error);
-      if (e is AppError) {
-        errorMessage(e.message);
-      }
-      Toster(message: errorMessage.value);
-    }
   }
 }
