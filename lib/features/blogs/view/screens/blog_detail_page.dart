@@ -220,22 +220,34 @@ class DetailsPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.only(
-                                    top: 10, left: 30, right: 30, bottom: 10),
-                                margin: EdgeInsets.only(top: 15),
-                                decoration: const BoxDecoration(
-                                    color: Color(0xFF0f3e57),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: const Text(
-                                  'Follow',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200,
-                                      color: Colors.white),
+                              Obx(() => GestureDetector(
+                                onTap: (){
+
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 30, right: 30, bottom: 10),
+                                  margin: EdgeInsets.only(top: 15),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xFF0f3e57),
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                                  child: details.isFollowing!.value?
+                                  Text(
+                                    'Unfollow',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w200,
+                                        color: Colors.white),
+                                  ):Text(
+                                    'follow',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w200,
+                                        color: Colors.white),
+                                  ),
                                 ),
-                              ),
+                              )),
                             ],
                           ),
                         ],

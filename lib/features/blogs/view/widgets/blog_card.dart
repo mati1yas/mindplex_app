@@ -58,6 +58,7 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
+                      print("isFollowing " + blogsController.filteredBlogs[index].isFollowing!.value.toString());
                       Get.to(DetailsPage(
                           index: index,
                           details: blogsController.filteredBlogs[index]));
