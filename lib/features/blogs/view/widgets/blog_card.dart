@@ -58,7 +58,6 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print("isFollowing " + blogsController.filteredBlogs[index].isFollowing!.value.toString());
                       Get.to(DetailsPage(
                           index: index,
                           details: blogsController.filteredBlogs[index]));
@@ -142,12 +141,20 @@ class BlogCard extends StatelessWidget {
                                   border: Border.all(color: Colors.white),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
-                                  image: DecorationImage(
+                                  image: blogsController.filteredBlogs[index].thumbnailImage == "default.jpg"?
+                                  blogsController
+                                      .filteredBlogs[index]
+                                      .postTypeFormat ==
+                                      "text"?
+                                  DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(blogsController
-                                              .filteredBlogs[index]
-                                              .thumbnailImage ??
-                                          ""))),
+                                      image: AssetImage("assets/images/img_not_found_text.png")):
+                                  DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage("assets/images/image_not_found_podcast.png")):
+                                  DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(blogsController.filteredBlogs[index].thumbnailImage!))),
                               height: 170,
                               width: 400,
                             ),

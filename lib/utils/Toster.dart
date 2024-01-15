@@ -2,7 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void Toster({required String message,Color? color}) {
+void Toster({required String message,Color? color,int duration = 5}) {
   Flushbar(
     flushbarPosition: FlushbarPosition.BOTTOM,
     margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
@@ -12,6 +12,6 @@ void Toster({required String message,Color? color}) {
     backgroundColor: color == null?Colors.white:color,
     borderRadius: BorderRadius.circular(8),
     message: message,
-    duration: const Duration(seconds: 5),
+    duration: Duration(seconds: duration),
   )..show(Get.context!);
 }

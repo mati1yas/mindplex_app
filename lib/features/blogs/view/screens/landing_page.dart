@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/view/widgets/social_feed_card.dart';
+import 'package:mindplex/utils/no_internet_card_widget.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
 import '../widgets/blog_card.dart';
@@ -37,6 +38,7 @@ class _LandingPageState extends State<LandingPage>
   @override
   void initState() {
     super.initState();
+    blogsController.fetchBlogs();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       String category = blogsController.categories[_tabController.index];
@@ -56,13 +58,8 @@ class _LandingPageState extends State<LandingPage>
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
-    profileController.fetchFollowers(
-        username: profileController.authenticatedUser.value.username ?? "");
-
     _tabController.index = 0;
     _tabController2.index = 0;
-
-    blogsController.fetchBlogs();
 
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
@@ -161,7 +158,10 @@ class _LandingPageState extends State<LandingPage>
           // section for displaying user
 
           Obx(() {
-            return (blogsController.isLoadingMore.value == true &&
+            return !blogsController.isConnected.value?
+            noInternetCard(() {
+              blogsController.fetchBlogs();
+            }):(blogsController.isLoadingMore.value == true &&
                         isIntialLoading) ||
                     blogsController.newPostTypeLoading.value
                 ? Expanded(
@@ -186,13 +186,12 @@ class _LandingPageState extends State<LandingPage>
                                     index: index);
                           } else {
                             print("executing else statement");
-                            if (index == blogsController.filteredBlogs.length &&
-                                !blogsController.reachedEndOfList) {
+                            if (index == blogsController.filteredBlogs.length && !blogsController.reachedEndOfList) {
                               // Display CircularProgressIndicator under the last card
                               return ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: 5,
+                                itemCount: 1,
                                 itemBuilder: (ctx, inx) => const BlogSkeleton(),
                               );
                             } else {
