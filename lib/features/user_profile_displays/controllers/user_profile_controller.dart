@@ -26,16 +26,6 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     fetchBlogs();
-
-    scrollPostsController.addListener(() {
-      if (!isReachedEndOfPostList &&
-          status != Status.loading &&
-          status != Status.loadingMore &&
-          scrollPostsController.position.pixels >=
-              scrollPostsController.position.maxScrollExtent) {
-        loadPublishedPosts();
-      }
-    });
   }
 
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
@@ -75,9 +65,6 @@ class ProfileController extends GetxController {
     res.username = username;
     userProfile.value = res;
     await fetchFollowers(username: username);
-    postsPage.value = 1;
-    publishedPosts.value = [];
-    isReachedEndOfPostList = false;
     isLoading.value = false;
   }
 
@@ -104,43 +91,6 @@ class ProfileController extends GetxController {
     return blogs
         .where((blog) => blog.type == selectedBlogCategory.value)
         .toList();
-  }
-
-  RxList<Blog> publishedPosts = <Blog>[].obs;
-  Rx<Status> status = Status.unknown.obs;
-  RxString errorMessage = "Something is very wrong!".obs;
-  ScrollController scrollPostsController = ScrollController();
-  bool isReachedEndOfPostList = false;
-  RxInt postsPage = 1.obs;
-
-  ProfileServices profileService = ProfileServices();
-  Future<void> loadPublishedPosts({int? page}) async {
-    if (page != null) {
-      publishedPosts([]);
-      postsPage(page);
-    }
-    if (postsPage.value == 1) {
-      status(Status.loading);
-    } else {
-      status(Status.loadingMore);
-    }
-    try {
-      List<Blog> res = await profileService.getPublishedPosts(
-          username: userProfile.value.username!, page: postsPage.value);
-      if (res.isEmpty) {
-        isReachedEndOfPostList = true;
-      } else {
-        publishedPosts.addAll(res);
-      }
-      status(Status.success);
-      postsPage += 1;
-    } catch (e) {
-      status(Status.error);
-      if (e is AppError) {
-        errorMessage(e.message);
-      }
-      Toster(message: errorMessage.value);
-    }
   }
 
   Future<void> fetchFollowers({required String username}) async {

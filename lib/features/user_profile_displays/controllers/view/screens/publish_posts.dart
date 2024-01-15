@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/publishedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/blog_shimmer.dart';
 import "../widgets/blog-widget.dart";
-import "../../../../utils/status.dart";
+import 'package:mindplex/utils/status.dart';
 
 class PublishedPosts extends StatelessWidget {
   PublishedPosts({super.key});
