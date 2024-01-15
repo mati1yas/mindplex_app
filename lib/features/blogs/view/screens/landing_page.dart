@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/view/widgets/social_feed_card.dart';
+import 'package:mindplex/utils/no_internet_card_widget.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
 import '../widgets/blog_card.dart';
@@ -157,7 +158,10 @@ class _LandingPageState extends State<LandingPage>
           // section for displaying user
 
           Obx(() {
-            return (blogsController.isLoadingMore.value == true &&
+            return !blogsController.isConnected.value?
+            noInternetCard(() {
+              blogsController.fetchBlogs();
+            }):(blogsController.isLoadingMore.value == true &&
                         isIntialLoading) ||
                     blogsController.newPostTypeLoading.value
                 ? Expanded(

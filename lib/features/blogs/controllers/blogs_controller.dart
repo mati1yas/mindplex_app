@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/utils/Toster.dart';
+
+import '../../../utils/network/connection-info.dart';
 
 class BlogsController extends GetxController {
   RxBool isLoadingMore = true.obs;
   RxBool newPostTypeLoading = true.obs;
+  RxBool isConnected = true.obs;
 
   RxString recommender = "default".obs;
   RxString post_format = "text".obs;
@@ -14,6 +19,8 @@ class BlogsController extends GetxController {
   RxList<Blog> blogs = <Blog>[].obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
+
+  ConnectionInfoImpl connectionChecker = Get.find();
 
   final categories = [
     'All',
@@ -117,19 +124,31 @@ class BlogsController extends GetxController {
   }
 
   void fetchBlogs() async {
-    newPostTypeLoading.value = true;
-    isLoadingMore.value = true;
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("Looks like there is problem with your connection.");
+      }
+      newPostTypeLoading.value = true;
+      isLoadingMore.value = true;
 
-    final res = await apiSerivice.value.loadBlogs(
-        post_type: post_type.value,
-        recommender: recommender.value,
-        post_format: post_format.value,
-        page: page.value.toInt());
-    if (res.isEmpty)
-      reachedEndOfList = true;
-    blogs.value = res;
-    isLoadingMore.value = false;
-    newPostTypeLoading.value = false;
+      final res = await apiSerivice.value.loadBlogs(
+          post_type: post_type.value,
+          recommender: recommender.value,
+          post_format: post_format.value,
+          page: page.value.toInt());
+      if (res.isEmpty)
+        reachedEndOfList = true;
+      blogs.value = res;
+      isLoadingMore.value = false;
+      newPostTypeLoading.value = false;
+    }
+    catch(e){
+      if(e is NetworkException){
+        isConnected.value = false;
+        Toster(message: 'No Internet Connection',color: Colors.red,duration: 1);
+      }
+    }
   }
 
   void filterBlogsByRecommender({required String category}) {
