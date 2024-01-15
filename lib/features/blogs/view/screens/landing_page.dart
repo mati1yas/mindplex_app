@@ -37,6 +37,7 @@ class _LandingPageState extends State<LandingPage>
   @override
   void initState() {
     super.initState();
+    blogsController.fetchBlogs();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       String category = blogsController.categories[_tabController.index];
@@ -56,13 +57,10 @@ class _LandingPageState extends State<LandingPage>
   @override
   Widget build(BuildContext context) {
     profileController.getAuthenticatedUser();
-    profileController.fetchFollowers(
-        username: profileController.authenticatedUser.value.username ?? "");
+    profileController.fetchFollowers(username: profileController.authenticatedUser.value.username ?? "");
 
     _tabController.index = 0;
     _tabController2.index = 0;
-
-    blogsController.fetchBlogs();
 
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
@@ -186,13 +184,12 @@ class _LandingPageState extends State<LandingPage>
                                     index: index);
                           } else {
                             print("executing else statement");
-                            if (index == blogsController.filteredBlogs.length &&
-                                !blogsController.reachedEndOfList) {
+                            if (index == blogsController.filteredBlogs.length && !blogsController.reachedEndOfList) {
                               // Display CircularProgressIndicator under the last card
                               return ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: 5,
+                                itemCount: 1,
                                 itemBuilder: (ctx, inx) => const BlogSkeleton(),
                               );
                             } else {

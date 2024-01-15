@@ -56,9 +56,7 @@ class BlogsController extends GetxController {
 
     // Add a listener to the scrollController to detect when the user reaches the end of the list
     scrollController.addListener(() {
-      if (!reachedEndOfList &&
-          scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent) {
+      if (!reachedEndOfList && scrollController.position.pixels >= scrollController.position.maxScrollExtent - 250) {
         // Load more data
         loadMoreBlogs();
       }
@@ -127,7 +125,8 @@ class BlogsController extends GetxController {
         recommender: recommender.value,
         post_format: post_format.value,
         page: page.value.toInt());
-    if (res.isEmpty) reachedEndOfList = true;
+    if (res.isEmpty)
+      reachedEndOfList = true;
     blogs.value = res;
     isLoadingMore.value = false;
     newPostTypeLoading.value = false;

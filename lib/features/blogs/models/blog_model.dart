@@ -59,7 +59,7 @@ class Blog {
   Blog.fromJson(Map<String, dynamic> json) {
     slug = json['slug'];
     url = json['url'];
-    postTypeFormat = json['post_type_format'];
+    postTypeFormat = json['post_type_format'] != ""?json['post_type_format']:"text";
     thumbnailImage = json['thumbnail_image'];
     banner = json['banner'];
     authorUsername = json['author_username'];
