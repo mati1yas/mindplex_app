@@ -12,6 +12,7 @@ import "../../authentication/controllers/auth_controller.dart";
 var blogsTypes = {
   BlogsType.published_posts: "published_posts",
   BlogsType.bookmarked_posts: "bookmarked_posts",
+  BlogsType.drafted_posts: "drafted_posts",
 };
 
 class ProfileServices {
@@ -26,6 +27,7 @@ class ProfileServices {
       if (authenticationController.isGuestUser.value == false)
         dio.options.headers["Authorization"] = "Bearer ${token}";
       Response response = await dio.get(url);
+      print(response);
       if (response.statusCode == 200) {
         List<Blog> blogs = [];
         for (var post in response.data[blogsTypes[blogType]]) {
@@ -59,5 +61,10 @@ class ProfileServices {
       {required String username, required int page}) {
     var url = "${AppUrls.baseUrl}/mp_gl/v1/posts/publisher/${username}/${page}";
     return getBlogs(url, BlogsType.published_posts);
+  }
+
+  Future<List<Blog>> getDraftPosts({required int page}) {
+    var url = "${AppUrls.baseUrl}/mp_up/v1/post/draft/${page}";
+    return getBlogs(url, BlogsType.drafted_posts);
   }
 }

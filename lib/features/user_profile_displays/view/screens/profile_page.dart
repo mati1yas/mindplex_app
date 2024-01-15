@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
+import 'package:mindplex/features/user_profile_displays/view/screens/draft_screen.dart';
+
 import 'package:mindplex/utils/colors.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../widgets/user_profile_image_widget.dart';
 import '../widgets/user_profile_statistics_widget.dart';
 import './about_screen.dart';
 import './bookmark_screen.dart';
-import './draft_screen.dart';
+// import './draft_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -232,11 +234,11 @@ class _ProfilePage extends State<ProfilePage>
           margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
           height: height * 0.55,
           width: width * 0.95,
-          child: TabBarView(controller: _tabController, children: [
+          child: TabBarView(controller: _tabController, children: <Widget>[
             AboutScreen(),
             PublishedPosts(),
             if (params['me'] == 'me') BookmarkScreen(),
-            if (params['me'] == 'me') DraftScreen(),
+            if (params['me'] == 'me') DraftPosts(),
           ]),
         ),
       ],
