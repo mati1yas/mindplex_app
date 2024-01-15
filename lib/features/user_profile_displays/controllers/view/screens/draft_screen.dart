@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../../utils/colors.dart';
+import "package:mindplex/utils/colors.dart";
 
 class DraftScreen extends StatefulWidget {
   const DraftScreen({Key? key}) : super(key: key);
