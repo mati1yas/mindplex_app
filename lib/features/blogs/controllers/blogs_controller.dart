@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/services/api_services.dart';
 
 class BlogsController extends GetxController {
@@ -12,8 +13,10 @@ class BlogsController extends GetxController {
   RxString post_type = "articles".obs;
   RxInt page = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
+  RxBool loadingReputation = false.obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
+  RxInt startPosition = 0.obs;
 
   final categories = [
     'All',
@@ -83,7 +86,10 @@ class BlogsController extends GetxController {
       // Notify the user that there are no more posts for now
       // You can display a message or handle it in your UI accordingly
     } else {
+      startPosition.value = blogs.length;
       blogs.addAll(res);
+
+      loadReputation(res);
     }
 
     isLoadingMore.value = false;
@@ -122,6 +128,8 @@ class BlogsController extends GetxController {
     newPostTypeLoading.value = true;
     isLoadingMore.value = true;
 
+    startPosition.value = 0;
+
     final res = await apiSerivice.value.loadBlogs(
         post_type: post_type.value,
         recommender: recommender.value,
@@ -129,8 +137,43 @@ class BlogsController extends GetxController {
         page: page.value.toInt());
     if (res.isEmpty) reachedEndOfList = true;
     blogs.value = res;
+    loadReputation(res);
+
     isLoadingMore.value = false;
     newPostTypeLoading.value = false;
+  }
+
+  Future<void> loadReputation(List<Blog> fetchedBlogs) async {
+    loadingReputation.value = true;
+
+    List<String> slugs = await fetchedBlogs.map((blog) => blog.slug!).toList();
+    slugs.length;
+
+    List<Reputation> reputations =
+        await apiSerivice.value.loadReputation(slugs: slugs);
+
+    assignReputationToBlog(
+        fetchedBlogs: fetchedBlogs, reputations: reputations);
+
+    loadingReputation.value = false;
+  }
+
+  void assignReputationToBlog({
+    required List<Blog> fetchedBlogs,
+    required List<Reputation> reputations,
+  }) {
+    for (var i = 0; i < fetchedBlogs.length; i++) {
+      for (var j = 0; j < reputations.length; j++) {
+        if (fetchedBlogs[i].slug == reputations[j].postSlug) {
+          fetchedBlogs[i].reputation.value = reputations[j];
+
+          blogs[startPosition.value + i] = fetchedBlogs[i];
+
+          update();
+          break;
+        }
+      }
+    }
   }
 
   void filterBlogsByRecommender({required String category}) {
