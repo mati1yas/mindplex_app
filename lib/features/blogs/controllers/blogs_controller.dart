@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -164,14 +165,21 @@ class BlogsController extends GetxController {
   Future<void> loadReputation(List<Blog> fetchedBlogs) async {
     loadingReputation.value = true;
 
-    List<String> slugs = await fetchedBlogs.map((blog) => blog.slug!).toList();
-    slugs.length;
+    try {
+      List<String> slugs =
+          await fetchedBlogs.map((blog) => blog.slug!).toList();
+      slugs.length;
 
-    List<Reputation> reputations =
-        await apiSerivice.value.loadReputation(slugs: slugs);
+      List<Reputation> reputations =
+          await apiSerivice.value.loadReputation(slugs: slugs);
 
-    assignReputationToBlog(
-        fetchedBlogs: fetchedBlogs, reputations: reputations);
+      assignReputationToBlog(
+          fetchedBlogs: fetchedBlogs, reputations: reputations);
+    } catch (e) {
+      if (e is DioException) {
+        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 1);
+      }
+    }
 
     loadingReputation.value = false;
   }
