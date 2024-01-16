@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/search/models/search_response.dart';
 import 'package:mindplex/features/notification/models/notification_model.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
@@ -50,14 +51,33 @@ class ApiService {
             RxList(response.data['categories']);
       }
       for (var blog in response.data['post']) {
-        if (blog["post_type_format"].runtimeType == List)
-          continue;
+        if (blog["post_type_format"].runtimeType == List) continue;
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {
       throw e.toString();
     }
 
+    return ret;
+  }
+
+// List<Reputation>
+  Future<List<Reputation>> loadReputation({required List<String> slugs}) async {
+    var dio = Dio();
+
+    dio.options.headers["com-id"] = com_id;
+    dio.options.headers["x-api-key"] = api_key;
+
+    Response response = await dio.get(
+        "${AppUrls.baseUrlReputation}/core/post_user_detail/?community=mindplex",
+        data: <String, List<String>>{
+          "slug": slugs,
+        });
+
+    var ret = <Reputation>[];
+    for (var reputation in response.data) {
+      ret.add(Reputation.fromJson(reputation));
+    }
     return ret;
   }
 
@@ -127,45 +147,45 @@ class ApiService {
   }
 
   Future<bool> followUser(String username) async {
-    try{
+    try {
       var dio = Dio();
-      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
 
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
       Response response = await dio.post("${AppUrls.followUrl}/$username");
       print(response.statusCode);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return true;
       }
       return false;
-    }
-    catch(e){
+    } catch (e) {
       print(e);
       return false;
     }
   }
+
   Future<bool> unfollowUser(String username) async {
-    try{
+    try {
       var dio = Dio();
-      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
 
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
       Response response = await dio.post("${AppUrls.unfollowUrl}/$username");
       print(response.statusCode);
-        return true;
-    }
-    catch(e){
-      if(e is DioException){
+      return true;
+    } catch (e) {
+      if (e is DioException) {
         return true;
       }
       return false;
     }
   }
-
 
   Future<List<Comment>> fetchComments(
       {required String post_slug,

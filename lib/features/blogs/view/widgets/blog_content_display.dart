@@ -115,6 +115,11 @@ class BlogContentDisplay extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Image.network(element.content!),
               );
+            case 'figure':
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Image.network(element.content!),
+              );
             case 'pre':
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),

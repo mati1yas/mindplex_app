@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 
 class Blog {
   String? slug;
@@ -24,6 +25,8 @@ class Blog {
   RxBool? isBookmarked = false.obs;
   Rx<dynamic> isVotted = Rx<dynamic>(null);
   RxString interactedEmoji = ''.obs;
+
+  Rx<Reputation?> reputation = Rx(null);
 
   Blog(
       {this.slug,

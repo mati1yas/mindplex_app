@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
 
@@ -17,10 +19,12 @@ class BlogsController extends GetxController {
   RxString post_type = "articles".obs;
   RxInt page = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
+  RxBool loadingReputation = false.obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
 
   ConnectionInfoImpl connectionChecker = Get.find();
+  RxInt startPosition = 0.obs;
 
   final categories = [
     'All',
@@ -63,7 +67,9 @@ class BlogsController extends GetxController {
 
     // Add a listener to the scrollController to detect when the user reaches the end of the list
     scrollController.addListener(() {
-      if (!reachedEndOfList && scrollController.position.pixels >= scrollController.position.maxScrollExtent - 250) {
+      if (!reachedEndOfList &&
+          scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 250) {
         // Load more data
         loadMoreBlogs();
       }
@@ -88,7 +94,10 @@ class BlogsController extends GetxController {
       // Notify the user that there are no more posts for now
       // You can display a message or handle it in your UI accordingly
     } else {
+      startPosition.value = blogs.length;
       blogs.addAll(res);
+
+      loadReputation(res);
     }
 
     isLoadingMore.value = false;
@@ -127,7 +136,8 @@ class BlogsController extends GetxController {
     try {
       isConnected.value = true;
       if (!await connectionChecker.isConnected) {
-        throw NetworkException("Looks like there is problem with your connection.");
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
       }
       newPostTypeLoading.value = true;
       isLoadingMore.value = true;
@@ -137,16 +147,57 @@ class BlogsController extends GetxController {
           recommender: recommender.value,
           post_format: post_format.value,
           page: page.value.toInt());
-      if (res.isEmpty)
-        reachedEndOfList = true;
+      if (res.isEmpty) reachedEndOfList = true;
       blogs.value = res;
+      loadReputation(res);
+
       isLoadingMore.value = false;
       newPostTypeLoading.value = false;
-    }
-    catch(e){
-      if(e is NetworkException){
+    } catch (e) {
+      if (e is NetworkException) {
         isConnected.value = false;
-        Toster(message: 'No Internet Connection',color: Colors.red,duration: 1);
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      }
+    }
+  }
+
+  Future<void> loadReputation(List<Blog> fetchedBlogs) async {
+    loadingReputation.value = true;
+
+    try {
+      List<String> slugs =
+          await fetchedBlogs.map((blog) => blog.slug!).toList();
+      slugs.length;
+
+      List<Reputation> reputations =
+          await apiSerivice.value.loadReputation(slugs: slugs);
+
+      assignReputationToBlog(
+          fetchedBlogs: fetchedBlogs, reputations: reputations);
+    } catch (e) {
+      if (e is DioException) {
+        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 1);
+      }
+    }
+
+    loadingReputation.value = false;
+  }
+
+  void assignReputationToBlog({
+    required List<Blog> fetchedBlogs,
+    required List<Reputation> reputations,
+  }) {
+    for (var i = 0; i < fetchedBlogs.length; i++) {
+      for (var j = 0; j < reputations.length; j++) {
+        if (fetchedBlogs[i].slug == reputations[j].postSlug) {
+          fetchedBlogs[i].reputation.value = reputations[j];
+
+          blogs[startPosition.value + i] = fetchedBlogs[i];
+
+          update();
+          break;
+        }
       }
     }
   }
