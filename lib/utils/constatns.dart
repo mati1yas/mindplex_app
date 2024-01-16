@@ -25,6 +25,8 @@ class AppUrls {
   static var followers = '$baseUrl/mp_rp/v1/user/followers/';
 }
 
+var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";
+var api_key = "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
 final List<String> emojiCodes = [
   "128175",
   "128152",

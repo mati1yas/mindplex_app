@@ -51,8 +51,7 @@ class ApiService {
             RxList(response.data['categories']);
       }
       for (var blog in response.data['post']) {
-        if (blog["post_type_format"].runtimeType == List)
-          continue;
+        if (blog["post_type_format"].runtimeType == List) continue;
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {
@@ -66,9 +65,8 @@ class ApiService {
   Future<List<Reputation>> loadReputation({required List<String> slugs}) async {
     var dio = Dio();
 
-    dio.options.headers["com-id"] = "e98776e8-32f6-4325-971c-ffc8d1188901";
-    dio.options.headers["x-api-key"] =
-        "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
+    dio.options.headers["com-id"] = com_id;
+    dio.options.headers["x-api-key"] = api_key;
 
     Response response = await dio.get(
         "${AppUrls.baseUrlReputation}/core/post_user_detail/?community=mindplex",
@@ -149,45 +147,45 @@ class ApiService {
   }
 
   Future<bool> followUser(String username) async {
-    try{
+    try {
       var dio = Dio();
-      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
 
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
       Response response = await dio.post("${AppUrls.followUrl}/$username");
       print(response.statusCode);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return true;
       }
       return false;
-    }
-    catch(e){
+    } catch (e) {
       print(e);
       return false;
     }
   }
+
   Future<bool> unfollowUser(String username) async {
-    try{
+    try {
       var dio = Dio();
-      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
 
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
       Response response = await dio.post("${AppUrls.unfollowUrl}/$username");
       print(response.statusCode);
-        return true;
-    }
-    catch(e){
-      if(e is DioException){
+      return true;
+    } catch (e) {
+      if (e is DioException) {
         return true;
       }
       return false;
     }
   }
-
 
   Future<List<Comment>> fetchComments(
       {required String post_slug,
