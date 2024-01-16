@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 
 import '../../controllers/blogs_controller.dart';
@@ -58,7 +59,10 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print("isFollowing " + blogsController.filteredBlogs[index].isFollowing!.value.toString());
+                      print("isFollowing " +
+                          blogsController
+                              .filteredBlogs[index].isFollowing!.value
+                              .toString());
                       Get.to(DetailsPage(
                           index: index,
                           details: blogsController.filteredBlogs[index]));
@@ -77,11 +81,22 @@ class BlogCard extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "MPXR 1.234",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                            Obx(
+                              () => blogsController.loadingReputation.value &&
+                                      index >=
+                                          blogsController.startPosition.value
+                                  ? Container(
+                                      width: 13,
+                                      height: 13,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.green[300],
+                                      ))
+                                  : Text(
+                                      " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "0"}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                             ),
                             Text(
                               blogsController
@@ -124,11 +139,22 @@ class BlogCard extends StatelessWidget {
                                   "",
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text(
-                              "MPXR 12.123",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                            Obx(
+                              () => blogsController.loadingReputation.value &&
+                                      index >=
+                                          blogsController.startPosition.value
+                                  ? Container(
+                                      width: 13,
+                                      height: 13,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.green[300],
+                                      ))
+                                  : Text(
+                                      " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(10) : "Null"}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                             ),
                           ],
                         ),
@@ -144,10 +170,7 @@ class BlogCard extends StatelessWidget {
                                       BorderRadius.all(Radius.circular(10)),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(blogsController
-                                              .filteredBlogs[index]
-                                              .thumbnailImage ??
-                                          ""))),
+                                      image: NetworkImage(""))),
                               height: 170,
                               width: 400,
                             ),
