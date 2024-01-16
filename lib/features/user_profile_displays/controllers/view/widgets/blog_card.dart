@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
-import 'package:mindplex/features/blogs/models/reputation_model.dart';
-import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
-
-import '../../controllers/blogs_controller.dart';
-import '../../../../routes/app_routes.dart';
-import '../screens/blog_detail_page.dart';
+import 'package:mindplex/features/blogs/models/blog_model.dart';
+import './interaction_statistics_widget.dart';
+import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
 
 class BlogCard extends StatelessWidget {
   BlogCard({
     super.key,
-    required this.blogsController,
+    required this.blog,
     required this.index,
   });
 
-  final BlogsController blogsController;
+  final Blog blog;
   final int index;
 
   AuthController authController = Get.find();
@@ -39,16 +37,12 @@ class BlogCard extends StatelessWidget {
                     } else {
                       Get.toNamed(AppRoutes.profilePage, parameters: {
                         "me": "notme",
-                        "username": blogsController
-                                .filteredBlogs[index].authorUsername ??
-                            ""
+                        "username": blog.authorUsername ?? ""
                       });
                     }
                   },
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        blogsController.filteredBlogs[index].authorAvatar ??
-                            ""),
+                    backgroundImage: NetworkImage(blog.authorAvatar ?? ""),
                     radius: 20,
                     backgroundColor: Colors.black,
                   ),
@@ -59,9 +53,9 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(DetailsPage(
-                          index: index,
-                          details: blogsController.filteredBlogs[index]));
+                      print(
+                          "isFollowing " + blog.isFollowing!.value.toString());
+                      Get.to(DetailsPage(index: index, details: blog));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,34 +64,19 @@ class BlogCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              blogsController
-                                      .filteredBlogs[index].authorDisplayName ??
-                                  "",
+                              blog.authorDisplayName ?? "",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Obx(
-                              () => blogsController.loadingReputation.value &&
-                                      index >=
-                                          blogsController.startPosition.value
-                                  ? Container(
-                                      width: 13,
-                                      height: 13,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.green[300],
-                                      ))
-                                  : Text(
-                                      " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "0"}",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                            Text(
+                              "MPXR 1.234",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              blogsController
-                                      .filteredBlogs[index].publishedAt ??
-                                  "",
+                              blog.publishedAt ?? "",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 123, 122, 122),
                               ),
@@ -113,8 +92,7 @@ class BlogCard extends StatelessWidget {
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
-                            blogsController.filteredBlogs[index].postTitle ??
-                                ""),
+                            blog.postTitle ?? ""),
                         SizedBox(
                           height: 10,
                         ),
@@ -122,8 +100,7 @@ class BlogCard extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                             ),
-                            blogsController.filteredBlogs[index].overview ??
-                                ""),
+                            blog.overview ?? ""),
                         SizedBox(
                           height: 10,
                         ),
@@ -131,26 +108,14 @@ class BlogCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              blogsController.filteredBlogs[index].minToRead ??
-                                  "",
+                              blog.minToRead ?? "",
                               style: TextStyle(color: Colors.white),
                             ),
-                            Obx(
-                              () => blogsController.loadingReputation.value &&
-                                      index >=
-                                          blogsController.startPosition.value
-                                  ? Container(
-                                      width: 13,
-                                      height: 13,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.green[300],
-                                      ))
-                                  : Text(
-                                      " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(10) : "Null"}",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                            Text(
+                              "MPXR 12.123",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -164,25 +129,10 @@ class BlogCard extends StatelessWidget {
                                   border: Border.all(color: Colors.white),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
-                                  image: blogsController.filteredBlogs[index]
-                                              .thumbnailImage ==
-                                          "default.jpg"
-                                      ? blogsController.filteredBlogs[index]
-                                                  .postTypeFormat ==
-                                              "text"
-                                          ? DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  "assets/images/img_not_found_text.png"))
-                                          : DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  "assets/images/image_not_found_podcast.png"))
-                                      : DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(blogsController
-                                              .filteredBlogs[index]
-                                              .thumbnailImage!))),
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          blog.thumbnailImage ?? ""))),
                               height: 170,
                               width: 400,
                             ),
@@ -207,19 +157,13 @@ class BlogCard extends StatelessWidget {
                                         Container(
                                           margin:
                                               const EdgeInsets.only(bottom: 10),
-                                          child: blogsController
-                                                      .filteredBlogs[index]
-                                                      .postTypeFormat ==
-                                                  "text"
+                                          child: blog.postTypeFormat == "text"
                                               ? const Icon(
                                                   Icons.description_outlined,
                                                   color: Color(0xFF8aa7da),
                                                   size: 20,
                                                 )
-                                              : blogsController
-                                                          .filteredBlogs[index]
-                                                          .postTypeFormat ==
-                                                      "video"
+                                              : blog.postTypeFormat == "video"
                                                   ? const Icon(
                                                       Icons.videocam,
                                                       color: Color.fromARGB(
@@ -242,8 +186,7 @@ class BlogCard extends StatelessWidget {
                           height: 5,
                         ),
                         InteractionStatistics(
-                          blogsController: blogsController,
-                          index: index,
+                          blog: blog,
                         )
                       ],
                     ),

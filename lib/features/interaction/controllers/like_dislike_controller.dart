@@ -18,6 +18,7 @@ class LikeDislikeConroller extends GetxController {
   RxList currentEmoji = [
     "😅",
   ].obs;
+  RxBool isSendingFollowRequest = false.obs;
 
   Future<void> likeDislikeArticle(
       {required int index,
@@ -106,5 +107,32 @@ class LikeDislikeConroller extends GetxController {
     blog.isUserDisliked.value = false;
     blog.isUserLiked.value = false;
     blogsController.blogs[index] = blog;
+  }
+
+  Future<void> followUnfollowBlogAuthor(int index, String userName,bool isFollowing) async {
+    isSendingFollowRequest.value = true;
+    if(isFollowing){
+      await unfollowBlogAuthor(index, userName);
+    }
+    else{
+      await followBlogAuthor(index, userName);
+    }
+    isSendingFollowRequest.value = false;
+  }
+
+  Future<void> followBlogAuthor(int index , String userName) async {
+    final BlogsController blogsController = Get.find();
+
+    if( await apiService.value.followUser(userName)){
+      blogsController.filteredBlogs[index].isFollowing!.value = true;
+    }
+  }
+
+  Future<void> unfollowBlogAuthor(int index , String userName) async {
+    final BlogsController blogsController = Get.find();
+
+    if( await apiService.value.unfollowUser(userName)){
+      blogsController.filteredBlogs[index].isFollowing!.value = false;
+    }
   }
 }

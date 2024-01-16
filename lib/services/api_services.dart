@@ -51,8 +51,8 @@ class ApiService {
             RxList(response.data['categories']);
       }
       for (var blog in response.data['post']) {
-        if (blog['interacted_emoji'] == null) blog['interacted_emoji'] = '';
-        if (blog["post_type_format"].runtimeType == List) continue;
+        if (blog["post_type_format"].runtimeType == List)
+          continue;
         ret.add(Blog.fromJson(blog));
       }
     } catch (e) {
@@ -147,6 +147,47 @@ class ApiService {
     Response response = await dio.post(
         "${AppUrls.likeDislike}$articleSlug?is_remove=1&like_or_dislike=$interction");
   }
+
+  Future<bool> followUser(String username) async {
+    try{
+      var dio = Dio();
+      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post("${AppUrls.followUrl}/$username");
+      print(response.statusCode);
+      if(response.statusCode == 200){
+        return true;
+      }
+      return false;
+    }
+    catch(e){
+      print(e);
+      return false;
+    }
+  }
+  Future<bool> unfollowUser(String username) async {
+    try{
+      var dio = Dio();
+      Rx<LocalStorage> localStorage = LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post("${AppUrls.unfollowUrl}/$username");
+      print(response.statusCode);
+        return true;
+    }
+    catch(e){
+      if(e is DioException){
+        return true;
+      }
+      return false;
+    }
+  }
+
 
   Future<List<Comment>> fetchComments(
       {required String post_slug,

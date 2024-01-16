@@ -4,7 +4,7 @@ import 'package:mindplex/features/user_profile_displays/view/widgets/blog_card.d
 import 'package:mindplex/features/user_profile_displays/controllers/bookmarksController.dart';
 
 import 'package:mindplex/features/blogs/view/widgets/blog_shimmer.dart';
-import "../../../../utils/status.dart";
+import "package:mindplex/utils/status.dart";
 
 class BookmarkScreen extends StatelessWidget {
   BookmarkScreen({super.key});

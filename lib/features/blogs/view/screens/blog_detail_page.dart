@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 
 import 'package:share/share.dart';
 
@@ -26,6 +27,8 @@ class DetailsPage extends StatelessWidget {
     LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
     BlogsController blogsController = Get.find();
     AuthController authController = Get.find();
+    ProfileController profileController = Get.find();
+    profileController.getAuthenticatedUser();
 
     final decodedHtml = parse(details.authorBio).documentElement!.text;
     print(decodedHtml);
@@ -162,12 +165,12 @@ class DetailsPage extends StatelessWidget {
                                   thickness: 2,
                                   color: Colors.white,
                                 ),
-                                Container(
+                                blogsController.filteredBlogs[index].banner != ""?Container(
                                     height: 150,
                                     width: 600,
                                     child: Image.network(
                                         fit: BoxFit.cover,
-                                        details.banner ?? ""))
+                                        details.banner ?? "")):Container()
                               ],
                             ),
                           ),
@@ -220,9 +223,20 @@ class DetailsPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Obx(() => GestureDetector(
+                              Obx(() =>
+                                  profileController.authenticatedUser.value.username == blogsController.filteredBlogs[index].authorUsername?
+                                      Container():
+                                  GestureDetector(
                                 onTap: (){
-
+                                  if (authController.isGuestUser.value) {
+                                    authController.guestReminder(context);
+                                  }
+                                  else if(!likeDislikeConroller.isSendingFollowRequest.value) {
+                                    likeDislikeConroller
+                                        .followUnfollowBlogAuthor(index,
+                                        blogsController.filteredBlogs[index]
+                                            .authorUsername!,blogsController.filteredBlogs[index].isFollowing!.value);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.only(
@@ -232,14 +246,18 @@ class DetailsPage extends StatelessWidget {
                                       color: Color(0xFF0f3e57),
                                       borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
-                                  child: details.isFollowing!.value?
+                                  child: likeDislikeConroller.isSendingFollowRequest.value?Container(
+                                      height: 24,
+                                      width: 30,
+                                      child: CircularProgressIndicator()):details.isFollowing!.value?
                                   Text(
                                     'Unfollow',
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w200,
                                         color: Colors.white),
-                                  ):Text(
+                                  ):
+                                  Text(
                                     'follow',
                                     style: TextStyle(
                                         fontSize: 20,
