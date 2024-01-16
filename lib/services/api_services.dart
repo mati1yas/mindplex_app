@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/search/models/search_response.dart';
 import 'package:mindplex/features/notification/models/notification_model.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
@@ -58,6 +59,27 @@ class ApiService {
       throw e.toString();
     }
 
+    return ret;
+  }
+
+// List<Reputation>
+  Future<List<Reputation>> loadReputation({required List<String> slugs}) async {
+    var dio = Dio();
+
+    dio.options.headers["com-id"] = "e98776e8-32f6-4325-971c-ffc8d1188901";
+    dio.options.headers["x-api-key"] =
+        "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
+
+    Response response = await dio.get(
+        "${AppUrls.baseUrlReputation}/core/post_user_detail/?community=mindplex",
+        data: <String, List<String>>{
+          "slug": slugs,
+        });
+
+    var ret = <Reputation>[];
+    for (var reputation in response.data) {
+      ret.add(Reputation.fromJson(reputation));
+    }
     return ret;
   }
 
