@@ -177,7 +177,7 @@ class BlogsController extends GetxController {
           fetchedBlogs: fetchedBlogs, reputations: reputations);
     } catch (e) {
       if (e is DioException) {
-        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 1);
+        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 3);
       }
     }
 
