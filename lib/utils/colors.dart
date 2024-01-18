@@ -17,3 +17,5 @@ const upgradeColor = const Color(0xFFf55586);
 
 const drawerHighlight = Color(0xFF0f3e57);
 const userNameColor = Color(0xFFBEBEBE);
+
+const pink = Colors.pink;
