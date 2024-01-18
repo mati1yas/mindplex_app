@@ -33,6 +33,8 @@ class DetailsPage extends StatelessWidget {
     final decodedHtml = parse(details.authorBio).documentElement!.text;
     print(decodedHtml);
 
+    print(details.slug);
+
     return Scaffold(
       backgroundColor: Color(0xFF0c2b46),
       appBar: AppBar(
@@ -165,12 +167,15 @@ class DetailsPage extends StatelessWidget {
                                   thickness: 2,
                                   color: Colors.white,
                                 ),
-                                blogsController.filteredBlogs[index].banner != ""?Container(
-                                    height: 150,
-                                    width: 600,
-                                    child: Image.network(
-                                        fit: BoxFit.cover,
-                                        details.banner ?? "")):Container()
+                                blogsController.filteredBlogs[index].banner !=
+                                        ""
+                                    ? Container(
+                                        height: 150,
+                                        width: 600,
+                                        child: Image.network(
+                                            fit: BoxFit.cover,
+                                            details.banner ?? ""))
+                                    : Container()
                               ],
                             ),
                           ),
@@ -223,49 +228,66 @@ class DetailsPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Obx(() =>
-                                  profileController.authenticatedUser.value.username == blogsController.filteredBlogs[index].authorUsername?
-                                      Container():
-                                  GestureDetector(
-                                onTap: (){
-                                  if (authController.isGuestUser.value) {
-                                    authController.guestReminder(context);
-                                  }
-                                  else if(!likeDislikeConroller.isSendingFollowRequest.value) {
-                                    likeDislikeConroller
-                                        .followUnfollowBlogAuthor(index,
-                                        blogsController.filteredBlogs[index]
-                                            .authorUsername!,blogsController.filteredBlogs[index].isFollowing!.value);
-                                  }
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, left: 30, right: 30, bottom: 10),
-                                  margin: EdgeInsets.only(top: 15),
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xFF0f3e57),
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                                  child: likeDislikeConroller.isSendingFollowRequest.value?Container(
-                                      height: 24,
-                                      width: 30,
-                                      child: CircularProgressIndicator()):details.isFollowing!.value?
-                                  Text(
-                                    'Unfollow',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w200,
-                                        color: Colors.white),
-                                  ):
-                                  Text(
-                                    'follow',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w200,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              )),
+                              Obx(() => profileController
+                                          .authenticatedUser.value.username ==
+                                      blogsController
+                                          .filteredBlogs[index].authorUsername
+                                  ? Container()
+                                  : GestureDetector(
+                                      onTap: () {
+                                        if (authController.isGuestUser.value) {
+                                          authController.guestReminder(context);
+                                        } else if (!likeDislikeConroller
+                                            .isSendingFollowRequest.value) {
+                                          likeDislikeConroller
+                                              .followUnfollowBlogAuthor(
+                                                  index,
+                                                  blogsController
+                                                      .filteredBlogs[index]
+                                                      .authorUsername!,
+                                                  blogsController
+                                                      .filteredBlogs[index]
+                                                      .isFollowing!
+                                                      .value);
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.only(
+                                            top: 10,
+                                            left: 30,
+                                            right: 30,
+                                            bottom: 10),
+                                        margin: EdgeInsets.only(top: 15),
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xFF0f3e57),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        child: likeDislikeConroller
+                                                .isSendingFollowRequest.value
+                                            ? Container(
+                                                height: 24,
+                                                width: 30,
+                                                child:
+                                                    CircularProgressIndicator())
+                                            : details.isFollowing!.value
+                                                ? Text(
+                                                    'Unfollow',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w200,
+                                                        color: Colors.white),
+                                                  )
+                                                : Text(
+                                                    'follow',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w200,
+                                                        color: Colors.white),
+                                                  ),
+                                      ),
+                                    )),
                             ],
                           ),
                         ],
@@ -396,15 +418,22 @@ class DetailsPage extends StatelessWidget {
                   SizedBox(
                     width: 8,
                   ),
-                  IconButton(
-                    onPressed: () => Get.bottomSheet(
-                      MyWidgetComment(post_slug: details.slug!),
-                      isScrollControlled: true,
-                      ignoreSafeArea: false,
-                    ),
-                    icon: Icon(
-                      Icons.mode_comment_outlined,
-                      color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      Get.bottomSheet(
+                        isScrollControlled: true,
+                        ignoreSafeArea: false,
+                        MyWidgetComment(
+                            post_slug: details.slug!,
+                            comment_number: details.comments.toString()),
+                      );
+                    },
+                    child: Badge(
+                      child: Icon(
+                        Icons.mode_comment_outlined,
+                        color: Colors.white,
+                      ),
+                      label: Text(details.comments.toString()),
                     ),
                   ),
                   SizedBox(
