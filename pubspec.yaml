@@ -63,6 +63,7 @@ dependencies:
   share: ^2.0.0
   google_sign_in:
   internet_connection_checker: ^1.0.0+1
+  badges:
 
   
 
