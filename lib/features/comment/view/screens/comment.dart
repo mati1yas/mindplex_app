@@ -1,21 +1,21 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:html/parser.dart' show parse;
+
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/comment/controllers/comment_controller.dart';
+import 'package:mindplex/features/comment/view/widgets/comment_tile.dart';
 
-import 'package:mindplex/features/comment/controllers/controller.dart';
-
-import '../../models/comment.dart';
 import '../../../../utils/colors.dart';
 
-class MyWidgetComment extends GetView<CommentController> {
-  MyWidgetComment({super.key, required this.post_slug});
+class MyWidgetComment extends StatelessWidget {
+  MyWidgetComment(
+      {super.key, required this.post_slug, required this.comment_number});
 
   final String post_slug;
+  final String comment_number;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,9 @@ class MyWidgetComment extends GetView<CommentController> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Comments',
+                          'Comments (${comment_number})',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.displayLarge?.copyWith(
                             fontSize: 16,
                             color: commentSectionColor,
@@ -53,15 +55,15 @@ class MyWidgetComment extends GetView<CommentController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          maxRadius: 24,
-                          backgroundColor: Colors.white,
-                          /*
+                            maxRadius: 24,
+                            backgroundColor: Colors.white,
+                            /*
 
                           foregroundImage: CachedNetworkImageProvider(
                               controller.profileImage!),
                               */
-                          backgroundImage: AssetImage('assets/images/logo.png'),
-                        ),
+                            backgroundImage:
+                                NetworkImage(controller.profileImage ?? "")),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Container(
@@ -82,10 +84,10 @@ class MyWidgetComment extends GetView<CommentController> {
                               cursorColor: commentSectionColor,
                               decoration: const InputDecoration(
                                 hintStyle: TextStyle(
-                                    color: Color.fromARGB(90, 175, 175, 175),
+                                    color: Color.fromARGB(90, 56, 56, 56),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400),
-                                hintText: 'Share something user',
+                                hintText: 'Leave a Comment',
                                 contentPadding: EdgeInsets.all(14),
                                 border: InputBorder.none,
                               ),
@@ -107,122 +109,137 @@ class MyWidgetComment extends GetView<CommentController> {
                       alignment: Alignment.bottomRight,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        /*
-                        child: GradientBtn(
-                          onPressed: controller
-                                      .commentTextEditingController.value
-                                      .toString() ==
-                                  ''
-                              ? null
-                              : controller.onClickPost,
-                          btnName: 'Post',
-                          defaultBtn: true,
-                          isPcked: false,
-                          width: 65,
-                        ),
-                        */
                         child: OutlinedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  commentSectionColor)),
                           onPressed: () {
                             if (authController.isGuestUser.value) {
                               authController.guestReminder(context);
                             } else {
-                              controller.onClickPost();
+                              controller.commentTextEditingController.text == ''
+                                  ? null
+                                  : controller.onClickPost();
                             }
                           },
                           child: Text(
                             'Post',
                             style: TextStyle(
-                              color: commentSectionColor,
+                              color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    if (controller.comments.value == null)
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: commentSectionColor,
-                        ),
-                      ),
-                    if (controller.comments.value != null)
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          // itemCount: controller.comments.value!.length,
-                          children: [
-                            for (int index = 0;
-                                index < controller.comments.value!.length;
-                                index++)
-                              Builder(
-                                builder: (context) {
-                                  // make sure we're comparing the right things here. userName, authorName, firstName, etc ... can be misleading.
+                    Obx(
+                      () => controller.loadingComments.value
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: commentSectionColor,
+                              ),
+                            )
+                          : Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: controller.comments.length,
+                                itemBuilder: ((context, index) {
                                   var commentOwned = controller
-                                          .comments.value![index].authorName ==
+                                          .comments[index].commentAuthor ==
                                       controller.userName;
+
                                   return Column(
                                     children: [
-                                      _CommentSectionView(
+                                      CommentTile(
+                                        index: index,
                                         isOwned: commentOwned,
-                                        controller: controller,
-                                        comment:
-                                            controller.comments.value![index],
+                                        commentController: controller,
+                                        comment: controller.comments[index],
                                         isSubComment: false,
                                       ),
-                                      if (controller
-                                              .comments.value![index].replies !=
-                                          null)
-                                        ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemCount: controller.comments
-                                                .value![index].replies!.length,
-                                            itemBuilder: (context, index2) {
-                                              var replyOwned = controller
-                                                      .comments
-                                                      .value![index]
-                                                      .replies![index2]
-                                                      .authorName ==
-                                                  controller.userName;
-                                              return _CommentSectionView(
-                                                isOwned: replyOwned,
-                                                controller: controller,
-                                                isSubComment: true,
-                                                comment: controller
-                                                    .comments
-                                                    .value![index]
-                                                    .replies![index2],
-                                                parent: controller
-                                                    .comments.value![index],
-                                              );
-                                            }),
+                                      Obx(
+                                        () => Container(
+                                          margin: EdgeInsets.only(left: 12),
+                                          padding: EdgeInsets.only(left: 10),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  left: BorderSide(
+                                                      width: 2,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              103,
+                                                              232,
+                                                              107)))),
+                                          child: controller.loadingCommentReply
+                                                      .value &&
+                                                  index >=
+                                                      controller
+                                                          .startPosition.value
+                                              ? Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : controller.comments[index]
+                                                          .replies ==
+                                                      null
+                                                  ? SizedBox.shrink()
+                                                  : ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      itemCount: controller
+                                                          .comments[index]
+                                                          .replies!
+                                                          .length,
+                                                      itemBuilder:
+                                                          (context, index2) {
+                                                        var replyOwned = controller
+                                                                .comments[index]
+                                                                .replies![
+                                                                    index2]
+                                                                .commentAuthor ==
+                                                            controller.userName;
+                                                        return CommentTile(
+                                                          index: index,
+                                                          isOwned: replyOwned,
+                                                          commentController:
+                                                              controller,
+                                                          isSubComment: true,
+                                                          comment: controller
+                                                              .comments[index]
+                                                              .replies![index2],
+                                                          parent: controller
+                                                              .comments[index],
+                                                        );
+                                                      }),
+                                        ),
+                                      ),
                                       const Divider(),
                                     ],
                                   );
-                                },
+                                }),
                               ),
-                            if (controller.moreCommentsAvailable.value)
-                              SizedBox(
-                                child: TextButton(
-                                  onPressed: () {
-                                    controller.fetchMoreComments();
-                                  },
-                                  child: controller.loadingMoreComments.value
-                                      ? SizedBox(
-                                          width: 80,
-                                          child: LinearProgressIndicator(
-                                            color: commentSectionColor,
-                                          ),
-                                        )
-                                      : Text("More comments",
-                                          style: TextStyle(
-                                            color: commentSectionColor,
-                                          )),
-                                ),
-                              ),
-                          ],
+                            ),
+                    ),
+                    if (controller.moreCommentsAvailable.value)
+                      SizedBox(
+                        child: TextButton(
+                          onPressed: () {
+                            controller.fetchMoreComments();
+                          },
+                          child: controller.loadingMoreComments.value
+                              ? SizedBox(
+                                  width: 80,
+                                  child: LinearProgressIndicator(
+                                    color: commentSectionColor,
+                                  ),
+                                )
+                              : Text("More comments",
+                                  style: TextStyle(
+                                    color: commentSectionColor,
+                                  )),
                         ),
                       ),
                   ],
@@ -231,228 +248,5 @@ class MyWidgetComment extends GetView<CommentController> {
         ),
       ),
     );
-  }
-}
-
-class _CommentSectionView extends StatelessWidget {
-  final bool isOwned;
-  final bool isSubComment;
-  final Comment comment;
-  final Comment?
-      parent; // the parent is only used when the isSubComment argument is true. otherwise, it's irrelevant; and should not be passed as argument.
-  final CommentController controller;
-  _CommentSectionView(
-      {required this.isOwned,
-      required this.isSubComment,
-      required this.comment,
-      required this.controller,
-      this.parent}) {
-    if (isSubComment && parent == null) {
-      throw Exception(
-          "'isSubComment' is true but 'parentCommentId' is not passed. This is not allowed; and it creates problems down the road.");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final decodedHtml = parse(comment.content).documentElement!.text;
-
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: isSubComment
-                ? const EdgeInsets.only(left: 24)
-                : const EdgeInsets.all(0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!isSubComment) const SizedBox(height: 4),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      maxRadius: 24,
-                      foregroundImage: NetworkImage(
-                        comment.imageUrl,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Text(
-                      comment.authorName,
-                      style: theme.textTheme.titleLarge!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Text(
-                      formatCommentDate(comment.date),
-                      style: theme.textTheme.titleLarge!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Html(style: {
-                  'p': Style(
-                    color: Colors.white,
-                  ),
-                  'b': Style(color: Colors.white, fontWeight: FontWeight.bold),
-                  'i': Style(color: Colors.white, fontStyle: FontStyle.italic),
-                  'strong':
-                      Style(color: Colors.white, fontWeight: FontWeight.w400),
-                }, data: decodedHtml),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () => controller.onToggleLike(comment),
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100.0),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.thumb_up_alt_outlined,
-                        color: comment.isUserLiked ? Colors.blue : Colors.grey,
-                      ),
-                    ),
-                    if (!isSubComment)
-                      TextButton(
-                          onPressed: () {
-                            String replyText = '';
-                            Get.dialog(Dialog(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w400),
-                                    onChanged: (value) => replyText = value,
-                                  ),
-                                  TextButton(
-                                    onPressed: () => controller.onClickReply(
-                                        comment, replyText),
-                                    child: const Text('Reply'),
-                                  )
-                                ],
-                              ),
-                            ));
-                          },
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            foregroundColor: commentSectionColor,
-                          ),
-                          child: const Text(
-                            'Reply',
-                          )),
-                    TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100.0),
-                          ),
-                          foregroundColor: commentSectionColor,
-                        ),
-                        child: const Text(
-                          'Report',
-                        )),
-                    const Spacer(),
-                    if (isOwned)
-                      TextButton(
-                        onPressed: () {
-                          if (!isSubComment) {
-                            controller.onDeleteComment(comment);
-                          } else {
-                            controller.onDeleteReply(comment, parent!);
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100.0),
-                          ),
-                        ),
-                        child: const Icon(
-                          Boxicons.bx_trash,
-                          color: Colors.red,
-                        ),
-                      ),
-                    if (isOwned)
-                      TextButton(
-                        onPressed: () {
-                          controller.updateTextEditingController.value =
-                              controller.updateTextEditingController.value
-                                  .copyWith(text: comment.content);
-                          Get.dialog(Dialog(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                  controller:
-                                      controller.updateTextEditingController,
-                                  onChanged: (value) {
-                                    controller
-                                            .updateTextEditingController.value =
-                                        controller
-                                            .updateTextEditingController.value
-                                            .copyWith(text: value);
-                                  },
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    controller.onUpdateComment(
-                                        comment,
-                                        controller
-                                            .updateTextEditingController.text);
-                                  },
-                                  child: const Text('Update'),
-                                )
-                              ],
-                            ),
-                          ));
-                        },
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100.0),
-                          ),
-                          foregroundColor: commentSectionColor,
-                        ),
-                        child: const Icon(Icons.edit),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  String formatCommentDate(String dateString) {
-    var commentDate = DateTime.parse("${dateString}Z").toLocal();
-    var now = DateTime.now();
-    final duration = now.difference(commentDate);
-    if (duration.inHours < 1) {
-      return "${duration.inMinutes} minutes ago";
-    } else if (duration.inDays < 1) {
-      return "${duration.inHours} hr${duration.inHours == 1 ? '' : 's'} ago";
-    } else if (duration.inDays < 9) {
-      return '${duration.inDays} day${duration.inDays == 1 ? '' : 's'} ago';
-    } else if (duration.inDays < 365) {
-      return DateFormat.MMMd().format(commentDate);
-    } else {
-      return DateFormat.yMMMd().format(commentDate);
-    }
   }
 }
