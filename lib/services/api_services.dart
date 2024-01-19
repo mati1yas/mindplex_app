@@ -413,7 +413,8 @@ class ApiService {
     }
   }
 
-  Future<List<dynamic>> fetchUserFollowers({required String username}) async {
+  Future<List<dynamic>> fetchUserFollowers(
+      {required String username, required int page}) async {
     var dio = Dio();
 
     Rx<LocalStorage> localStorage =
@@ -423,8 +424,8 @@ class ApiService {
     if (!authenticationController.isGuestUser.value) {
       dio.options.headers["Authorization"] = "Bearer $token";
     }
-    print("${AppUrls.followers}$username/1");
-    Response response = await dio.get("${AppUrls.followers}$username/1");
+    print("${AppUrls.followers}$username/$page");
+    Response response = await dio.get("${AppUrls.followers}$username/$page");
 
     if (response.statusCode == 200) {
       final followers = response.data['data'];
