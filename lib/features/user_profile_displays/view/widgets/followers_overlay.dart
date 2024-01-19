@@ -1,10 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/colors.dart';
 
-class FollowersOverlay extends StatelessWidget {
-  final List<dynamic> followers;
+class FollowersOverlay extends StatefulWidget {
+  final ProfileController profileController;
 
-  const FollowersOverlay({Key? key, required this.followers});
+  const FollowersOverlay({Key? key, required this.profileController});
+
+  @override
+  State<FollowersOverlay> createState() => _FollowersOverlayState();
+}
+
+class _FollowersOverlayState extends State<FollowersOverlay> {
+  List<dynamic> followers = [];
+  bool fetched = false;
+  @override
+  void initState() {
+    print(widget.profileController.userProfile.value.username);
+    widget.profileController
+        .fetchFollowers(
+            username: widget.profileController.userProfile.value.username!)
+        .then((value) => {
+              setState(
+                () {
+                  this.followers = widget.profileController.followers;
+                  this.fetched = true;
+                },
+              )
+            });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,23 +72,27 @@ class FollowersOverlay extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 // List of followers
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: followers.length,
-                    itemBuilder: (context, index) {
-                      final follower = followers[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(follower['avatar_url']),
+                this.fetched
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: this.followers.length,
+                          itemBuilder: (context, index) {
+                            final follower = this.followers[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(follower['avatar_url']),
+                              ),
+                              title: Text(
+                                follower['display_name'],
+                                style:
+                                    TextStyle(color: shimmerEffectHighlight1),
+                              ),
+                            );
+                          },
                         ),
-                        title: Text(
-                          follower['display_name'],
-                          style: TextStyle(color: shimmerEffectHighlight1),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                      )
+                    : Center(child: CircularProgressIndicator())
               ],
             ),
           ),
