@@ -106,7 +106,7 @@ class UserProfileStatistics extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => FollowersOverlay(
-        followers: profileController.followers,
+        profileController: profileController,
       ),
       // isScrollControlled: true,
     );
