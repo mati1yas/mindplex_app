@@ -35,6 +35,11 @@ class ProfileController extends GetxController {
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
   RxList followers = [].obs;
+  RxBool isLoadingFollowers = false.obs;
+  RxBool firstTimeLoading = true.obs;
+
+  RxInt page = 0.obs;
+  RxBool reachedEndofFollowers = false.obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
@@ -64,7 +69,6 @@ class ProfileController extends GetxController {
     final res = await apiService.value.fetchUserProfile(userName: username);
     res.username = username;
     userProfile.value = res;
-    await fetchFollowers(username: username);
     isLoading.value = false;
   }
 
@@ -94,9 +98,15 @@ class ProfileController extends GetxController {
   }
 
   Future<void> fetchFollowers({required String username}) async {
-    this.followers.value =
-        await apiService.value.fetchUserFollowers(username: username);
-    this.userProfile.value.followers = this.followers.length;
-    this.authenticatedUser.value.followers = this.followers.length;
+    isLoadingFollowers.value = true;
+    page.value += 1;
+
+    List<dynamic> fetchedFollowers = await apiService.value
+        .fetchUserFollowers(page: page.value, username: username);
+
+    followers.addAll(fetchedFollowers);
+    if (fetchedFollowers.length < 10) reachedEndofFollowers.value = true;
+    isLoadingFollowers.value = false;
+    firstTimeLoading.value = false;
   }
 }
