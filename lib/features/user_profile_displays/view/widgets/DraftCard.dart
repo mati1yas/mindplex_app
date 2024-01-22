@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_content_display.dart';
+import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
+import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
 
 class DraftCard extends StatelessWidget {
   final Blog blog;
 
-  const DraftCard({required this.blog});
+  const DraftCard({
+    required this.blog,
+    required this.draftedPostsController,
+  });
+  final DraftedPostsController draftedPostsController;
 
   @override
   Widget build(BuildContext context) {
+    PageNavigationController pageNavigationController = Get.find();
+
+    BlogsController blogsController = Get.find();
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -16,58 +29,76 @@ class DraftCard extends StatelessWidget {
         color: blogContainerColor,
         border: Border.all(color: profileGolden),
       ),
-      height: 280,
-      width: 140,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            blog.postTitle ?? "",
-            style: TextStyle(
-              color: profileGolden,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
           SizedBox(
-            height: 10,
+            height: 5,
           ),
-          Expanded(
-              child: Text(
-            blog.overview ?? "",
-            style: TextStyle(color: Colors.white),
-          )),
+          BlogContentDisplay(
+            data: blog.content ?? [],
+            padding: 0,
+          ),
           Row(
             children: [
-              TextButton(
-                child: Text(
-                  'Edit Draft',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+              GestureDetector(
+                onTap: () {
+                  draftedPostsController.handleDraftEditing(
+                    blogsController: blogsController,
+                    draftedBlog: blog,
+                    pageNavigationController: pageNavigationController,
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.edit_calendar,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 9,
+                    ),
+                    Text(
+                      'Edit Draft',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {},
               ),
               SizedBox(
                 width: 5,
               ),
               Container(
-                width: 1,
+                width: 2,
                 height: 15,
                 color: Colors.grey,
               ),
               SizedBox(
                 width: 5,
               ),
-              TextButton(
-                child: Text(
-                  'Delete Draft',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 85, 85),
-                  ),
+              GestureDetector(
+                onTap: () {
+                  draftedPostsController.deleteDraft(blog: blog);
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.delete_outline_outlined,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 9,
+                    ),
+                    Text(
+                      'Delete Draft',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 255, 85, 85),
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {},
               ),
             ],
           ),
