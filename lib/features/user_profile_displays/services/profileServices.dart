@@ -196,7 +196,7 @@ class ProfileServices {
       final token = await localStorage.value.readFromStorage('Token');
       print('${AppUrls.draftBaseUrl + '${draftId}'}');
       dio.options.headers["Authorization"] = "Bearer ${token}";
-      Response response = await dio.post(
+      Response response = await dio.delete(
           '${AppUrls.draftBaseUrl + '${int.parse(draftId)}'}',
           data: <String, dynamic>{"draft_id": draftId});
     } on DioException catch (e) {
