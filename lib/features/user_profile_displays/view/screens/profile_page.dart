@@ -5,6 +5,7 @@ import 'package:mindplex/features/user_profile_displays/view/screens/publish_pos
 import 'package:mindplex/features/user_profile_displays/view/screens/draft_screen.dart';
 
 import 'package:mindplex/utils/colors.dart';
+import '../../../../utils/no_internet_card_widget.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../widgets/user_profile_image_widget.dart';
 import '../widgets/user_profile_statistics_widget.dart';
@@ -48,7 +49,15 @@ class _ProfilePage extends State<ProfilePage>
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
-          child: Obx(() => userProfileController.isLoading.value
+          child: Obx(() => !userProfileController.isConnected.value?
+          Center(
+            child: noInternetCard(() {
+              userProfileController.getUserProfile(
+                  username: params["me"] == "me"
+                      ? userProfileController.authenticatedUser.value.username!
+                      : params["username"]!);
+            }),
+          ):userProfileController.isLoading.value
               ? Center(
                   child: CircularProgressIndicator(),
                 )

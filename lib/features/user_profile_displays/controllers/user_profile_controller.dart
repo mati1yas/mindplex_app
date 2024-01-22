@@ -15,6 +15,7 @@ import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/status.dart';
 
+import '../../../utils/network/connection-info.dart';
 import '../../authentication/controllers/auth_controller.dart';
 import '../../../utils/unkown_models/popularModel.dart';
 import '../view/screens/about_screen.dart';
@@ -37,6 +38,7 @@ class ProfileController extends GetxController {
   RxList followers = [].obs;
   RxBool isLoadingFollowers = false.obs;
   RxBool firstTimeLoading = true.obs;
+  RxBool isConnected = true.obs;
 
   RxInt page = 0.obs;
   RxBool reachedEndofFollowers = false.obs;
@@ -46,6 +48,8 @@ class ProfileController extends GetxController {
   final apiService = ApiService().obs;
 
   AuthController authController = Get.find();
+
+  ConnectionInfoImpl connectionChecker = Get.find();
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -65,11 +69,25 @@ class ProfileController extends GetxController {
   }
 
   Future<void> getUserProfile({required String username}) async {
-    isLoading.value = true;
-    final res = await apiService.value.fetchUserProfile(userName: username);
-    res.username = username;
-    userProfile.value = res;
-    isLoading.value = false;
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      isLoading.value = true;
+      final res = await apiService.value.fetchUserProfile(userName: username);
+      res.username = username;
+      userProfile.value = res;
+      isLoading.value = false;
+    }
+    catch(e){
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      }
+    }
   }
 
   void fetchBlogs() async {
