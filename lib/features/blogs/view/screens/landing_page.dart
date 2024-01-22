@@ -199,13 +199,22 @@ class _LandingPageState extends State<LandingPage>
                                         blogsController.filteredBlogs.length &&
                                     !blogsController.reachedEndOfList) {
                                   // Display CircularProgressIndicator under the last card
-                                  return ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: 1,
-                                    itemBuilder: (ctx, inx) =>
-                                        const BlogSkeleton(),
-                                  );
+                                  return Obx(() => !blogsController
+                                          .canLoadMoreBlogs.value
+                                      ? Container(
+                                          margin: EdgeInsets.only(bottom: 50),
+                                          child: noInternetCard(() {
+                                            blogsController.loadMoreBlogs();
+                                          }),
+                                        )
+                                      : ListView.builder(
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: 1,
+                                          itemBuilder: (ctx, inx) =>
+                                              const BlogSkeleton(),
+                                        ));
                                 } else {
                                   return Container(); // Return an empty container otherwise
                                 }

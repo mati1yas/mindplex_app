@@ -57,12 +57,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 child: Column(children: [
                   const SizedBox(height: 10),
                   inputBoxWithLabel(context, false, userNameController, TextInputType.name, "Username"),
-                  Obx(() => settingsController.usernameError != null && settingsController.isSaved.value
-                      ? errorMessage(settingsController.usernameError!.value)
+                  Obx(() => settingsController.usernameError.value != "" && settingsController.isSaved.value
+                      ? errorMessage(settingsController.usernameError.value)
                       : Container(),),
                   inputBoxWithLabel(context, false, emailController, TextInputType.name, "Email"),
-                  Obx(() => settingsController.emailError != null && settingsController.isSaved.value
-                      ? errorMessage(settingsController.emailError!.value)
+                  Obx(() => settingsController.emailError.value != "" && settingsController.isSaved.value
+                      ? errorMessage(settingsController.emailError.value)
                       : Container(),),
                   inputBoxWithLabel(context, true, userNameController, TextInputType.name, "Mindplex Handle"),
                 ])),

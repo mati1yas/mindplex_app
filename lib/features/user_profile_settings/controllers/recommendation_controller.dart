@@ -33,7 +33,8 @@ class RecommendationController extends GetxController{
 
   void fetchUserInfo(String name) async {
     isLoading.value = true;
-    UserProfile res = await apiService.value.fetchUserProfile(userName: name);
+    await profileController.getUserProfile(username: name);
+    UserProfile res = profileController.userProfile.value;
     popularity.value = res.recPopularity!.toDouble();
     pattern.value = res.recPattern!.toDouble();
     highQuality.value = res.recQuality!.toDouble();
