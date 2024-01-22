@@ -152,8 +152,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     ProfileController profileController = Get.put(ProfileController());
 
     try {
-      UserProfile userProfile = await _apiService.fetchUserProfile(
-          userName: profileController.authenticatedUser.value.username!);
+      await profileController.getUserProfile(username: profileController.authenticatedUser.value.username!);
+      UserProfile userProfile = profileController.userProfile.value;
 
       setState(() {
         age = userProfile.age!;

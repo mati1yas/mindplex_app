@@ -70,8 +70,8 @@ class PreferenceController extends GetxController{
       isLoading.value = true;
 
     try {
-      UserProfile userProfile = await _apiService.fetchUserProfile(
-          userName:profileController.authenticatedUser.value.username!);
+      await profileController.getUserProfile(username: profileController.authenticatedUser.value.username!);
+      UserProfile userProfile = profileController.userProfile.value;
 
       agePreference.value = maptoPrivacyPreference(userProfile.agePreference!);
       genderPreference.value = maptoPrivacyPreference(userProfile.genderPreference!);

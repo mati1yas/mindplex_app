@@ -13,6 +13,7 @@ import 'package:mindplex/features/user_profile_settings/view/screens/recommendat
 
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/colors.dart';
+import '../../../../utils/no_internet_card_widget.dart';
 import 'change_password.dart';
 import 'general_settings.dart';
 
@@ -33,6 +34,7 @@ class _SettingsPage extends State<SettingsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    settingsController.fetchUserInfo(profileController.authenticatedUser.value.username!);
   }
 
   @override
@@ -49,12 +51,6 @@ class _SettingsPage extends State<SettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    profileController.getAuthenticatedUser();
-    settingsController.fetchUserInfo("esubalew");
-    final firstName =
-        profileController.authenticatedUser.value.firstName ?? " ";
-    final userEmail =
-        profileController.authenticatedUser.value.userEmail ?? " ";
     return Scaffold(
       backgroundColor: mainBackgroundColor,
       body: Column(
@@ -136,7 +132,10 @@ class _SettingsPage extends State<SettingsPage>
               ),
             ),
           ),
-          Expanded(
+          Obx(() => !profileController.isConnected.value?
+          noInternetCard(() {
+            profileController.getUserProfile(username:profileController.authenticatedUser.value.username!);
+          }):Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
@@ -151,7 +150,7 @@ class _SettingsPage extends State<SettingsPage>
                 PreferencePage()
               ],
             ),
-          ),
+          ),),
         ],
       ),
     );

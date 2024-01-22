@@ -82,7 +82,7 @@ Widget inputBoxWithLabel(
                       if (value != null && value.length < 3) {
                        return settingsController.setInputError("Username")!.value;
                       } else {
-                        settingsController.usernameError = null;
+                        settingsController.usernameError.value = "";
                         return null;
                       }
                     } else if (label == "Email") {
@@ -92,7 +92,7 @@ Widget inputBoxWithLabel(
                         return settingsController.setInputError("Email")!.value;
                       }
                       else {
-                        settingsController.emailError = null;
+                        settingsController.emailError.value = "";
                         return null;
                       }
                     }
