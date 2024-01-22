@@ -13,6 +13,7 @@ class BlogsController extends GetxController {
   RxBool isLoadingMore = true.obs;
   RxBool newPostTypeLoading = true.obs;
   RxBool isConnected = true.obs;
+  RxBool canLoadMoreBlogs = true.obs;
 
   RxString recommender = "default".obs;
   RxString post_format = "text".obs;
@@ -77,32 +78,44 @@ class BlogsController extends GetxController {
   }
 
   void loadMoreBlogs() async {
-    if (isLoadingMore.value || reachedEndOfList) {
-      return;
+    try {
+      canLoadMoreBlogs.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      if (isLoadingMore.value || reachedEndOfList) {
+        return;
+      }
+
+      isLoadingMore.value = true;
+      page.value++; // Increment the page number
+      final res = await apiSerivice.value.loadBlogs(
+          post_type: post_type.value,
+          recommender: recommender.value,
+          post_format: post_format.value,
+          page: page.value.toInt());
+
+      if (res.isEmpty) {
+        reachedEndOfList = true;
+        // Notify the user that there are no more posts for now
+        // You can display a message or handle it in your UI accordingly
+      } else {
+        startPosition.value = blogs.length;
+        blogs.addAll(res);
+
+        loadReputation(res);
+      }
+
+      isLoadingMore.value = false;
+
+      update(); // Trigger UI update
     }
-
-    isLoadingMore.value = true;
-    page.value++; // Increment the page number
-    final res = await apiSerivice.value.loadBlogs(
-        post_type: post_type.value,
-        recommender: recommender.value,
-        post_format: post_format.value,
-        page: page.value.toInt());
-
-    if (res.isEmpty) {
-      reachedEndOfList = true;
-      // Notify the user that there are no more posts for now
-      // You can display a message or handle it in your UI accordingly
-    } else {
-      startPosition.value = blogs.length;
-      blogs.addAll(res);
-
-      loadReputation(res);
+    catch(e){
+      if (e is NetworkException) {
+        canLoadMoreBlogs.value = false;
+      }
     }
-
-    isLoadingMore.value = false;
-
-    update(); // Trigger UI update
   }
 
   void changeTopics({required String topicCategory}) async {
