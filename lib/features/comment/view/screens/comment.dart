@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/comment/controllers/comment_controller.dart';
 import 'package:mindplex/features/comment/view/widgets/comment_tile.dart';
+import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 
 import '../../../../utils/colors.dart';
 
@@ -20,6 +22,7 @@ class MyWidgetComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CommentController(post_slug: post_slug));
+    ProfileController profileController = Get.find();
     final theme = Theme.of(context);
     AuthController authController = Get.find();
     return SafeArea(
@@ -54,16 +57,10 @@ class MyWidgetComment extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                            maxRadius: 24,
-                            backgroundColor: Colors.white,
-                            /*
-
-                          foregroundImage: CachedNetworkImageProvider(
-                              controller.profileImage!),
-                              */
-                            backgroundImage:
-                                NetworkImage(controller.profileImage ?? "")),
+                        TopUserProfileIcon(
+                            openDrawer: false,
+                            profileController: profileController,
+                            authController: authController),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Container(
