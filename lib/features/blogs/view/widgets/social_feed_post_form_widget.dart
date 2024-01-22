@@ -16,23 +16,34 @@ class SocialFeedForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formkey = GlobalKey<FormState>();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
-          TextFormField(
-            onChanged: (value) {
-              draftedPostsController.textEditingController.value.text = value;
-            },
-            style: TextStyle(color: Colors.white), // Set the text color
+          Form(
+            key: formkey,
+            child: TextFormField(
+              validator: (value) {
+                if (value != null && value.isEmpty) {
+                  return "Empty Post";
+                }
 
-            controller: draftedPostsController.textEditingController.value,
-            decoration: InputDecoration(
-                filled: true,
-                fillColor: Color.fromARGB(255, 4, 28, 49),
-                border: OutlineInputBorder()),
-            maxLines: 2,
-            minLines: 1,
+                return null;
+              },
+              onChanged: (value) {
+                draftedPostsController.textEditingController.value.text = value;
+              },
+              style: TextStyle(color: Colors.white), // Set the text color
+
+              controller: draftedPostsController.textEditingController.value,
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 4, 28, 49),
+                  border: OutlineInputBorder()),
+              maxLines: 2,
+              minLines: 1,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,17 +69,24 @@ class SocialFeedForm extends StatelessWidget {
                 children: [
                   ElevatedButton(
                       onPressed: () {
-                        if (editingDraft == true) {
-                          draftedPostsController.updateDraft();
-                        } else {
-                          draftedPostsController.createNewDraft();
+                        if (formkey.currentState!.validate()) {
+                          if (editingDraft == true) {
+                            draftedPostsController.updateDraft();
+                          } else {
+                            draftedPostsController.createNewDraft();
+                          }
                         }
                       },
                       child: Obx(() =>
                           draftedPostsController.updatingDraft.value == true ||
                                   draftedPostsController.savingDraft.value ==
                                       true
-                              ? CircularProgressIndicator()
+                              ? Container(
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.green,
+                                  ))
                               : Text(editingDraft == true
                                   ? "Update Draft"
                                   : "Save Draft"))),
@@ -80,13 +98,23 @@ class SocialFeedForm extends StatelessWidget {
                           backgroundColor: MaterialStatePropertyAll(
                               Color.fromARGB(255, 5, 209, 224))),
                       onPressed: () {
-                        if (editingDraft == true) {
-                          draftedPostsController.postDraftToSocial();
-                        } else {
-                          draftedPostsController.postNewToSocial();
+                        if (formkey.currentState!.validate()) {
+                          if (editingDraft == true) {
+                            draftedPostsController.postDraftToSocial();
+                          } else {
+                            draftedPostsController.postNewToSocial();
+                          }
                         }
                       },
-                      child: Text("Post"))
+                      child: Obx(
+                          () => draftedPostsController.makingPost.value == true
+                              ? Container(
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.green,
+                                  ))
+                              : Text("Post")))
                 ],
               )
             ],
