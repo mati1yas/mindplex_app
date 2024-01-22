@@ -64,7 +64,152 @@ class ProfileServices {
   }
 
   Future<List<Blog>> getDraftPosts({required int page}) {
-    var url = "${AppUrls.baseUrl}/mp_up/v1/post/draft/${page}";
+    var url = "${AppUrls.draftBaseUrl + "${page}"}";
     return getBlogs(url, BlogsType.drafted_posts);
+  }
+
+  Future<void> createNewDraft({required String postContent}) async {
+    print("ABOUT TO CREATE NEW DRAFT SERVICE LEVEL");
+
+    try {
+      Dio dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post(AppUrls.draftBaseUrl,
+          data: <String, dynamic>{"post_content": postContent});
+
+      print(response);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw new AppError(
+            message: e.response?.statusMessage ?? "Something is very wrong!",
+            statusCode: e.response?.statusCode);
+      } else {
+        throw new AppError(message: e.message ?? "Something is very wrong!");
+      }
+    } catch (e) {
+      print("unkownError:\n${e}");
+      throw new AppError(message: "Something is very wrong!");
+    }
+  }
+
+  Future<void> updateDraft(
+      {required String draftId, required String postContent}) async {
+    try {
+      Dio dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post(AppUrls.draftBaseUrl,
+          data: <String, dynamic>{
+            "post_content": postContent,
+            "draft_id": draftId
+          });
+
+      print(response);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw new AppError(
+            message: e.response?.statusMessage ?? "Something is very wrong!",
+            statusCode: e.response?.statusCode);
+      } else {
+        throw new AppError(message: e.message ?? "Something is very wrong!");
+      }
+    } catch (e) {
+      print("unkownError:\n${e}");
+      throw new AppError(message: "Something is very wrong!");
+    }
+  }
+
+  Future<void> postDraftToSocial(
+      {required String draftId, required String postContent}) async {
+    print("About To Post Draft To Social Service Level");
+    try {
+      Dio dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post('${AppUrls.postUrl}',
+          data: <String, dynamic>{
+            "post_content": postContent,
+            "draft_id": draftId
+          });
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw new AppError(
+            message: e.response?.statusMessage ?? "Something is very wrong!",
+            statusCode: e.response?.statusCode);
+      } else {
+        throw new AppError(message: e.message ?? "Something is very wrong!");
+      }
+    } catch (e) {
+      print("unkownError:\n${e}");
+      throw new AppError(message: "Something is very wrong!");
+    }
+  }
+
+  Future<void> postNewToSocial({required String postContent}) async {
+    print("About To Post new To Social Service Level");
+    try {
+      Dio dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response =
+          await dio.post(AppUrls.postUrl, data: <String, dynamic>{
+        "post_content": postContent,
+      });
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw new AppError(
+            message: e.response?.statusMessage ?? "Something is very wrong!",
+            statusCode: e.response?.statusCode);
+      } else {
+        throw new AppError(message: e.message ?? "Something is very wrong!");
+      }
+    } catch (e) {
+      print("unkownError:\n${e}");
+      throw new AppError(message: "Something is very wrong!");
+    }
+  }
+
+  Future<void> deleteDraft({required String draftId}) async {
+    print("About To Delete Draft Service Level");
+    try {
+      Dio dio = Dio();
+
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+      print('${AppUrls.draftBaseUrl + '${draftId}'}');
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      Response response = await dio.post(
+          '${AppUrls.draftBaseUrl + '${int.parse(draftId)}'}',
+          data: <String, dynamic>{"draft_id": draftId});
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw new AppError(
+            message: e.response?.statusMessage ?? "Something is very wrong!",
+            statusCode: e.response?.statusCode);
+      } else {
+        throw new AppError(message: e.message ?? "Something is very wrong!");
+      }
+    } catch (e) {
+      print("unkownError:\n${e}");
+      throw new AppError(message: "Something is very wrong!");
+    }
   }
 }
