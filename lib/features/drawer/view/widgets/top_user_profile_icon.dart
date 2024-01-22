@@ -10,15 +10,17 @@ class TopUserProfileIcon extends StatelessWidget {
     super.key,
     required this.profileController,
     required this.authController,
+    this.openDrawer = true,
   });
 
   final ProfileController profileController;
   final AuthController authController;
+  final bool openDrawer;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {Keys.globalkey.currentState!.openDrawer()},
+      onTap: () => {if (openDrawer) Keys.globalkey.currentState!.openDrawer()},
       child: Obx(() => CircleAvatar(
             radius: 27,
             backgroundImage: NetworkImage(authController.isGuestUser.value

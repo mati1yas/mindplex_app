@@ -24,6 +24,8 @@ class AppUrls {
   static var unfollowUrl = '$baseUrl/mp_rp/v1/user/unfollow';
   static var followers = '$baseUrl/mp_rp/v1/user/followers/';
   static var blogAddViewUrl= "$baseUrl/mp_rp/post/view_count/";
+  static var draftBaseUrl = "${AppUrls.baseUrl}/mp_up/v1/post/draft/";
+  static var postUrl = "${AppUrls.baseUrl}/mp_up/v1/post/";
 }
 
 var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";

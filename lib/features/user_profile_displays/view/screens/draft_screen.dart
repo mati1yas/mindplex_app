@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/blog_shimmer.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/DraftCard.dart';
@@ -11,6 +12,8 @@ class DraftPosts extends StatelessWidget {
 
   final DraftedPostsController draftedPostsController =
       Get.put(DraftedPostsController());
+
+  BlogsController blogsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,9 @@ class DraftPosts extends StatelessWidget {
                       }
 
                       return DraftCard(
-                          blog: draftedPostsController.blogs[index]);
+                        draftedPostsController: draftedPostsController,
+                        blog: draftedPostsController.blogs[index],
+                      );
                     });
       }),
     );
