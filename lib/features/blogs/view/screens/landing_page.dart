@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/view/widgets/social_feed_card.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/utils/no_internet_card_widget.dart';
 
 import '../../../drawer/view/widgets/top_user_profile_icon.dart';
@@ -32,6 +33,8 @@ class _LandingPageState extends State<LandingPage>
   ProfileController profileController = Get.find();
 
   AuthController authController = Get.find();
+
+  DraftedPostsController draftedPostsController = Get.find();
 
   late TabController _tabController;
   late TabController _tabController2;
@@ -106,7 +109,11 @@ class _LandingPageState extends State<LandingPage>
 
                 // section for making a post to social feed .
                 Obx(() => blogsController.post_type == 'social'
-                    ? SocialFeedForm()
+                    ? SocialFeedForm(
+                        draftedPostsController: draftedPostsController,
+                        editingDraft:
+                            draftedPostsController.editingSocialPostDraft.value,
+                      )
                     : SizedBox.shrink()),
               ],
             ),
@@ -158,48 +165,53 @@ class _LandingPageState extends State<LandingPage>
           // section for displaying user
 
           Obx(() {
-            return !blogsController.isConnected.value?
-            noInternetCard(() {
-              blogsController.fetchBlogs();
-            }):(blogsController.isLoadingMore.value == true &&
-                        isIntialLoading) ||
-                    blogsController.newPostTypeLoading.value
-                ? Expanded(
-                    child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                    ),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                        controller: blogsController.scrollController,
-                        itemCount: blogsController.filteredBlogs.length + 1,
-                        itemBuilder: (ctx, index) {
-                          if (index < blogsController.filteredBlogs.length) {
-                            isIntialLoading = false;
-                            return blogsController.post_type != 'social'
-                                ? BlogCard(
-                                    blogsController: blogsController,
-                                    index: index)
-                                : SocialFeedCard(
-                                    blogsController: blogsController,
-                                    index: index);
-                          } else {
-                            print("executing else statement");
-                            if (index == blogsController.filteredBlogs.length && !blogsController.reachedEndOfList) {
-                              // Display CircularProgressIndicator under the last card
-                              return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: 1,
-                                itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                              );
-                            } else {
-                              return Container(); // Return an empty container otherwise
-                            }
-                          }
-                        }),
-                  );
+            return !blogsController.isConnected.value
+                ? noInternetCard(() {
+                    blogsController.fetchBlogs();
+                  })
+                : (blogsController.isLoadingMore.value == true &&
+                            isIntialLoading) ||
+                        blogsController.newPostTypeLoading.value
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                            controller: blogsController.scrollController,
+                            itemCount: blogsController.filteredBlogs.length + 1,
+                            itemBuilder: (ctx, index) {
+                              if (index <
+                                  blogsController.filteredBlogs.length) {
+                                isIntialLoading = false;
+                                return blogsController.post_type != 'social'
+                                    ? BlogCard(
+                                        blogsController: blogsController,
+                                        index: index)
+                                    : SocialFeedCard(
+                                        blogsController: blogsController,
+                                        index: index);
+                              } else {
+                                print("executing else statement");
+                                if (index ==
+                                        blogsController.filteredBlogs.length &&
+                                    !blogsController.reachedEndOfList) {
+                                  // Display CircularProgressIndicator under the last card
+                                  return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: 1,
+                                    itemBuilder: (ctx, inx) =>
+                                        const BlogSkeleton(),
+                                  );
+                                } else {
+                                  return Container(); // Return an empty container otherwise
+                                }
+                              }
+                            }),
+                      );
           })
         ],
       ),
