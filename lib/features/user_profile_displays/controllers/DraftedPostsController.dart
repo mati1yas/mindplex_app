@@ -73,11 +73,9 @@ class DraftedPostsController extends GetxController {
     try {
       List<Blog> res = await fetchApi();
 
-      if (res.isEmpty) {
-        isReachedEndOfList.value = true;
-      } else {
-        blogs.value = res;
-      }
+      if (res.isEmpty) isReachedEndOfList.value = true;
+
+      blogs.value = res;
 
       status(Status.success);
     } catch (e) {
@@ -109,8 +107,13 @@ class DraftedPostsController extends GetxController {
       savingDraft.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
 
-      await profileService.createNewDraft(postContent: postContent);
+      Blog newDraft =
+          await profileService.createNewDraft(postContent: postContent);
       savingDraft.value = false;
+
+      // this makes the newly created draft available for further editing
+      editingSocialPostDraft.value = true;
+      beingEditeDraftBlog.value = newDraft;
     } catch (e) {
       status(Status.error);
       if (e is AppError) {
@@ -119,7 +122,7 @@ class DraftedPostsController extends GetxController {
       Toster(message: errorMessage.value);
     }
     savingDraft.value = false;
-    resetDrafting();
+
     Toster(message: " Draft Saved Successfully ", color: Colors.green);
   }
 
