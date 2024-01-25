@@ -1,32 +1,24 @@
 import 'dart:convert';
-import 'package:another_flushbar/flushbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
-import 'package:mindplex/features/blogs/models/blog_model.dart';
-import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
+
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
-import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/Toster.dart';
-import 'package:mindplex/utils/status.dart';
 
 import '../../../utils/network/connection-info.dart';
 import '../../authentication/controllers/auth_controller.dart';
 import '../../../utils/unkown_models/popularModel.dart';
-import '../view/screens/about_screen.dart';
-import '../view/screens/bookmark_screen.dart';
-import '../view/screens/draft_screen.dart';
 
 class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchBlogs();
+    // fetchBlogs();
   }
 
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
@@ -70,18 +62,18 @@ class ProfileController extends GetxController {
 
   Future<void> getUserProfile({required String username}) async {
     try {
+      isLoading.value = true;
       isConnected.value = true;
       if (!await connectionChecker.isConnected) {
         throw NetworkException(
             "Looks like there is problem with your connection.");
       }
-      isLoading.value = true;
+
       final res = await apiService.value.fetchUserProfile(userName: username);
       res.username = username;
       userProfile.value = res;
       isLoading.value = false;
-    }
-    catch(e){
+    } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
         Toster(
