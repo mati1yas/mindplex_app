@@ -45,91 +45,90 @@ class AboutScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 10),
-                  IntrinsicHeight(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TitleText(text: 'Education'),
-                              SizedBox(height: 10),
-                              Html(
-                                data: decodeHtmlContent(profileController
-                                            .userProfile.value.education !=
-                                        null
-                                    ? profileController.userProfile.value
-                                        .education!.educationalBackground
-                                    : ""),
-                                style: {
-                                  '*': Style(color: Colors.white),
-                                },
-                              ),
-                              // Text(
-                              //   profileController.userProfile.value.education !=
-                              //           null
-                              //       ? profileController.userProfile.value
-                              //           .education!.educationalBackground
-                              //       : "",
-                              //   style: const TextStyle(color: Colors.white),
-                              // ),
-                            ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TitleText(text: 'Education'),
+                            SizedBox(height: 10),
+                            Html(
+                              data: decodeHtmlContent(profileController
+                                          .userProfile.value.education !=
+                                      null
+                                  ? profileController.userProfile.value
+                                      .education!.educationalBackground
+                                  : ""),
+                              style: {
+                                '*': Style(color: Colors.white),
+                              },
+                            ),
+                            // Text(
+                            //   profileController.userProfile.value.education !=
+                            //           null
+                            //       ? profileController.userProfile.value
+                            //           .education!.educationalBackground
+                            //       : "",
+                            //   style: const TextStyle(color: Colors.white),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleText(text: 'Age'),
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TitleText(text: 'Age'),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            profileController.userProfile.value.age != null
-                                ? Text(
-                                    profileController.userProfile.value.age
-                                            .toString() +
-                                        ' years',
-                                    style: const TextStyle(color: Colors.white),
-                                  )
-                                : Tooltip(
-                                    message: "Private data",
-                                    child: Icon(
-                                      Icons.lock,
-                                      color: Colors.white,
-                                    ),
+                          profileController.userProfile.value.age != null
+                              ? Text(
+                                  profileController.userProfile.value.age
+                                          .toString() +
+                                      ' years',
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              : Tooltip(
+                                  message: "Private data",
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
                                   ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TitleText(text: 'Sex'),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            profileController.userProfile.value.gender != null
-                                ? Text(
-                                    profileController.userProfile.value.gender
-                                        .toString(),
-                                    style: const TextStyle(color: Colors.white),
-                                  )
-                                : Tooltip(
-                                    message: "Private data",
-                                    child: Icon(
-                                      Icons.lock,
-                                      color: Colors.white,
-                                    ),
+                                ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleText(text: 'Sex'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          profileController.userProfile.value.gender != null
+                              ? Text(
+                                  profileController.userProfile.value.gender
+                                      .toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                )
+                              : Tooltip(
+                                  message: "Private data",
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
                                   ),
-                          ],
-                        ),
-                      ],
-                    ),
+                                ),
+                        ],
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 10,
