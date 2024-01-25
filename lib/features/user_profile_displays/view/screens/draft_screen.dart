@@ -10,14 +10,9 @@ import "../../../../utils/status.dart";
 class DraftPosts extends StatelessWidget {
   DraftPosts({super.key});
 
-  final DraftedPostsController draftedPostsController =
-      Get.put(DraftedPostsController());
-
-  BlogsController blogsController = Get.find();
-
+  DraftedPostsController draftedPostsController = Get.find();
   @override
   Widget build(BuildContext context) {
-    draftedPostsController.loadBlogs();
     return Container(
       child: Obx(() {
         return draftedPostsController.status == Status.loading
@@ -30,7 +25,7 @@ class DraftPosts extends StatelessWidget {
                     child: Icon(Icons.error),
                   )
                 : ListView.separated(
-                    controller: draftedPostsController.scrollController,
+                    controller: draftedPostsController.draftScorllController,
                     itemCount: draftedPostsController.blogs.length + 1,
                     separatorBuilder: (context, index) => SizedBox(height: 10),
                     itemBuilder: (context, index) {
@@ -49,9 +44,9 @@ class DraftPosts extends StatelessWidget {
                       }
 
                       return DraftCard(
-                        draftedPostsController: draftedPostsController,
-                        blog: draftedPostsController.blogs[index],
-                      );
+                          draftedPostsController: draftedPostsController,
+                          blog: draftedPostsController.blogs[index],
+                          draftIndex: index);
                     });
       }),
     );

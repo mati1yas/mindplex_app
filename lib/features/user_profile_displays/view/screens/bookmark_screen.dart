@@ -9,32 +9,32 @@ import "../../../../utils/status.dart";
 class BookmarkScreen extends StatelessWidget {
   BookmarkScreen({super.key});
 
-  final BookmarksController bookmarkController = Get.put(BookmarksController());
+  BookmarksController bookmarksController = Get.find();
   @override
   Widget build(BuildContext context) {
-    bookmarkController.loadBlogs();
     return Container(
       child: Obx(() {
-        return bookmarkController.status == Status.loading
+        return bookmarksController.status == Status.loading
             ? ListView.builder(
                 itemCount: 3,
                 itemBuilder: (ctx, inx) => const BlogSkeleton(),
               )
-            : bookmarkController.status == Status.error
+            : bookmarksController.status == Status.error
                 ? Center(
                     child: Icon(Icons.error),
                   )
                 : Column(children: [
                     Expanded(
                         child: ListView.separated(
-                            controller: bookmarkController.scrollController,
-                            itemCount: bookmarkController.blogs.length + 1,
+                            controller:
+                                bookmarksController.bookMarkScorllController,
+                            itemCount: bookmarksController.blogs.length + 1,
                             separatorBuilder: (context, index) =>
                                 SizedBox(height: 10),
                             itemBuilder: (context, index) {
-                              if (bookmarkController.status ==
+                              if (bookmarksController.status ==
                                       Status.loadingMore &&
-                                  index == bookmarkController.blogs.length) {
+                                  index == bookmarksController.blogs.length) {
                                 return ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
@@ -42,14 +42,14 @@ class BookmarkScreen extends StatelessWidget {
                                   itemBuilder: (ctx, inx) =>
                                       const BlogSkeleton(),
                                 );
-                              } else if (bookmarkController.status !=
+                              } else if (bookmarksController.status !=
                                       Status.loadingMore &&
-                                  index == bookmarkController.blogs.length) {
+                                  index == bookmarksController.blogs.length) {
                                 return SizedBox(height: 10);
                               }
 
                               return BlogCard(
-                                  blog: bookmarkController.blogs[index],
+                                  blog: bookmarksController.blogs[index],
                                   index: index);
                             })),
                   ]);

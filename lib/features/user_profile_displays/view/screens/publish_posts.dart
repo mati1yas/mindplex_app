@@ -8,12 +8,9 @@ import "../../../../utils/status.dart";
 class PublishedPosts extends StatelessWidget {
   PublishedPosts({super.key});
 
-  final PublishPostController publishPostController =
-      Get.put(PublishPostController());
-
+  PublishPostController publishPostController = Get.find();
   @override
   Widget build(BuildContext context) {
-    publishPostController.loadBlogs();
     return Container(
       child: Obx(() {
         return publishPostController.status == Status.loading
@@ -26,7 +23,7 @@ class PublishedPosts extends StatelessWidget {
                     child: Icon(Icons.error),
                   )
                 : ListView.separated(
-                    controller: publishPostController.scrollController,
+                    controller: publishPostController.publishedScorllController,
                     itemCount: publishPostController.blogs.length + 1,
                     separatorBuilder: (context, index) => SizedBox(height: 10),
                     itemBuilder: (context, index) {
