@@ -6,11 +6,11 @@ import 'package:mindplex/features/user_profile_displays/controllers/publishedPos
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/draft_screen.dart';
+import 'package:mindplex/features/user_profile_displays/view/widgets/profile_top_section.dart';
 
 import 'package:mindplex/utils/colors.dart';
 import '../../../../utils/no_internet_card_widget.dart';
 import '../../../authentication/controllers/auth_controller.dart';
-import '../widgets/user_profile_image_widget.dart';
 import '../widgets/user_profile_statistics_widget.dart';
 import './about_screen.dart';
 import './bookmark_screen.dart';
@@ -88,7 +88,11 @@ class _ProfilePage extends State<ProfilePage>
                   : ListView(
                       padding: EdgeInsets.zero,
                       children: <Widget>[
-                        buildTop(params),
+                        ProfileTopSection(
+                            userProfileController: userProfileController,
+                            context: context,
+                            authController: authController,
+                            me: params['me'] == "me"),
                         buildUserNameSection(params),
                         UserProfileStatistics(
                             profileController: userProfileController),
@@ -96,68 +100,6 @@ class _ProfilePage extends State<ProfilePage>
                       ],
                     )),
         ));
-  }
-
-  Widget buildTop(dynamic params) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20, top: 20),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          UserProfileImage(
-            context: context,
-            profileController: userProfileController,
-            me: params['me'] == 'me',
-          ),
-          Positioned(
-            top: 0,
-            left: 5,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0,
-            right: 5,
-            child: PopupMenuButton(
-                color: Colors.white,
-                iconColor: Colors.white,
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                        onTap: () {
-                          authController.logout();
-                          // Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.logout),
-                            Text("Logout"),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.info),
-                            Text("Change info"),
-                          ],
-                        ),
-                      ),
-                    ]),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget buildUserNameSection(dynamic params) {
