@@ -68,9 +68,7 @@ class ProfileServices {
     return getBlogs(url, BlogsType.drafted_posts);
   }
 
-  Future<void> createNewDraft({required String postContent}) async {
-    print("ABOUT TO CREATE NEW DRAFT SERVICE LEVEL");
-
+  Future<Blog> createNewDraft({required String postContent}) async {
     try {
       Dio dio = Dio();
 
@@ -82,7 +80,7 @@ class ProfileServices {
       Response response = await dio.post(AppUrls.draftBaseUrl,
           data: <String, dynamic>{"post_content": postContent});
 
-      print(response);
+      return Blog.fromJson(response.data["drafted_post"]);
     } on DioException catch (e) {
       if (e.response != null) {
         throw new AppError(
@@ -112,8 +110,6 @@ class ProfileServices {
             "post_content": postContent,
             "draft_id": draftId
           });
-
-      print(response);
     } on DioException catch (e) {
       if (e.response != null) {
         throw new AppError(
@@ -187,7 +183,6 @@ class ProfileServices {
   }
 
   Future<void> deleteDraft({required String draftId}) async {
-    print("About To Delete Draft Service Level");
     try {
       Dio dio = Dio();
 
