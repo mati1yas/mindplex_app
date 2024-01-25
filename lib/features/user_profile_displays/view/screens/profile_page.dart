@@ -166,70 +166,68 @@ class _ProfilePage extends State<ProfilePage>
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-              padding: const EdgeInsets.only(right: 10),
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    child: Text(
-                      firstName + " " + lastName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+      child: Container(
+          padding: const EdgeInsets.only(right: 10),
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 5, left: 15, right: 15),
+                child: Text(
+                  firstName + " " + lastName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
-                  Text(
-                    userProfileController.userProfile.value.username ?? "",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 190, 190, 190),
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 5, left: 15, right: 15),
+                child: Text(
+                  userProfileController.userProfile.value.username ?? "",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 190, 190, 190),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
                   ),
-                  // OutlinedButton(onPressed: onPressed, child: child)
-                ],
-              )),
-          if (params['me'] == 'me')
-            Obx(() => userProfileController.isWalletConnected.value
-                ? SizedBox(
-                    width: 0,
-                    height: 0,
-                  )
-                : Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: OutlinedButton(
-                      onPressed:
-                          userProfileController.switchWallectConnectedState,
-                      style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              // OutlinedButton(onPressed: onPressed, child: child)
+              if (params['me'] == 'me')
+                Obx(() => userProfileController.isWalletConnected.value
+                    ? SizedBox(
+                        width: 0,
+                        height: 0,
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: OutlinedButton(
+                          onPressed:
+                              userProfileController.switchWallectConnectedState,
+                          style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              minimumSize: Size(117, 37),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 225, 62, 111),
+                              foregroundColor: Colors.white),
+                          child: const Text(
+                            'Connect Wallet',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400),
                           ),
-                          minimumSize: Size(117, 37),
-                          backgroundColor:
-                              const Color.fromARGB(255, 225, 62, 111),
-                          foregroundColor: Colors.white),
-                      child: const Text(
-                        'Connect Wallet',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ))),
-        ],
-      ),
+                        ))),
+            ],
+          )),
     );
   }
 
