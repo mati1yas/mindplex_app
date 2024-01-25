@@ -55,7 +55,7 @@ class BlogSkeleton extends StatelessWidget {
                         const Color.fromARGB(255, 66, 66, 66).withAlpha(200),
                     child: Container(
                       height: 60,
-                      width: 35,
+                      width: 20,
                       margin: EdgeInsets.only(left: 10),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
