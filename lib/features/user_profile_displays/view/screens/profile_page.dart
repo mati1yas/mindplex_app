@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/bookmarksController.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/publishedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/publish_posts.dart';
 import 'package:mindplex/features/user_profile_displays/view/screens/draft_screen.dart';
@@ -27,6 +30,13 @@ class _ProfilePage extends State<ProfilePage>
   AuthController authController = Get.find();
   late TabController _tabController;
   Map<String, String?> params = Get.parameters;
+  final BookmarksController bookmarksController =
+      Get.put(BookmarksController());
+  final DraftedPostsController draftedPostsController =
+      Get.put(DraftedPostsController());
+
+  final PublishPostController publishPostController =
+      Get.put(PublishPostController());
 
   ProfileController userProfileController = Get.find();
 
@@ -35,42 +45,56 @@ class _ProfilePage extends State<ProfilePage>
     super.initState();
     _tabController =
         TabController(length: params['me'] == 'me' ? 4 : 2, vsync: this);
+
+    _tabController.addListener(() {
+      if (_tabController.index == 0) {
+      } else if (_tabController.index == 1) {
+        publishPostController.loadBlogs();
+      } else if (_tabController.index == 2) {
+        bookmarksController.loadBlogs();
+      } else if (_tabController.index == 3) {
+        draftedPostsController.loadBlogs();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     userProfileController.getAuthenticatedUser();
-    print(["userName", params["username"]]);
+
     userProfileController.getUserProfile(
         username: params["me"] == "me"
             ? userProfileController.authenticatedUser.value.username!
             : params["username"]!);
+    _tabController.index = 0;
 
     return Scaffold(
         backgroundColor: mainBackgroundColor, // can and should be removed
         body: SafeArea(
-          child: Obx(() => !userProfileController.isConnected.value?
-          Center(
-            child: noInternetCard(() {
-              userProfileController.getUserProfile(
-                  username: params["me"] == "me"
-                      ? userProfileController.authenticatedUser.value.username!
-                      : params["username"]!);
-            }),
-          ):userProfileController.isLoading.value
+          child: Obx(() => !userProfileController.isConnected.value
               ? Center(
-                  child: CircularProgressIndicator(),
+                  child: noInternetCard(() {
+                    userProfileController.getUserProfile(
+                        username: params["me"] == "me"
+                            ? userProfileController
+                                .authenticatedUser.value.username!
+                            : params["username"]!);
+                  }),
                 )
-              : ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    buildTop(params),
-                    buildUserNameSection(params),
-                    UserProfileStatistics(
-                        profileController: userProfileController),
-                    buidScreens(params),
-                  ],
-                )),
+              : userProfileController.isLoading.value
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView(
+                      padding: EdgeInsets.zero,
+                      children: <Widget>[
+                        buildTop(params),
+                        buildUserNameSection(params),
+                        UserProfileStatistics(
+                            profileController: userProfileController),
+                        buidScreens(params),
+                      ],
+                    )),
         ));
   }
 
@@ -104,6 +128,7 @@ class _ProfilePage extends State<ProfilePage>
             right: 5,
             child: PopupMenuButton(
                 color: Colors.white,
+                iconColor: Colors.white,
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         onTap: () {
