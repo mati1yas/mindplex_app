@@ -67,16 +67,63 @@ class SocialFeedCard extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      Icon(
-                        Icons.timer_outlined,
-                        color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          Get.dialog(Dialog(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.cancel_outlined,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            "Dismis",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            ),
+                          ));
+                        },
+                        child: Icon(
+                          Icons.timer_outlined,
+                          color: Colors.white,
+                        ),
                       )
                     ],
                   ),
-                  Text(
-                    "MPXR 0.324",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w300),
+                  Obx(
+                    () => blogsController.loadingReputation.value &&
+                            index >= blogsController.startPosition.value
+                        ? Container(
+                            width: 13,
+                            height: 13,
+                            child: CircularProgressIndicator(
+                              color: Colors.green[300],
+                            ))
+                        : Text(
+                            " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,10 +152,21 @@ class SocialFeedCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Text(
-                    "Post MPXR 0.94",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w300),
+                  Obx(
+                    () => blogsController.loadingReputation.value &&
+                            index >= blogsController.startPosition.value
+                        ? Container(
+                            width: 13,
+                            height: 13,
+                            child: CircularProgressIndicator(
+                              color: Colors.green[300],
+                            ))
+                        : Text(
+                            " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                   ),
                   Divider(
                     thickness: 2,
