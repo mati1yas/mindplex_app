@@ -14,8 +14,10 @@ class DraftCard extends StatelessWidget {
   const DraftCard({
     required this.blog,
     required this.draftedPostsController,
+    required this.draftIndex,
   });
   final DraftedPostsController draftedPostsController;
+  final int draftIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -78,27 +80,40 @@ class DraftCard extends StatelessWidget {
               SizedBox(
                 width: 5,
               ),
-              GestureDetector(
-                onTap: () {
-                  draftedPostsController.deleteDraft(blog: blog);
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_outline_outlined,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 9,
-                    ),
-                    Text(
-                      'Delete Draft',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 85, 85),
+              Obx(
+                () => draftedPostsController.deletingDraft.value == true &&
+                        draftIndex ==
+                            draftedPostsController.beingDeletedDaftIndex.value
+                    ? Container(
+                        width: 13,
+                        height: 13,
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          draftedPostsController.deleteDraft(
+                              blog: blog, draftIndex: draftIndex);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline_outlined,
+                              color: Colors.red,
+                            ),
+                            SizedBox(
+                              width: 9,
+                            ),
+                            Text(
+                              'Delete Draft',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 255, 85, 85),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
