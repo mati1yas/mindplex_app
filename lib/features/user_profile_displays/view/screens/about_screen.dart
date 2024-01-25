@@ -3,7 +3,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/user_interest_widget.dart';
 
@@ -149,27 +151,41 @@ class AboutScreen extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: profileController
                           .userProfile.value.socialLink!.length,
+                      physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.language,
-                                color: profileGolden,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                width: width * 0.75,
-                                child: Text(
-                                  profileController
-                                      .userProfile.value.socialLink![index],
-                                  style: TextStyle(color: Colors.white),
+                        return GestureDetector(
+                          onTap: () async {
+                            if (await canLaunchUrl(Uri.parse(profileController
+                                .userProfile.value.socialLink![index]))) {
+                              launchUrl(Uri.parse(profileController
+                                  .userProfile.value.socialLink![index]));
+                            } else {
+                              Toster(
+                                  message: "Failed To Open the link",
+                                  duration: 2);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.language,
+                                  color: profileGolden,
                                 ),
-                              )
-                            ],
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  width: width * 0.75,
+                                  child: Text(
+                                    profileController
+                                        .userProfile.value.socialLink![index],
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         );
                       })
