@@ -63,11 +63,9 @@ class PublishPostController extends GetxController {
     try {
       List<Blog> res = await fetchApi();
 
-      if (res.isEmpty) {
-        isReachedEndOfList.value = true;
-      } else {
-        blogs.value = res;
-      }
+      if (res.isEmpty) isReachedEndOfList.value = true;
+
+      blogs.value = res;
 
       status(Status.success);
     } catch (e) {
