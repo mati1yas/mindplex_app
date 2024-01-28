@@ -43,6 +43,13 @@ class ProfileController extends GetxController {
 
   ConnectionInfoImpl connectionChecker = Get.find();
 
+  void resetFollowers() {
+    followers.clear();
+    isLoadingFollowers.value = false;
+    page.value = 0;
+    reachedEndofFollowers.value = false;
+  }
+
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
   }
@@ -61,6 +68,9 @@ class ProfileController extends GetxController {
   }
 
   Future<void> getUserProfile({required String username}) async {
+    if (userProfile.value.username != username) {
+      resetFollowers();
+    }
     try {
       isLoading.value = true;
       isConnected.value = true;
