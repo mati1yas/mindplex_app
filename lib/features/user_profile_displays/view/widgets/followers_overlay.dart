@@ -14,21 +14,43 @@ class FollowersOverlay extends StatefulWidget {
 class _FollowersOverlayState extends State<FollowersOverlay> {
   List<dynamic> followers = [];
   bool fetched = false;
+  bool isLoading = false;
+  ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
+    super.initState();
     print(widget.profileController.userProfile.value.username);
-    widget.profileController
-        .fetchFollowers(
-            username: widget.profileController.userProfile.value.username!)
-        .then((value) => {
-              setState(
-                () {
+    _fetchFollowers();
+
+    // Add a listener to the scroll controller to check when the user reaches the end of the list
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !widget.profileController.reachedEndofFollowers.value) {
+        _fetchFollowers();
+      }
+    });
+  }
+
+  // Fetch followers method
+  void _fetchFollowers() {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      widget.profileController
+          .fetchFollowers(
+              username: widget.profileController.userProfile.value.username!)
+          .then((value) => {
+                setState(() {
                   this.followers = widget.profileController.followers;
                   this.fetched = true;
-                },
-              )
-            });
-    super.initState();
+                  isLoading = false;
+                })
+              });
+    }
   }
 
   @override
@@ -75,20 +97,37 @@ class _FollowersOverlayState extends State<FollowersOverlay> {
                 this.fetched
                     ? Expanded(
                         child: ListView.builder(
-                          itemCount: this.followers.length,
+                          controller: _scrollController,
+                          itemCount: this.followers.length +
+                              (widget.profileController.reachedEndofFollowers
+                                      .value
+                                  ? 0
+                                  : 1), // +1 for the loading spinner if not reached end
                           itemBuilder: (context, index) {
-                            final follower = this.followers[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(follower['avatar_url']),
-                              ),
-                              title: Text(
-                                follower['display_name'],
-                                style:
-                                    TextStyle(color: shimmerEffectHighlight1),
-                              ),
-                            );
+                            if (index < this.followers.length) {
+                              final follower = this.followers[index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(follower['avatar_url']),
+                                ),
+                                title: Text(
+                                  follower['display_name'],
+                                  style:
+                                      TextStyle(color: shimmerEffectHighlight1),
+                                ),
+                              );
+                            } else if (!widget.profileController
+                                .reachedEndofFollowers.value) {
+                              // Loading spinner at the bottom
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            } else {
+                              return Container(); // Return an empty container if reached end
+                            }
                           },
                         ),
                       )
