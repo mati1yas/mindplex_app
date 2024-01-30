@@ -1,8 +1,8 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 
 class SocialFeedForm extends StatelessWidget {
@@ -25,7 +25,9 @@ class SocialFeedForm extends StatelessWidget {
             key: formkey,
             child: TextFormField(
               validator: (value) {
-                if (value != null && value.isEmpty) {
+                if (value != null &&
+                    value.isEmpty &&
+                    draftedPostsController.selectedImages.isEmpty) {
                   return "Empty Post";
                 }
 
@@ -45,22 +47,69 @@ class SocialFeedForm extends StatelessWidget {
               minLines: 1,
             ),
           ),
+          Obx(
+            () => draftedPostsController.selectedImages.length == 0
+                ? SizedBox.shrink()
+                : Container(
+                    height: 85,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: draftedPostsController.selectedImages.length,
+                        itemBuilder: (ctx, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Stack(
+                              children: [
+                                Image.file(
+                                  File(draftedPostsController
+                                      .selectedImages[index].path),
+                                  width: 85,
+                                  height: 85,
+                                  fit: BoxFit.fill,
+                                ),
+                                Positioned(
+                                  right: 2,
+                                  top: 2,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        draftedPostsController
+                                            .removeSelectedImage(
+                                                photoIndex: index);
+                                      },
+                                      child: Icon(
+                                        Icons.cancel,
+                                        color: Colors.red,
+                                      )),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.headphones_outlined,
-                    color: Colors.green,
-                  ),
-                  Icon(
-                    Icons.video_camera_back_outlined,
-                    color: Colors.red[200],
-                  ),
-                  Icon(
-                    Icons.image,
-                    color: Color.fromARGB(255, 5, 175, 223),
+                  // Icon(
+                  //   Icons.headphones_outlined,
+                  //   color: Colors.green,
+                  // ),
+                  // Icon(
+                  //   Icons.video_camera_back_outlined,
+                  //   color: Colors.red[200],
+                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      draftedPostsController.pickImages();
+                    },
+                    child: Icon(
+                      Icons.image,
+                      size: 45,
+                      color: Color.fromARGB(255, 5, 175, 223),
+                    ),
                   )
                 ],
               ),

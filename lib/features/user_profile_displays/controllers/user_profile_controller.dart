@@ -43,6 +43,13 @@ class ProfileController extends GetxController {
 
   ConnectionInfoImpl connectionChecker = Get.find();
 
+  void resetFollowers() {
+    followers.clear();
+    isLoadingFollowers.value = false;
+    page.value = 0;
+    reachedEndofFollowers.value = false;
+  }
+
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
   }
@@ -61,6 +68,9 @@ class ProfileController extends GetxController {
   }
 
   Future<void> getUserProfile({required String username}) async {
+    if (userProfile.value.username != username) {
+      resetFollowers();
+    }
     try {
       isLoading.value = true;
       isConnected.value = true;
@@ -80,31 +90,6 @@ class ProfileController extends GetxController {
             message: 'No Internet Connection', color: Colors.red, duration: 1);
       }
     }
-  }
-
-  void fetchBlogs() async {
-    final jsondata = await rootBundle.loadString('assets/demoAPI.json');
-
-    final List<dynamic> populars = await jsonDecode(jsondata);
-
-    List<PopularDetails> popularDetail = [];
-    populars.forEach((jsonCategory) {
-      PopularDetails popularCategory = PopularDetails.fromJson(jsonCategory);
-      popularDetail.add(popularCategory);
-    });
-
-    blogs.value = popularDetail;
-    isLoading.value = false;
-  }
-
-  void filterBlogsByCategory({required String category}) {
-    selectedBlogCategory.value = category;
-  }
-
-  List<PopularDetails> get filteredBlogs {
-    return blogs
-        .where((blog) => blog.type == selectedBlogCategory.value)
-        .toList();
   }
 
   Future<void> fetchFollowers({required String username}) async {

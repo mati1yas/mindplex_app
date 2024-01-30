@@ -24,30 +24,39 @@ class DraftPosts extends StatelessWidget {
                 ? Center(
                     child: Icon(Icons.error),
                   )
-                : ListView.separated(
-                    controller: draftedPostsController.draftScorllController,
-                    itemCount: draftedPostsController.blogs.length + 1,
-                    separatorBuilder: (context, index) => SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      if (draftedPostsController.status == Status.loadingMore &&
-                          index == draftedPostsController.blogs.length) {
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 3,
-                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                        );
-                      } else if (draftedPostsController.status !=
-                              Status.loadingMore &&
-                          index == draftedPostsController.blogs.length) {
-                        return SizedBox(height: 10);
-                      }
+                : RefreshIndicator(
+                    color: Colors.green,
+                    onRefresh: () async {
+                      draftedPostsController.loadBlogs();
+                    },
+                    child: ListView.separated(
+                        controller:
+                            draftedPostsController.draftScorllController,
+                        itemCount: draftedPostsController.blogs.length + 1,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          if (draftedPostsController.status ==
+                                  Status.loadingMore &&
+                              index == draftedPostsController.blogs.length) {
+                            return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: 3,
+                              itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                            );
+                          } else if (draftedPostsController.status !=
+                                  Status.loadingMore &&
+                              index == draftedPostsController.blogs.length) {
+                            return SizedBox(height: 10);
+                          }
 
-                      return DraftCard(
-                          draftedPostsController: draftedPostsController,
-                          blog: draftedPostsController.blogs[index],
-                          draftIndex: index);
-                    });
+                          return DraftCard(
+                              draftedPostsController: draftedPostsController,
+                              blog: draftedPostsController.blogs[index],
+                              draftIndex: index);
+                        }),
+                  );
       }),
     );
   }

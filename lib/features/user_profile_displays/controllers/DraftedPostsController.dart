@@ -1,13 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
+import 'package:mindplex/features/user_profile_displays/models/picked_social_photo_model.dart';
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/status.dart';
-import './BlogsController.dart' as localBlogsController;
 
 // class BookmarksController extends BlogsController {
 class DraftedPostsController extends GetxController {
@@ -31,6 +35,9 @@ class DraftedPostsController extends GetxController {
   RxBool isReachedEndOfList = false.obs;
   RxInt blogPage = 1.obs;
   ProfileServices profileService = ProfileServices();
+
+  RxList<SelectedImage> selectedImages = <SelectedImage>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -106,14 +113,16 @@ class DraftedPostsController extends GetxController {
     try {
       savingDraft.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
+      final processedImages = await processImages();
 
-      Blog newDraft =
-          await profileService.createNewDraft(postContent: postContent);
+      Blog newDraft = await profileService.createNewDraft(
+          postContent: postContent, images: processedImages);
       savingDraft.value = false;
 
       // this makes the newly created draft available for further editing
       editingSocialPostDraft.value = true;
       beingEditeDraftBlog.value = newDraft;
+      Toster(message: " Draft Saved Successfully ", color: Colors.green);
     } catch (e) {
       status(Status.error);
       if (e is AppError) {
@@ -122,8 +131,6 @@ class DraftedPostsController extends GetxController {
       Toster(message: errorMessage.value);
     }
     savingDraft.value = false;
-
-    Toster(message: " Draft Saved Successfully ", color: Colors.green);
   }
 
   Future<void> updateDraft() async {
@@ -173,7 +180,10 @@ class DraftedPostsController extends GetxController {
     try {
       makingPost.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
-      await profileService.postNewToSocial(postContent: postContent);
+
+      final processedImages = await processImages();
+      await profileService.postNewToSocial(
+          postContent: postContent, images: processedImages);
       makingPost.value = false;
       resetDrafting();
       blogsController.loadContents('social', 'all');
@@ -189,13 +199,21 @@ class DraftedPostsController extends GetxController {
     makingPost.value = false;
   }
 
+  /// returns list of base64 encoded images
+  Future<List<String>> processImages() async {
+    List<String> processedImages = [];
+    for (var i = 0; i < selectedImages.length; i++) {
+      File imageFile = File(selectedImages[i].path);
+      List<int> imageBytes = await imageFile.readAsBytes();
+      String base64Image = base64Encode(imageBytes);
+      processedImages.add(base64Image);
+    }
+
+    return processedImages;
+  }
+
   Future<void> deleteDraft(
       {required Blog blog, required int draftIndex}) async {
-    print('ABOUT TO DELETE');
-    print(draftIndex);
-
-    print(beingDeletedDaftIndex);
-
     try {
       deletingDraft.value = true;
       beingDeletedDaftIndex.value = draftIndex;
@@ -246,5 +264,20 @@ class DraftedPostsController extends GetxController {
     editingSocialPostDraft.value = false;
     textEditingController.value.text = '';
     beingEditeDraftBlog.value = Blog();
+    selectedImages.value = [];
+  }
+
+  Future<void> pickImages() async {
+    List<XFile>? selectedImagesFromPhone = await ImagePicker().pickMultiImage();
+    if (selectedImagesFromPhone.isNotEmpty) {
+      for (var i = 0; i < selectedImagesFromPhone.length; i++) {
+        selectedImages
+            .add(SelectedImage(path: selectedImagesFromPhone[i].path));
+      }
+    }
+  }
+
+  Future<void> removeSelectedImage({required int photoIndex}) async {
+    selectedImages.removeAt(photoIndex);
   }
 }
