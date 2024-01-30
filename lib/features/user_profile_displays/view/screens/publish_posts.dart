@@ -22,28 +22,38 @@ class PublishedPosts extends StatelessWidget {
                 ? Center(
                     child: Icon(Icons.error),
                   )
-                : ListView.separated(
-                    controller: publishPostController.publishedScorllController,
-                    itemCount: publishPostController.blogs.length + 1,
-                    separatorBuilder: (context, index) => SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      if (publishPostController.status == Status.loadingMore &&
-                          index == publishPostController.blogs.length) {
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 3,
-                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                        );
-                      } else if (publishPostController.status !=
-                              Status.loadingMore &&
-                          index == publishPostController.blogs.length) {
-                        return SizedBox(height: 10);
-                      }
+                : RefreshIndicator(
+                    color: Colors.green,
+                    onRefresh: () async {
+                      publishPostController.loadBlogs();
+                    },
+                    child: ListView.separated(
+                        controller:
+                            publishPostController.publishedScorllController,
+                        itemCount: publishPostController.blogs.length + 1,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          if (publishPostController.status ==
+                                  Status.loadingMore &&
+                              index == publishPostController.blogs.length) {
+                            return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: 3,
+                              itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                            );
+                          } else if (publishPostController.status !=
+                                  Status.loadingMore &&
+                              index == publishPostController.blogs.length) {
+                            return SizedBox(height: 10);
+                          }
 
-                      return BlogWidget(
-                          publishedPost: publishPostController.blogs[index]);
-                    });
+                          return BlogWidget(
+                              publishedPost:
+                                  publishPostController.blogs[index]);
+                        }),
+                  );
       }),
     );
   }

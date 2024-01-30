@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mindplex/features/user_profile_settings/models/social_link.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
+import 'package:mindplex/utils/social_media_link_identifier.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../services/api_services.dart';
 import '../../../../utils/colors.dart';
@@ -107,21 +108,6 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     });
   }
 
-  String detectSocialMediaPlatform(String url) {
-    if (RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/.*').hasMatch(url)) {
-      return "facebook";
-    } else if (RegExp(r'^https?:\/\/(?:www\.)?twitter\.com\/.*')
-            .hasMatch(url) ||
-        RegExp(r'^https?:\/\/(?:www\.)?x\.com\/.*').hasMatch(url)) {
-      return "twitter";
-    } else if (RegExp(r'^https?:\/\/(?:www\.)?linkedin\.com\/.*')
-        .hasMatch(url)) {
-      return "linkedin";
-    } else {
-      return "";
-    }
-  }
-
   String searchSocialMediaPlaform(List<String> urls, int index) {
     if (index == 1) {
       for (var value in urls) {
@@ -152,7 +138,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     ProfileController profileController = Get.put(ProfileController());
 
     try {
-      await profileController.getUserProfile(username: profileController.authenticatedUser.value.username!);
+      await profileController.getUserProfile(
+          username: profileController.authenticatedUser.value.username!);
       UserProfile userProfile = profileController.userProfile.value;
 
       setState(() {

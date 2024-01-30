@@ -55,6 +55,7 @@ class BookmarksController extends GetxController {
   Future<void> loadBlogs() async {
     status(Status.loading);
     isReachedEndOfList.value = false;
+    blogPage.value = 1;
     try {
       List<Blog> res = await fetchApi();
 

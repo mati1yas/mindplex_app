@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
+import 'package:mindplex/utils/social_media_Icon_identifier_from_link.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/user_interest_widget.dart';
 
@@ -169,19 +171,23 @@ class AboutScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 5.0),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.language,
-                                  color: profileGolden,
-                                ),
+                                // Icon(
+                                //   determineSocialLinkIcon(profileController
+                                //       .userProfile.value.socialLink![index]),
+                                //   color: profileGolden,
+                                // ),
+                                getSocialLinkIcon(profileController
+                                    .userProfile.value.socialLink![index]),
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Container(
-                                  width: width * 0.75,
+                                Expanded(
                                   child: Text(
                                     profileController
                                         .userProfile.value.socialLink![index],
                                     style: TextStyle(color: Colors.white),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
                                   ),
                                 )
                               ],

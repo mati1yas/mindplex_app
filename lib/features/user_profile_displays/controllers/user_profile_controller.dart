@@ -92,31 +92,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  void fetchBlogs() async {
-    final jsondata = await rootBundle.loadString('assets/demoAPI.json');
-
-    final List<dynamic> populars = await jsonDecode(jsondata);
-
-    List<PopularDetails> popularDetail = [];
-    populars.forEach((jsonCategory) {
-      PopularDetails popularCategory = PopularDetails.fromJson(jsonCategory);
-      popularDetail.add(popularCategory);
-    });
-
-    blogs.value = popularDetail;
-    isLoading.value = false;
-  }
-
-  void filterBlogsByCategory({required String category}) {
-    selectedBlogCategory.value = category;
-  }
-
-  List<PopularDetails> get filteredBlogs {
-    return blogs
-        .where((blog) => blog.type == selectedBlogCategory.value)
-        .toList();
-  }
-
   Future<void> fetchFollowers({required String username}) async {
     isLoadingFollowers.value = true;
     page.value += 1;

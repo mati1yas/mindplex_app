@@ -25,33 +25,38 @@ class BookmarkScreen extends StatelessWidget {
                   )
                 : Column(children: [
                     Expanded(
-                        child: ListView.separated(
-                            controller:
-                                bookmarksController.bookMarkScorllController,
-                            itemCount: bookmarksController.blogs.length + 1,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              if (bookmarksController.status ==
-                                      Status.loadingMore &&
-                                  index == bookmarksController.blogs.length) {
-                                return ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: 3,
-                                  itemBuilder: (ctx, inx) =>
-                                      const BlogSkeleton(),
-                                );
-                              } else if (bookmarksController.status !=
-                                      Status.loadingMore &&
-                                  index == bookmarksController.blogs.length) {
-                                return SizedBox(height: 10);
-                              }
+                        child: RefreshIndicator(
+                      color: Colors.green,
+                      onRefresh: () async {
+                        bookmarksController.loadBlogs();
+                      },
+                      child: ListView.separated(
+                          controller:
+                              bookmarksController.bookMarkScorllController,
+                          itemCount: bookmarksController.blogs.length + 1,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 10),
+                          itemBuilder: (context, index) {
+                            if (bookmarksController.status ==
+                                    Status.loadingMore &&
+                                index == bookmarksController.blogs.length) {
+                              return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: 3,
+                                itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                              );
+                            } else if (bookmarksController.status !=
+                                    Status.loadingMore &&
+                                index == bookmarksController.blogs.length) {
+                              return SizedBox(height: 10);
+                            }
 
-                              return BlogCard(
-                                  blog: bookmarksController.blogs[index],
-                                  index: index);
-                            })),
+                            return BlogCard(
+                                blog: bookmarksController.blogs[index],
+                                index: index);
+                          }),
+                    )),
                   ]);
       }),
     );
