@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
@@ -21,6 +22,7 @@ class BlogsController extends GetxController {
   RxInt page = 1.obs;
   RxList<Blog> blogs = <Blog>[].obs;
   RxBool loadingReputation = false.obs;
+  RxBool showSocialFeedForm = true.obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
 
@@ -61,13 +63,14 @@ class BlogsController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // Future.delayed(Duration(seconds: 5), () {
-    //   fetchBlogs();
-    //   // Your code using anotherController here
-    // });
-
-    // Add a listener to the scrollController to detect when the user reaches the end of the list
     scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        showSocialFeedForm.value = false;
+      } else {
+        showSocialFeedForm.value = true;
+      }
+
       if (!reachedEndOfList &&
           scrollController.position.pixels >=
               scrollController.position.maxScrollExtent - 250) {
@@ -110,8 +113,7 @@ class BlogsController extends GetxController {
       isLoadingMore.value = false;
 
       update(); // Trigger UI update
-    }
-    catch(e){
+    } catch (e) {
       if (e is NetworkException) {
         canLoadMoreBlogs.value = false;
       }

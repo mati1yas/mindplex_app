@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
@@ -108,7 +109,8 @@ class _LandingPageState extends State<LandingPage>
                 ),
 
                 // section for making a post to social feed .
-                Obx(() => blogsController.post_type == 'social'
+                Obx(() => blogsController.post_type == 'social' &&
+                        blogsController.showSocialFeedForm.value
                     ? SocialFeedForm(
                         draftedPostsController: draftedPostsController,
                         editingDraft:
