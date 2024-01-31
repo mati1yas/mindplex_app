@@ -435,4 +435,27 @@ class ApiService {
       throw Exception('Failed to fetch user followers from the server.');
     }
   }
+
+  Future<List<dynamic>> fetchUserFollowings(
+      {required String username, required int page}) async {
+    var dio = Dio();
+
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+
+    if (!authenticationController.isGuestUser.value) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
+    print("${AppUrls.followings}$username/$page");
+    Response response = await dio.get("${AppUrls.followings}$username/$page");
+
+    if (response.statusCode == 200) {
+      final followings = response.data['data'];
+      print(followings);
+      return followings;
+    } else {
+      throw Exception('Failed to fetch user followings from the server.');
+    }
+  }
 }
