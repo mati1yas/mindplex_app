@@ -28,12 +28,17 @@ class ProfileController extends GetxController {
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
   RxList followers = [].obs;
+  RxList followings = [].obs;
   RxBool isLoadingFollowers = false.obs;
+  RxBool isLoadingFollowings = false.obs;
   RxBool firstTimeLoading = true.obs;
+  RxBool firstTimeLoadingFollowings = true.obs;
   RxBool isConnected = true.obs;
 
   RxInt page = 0.obs;
+  RxInt followingsPage = 0.obs;
   RxBool reachedEndofFollowers = false.obs;
+  RxBool reachedEndofFollowings = false.obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
@@ -45,9 +50,16 @@ class ProfileController extends GetxController {
 
   void resetFollowers() {
     followers.clear();
-    isLoadingFollowers.value = false;
+    isLoadingFollowings.value = false;
     page.value = 0;
     reachedEndofFollowers.value = false;
+  }
+
+  void resetFollowings() {
+    followings.clear();
+    isLoadingFollowers.value = false;
+    followingsPage.value = 0;
+    reachedEndofFollowings.value = false;
   }
 
   void switchWallectConnectedState() {
@@ -70,6 +82,7 @@ class ProfileController extends GetxController {
   Future<void> getUserProfile({required String username}) async {
     if (userProfile.value.username != username) {
       resetFollowers();
+      resetFollowings();
     }
     try {
       isLoading.value = true;
@@ -103,5 +116,18 @@ class ProfileController extends GetxController {
     if (fetchedFollowers.length < 10) reachedEndofFollowers.value = true;
     isLoadingFollowers.value = false;
     firstTimeLoading.value = false;
+  }
+
+  Future<void> fetchFollowings({required String username}) async {
+    isLoadingFollowings.value = true;
+    followingsPage.value += 1;
+
+    List<dynamic> fetchedFollowings = await apiService.value
+        .fetchUserFollowings(page: followingsPage.value, username: username);
+
+    followings.addAll(fetchedFollowings);
+    if (fetchedFollowings.length < 10) reachedEndofFollowings.value = true;
+    isLoadingFollowings.value = false;
+    firstTimeLoadingFollowings.value = false;
   }
 }
