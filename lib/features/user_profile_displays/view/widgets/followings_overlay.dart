@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/utils/colors.dart';
+
+class FollowingsOverlay extends StatefulWidget {
+  final ProfileController profileController;
+
+  const FollowingsOverlay({Key? key, required this.profileController});
+
+  @override
+  State<FollowingsOverlay> createState() => _followingsOverlayState();
+}
+
+class _followingsOverlayState extends State<FollowingsOverlay> {
+  List<dynamic> followings = [];
+  bool fetched = false;
+  bool isLoading = false;
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.profileController.userProfile.value.username);
+    _fetchFollowings();
+
+    // Add a listener to the scroll controller to check when the user reaches the end of the list
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !widget.profileController.reachedEndofFollowings.value) {
+        _fetchFollowings();
+      }
+    });
+  }
+
+  // Fetch followings method
+  void _fetchFollowings() {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      widget.profileController
+          .fetchFollowings(
+              username: widget.profileController.userProfile.value.username!)
+          .then((value) => {
+                setState(() {
+                  this.followings = widget.profileController.followings;
+                  this.fetched = true;
+                  isLoading = false;
+                })
+              });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: 0.9,
+        heightFactor: 0.8,
+        child: Material(
+          child: Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: blogContainerColor,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+                Text(
+                  'Followings',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                // List of followings
+                this.fetched
+                    ? Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: this.followings.length +
+                              (widget.profileController.reachedEndofFollowings
+                                      .value
+                                  ? 0
+                                  : 1), // +1 for the loading spinner if not reached end
+                          itemBuilder: (context, index) {
+                            if (index < this.followings.length) {
+                              final follower = this.followings[index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(follower['avatar_url']),
+                                ),
+                                title: Text(
+                                  follower['display_name'],
+                                  style:
+                                      TextStyle(color: shimmerEffectHighlight1),
+                                ),
+                              );
+                            } else if (!widget.profileController
+                                .reachedEndofFollowings.value) {
+                              // Loading spinner at the bottom
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            } else {
+                              return Container(); // Return an empty container if reached end
+                            }
+                          },
+                        ),
+                      )
+                    : Center(child: CircularProgressIndicator())
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
