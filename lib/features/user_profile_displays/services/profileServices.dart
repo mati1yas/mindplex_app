@@ -101,7 +101,9 @@ class ProfileServices {
   }
 
   Future<void> updateDraft(
-      {required String draftId, required String postContent}) async {
+      {required String draftId,
+      required String postContent,
+      required List<String> images}) async {
     try {
       Dio dio = Dio();
 
@@ -110,11 +112,14 @@ class ProfileServices {
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
-      Response response = await dio.post(AppUrls.draftBaseUrl,
-          data: <String, dynamic>{
-            "post_content": postContent,
-            "draft_id": draftId
-          });
+
+      Map<String, dynamic> requestData = {};
+      if (postContent != "") requestData["post_content"] = postContent;
+      if (images.isNotEmpty) requestData["images"] = images;
+      requestData["draft_id"] = draftId;
+
+      Response response =
+          await dio.post(AppUrls.draftBaseUrl, data: requestData);
     } on DioException catch (e) {
       if (e.response != null) {
         throw new AppError(
@@ -130,7 +135,9 @@ class ProfileServices {
   }
 
   Future<void> postDraftToSocial(
-      {required String draftId, required String postContent}) async {
+      {required String draftId,
+      required String postContent,
+      required List<String> images}) async {
     try {
       Dio dio = Dio();
 
@@ -139,11 +146,14 @@ class ProfileServices {
       final token = await localStorage.value.readFromStorage('Token');
 
       dio.options.headers["Authorization"] = "Bearer ${token}";
-      Response response = await dio.post('${AppUrls.postUrl}',
-          data: <String, dynamic>{
-            "post_content": postContent,
-            "draft_id": draftId
-          });
+
+      Map<String, dynamic> requestData = {};
+      if (postContent != "") requestData["post_content"] = postContent;
+      if (images.isNotEmpty) requestData["images"] = images;
+      requestData["draft_id"] = draftId;
+
+      Response response =
+          await dio.post('${AppUrls.postUrl}', data: requestData);
     } on DioException catch (e) {
       if (e.response != null) {
         throw new AppError(
