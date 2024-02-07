@@ -23,7 +23,8 @@ class AppUrls {
   static var followUrl = '$baseUrl/mp_rp/v1/user/follow';
   static var unfollowUrl = '$baseUrl/mp_rp/v1/user/unfollow';
   static var followers = '$baseUrl/mp_rp/v1/user/followers/';
-  static var blogAddViewUrl= "$baseUrl/mp_rp/post/view_count/";
+  static var followings = '$baseUrl/mp_rp/v1/user/followings/';
+  static var blogAddViewUrl = "$baseUrl/mp_rp/post/view_count/";
   static var draftBaseUrl = "${AppUrls.baseUrl}/mp_up/v1/post/draft/";
   static var postUrl = "${AppUrls.baseUrl}/mp_up/v1/post/";
 }

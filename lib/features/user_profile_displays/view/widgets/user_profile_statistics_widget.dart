@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followers_overlay.dart';
+import 'package:mindplex/features/user_profile_displays/view/widgets/followings_overlay.dart';
 
 class UserProfileStatistics extends StatelessWidget {
   const UserProfileStatistics({
@@ -44,6 +45,9 @@ class UserProfileStatistics extends StatelessWidget {
               onTap: () {
                 if (item['value'] == "Followers") {
                   _showInteractionsOverlay(context);
+                }
+                if (item['value'] == "Following") {
+                  _showFollowingsOverlay(context);
                 }
               },
               child: Row(
@@ -109,6 +113,15 @@ class UserProfileStatistics extends StatelessWidget {
         profileController: profileController,
       ),
       // isScrollControlled: true,
+    );
+  }
+
+  void _showFollowingsOverlay(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => FollowingsOverlay(
+        profileController: profileController,
+      ),
     );
   }
 }
