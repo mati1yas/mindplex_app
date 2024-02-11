@@ -64,12 +64,16 @@ dependencies:
   google_sign_in:
   internet_connection_checker: ^1.0.0+1
   badges:
+  font_awesome_flutter: ^10.6.0
+  flutter_cache_manager:
+  
 
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.3
   flutter_launcher_icons:
 flutter_launcher_icons:
   android: "launcher_icon"

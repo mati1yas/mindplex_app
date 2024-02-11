@@ -28,12 +28,17 @@ class ProfileController extends GetxController {
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
   RxList followers = [].obs;
+  RxList followings = [].obs;
   RxBool isLoadingFollowers = false.obs;
+  RxBool isLoadingFollowings = false.obs;
   RxBool firstTimeLoading = true.obs;
+  RxBool firstTimeLoadingFollowings = true.obs;
   RxBool isConnected = true.obs;
 
   RxInt page = 0.obs;
+  RxInt followingsPage = 0.obs;
   RxBool reachedEndofFollowers = false.obs;
+  RxBool reachedEndofFollowings = false.obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
@@ -42,6 +47,20 @@ class ProfileController extends GetxController {
   AuthController authController = Get.find();
 
   ConnectionInfoImpl connectionChecker = Get.find();
+
+  void resetFollowers() {
+    followers.clear();
+    isLoadingFollowings.value = false;
+    page.value = 0;
+    reachedEndofFollowers.value = false;
+  }
+
+  void resetFollowings() {
+    followings.clear();
+    isLoadingFollowers.value = false;
+    followingsPage.value = 0;
+    reachedEndofFollowings.value = false;
+  }
 
   void switchWallectConnectedState() {
     isWalletConnected.value = true;
@@ -61,6 +80,10 @@ class ProfileController extends GetxController {
   }
 
   Future<void> getUserProfile({required String username}) async {
+    if (userProfile.value.username != username) {
+      resetFollowers();
+      resetFollowings();
+    }
     try {
       isLoading.value = true;
       isConnected.value = true;
@@ -82,31 +105,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  void fetchBlogs() async {
-    final jsondata = await rootBundle.loadString('assets/demoAPI.json');
-
-    final List<dynamic> populars = await jsonDecode(jsondata);
-
-    List<PopularDetails> popularDetail = [];
-    populars.forEach((jsonCategory) {
-      PopularDetails popularCategory = PopularDetails.fromJson(jsonCategory);
-      popularDetail.add(popularCategory);
-    });
-
-    blogs.value = popularDetail;
-    isLoading.value = false;
-  }
-
-  void filterBlogsByCategory({required String category}) {
-    selectedBlogCategory.value = category;
-  }
-
-  List<PopularDetails> get filteredBlogs {
-    return blogs
-        .where((blog) => blog.type == selectedBlogCategory.value)
-        .toList();
-  }
-
   Future<void> fetchFollowers({required String username}) async {
     isLoadingFollowers.value = true;
     page.value += 1;
@@ -118,5 +116,18 @@ class ProfileController extends GetxController {
     if (fetchedFollowers.length < 10) reachedEndofFollowers.value = true;
     isLoadingFollowers.value = false;
     firstTimeLoading.value = false;
+  }
+
+  Future<void> fetchFollowings({required String username}) async {
+    isLoadingFollowings.value = true;
+    followingsPage.value += 1;
+
+    List<dynamic> fetchedFollowings = await apiService.value
+        .fetchUserFollowings(page: followingsPage.value, username: username);
+
+    followings.addAll(fetchedFollowings);
+    if (fetchedFollowings.length < 10) reachedEndofFollowings.value = true;
+    isLoadingFollowings.value = false;
+    firstTimeLoadingFollowings.value = false;
   }
 }

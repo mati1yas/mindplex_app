@@ -12,10 +12,10 @@ import '../models/auth_model.dart';
 class AuthController extends GetxController {
   final networkErrorMessage =
       "Looks like there is problem with your connection.";
-  final authService = AuthService().obs;
+  final authService = AuthService().obs;  
 
   ConnectionInfoImpl connectionChecker = Get.find();
-
+  
   Rx<LocalStorage> localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
@@ -28,9 +28,7 @@ class AuthController extends GetxController {
 
   Future<void> checkAuthentication() async {
     checkingTokenValidity.value = true;
-
     final hasToken = await localStorage.value.readFromStorage('Token');
-
     if (hasToken != '') {
       if (!await connectionChecker.isConnected) {
         isAuthenticated.value = true;

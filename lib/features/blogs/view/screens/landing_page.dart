@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
@@ -108,7 +109,8 @@ class _LandingPageState extends State<LandingPage>
                 ),
 
                 // section for making a post to social feed .
-                Obx(() => blogsController.post_type == 'social'
+                Obx(() => blogsController.post_type == 'social' &&
+                        blogsController.showSocialFeedForm.value
                     ? SocialFeedForm(
                         draftedPostsController: draftedPostsController,
                         editingDraft:
@@ -179,47 +181,55 @@ class _LandingPageState extends State<LandingPage>
                         ),
                       )
                     : Expanded(
-                        child: ListView.builder(
-                            controller: blogsController.scrollController,
-                            itemCount: blogsController.filteredBlogs.length + 1,
-                            itemBuilder: (ctx, index) {
-                              if (index <
-                                  blogsController.filteredBlogs.length) {
-                                isIntialLoading = false;
-                                return blogsController.post_type != 'social'
-                                    ? BlogCard(
-                                        blogsController: blogsController,
-                                        index: index)
-                                    : SocialFeedCard(
-                                        blogsController: blogsController,
-                                        index: index);
-                              } else {
-                                print("executing else statement");
-                                if (index ==
-                                        blogsController.filteredBlogs.length &&
-                                    !blogsController.reachedEndOfList) {
-                                  // Display CircularProgressIndicator under the last card
-                                  return Obx(() => !blogsController
-                                          .canLoadMoreBlogs.value
-                                      ? Container(
-                                          margin: EdgeInsets.only(bottom: 50),
-                                          child: noInternetCard(() {
-                                            blogsController.loadMoreBlogs();
-                                          }),
-                                        )
-                                      : ListView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: 1,
-                                          itemBuilder: (ctx, inx) =>
-                                              const BlogSkeleton(),
-                                        ));
+                        child: RefreshIndicator(
+                          color: Colors.green,
+                          onRefresh: () async {
+                            blogsController.fetchBlogs();
+                          },
+                          child: ListView.builder(
+                              controller: blogsController.scrollController,
+                              itemCount:
+                                  blogsController.filteredBlogs.length + 1,
+                              itemBuilder: (ctx, index) {
+                                if (index <
+                                    blogsController.filteredBlogs.length) {
+                                  isIntialLoading = false;
+                                  return blogsController.post_type != 'social'
+                                      ? BlogCard(
+                                          blogsController: blogsController,
+                                          index: index)
+                                      : SocialFeedCard(
+                                          blogsController: blogsController,
+                                          index: index);
                                 } else {
-                                  return Container(); // Return an empty container otherwise
+                                  print("executing else statement");
+                                  if (index ==
+                                          blogsController
+                                              .filteredBlogs.length &&
+                                      !blogsController.reachedEndOfList) {
+                                    // Display CircularProgressIndicator under the last card
+                                    return Obx(() => !blogsController
+                                            .canLoadMoreBlogs.value
+                                        ? Container(
+                                            margin: EdgeInsets.only(bottom: 50),
+                                            child: noInternetCard(() {
+                                              blogsController.loadMoreBlogs();
+                                            }),
+                                          )
+                                        : ListView.builder(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: 1,
+                                            itemBuilder: (ctx, inx) =>
+                                                const BlogSkeleton(),
+                                          ));
+                                  } else {
+                                    return Container(); // Return an empty container otherwise
+                                  }
                                 }
-                              }
-                            }),
+                              }),
+                        ),
                       );
           })
         ],

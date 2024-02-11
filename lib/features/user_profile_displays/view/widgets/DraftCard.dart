@@ -43,32 +43,45 @@ class DraftCard extends StatelessWidget {
           ),
           Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  draftedPostsController.handleDraftEditing(
-                    blogsController: blogsController,
-                    draftedBlog: blog,
-                    pageNavigationController: pageNavigationController,
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit_calendar,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 9,
-                    ),
-                    Text(
-                      'Edit Draft',
-                      style: TextStyle(
-                        color: Colors.white,
+              Obx(() => draftedPostsController
+                              .preparingContentForEdition.value ==
+                          true &&
+                      draftIndex ==
+                          draftedPostsController.beingEditedDaftIndex.value
+                  ? Container(
+                      width: 13,
+                      height: 13,
+                      child: CircularProgressIndicator(
+                        color: Color.fromARGB(255, 255, 255, 255),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        draftedPostsController.handleDraftEditing(
+                          draftIndex: draftIndex,
+                          blogsController: blogsController,
+                          draftedBlog: blog,
+                          pageNavigationController: pageNavigationController,
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit_calendar,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 9,
+                          ),
+                          Text(
+                            'Edit Draft',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
               SizedBox(
                 width: 5,
               ),
