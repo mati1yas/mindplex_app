@@ -59,7 +59,9 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(DetailsPage(index: index, details: blogsController.filteredBlogs[index]));
+                      Get.to(DetailsPage(
+                          index: index,
+                          details: blogsController.filteredBlogs[index]));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,6 +244,7 @@ class BlogCard extends StatelessWidget {
                         InteractionStatistics(
                           blogsController: blogsController,
                           index: index,
+                          buttonsInteractive: false,
                         )
                       ],
                     ),
