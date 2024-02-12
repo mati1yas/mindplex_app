@@ -1,7 +1,5 @@
 import 'dart:ffi';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
@@ -19,6 +17,39 @@ class LikeDislikeConroller extends GetxController {
     "😅",
   ].obs;
   RxBool isSendingFollowRequest = false.obs;
+
+  Future<void> interactionHandler(
+      {required Blog blog, required int index, required bool itIsLike}) async {
+    if (!itIsLike) {
+      if (blog.isUserDisliked.value == true) {
+        removePreviousInteraction(
+            blog: blog,
+            index: index,
+            articleSlug: blog.slug ?? "",
+            interction: "D");
+      } else if (blog.isUserDisliked.value == false) {
+        likeDislikeArticle(
+            blog: blog,
+            index: index,
+            articleSlug: blog.slug ?? "",
+            interction: "D");
+      }
+    } else {
+      if (blog.isUserLiked.value == true) {
+        removePreviousInteraction(
+            blog: blog,
+            index: index,
+            articleSlug: blog.slug ?? "",
+            interction: "L");
+      } else if (blog.isUserLiked.value == false) {
+        likeDislikeArticle(
+            blog: blog,
+            index: index,
+            articleSlug: blog.slug ?? "",
+            interction: "L");
+      }
+    }
+  }
 
   Future<void> likeDislikeArticle(
       {required int index,
@@ -109,29 +140,29 @@ class LikeDislikeConroller extends GetxController {
     blogsController.blogs[index] = blog;
   }
 
-  Future<void> followUnfollowBlogAuthor(int index, String userName,bool isFollowing) async {
+  Future<void> followUnfollowBlogAuthor(
+      int index, String userName, bool isFollowing) async {
     isSendingFollowRequest.value = true;
-    if(isFollowing){
+    if (isFollowing) {
       await unfollowBlogAuthor(index, userName);
-    }
-    else{
+    } else {
       await followBlogAuthor(index, userName);
     }
     isSendingFollowRequest.value = false;
   }
 
-  Future<void> followBlogAuthor(int index , String userName) async {
+  Future<void> followBlogAuthor(int index, String userName) async {
     final BlogsController blogsController = Get.find();
 
-    if( await apiService.value.followUser(userName)){
+    if (await apiService.value.followUser(userName)) {
       blogsController.filteredBlogs[index].isFollowing!.value = true;
     }
   }
 
-  Future<void> unfollowBlogAuthor(int index , String userName) async {
+  Future<void> unfollowBlogAuthor(int index, String userName) async {
     final BlogsController blogsController = Get.find();
 
-    if( await apiService.value.unfollowUser(userName)){
+    if (await apiService.value.unfollowUser(userName)) {
       blogsController.filteredBlogs[index].isFollowing!.value = false;
     }
   }

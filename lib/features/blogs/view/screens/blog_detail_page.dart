@@ -27,31 +27,36 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
-    BlogTimeSpentController blogTimeSpentController = Get.put(BlogTimeSpentController());
+    BlogTimeSpentController blogTimeSpentController =
+        Get.put(BlogTimeSpentController());
     BlogsController blogsController = Get.find();
+    LikeDislikeConroller likeDislikeConroller = Get.find();
     AuthController authController = Get.find();
     ProfileController profileController = Get.find();
     profileController.getAuthenticatedUser();
-    blogTimeSpentController.startOrStopTimer(blogsController.filteredBlogs[index].slug,int.parse(blogsController.filteredBlogs[index].minToRead!.split(" ")[0]),true);
+    blogTimeSpentController.startOrStopTimer(
+        blogsController.filteredBlogs[index].slug,
+        int.parse(
+            blogsController.filteredBlogs[index].minToRead!.split(" ")[0]),
+        true);
     final decodedHtml = parse(details.authorBio).documentElement!.text;
     print(decodedHtml);
 
     print(details.slug);
 
     return WillPopScope(
-      onWillPop: () async{
-        blogTimeSpentController.startOrStopTimer(null,null,false);
+      onWillPop: () async {
+        blogTimeSpentController.startOrStopTimer(null, null, false);
         return true;
       },
       child: Scaffold(
         backgroundColor: Color(0xFF0c2b46),
         appBar: AppBar(
           leading: InkWell(
-            onTap: (){
-              blogTimeSpentController.startOrStopTimer(null,null,false);
-              Navigator.pop(context);
-            },
+              onTap: () {
+                blogTimeSpentController.startOrStopTimer(null, null, false);
+                Navigator.pop(context);
+              },
               child: Icon(Icons.arrow_back)),
           centerTitle: true,
           title: Row(
@@ -118,7 +123,8 @@ class DetailsPage extends StatelessWidget {
                                       style: const TextStyle(
                                         fontSize: 25.0,
                                         fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(255, 73, 255, 179),
+                                        color:
+                                            Color.fromARGB(255, 73, 255, 179),
                                       ),
                                     ),
                                   ),
@@ -128,13 +134,15 @@ class DetailsPage extends StatelessWidget {
                                       Text(
                                         '${details.publishedAt}' + " " ?? "",
                                         style: const TextStyle(
-                                          color: Color.fromARGB(235, 247, 202, 0),
+                                          color:
+                                              Color.fromARGB(235, 247, 202, 0),
                                         ),
                                       ),
                                       Text(
                                         '${details.minToRead}' + "   " ?? "",
                                         style: const TextStyle(
-                                          color: Color.fromARGB(235, 247, 202, 0),
+                                          color:
+                                              Color.fromARGB(235, 247, 202, 0),
                                         ),
                                       ),
                                       Obx(
@@ -142,15 +150,16 @@ class DetailsPage extends StatelessWidget {
                                           details.likes.value.toString() +
                                               " likes  ",
                                           style: const TextStyle(
-                                            color:
-                                                Color.fromARGB(235, 247, 202, 0),
+                                            color: Color.fromARGB(
+                                                235, 247, 202, 0),
                                           ),
                                         ),
                                       ),
                                       Text(
                                         '0 ',
                                         style: const TextStyle(
-                                          color: Color.fromARGB(235, 247, 202, 0),
+                                          color:
+                                              Color.fromARGB(235, 247, 202, 0),
                                         ),
                                       ),
                                       IconButton(
@@ -165,7 +174,8 @@ class DetailsPage extends StatelessWidget {
                                         },
                                         icon: Icon(
                                           Icons.tag_faces_outlined,
-                                          color: Color.fromARGB(235, 247, 202, 0),
+                                          color:
+                                              Color.fromARGB(235, 247, 202, 0),
                                         ),
                                       ),
                                     ],
@@ -212,8 +222,8 @@ class DetailsPage extends StatelessWidget {
                                   margin: EdgeInsets.all(20),
                                   child: CircleAvatar(
                                     radius: 21,
-                                    backgroundImage:
-                                        NetworkImage(details.authorAvatar ?? ""),
+                                    backgroundImage: NetworkImage(
+                                        details.authorAvatar ?? ""),
                                   ),
                                 ),
                                 Container(
@@ -251,8 +261,10 @@ class DetailsPage extends StatelessWidget {
                                     ? Container()
                                     : GestureDetector(
                                         onTap: () {
-                                          if (authController.isGuestUser.value) {
-                                            authController.guestReminder(context);
+                                          if (authController
+                                              .isGuestUser.value) {
+                                            authController
+                                                .guestReminder(context);
                                           } else if (!likeDislikeConroller
                                               .isSendingFollowRequest.value) {
                                             likeDislikeConroller
@@ -268,41 +280,34 @@ class DetailsPage extends StatelessWidget {
                                           }
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 10,
-                                              left: 30,
-                                              right: 30,
-                                              bottom: 10),
-                                          margin: EdgeInsets.only(top: 15),
-                                          decoration: const BoxDecoration(
-                                              color: Color(0xFF0f3e57),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
-                                          child: likeDislikeConroller
-                                                  .isSendingFollowRequest.value
-                                              ? Container(
-                                                  height: 24,
-                                                  width: 30,
-                                                  child:
-                                                      CircularProgressIndicator())
-                                              : details.isFollowing!.value
-                                                  ? Text(
-                                                      'Unfollow',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w200,
-                                                          color: Colors.white),
-                                                    )
-                                                  : Text(
-                                                      'follow',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w200,
-                                                          color: Colors.white),
-                                                    ),
-                                        ),
+                                            padding: const EdgeInsets.only(
+                                                top: 10,
+                                                left: 30,
+                                                right: 30,
+                                                bottom: 10),
+                                            margin: EdgeInsets.only(top: 15),
+                                            decoration: const BoxDecoration(
+                                                color: Color(0xFF0f3e57),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            child: likeDislikeConroller
+                                                    .isSendingFollowRequest
+                                                    .value
+                                                ? Container(
+                                                    height: 24,
+                                                    width: 30,
+                                                    child:
+                                                        CircularProgressIndicator())
+                                                : Text(
+                                                    details.isFollowing!.value
+                                                        ? 'Unfollow'
+                                                        : 'follow',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w200,
+                                                        color: Colors.white),
+                                                  )),
                                       )),
                               ],
                             ),
@@ -358,19 +363,8 @@ class DetailsPage extends StatelessWidget {
                         if (authController.isGuestUser.value) {
                           authController.guestReminder(context);
                         } else {
-                          if (details.isUserLiked.value == true) {
-                            likeDislikeConroller.removePreviousInteraction(
-                                blog: details,
-                                index: index,
-                                articleSlug: details.slug ?? "",
-                                interction: "L");
-                          } else if (details.isUserLiked.value == false) {
-                            likeDislikeConroller.likeDislikeArticle(
-                                blog: details,
-                                index: index,
-                                articleSlug: details.slug ?? "",
-                                interction: "L");
-                          }
+                          likeDislikeConroller.interactionHandler(
+                              blog: details, index: index, itIsLike: true);
                         }
                       },
                       icon: (details.isUserLiked.value)
@@ -391,19 +385,8 @@ class DetailsPage extends StatelessWidget {
                         if (authController.isGuestUser.value) {
                           authController.guestReminder(context);
                         } else {
-                          if (details.isUserDisliked.value == true) {
-                            likeDislikeConroller.removePreviousInteraction(
-                                blog: details,
-                                index: index,
-                                articleSlug: details.slug ?? "",
-                                interction: "L");
-                          } else if (details.isUserDisliked.value == false) {
-                            likeDislikeConroller.likeDislikeArticle(
-                                blog: details,
-                                index: index,
-                                articleSlug: details.slug ?? "",
-                                interction: "D");
-                          }
+                          likeDislikeConroller.interactionHandler(
+                              blog: details, index: index, itIsLike: false);
 
                           ;
                         }
@@ -466,7 +449,8 @@ class DetailsPage extends StatelessWidget {
                       },
                       child: Obx(
                         () => details.interactedEmoji.value != ''
-                            ? Text(codeToEmojiMap[details.interactedEmoji.value]!,
+                            ? Text(
+                                codeToEmojiMap[details.interactedEmoji.value]!,
                                 style: TextStyle(fontSize: 24))
                             : Icon(
                                 Icons.add_reaction_outlined,

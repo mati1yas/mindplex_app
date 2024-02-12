@@ -4,6 +4,7 @@ import 'package:mindplex/features/blogs/view/screens/landing_page.dart';
 import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
 import 'package:mindplex/features/drawer/controller/drawer_controller.dart';
 import 'package:mindplex/features/drawer/view/widgets/drawer_widget.dart';
+import 'package:mindplex/features/interaction/controllers/like_dislike_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/features/search/view/screens/search_page.dart';
@@ -51,11 +52,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   BlogsController blogsController = Get.put(BlogsController());
+
   NotificationController notificationController =
       Get.put(NotificationController());
 
   PageNavigationController pageNavigationController =
       Get.put(PageNavigationController());
+
+  LikeDislikeConroller likeDislikeConroller = Get.put(LikeDislikeConroller());
 
   ProfileController profileController = Get.put(ProfileController());
   DraftedPostsController draftedPostsController =
