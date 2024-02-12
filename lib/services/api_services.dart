@@ -7,6 +7,7 @@ import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
+import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
 import 'package:mindplex/features/search/models/search_response.dart';
 import 'package:mindplex/features/notification/models/notification_model.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
@@ -50,6 +51,11 @@ class ApiService {
         blogsController.topicPostCategories.value =
             RxList(response.data['categories']);
       }
+
+      if (response.data['settings'] != null) {
+        blogsController.socialFeedSetting.value =
+            SocialFeedSetting.fromJson(response.data['settings']);
+      }
       for (var blog in response.data['post']) {
         if (blog["post_type_format"].runtimeType == List) continue;
         ret.add(Blog.fromJson(blog));
@@ -61,7 +67,6 @@ class ApiService {
     return ret;
   }
 
-// List<Reputation>
   Future<List<Reputation>> loadReputation({required List<String> slugs}) async {
     var dio = Dio();
 
