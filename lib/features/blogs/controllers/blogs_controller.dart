@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
+import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
 
@@ -25,6 +26,8 @@ class BlogsController extends GetxController {
   RxBool showSocialFeedForm = true.obs;
 
   RxList<dynamic> topicPostCategories = <dynamic>[].obs;
+  final Rx<SocialFeedSetting> socialFeedSetting =
+      Rx<SocialFeedSetting>(SocialFeedSetting());
 
   ConnectionInfoImpl connectionChecker = Get.find();
   RxInt startPosition = 0.obs;
