@@ -159,7 +159,8 @@ class BlogsController extends GetxController {
       }
       newPostTypeLoading.value = true;
       isLoadingMore.value = true;
-
+      page.value = 1;
+      startPosition.value = 0;
       final res = await apiSerivice.value.loadBlogs(
           post_type: post_type.value,
           recommender: recommender.value,
