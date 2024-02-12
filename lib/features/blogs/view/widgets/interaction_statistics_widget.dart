@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/interaction/controllers/like_dislike_controller.dart';
+import 'package:share/share.dart';
 
+import '../../../comment/view/screens/comment.dart';
 import '../../controllers/blogs_controller.dart';
 
 class InteractionStatistics extends StatelessWidget {
-  const InteractionStatistics({
+  InteractionStatistics({
     super.key,
     required this.blogsController,
     required this.index,
+    required this.buttonsInteractive,
   });
   final BlogsController blogsController;
   final int index;
+  final bool buttonsInteractive;
+
+  LikeDislikeConroller likeDislikeConroller = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    Blog blog = blogsController.filteredBlogs[index];
+    print("ABOUT TO PRINT INTERACTION STATISTICS");
+    print(blog.isUserDisliked.value);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -20,18 +32,25 @@ class InteractionStatistics extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                //  like logic will be here
+                if (buttonsInteractive)
+                  likeDislikeConroller.interactionHandler(
+                      blog: blog, index: index, itIsLike: true);
               },
-              child: Icon(
-                color: Colors.white,
-                Icons.thumb_up_off_alt_outlined,
-              ),
+              child: blog.isUserLiked.value
+                  ? Icon(
+                      color: Colors.white,
+                      Icons.thumb_up_off_alt_rounded,
+                    )
+                  : Icon(
+                      color: Colors.white,
+                      Icons.thumb_up_off_alt_outlined,
+                    ),
             ),
             SizedBox(
               width: 3,
             ),
             Text(
-              blogsController.filteredBlogs[index].likes.toString() + " Likes",
+              blog.likes.toString() + " Likes",
               style: TextStyle(color: Colors.white),
             ),
           ],
@@ -40,7 +59,9 @@ class InteractionStatistics extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                //  share logic will be here
+                if (buttonsInteractive)
+                  Share.share(blog.url ?? "",
+                      subject: 'Sharing blog to your media appearance');
               },
               child: Icon(
                 color: Colors.white,
@@ -52,42 +73,61 @@ class InteractionStatistics extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          children: [
-            Icon(
-              color: Colors.white,
-              Icons.mode_comment_outlined,
-            ),
-            SizedBox(
-              width: 3,
-            ),
-            Text(
-              blogsController.filteredBlogs[index].comments.toString() +
-                  " comments",
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                //  dislike logic will be here
-              },
-              child: Icon(
+        GestureDetector(
+          onTap: () {
+            if (buttonsInteractive)
+              Get.bottomSheet(
+                  isScrollControlled: true,
+                  ignoreSafeArea: false,
+                  MyWidgetComment(
+                      post_slug: blog.slug!,
+                      comment_number: blog.comments.toString()));
+          },
+          child: Row(
+            children: [
+              Icon(
                 color: Colors.white,
-                Icons.thumb_down_off_alt_outlined,
+                Icons.mode_comment_outlined,
               ),
-            ),
-            SizedBox(
-              width: 3,
-            ),
-            Text(
-              "Dislike",
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
+              SizedBox(
+                width: 3,
+              ),
+              Text(
+                blogsController.filteredBlogs[index].comments.toString() +
+                    " comments",
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
         ),
+        GestureDetector(
+            onTap: () {
+              if (buttonsInteractive)
+                likeDislikeConroller.interactionHandler(
+                    blog: blogsController.filteredBlogs[index],
+                    index: index,
+                    itIsLike: false);
+            },
+            child: Row(
+              children: [
+                blog.isUserDisliked.value
+                    ? Icon(
+                        color: Colors.white,
+                        Icons.thumb_down,
+                      )
+                    : Icon(
+                        color: Colors.white,
+                        Icons.thumb_down_off_alt_outlined,
+                      ),
+                SizedBox(
+                  width: 3,
+                ),
+                Text(
+                  "Dislike",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            )),
       ],
     );
   }
