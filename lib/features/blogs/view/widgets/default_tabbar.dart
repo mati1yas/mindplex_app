@@ -17,7 +17,7 @@ class DefaultTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => TabBar(
-          isScrollable: false,
+          isScrollable: true,
           dividerColor: Colors.grey,
           indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
