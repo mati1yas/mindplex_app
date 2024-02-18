@@ -23,8 +23,9 @@ class InteractionStatistics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Blog blog = blogsController.filteredBlogs[index];
-    print("ABOUT TO PRINT INTERACTION STATISTICS");
-    print(blog.isUserDisliked.value);
+
+    var width = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -44,6 +45,7 @@ class InteractionStatistics extends StatelessWidget {
                   : Icon(
                       color: Colors.white,
                       Icons.thumb_up_off_alt_outlined,
+                      size: width * 0.05,
                     ),
             ),
             SizedBox(
@@ -66,6 +68,7 @@ class InteractionStatistics extends StatelessWidget {
               child: Icon(
                 color: Colors.white,
                 Icons.share_outlined,
+                size: width * 0.05,
               ),
             ),
             SizedBox(
@@ -88,6 +91,7 @@ class InteractionStatistics extends StatelessWidget {
               Icon(
                 color: Colors.white,
                 Icons.mode_comment_outlined,
+                size: width * 0.05,
               ),
               SizedBox(
                 width: 3,
@@ -118,6 +122,7 @@ class InteractionStatistics extends StatelessWidget {
                     : Icon(
                         color: Colors.white,
                         Icons.thumb_down_off_alt_outlined,
+                        size: width * 0.05,
                       ),
                 SizedBox(
                   width: 3,
