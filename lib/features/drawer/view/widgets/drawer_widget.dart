@@ -22,83 +22,78 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<DrawerModel> drawers = DrawerItems.drawers;
-    return BackdropFilter(
-      blendMode: BlendMode.srcOver,
-      filter: ImageFilter.blur(
-          sigmaX: 13.0, sigmaY: 13.0, tileMode: TileMode.clamp),
-      child: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF062f46), Color(0xFF1d253d)],
-        )),
-        child: ListView(
-          padding: EdgeInsets.only(top: 20, left: 20),
-          children: [
-            Obx(
-              () => _authController.isGuestUser.value
-                  ? GuestUser()
-                  : LoggedInUserWidget(),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: drawers.length,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return DrawerItemButton(
-                    icon: drawers[index].icon,
-                    drawerType: drawers[index].drawerType,
-                    currentDrawerType:
-                        _drawerButtonController.currentDrawerType.value,
-                    drawerTitle: drawers[index].drawerName,
-                    color: drawers[index].color,
-                    onTap: () {
-                      _drawerButtonController.navigateToPage(drawers[index]);
-                    },
-                  );
-                }),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  "© 2023 MindPlex. All rights reserved",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  child: Icon(
-                    Icons.settings,
-                    size: 32,
-                    color: Colors.white,
-                  ),
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF062f46), Color(0xFF1d253d)],
+      )),
+      child: ListView(
+        padding: EdgeInsets.only(top: 20, left: 20),
+        children: [
+          Obx(
+            () => _authController.isGuestUser.value
+                ? GuestUser()
+                : LoggedInUserWidget(),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: drawers.length,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return DrawerItemButton(
+                  icon: drawers[index].icon,
+                  drawerType: drawers[index].drawerType,
+                  currentDrawerType:
+                      _drawerButtonController.currentDrawerType.value,
+                  drawerTitle: drawers[index].drawerName,
+                  color: drawers[index].color,
                   onTap: () {
-                    if (_authController.isGuestUser.value) {
-                      _authController.guestReminder(context);
-                    } else {
-                      Navigator.of(context).pop();
-                      Get.toNamed(AppRoutes.settingsPage);
-                    }
+                    _drawerButtonController.navigateToPage(drawers[index]);
                   },
+                );
+              }),
+          SizedBox(
+            height: 40,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "© 2023 MindPlex. All rights reserved",
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              InkWell(
+                child: Icon(
+                  Icons.settings,
+                  size: 32,
+                  color: Colors.white,
                 ),
-                SizedBox(
-                  width: 15,
-                )
-              ],
-            ),
-            SizedBox(
-              height: 60,
-            )
-          ],
-        ),
+                onTap: () {
+                  if (_authController.isGuestUser.value) {
+                    _authController.guestReminder(context);
+                  } else {
+                    Navigator.of(context).pop();
+                    Get.toNamed(AppRoutes.settingsPage);
+                  }
+                },
+              ),
+              SizedBox(
+                width: 15,
+              )
+            ],
+          ),
+          SizedBox(
+            height: 60,
+          )
+        ],
       ),
     );
   }
