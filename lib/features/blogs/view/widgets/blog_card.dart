@@ -74,8 +74,8 @@ class BlogCard extends StatelessWidget {
                                       .filteredBlogs[index].authorDisplayName ??
                                   "",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                              ),
                             ),
                             Obx(
                               () => blogsController.loadingReputation.value &&
@@ -108,6 +108,9 @@ class BlogCard extends StatelessWidget {
                             )
                           ],
                         ),
+                        SizedBox(
+                          height: 8,
+                        ),
                         Text(
                             style: TextStyle(
                                 color: Colors.white,
@@ -116,16 +119,15 @@ class BlogCard extends StatelessWidget {
                             blogsController.filteredBlogs[index].postTitle ??
                                 ""),
                         SizedBox(
-                          height: 10,
+                          height: 13,
                         ),
                         Text(
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            blogsController.filteredBlogs[index].overview ??
-                                ""),
+                          blogsController.filteredBlogs[index].overview ?? "",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w300),
+                        ),
                         SizedBox(
-                          height: 10,
+                          height: 13,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +135,9 @@ class BlogCard extends StatelessWidget {
                             Text(
                               blogsController.filteredBlogs[index].minToRead ??
                                   "",
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300),
                             ),
                             Obx(
                               () => blogsController.loadingReputation.value &&
@@ -252,10 +256,14 @@ class BlogCard extends StatelessWidget {
                 )
               ],
             ),
-            Divider(
-              color: Colors.white,
-              thickness: 1,
+
+            SizedBox(
+              height: 20,
             )
+            // Divider(
+            //   color: Colors.white,
+            //   thickness: 1,
+            // )
           ],
         ),
       ),
