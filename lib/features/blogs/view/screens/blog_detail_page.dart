@@ -117,6 +117,8 @@ class DetailsPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
                                     child: Text(
                                       details.postTitle ?? "",
                                       textAlign: TextAlign.center,
@@ -181,6 +183,9 @@ class DetailsPage extends StatelessWidget {
                                     ],
                                   ),
                                   Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 5.0,
+                                    ),
                                     child: Text(
                                       details.overview ?? "",
                                       style: const TextStyle(
