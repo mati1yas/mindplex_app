@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import '../../controllers/blogs_controller.dart';
 import '../../../../routes/app_routes.dart';
@@ -74,7 +75,7 @@ class BlogCard extends StatelessWidget {
                                       .filteredBlogs[index].authorDisplayName ??
                                   "",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: titleTextColor,
                               ),
                             ),
                             Obx(
@@ -90,7 +91,7 @@ class BlogCard extends StatelessWidget {
                                   : Text(
                                       " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: titleTextColor,
                                           fontWeight: FontWeight.bold),
                                     ),
                             ),
@@ -113,7 +114,7 @@ class BlogCard extends StatelessWidget {
                         ),
                         Text(
                             style: TextStyle(
-                                color: Colors.white,
+                                color: titleTextColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                             blogsController.filteredBlogs[index].postTitle ??
@@ -124,7 +125,8 @@ class BlogCard extends StatelessWidget {
                         Text(
                           blogsController.filteredBlogs[index].overview ?? "",
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w300),
+                              color: bodyTextColor,
+                              fontWeight: FontWeight.w300),
                         ),
                         SizedBox(
                           height: 13,
@@ -136,7 +138,7 @@ class BlogCard extends StatelessWidget {
                               blogsController.filteredBlogs[index].minToRead ??
                                   "",
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: bodyTextColor,
                                   fontWeight: FontWeight.w300),
                             ),
                             Obx(
@@ -152,7 +154,7 @@ class BlogCard extends StatelessWidget {
                                   : Text(
                                       " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: titleTextColor,
                                           fontWeight: FontWeight.bold),
                                     ),
                             ),
