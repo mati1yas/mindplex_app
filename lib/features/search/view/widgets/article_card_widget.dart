@@ -18,24 +18,23 @@ class ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.white),
-          color: blogContainerColor),
+    return GestureDetector(
+      onTap: () {
+        Get.to(DetailsPage(
+            index: index, details: searchController.popularBlogs[index]));
+      },
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.65,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Get.to(DetailsPage(
-                    index: index,
-                    details: searchController.popularBlogs[index]));
-              },
-              child: Padding(
+        margin: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.white),
+            color: blogContainerColor),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.65,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Stack(
                   children: [
@@ -46,7 +45,7 @@ class ArticleCard extends StatelessWidget {
                           image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(searchController
-                                  .popularBlogs[index].thumbnailImage ??
+                                      .popularBlogs[index].thumbnailImage ??
                                   ""))),
                       height: 100,
                       width: 300,
@@ -71,27 +70,27 @@ class ArticleCard extends StatelessWidget {
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 10),
                                   child: searchController.popularBlogs[index]
-                                      .postTypeFormat ==
-                                      "text"
+                                              .postTypeFormat ==
+                                          "text"
                                       ? const Icon(
-                                    Icons.description_outlined,
-                                    color: Color(0xFF8aa7da),
-                                    size: 20,
-                                  )
+                                          Icons.description_outlined,
+                                          color: Color(0xFF8aa7da),
+                                          size: 20,
+                                        )
                                       : searchController.popularBlogs[index]
-                                      .postTypeFormat ==
-                                      "video"
-                                      ? const Icon(
-                                    Icons.videocam,
-                                    color: Color.fromARGB(
-                                        255, 185, 127, 127),
-                                    size: 20,
-                                  )
-                                      : const Icon(
-                                    Icons.headphones,
-                                    color: Colors.green,
-                                    size: 20,
-                                  ),
+                                                  .postTypeFormat ==
+                                              "video"
+                                          ? const Icon(
+                                              Icons.videocam,
+                                              color: Color.fromARGB(
+                                                  255, 185, 127, 127),
+                                              size: 20,
+                                            )
+                                          : const Icon(
+                                              Icons.headphones,
+                                              color: Colors.green,
+                                              size: 20,
+                                            ),
                                 )
                               ],
                             )),
@@ -100,91 +99,94 @@ class ArticleCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    //  will be modified in detail .
-
-                    Get.toNamed(AppRoutes.profilePage, parameters: {
-                      "me": "notme",
-                      "username":
-                      searchController.popularBlogs[index].authorUsername ??
-                          ""
-                    });
-                  },
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        searchController.popularBlogs[index].authorAvatar ?? ""),
-                    radius: 15,
-                    backgroundColor: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  searchController.popularBlogs[index].authorDisplayName ?? "",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  searchController.popularBlogs[index].publishedAt ?? "",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                    searchController.popularBlogs[index].postTitle ?? ""),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                    searchController.popularBlogs[index].overview ?? ""),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
+              Row(
                 children: [
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      //  will be modified in detail .
+
+                      Get.toNamed(AppRoutes.profilePage, parameters: {
+                        "me": "notme",
+                        "username": searchController
+                                .popularBlogs[index].authorUsername ??
+                            ""
+                      });
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          searchController.popularBlogs[index].authorAvatar ??
+                              ""),
+                      radius: 15,
+                      backgroundColor: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
-                    searchController.popularBlogs[index].minToRead ?? "",
-                    style: TextStyle(color: Colors.white),
+                    searchController.popularBlogs[index].authorDisplayName ??
+                        "",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     width: 20,
                   ),
                   Text(
-                    "19.9k views",
-                    style: TextStyle(color: Colors.white),
+                    searchController.popularBlogs[index].publishedAt ?? "",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                      searchController.popularBlogs[index].postTitle ?? ""),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      searchController.popularBlogs[index].overview ?? ""),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    Text(
+                      searchController.popularBlogs[index].minToRead ?? "",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      searchController.popularBlogs[index].views.toString() +
+                          " Views",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
