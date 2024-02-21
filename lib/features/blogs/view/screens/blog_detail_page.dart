@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:html/parser.dart';
 import 'package:mindplex/features/blogs/controllers/blog_time_spent_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import 'package:share/share.dart';
 
@@ -223,15 +225,25 @@ class DetailsPage extends StatelessWidget {
 
                             Row(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.all(20),
-                                  child: CircleAvatar(
-                                    radius: 21,
-                                    backgroundImage: NetworkImage(
-                                        details.authorAvatar ?? ""),
+                                GestureDetector(
+                                  onTap: () {
+                                    openAuthorProfile(
+                                        details.authorUsername ?? "");
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.all(20),
+                                    child: CircleAvatar(
+                                      radius: 21,
+                                      backgroundImage: NetworkImage(
+                                          details.authorAvatar ?? ""),
+                                    ),
                                   ),
                                 ),
-                                Container(
+                                InkWell(
+                                  onTap: () {
+                                    openAuthorProfile(
+                                        details.authorUsername ?? "");
+                                  },
                                   child: Container(
                                     width:
                                         MediaQuery.of(context).size.width * .40,
@@ -244,16 +256,27 @@ class DetailsPage extends StatelessWidget {
                                           details.authorDisplayName!,
                                           style: const TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w200,
+                                              fontWeight: FontWeight.bold,
                                               fontStyle: FontStyle.normal,
-                                              color: Colors.white),
+                                              color: titleTextColor),
                                         ),
-                                        SizedBox(
-                                          height: 10,
+                                        SizedBox(height: 5),
+                                        Text(
+                                          details.reputation.value != null
+                                              ? details.reputation.value!
+                                                  .author!.mpxr!
+                                                  .toStringAsFixed(5)
+                                              : " - " + " MPXR",
+                                          style: TextStyle(
+                                              color: bodyTextColor,
+                                              fontWeight: FontWeight.w500),
                                         ),
+                                        SizedBox(height: 5),
                                         Text(
                                           decodedHtml,
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                              color: bodyTextColor,
+                                              fontWeight: FontWeight.w300),
                                         ),
                                       ],
                                     ),
@@ -263,7 +286,7 @@ class DetailsPage extends StatelessWidget {
                                             .authenticatedUser.value.username ==
                                         blogsController
                                             .filteredBlogs[index].authorUsername
-                                    ? Container()
+                                    ? SizedBox()
                                     : GestureDetector(
                                         onTap: () {
                                           if (authController
@@ -529,5 +552,10 @@ class DetailsPage extends StatelessWidget {
       builder: (context) => InteractionsOverlay(slug: details.slug!),
       // isScrollControlled: true,
     );
+  }
+
+  void openAuthorProfile(String authorUsername) {
+    Get.toNamed(AppRoutes.profilePage,
+        parameters: {"me": "notme", "username": authorUsername});
   }
 }
