@@ -16,13 +16,13 @@ class DrawerItems {
       parameters: {'me': 'me', 'username': ''},
       requiresPrivilege: true,
     ),
-    DrawerModel(
-      icon: Icons.upgrade_rounded,
-      drawerName: "Upgrade",
-      color: upgradeColor,
-      drawerType: DrawerType.upgrade,
-      pageName: '/upgrade',
-    ),
+    // DrawerModel(
+    //   icon: Icons.upgrade_rounded,
+    //   drawerName: "Upgrade",
+    //   color: upgradeColor,
+    //   drawerType: DrawerType.upgrade,
+    //   pageName: '/upgrade',
+    // ),
     DrawerModel(
       icon: Icons.description_outlined,
       drawerName: "Read",
