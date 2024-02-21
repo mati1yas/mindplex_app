@@ -42,11 +42,24 @@ class ArticleCard extends StatelessWidget {
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(searchController
-                                      .popularBlogs[index].thumbnailImage ??
-                                  ""))),
+                          image: searchController
+                                      .popularBlogs[index].thumbnailImage ==
+                                  "default.jpg"
+                              ? searchController
+                                          .popularBlogs[index].postTypeFormat ==
+                                      "text"
+                                  ? DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                          "assets/images/img_not_found_text.png"))
+                                  : DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                          "assets/images/image_not_found_podcast.png"))
+                              : DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(searchController
+                                      .popularBlogs[index].thumbnailImage!))),
                       height: 100,
                       width: 300,
                     ),
