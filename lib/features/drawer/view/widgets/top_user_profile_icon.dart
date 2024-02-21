@@ -12,11 +12,13 @@ class TopUserProfileIcon extends StatelessWidget {
     required this.profileController,
     required this.authController,
     this.openDrawer = true,
+    this.radius = 27,
   });
 
   final ProfileController profileController;
   final AuthController authController;
   final bool openDrawer;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class TopUserProfileIcon extends StatelessWidget {
         }
       },
       child: Obx(() => CircleAvatar(
-            radius: 27,
+            radius: radius,
             backgroundImage: NetworkImage(authController.isGuestUser.value
                 ? authController.guestUserImage.value
                 : profileController.authenticatedUser.value.image ??
