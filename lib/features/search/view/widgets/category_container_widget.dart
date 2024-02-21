@@ -20,7 +20,7 @@ Widget categoryContainer(Category category) {
                 Text(
                   category.name,
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w300,
                       color: Colors.white,
                       fontSize: 20),
                 ),
