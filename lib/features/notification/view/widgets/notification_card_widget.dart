@@ -54,10 +54,44 @@ class NotificationCard extends StatelessWidget {
                       "username": notification.username ?? ""
                     });
                   },
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(notification.avatar ??
-                        "https://secure.gravatar.com/avatar/44cb6ed8fa0451a09a6387dc8bf2533a?s=260&d=mm&r=g"),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(notification.avatar ??
+                            "https://secure.gravatar.com/avatar/44cb6ed8fa0451a09a6387dc8bf2533a?s=260&d=mm&r=g"),
+                      ),
+                      if (notification.type == 'content_like' ||
+                          notification.type == 'content_share' ||
+                          notification.type == 'content_react')
+                        Positioned(
+                            bottom: -1,
+                            right: -1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF0c2b46),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                  )),
+                              child: Padding(
+                                padding: EdgeInsets.all(1),
+                                child: notification.type == 'content_react'
+                                    ? Text(
+                                        codeToEmojiMap[notification.message] ??
+                                            "",
+                                        style: TextStyle(fontSize: 17),
+                                      )
+                                    : Icon(
+                                        notification.type == 'content_like'
+                                            ? Icons.thumb_up_alt_sharp
+                                            : Icons.share_outlined,
+                                        color: Colors.blue,
+                                        size: 17,
+                                      ),
+                              ),
+                            )),
+                    ],
                   ),
                 ),
                 SizedBox(
