@@ -4,12 +4,14 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
 import 'package:mindplex/features/notification/controllers/notification_controller.dart';
 import 'package:mindplex/features/notification/view/widgets/notification_card_widget.dart';
+import 'package:mindplex/features/notification/view/widgets/notification_loader_inidcator_widget.dart';
 
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../../blogs/controllers/blogs_controller.dart';
 
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
 import '../../../../utils/constatns.dart';
+import '../widgets/notififcation_skeleton_widget.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -117,8 +119,9 @@ class _NotificationPageState extends State<NotificationPage>
               ),
             ),
             Obx(() => notificationController.firstTimeLoading.value
-                ? Center(
-                    child: CircularProgressIndicator(),
+                ? Container(
+                    height: height * 0.80,
+                    child: NotificationLoaderInidcator(),
                   )
                 : Container(
                     height: height * 0.80,
@@ -128,34 +131,50 @@ class _NotificationPageState extends State<NotificationPage>
                         children: [
                           Container(
                             height: 510,
-                            child: notificationController.notificationList.length == 0 ?Padding(padding:EdgeInsets.only(top: 30,left: 90),child: Container(child: Text("You have no notifications",style: TextStyle(color: Colors.white,fontSize: 20),),)):ListView.builder(
-                                controller: notificationController.notificationPageScrollController,
-                                shrinkWrap: true,
-                                itemCount: notificationController.notificationList.length + 1,
-                                itemBuilder: (ctx, index) {
-                                  notificationController
-                                      .firstTimeLoading.value = false;
-                                  if (index <
+                            child: notificationController
+                                        .notificationList.length ==
+                                    0
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 30, left: 90),
+                                    child: Container(
+                                      child: Text(
+                                        "You have no notifications",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                    ))
+                                : ListView.builder(
+                                    controller: notificationController
+                                        .notificationPageScrollController,
+                                    shrinkWrap: true,
+                                    itemCount: notificationController
+                                            .notificationList.length +
+                                        1,
+                                    itemBuilder: (ctx, index) {
                                       notificationController
-                                          .notificationList.length)
-                                    return NotificationCard(
-                                      notification: notificationController
-                                          .notificationList[index],
-                                    );
-                                  else {
-                                    if (index ==
-                                            notificationController
-                                                .notificationList.length &&
-                                        !notificationController
-                                            .reachedEndofNotifications.value) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  }
-                                }),
+                                          .firstTimeLoading.value = false;
+                                      if (index <
+                                          notificationController
+                                              .notificationList.length)
+                                        return NotificationCard(
+                                          notification: notificationController
+                                              .notificationList[index],
+                                        );
+                                      else {
+                                        if (index ==
+                                                notificationController
+                                                    .notificationList.length &&
+                                            !notificationController
+                                                .reachedEndofNotifications
+                                                .value) {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
+                                    }),
                           ),
                           Container(
                             height: height * 0.795,
