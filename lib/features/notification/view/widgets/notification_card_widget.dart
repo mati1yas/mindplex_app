@@ -68,6 +68,7 @@ class NotificationCard extends StatelessWidget {
                             bottom: -1,
                             right: -1,
                             child: Container(
+                              margin: EdgeInsets.all(1),
                               decoration: BoxDecoration(
                                   color: Color(0xFF0c2b46),
                                   borderRadius: BorderRadius.circular(15),
@@ -84,7 +85,7 @@ class NotificationCard extends StatelessWidget {
                                       )
                                     : Icon(
                                         notification.type == 'content_like'
-                                            ? Icons.thumb_up_alt_sharp
+                                            ? Icons.thumb_up_off_alt_outlined
                                             : Icons.share_outlined,
                                         color: Colors.blue,
                                         size: 17,
