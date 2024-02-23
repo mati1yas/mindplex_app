@@ -59,13 +59,15 @@ class AboutScreen extends StatelessWidget {
                           children: [
                             TitleText(text: 'Education'),
                             SizedBox(height: 10),
+
                             Html(
                               data: decodeHtmlContent(profileController
-                                          .userProfile.value.education !=
-                                      null
-                                  ? profileController.userProfile.value
-                                      .education!.educationalBackground
-                                  : ""),
+                                              .userProfile.value.education !=
+                                          null
+                                      ? profileController.userProfile.value
+                                          .education!.educationalBackground
+                                      : "")
+                                  .replaceAll('\\', ''),
                               style: {
                                 '*': Style(color: Colors.white),
                               },
