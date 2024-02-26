@@ -82,6 +82,8 @@ class Keys {
   static final globalkey = GlobalKey<ScaffoldState>();
 }
 
+final longEmptySpace =
+    "                                                            ";
 List<String> countryList = [
   "Afghanistan",
   "Albania",
