@@ -54,6 +54,7 @@ class CommentTile extends StatelessWidget {
             children: [
               if (!isSubComment) const SizedBox(height: 4),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -76,14 +77,40 @@ class CommentTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Text(
-                      comment.commentAuthor ?? "",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleLarge!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          comment.commentAuthor ?? "",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleLarge!.copyWith(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Obx(
+                          () => commentController.loadingcommentorMpxr.value &&
+                                  index >= commentController.startPosition.value
+                              ? Container(
+                                  height: 10,
+                                  width: 10,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : Text(
+                                  comment.commentorMpxr != null
+                                      ? comment.commentorMpxr!
+                                              .toStringAsFixed(3) +
+                                          " MPXR"
+                                      : "- MPXR",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        )
+                      ],
                     ),
                   ),
                   const SizedBox(width: 16),
