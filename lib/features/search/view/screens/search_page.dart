@@ -6,6 +6,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 
 import 'package:mindplex/features/drawer/view/widgets/drawer_widget.dart';
+import 'package:mindplex/features/search/view/screens/search_result_page.dart';
+import 'package:mindplex/features/search/view/widgets/search_bar_widget.dart';
 import 'package:mindplex/features/search/view/widgets/search_blog_card_widget.dart';
 import 'package:mindplex/features/search/view/widgets/category_container_widget.dart';
 import 'package:mindplex/utils/colors.dart';
@@ -40,7 +42,7 @@ class _SearchPageState extends State<SearchPage>
   PageNavigationController pageNavigationController = Get.find();
   AuthController authController = Get.find();
 
-  TextEditingController _searchController = TextEditingController();
+  TextEditingController searchTextEditingController = TextEditingController();
 
   late TabController _tabController;
   final apiService = ApiService().obs;
@@ -49,6 +51,12 @@ class _SearchPageState extends State<SearchPage>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.isSearchResultPage.value = false;
+    super.dispose();
   }
 
   @override
@@ -67,108 +75,89 @@ class _SearchPageState extends State<SearchPage>
             body: Column(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.19,
+                  height: MediaQuery.of(context).size.height *
+                      (searchController.isSearchResultPage.value ? 0.25 : 0.19),
                   child: Material(
                     color: Color(0xFF0c2b46),
                     elevation: 10,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 25.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SizedBox(width: 20),
-                            TopUserProfileIcon(
-                                radius: 25,
-                                profileController: profileController,
-                                authController: authController),
-                            SizedBox(width: 30),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: TextFormField(
-                                        autovalidateMode:
-                                            AutovalidateMode.onUserInteraction,
-                                        controller: _searchController,
-                                        textAlign: TextAlign.end,
-                                        onFieldSubmitted: (String value) {
-                                          searchController
-                                              .isSearchResultPage.value = true;
-                                          searchController.fetchSearchResults(
-                                              _searchController.text);
-                                        },
-                                        keyboardType: TextInputType.text,
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.grey),
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.black,
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.transparent),
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.all(10),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.transparent),
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          border: InputBorder.none,
-                                          hintText: 'Search',
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                        ),
-                                        onChanged: (value) {},
-                                        validator: (value) {},
-                                      ),
-                                    ),
-                                    Flexible(
-                                        flex: 1,
-                                        fit: FlexFit.loose,
-                                        child: Icon(
-                                          Icons.search,
-                                          color: Colors.grey,
-                                        ))
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20),
-                            InkWell(
-                              child: Icon(
-                                Icons.settings,
-                                size: 38,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Get.toNamed(AppRoutes.settingsPage);
-                              },
-                            ),
-                            SizedBox(width: 30),
-                          ],
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 45,
                         ),
-                      ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 25.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SizedBox(width: 20),
+                                TopUserProfileIcon(
+                                    radius: 25,
+                                    profileController: profileController,
+                                    authController: authController),
+                                SizedBox(width: 30),
+                                SearchBarWidget(
+                                    searchTextEditingController:
+                                        searchTextEditingController,
+                                    searchController: searchController),
+                                SizedBox(width: 20),
+                                InkWell(
+                                  child: Icon(
+                                    Icons.settings,
+                                    size: 38,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    Get.toNamed(AppRoutes.settingsPage);
+                                  },
+                                ),
+                                SizedBox(width: 30),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (searchController.isSearchResultPage.value)
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Container(
+                              height: 35,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(50, 118, 118, 128),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TabBar(
+                                dividerColor: Colors.transparent,
+                                controller: _tabController,
+                                isScrollable: false,
+                                indicator: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromARGB(255, 49, 153, 167)),
+                                labelColor: Colors.white,
+                                unselectedLabelColor: Colors.white,
+                                tabs: [
+                                  Tab(
+                                    text: 'Content',
+                                  ),
+                                  Tab(
+                                    text: 'Users',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.8099,
+                  height: MediaQuery.of(context).size.height *
+                      (searchController.isSearchResultPage.value
+                          ? 0.75
+                          : 0.8099),
                   child: SingleChildScrollView(
                     child: Column(children: [
                       !searchController.isSearchResultPage.value
@@ -204,23 +193,12 @@ class _SearchPageState extends State<SearchPage>
                                                           .categories.length
                                                       : 5);
                                               i++)
-                                            GestureDetector(
-                                                onTap: () {
-                                                  searchController
-                                                      .isSearchResultPage
-                                                      .value = true;
-                                                  _searchController.text =
-                                                      searchController
-                                                          .categories[i].slug;
-                                                  searchController
-                                                      .fetchSearchResults(
-                                                          searchController
-                                                              .categories[i]
-                                                              .slug);
-                                                },
-                                                child: categoryContainer(
-                                                    searchController
-                                                        .categories[i]))
+                                            categoryContainer(
+                                                category: searchController
+                                                    .categories[i],
+                                                index: i,
+                                                searchTextEditingController:
+                                                    searchTextEditingController)
                                         ]),
                                   InkWell(
                                     onTap: () {
@@ -327,183 +305,9 @@ class _SearchPageState extends State<SearchPage>
                                 ],
                               ),
                             )
-                          : Container(
-                              height: MediaQuery.of(context).size.height - 140,
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Container(
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(50, 118, 118, 128),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: TabBar(
-                                        dividerColor: Colors.transparent,
-                                        controller: _tabController,
-                                        isScrollable: false,
-                                        indicator: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Color.fromARGB(
-                                                255, 49, 153, 167)),
-                                        labelColor: Colors.white,
-                                        unselectedLabelColor: Colors.white,
-                                        tabs: [
-                                          Tab(
-                                            text: 'Content',
-                                          ),
-                                          Tab(
-                                            text: 'Users',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: TabBarView(
-                                      controller: _tabController,
-                                      children: [
-                                        Obx(() {
-                                          return searchController
-                                                      .isLoading.value ==
-                                                  true
-                                              ? Expanded(
-                                                  child: ListView.builder(
-                                                    itemCount: 5,
-                                                    itemBuilder: (ctx, inx) =>
-                                                        const BlogSkeleton(),
-                                                  ),
-                                                )
-                                              : Expanded(
-                                                  child: ListView.builder(
-                                                      controller: searchController
-                                                          .searchScrollController,
-                                                      itemCount:
-                                                          searchController
-                                                                  .searchedBlogs
-                                                                  .length +
-                                                              1,
-                                                      itemBuilder:
-                                                          (ctx, index) {
-                                                        if (index <
-                                                            searchController
-                                                                .searchedBlogs
-                                                                .length) {
-                                                          return SearchBlogCard(
-                                                              searchController:
-                                                                  searchController,
-                                                              index: index);
-                                                        } else {
-                                                          print(
-                                                              "executing else statement");
-                                                          if (index ==
-                                                                  searchController
-                                                                      .searchedBlogs
-                                                                      .length &&
-                                                              !searchController
-                                                                  .reachedEndOfListSearch
-                                                                  .value) {
-                                                            return Container(
-                                                                height: 250,
-                                                                child:
-                                                                    BlogSkeleton());
-                                                          } else {
-                                                            return Container(
-                                                              child: Center(
-                                                                child: Text(
-                                                                  searchController
-                                                                              .searchPage ==
-                                                                          1
-                                                                      ? "No Content"
-                                                                      : "no more content",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ),
-                                                            ); // Return an empty container otherwise
-                                                          }
-                                                        }
-                                                      }),
-                                                );
-                                        }),
-                                        Obx(() {
-                                          return searchController
-                                                      .isUserLoading.value ==
-                                                  true
-                                              ? Expanded(
-                                                  child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                ))
-                                              : Expanded(
-                                                  child: ListView.builder(
-                                                      controller: searchController
-                                                          .searchUserScrollController,
-                                                      itemCount: searchController
-                                                              .getSearchedUsers
-                                                              .length +
-                                                          1,
-                                                      itemBuilder:
-                                                          (ctx, index) {
-                                                        if (index <
-                                                            searchController
-                                                                .getSearchedUsers
-                                                                .length) {
-                                                          return UserCard(
-                                                              user:
-                                                                  searchController,
-                                                              index: index);
-                                                        } else {
-                                                          print(
-                                                              "executing else statement");
-                                                          if (index ==
-                                                                  searchController
-                                                                      .getSearchedUsers
-                                                                      .length &&
-                                                              !searchController
-                                                                  .reachedEndOfListSearchUser
-                                                                  .value) {
-                                                            // Display CircularProgressIndicator under the last card
-                                                            return Center(
-                                                                child:
-                                                                    CircularProgressIndicator());
-                                                          } else {
-                                                            return Container(
-                                                              child: Center(
-                                                                child: Text(
-                                                                  searchController
-                                                                              .searchUserPage ==
-                                                                          1
-                                                                      ? "No users"
-                                                                      : "no more users",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ),
-                                                            ); // Return an empty container otherwise
-                                                          }
-                                                        }
-                                                      }),
-                                                );
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          : SearchResultPage(
+                              tabController: _tabController,
+                              searchController: searchController),
                       SizedBox(
                         height:
                             searchController.isSearchResultPage.value ? 0 : 80,
