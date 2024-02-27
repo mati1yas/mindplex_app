@@ -1,13 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/search/services/search_api_service.dart';
 import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/utils/Toster.dart';
 
 import '../../blogs/models/blog_model.dart';
 import '../../user_profile_settings/models/user_profile.dart';
 import '../models/search_response.dart';
 
-class SearchPageController extends GetxController{
+class SearchPageController extends GetxController {
   RxBool isLoadingMore = true.obs;
   RxInt searchPage = 1.obs;
   RxList<Blog> popularPosts = <Blog>[].obs;
@@ -30,14 +33,16 @@ class SearchPageController extends GetxController{
   RxBool isUserLoading = true.obs;
   RxList<UserProfile> userSearchResults = <UserProfile>[].obs;
   RxBool isLoadingMoreUsers = true.obs;
+  RxBool loadingReputation = false.obs;
 
   final searchApiService = SearchApiService().obs;
   final apiService = ApiService().obs;
+  RxInt startPosition = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchCategories();
+
     fetchPopularBlogs();
     searchScrollController.addListener(() {
       if (!reachedEndOfListSearch.value &&
@@ -58,11 +63,15 @@ class SearchPageController extends GetxController{
     });
   }
 
-  void fetchCategories() async {
+  void fetchPopularBlogs() async {
     final res = await searchApiService.value.fetchSearchLanding();
-    print(res.categories?[0].posts);
+
+    popularPosts.value = res.blogs!;
+    loadReputation(popularPosts, 'popular');
     categories.value = res.categories!;
     isIntialLoading.value = false;
+
+    isLoadingMore.value = false;
   }
 
   void loadMoreSearchResults(String query) async {
@@ -79,7 +88,9 @@ class SearchPageController extends GetxController{
       reachedEndOfListSearch.value = true;
       // Notify the user that there are no more posts for now
     } else {
+      startPosition.value = searchResults.length;
       searchResults.addAll(res.blogs!);
+      loadReputation(res.blogs ?? [], 'search');
     }
 
     isLoadingMore.value = false;
@@ -87,7 +98,7 @@ class SearchPageController extends GetxController{
     update(); // Trigger UI update
   }
 
-  void loadMoreUsers(String query) async{
+  void loadMoreUsers(String query) async {
     if (isLoadingMoreUsers.value || reachedEndOfListSearchUser.value) {
       return;
     }
@@ -96,7 +107,7 @@ class SearchPageController extends GetxController{
     searchUserPage.value++; // Increment the page number
 
     final res = await searchApiService.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
+        .fetchSearchResponse(query, searchUserPage.value.toInt());
 
     if (res.users!.isEmpty) {
       reachedEndOfListSearchUser.value = true;
@@ -107,13 +118,6 @@ class SearchPageController extends GetxController{
     isLoadingMore.value = false;
 
     update();
-  }
-
-  void fetchPopularBlogs() async {
-    final res = await searchApiService.value.fetchSearchLanding();
-
-    popularPosts.value = res.blogs!;
-    isLoadingMore.value = false;
   }
 
   void fetchSearchResults(String query) async {
@@ -128,12 +132,14 @@ class SearchPageController extends GetxController{
 
     searchPage.value = 1;
     searchUserPage.value = 1;
+    startPosition.value = 0;
 
-    final res = await searchApiService.value.fetchSearchResponse(query, searchPage.value.toInt());
+    final res = await searchApiService.value
+        .fetchSearchResponse(query, searchPage.value.toInt());
 
-    if(res.blogs!.length < 10){
+    if (res.blogs!.length < 10) {
       reachedEndOfListSearch.value = true;
-      if(res.blogs!.length > 1){
+      if (res.blogs!.length > 1) {
         searchPage++;
       }
     }
@@ -145,6 +151,7 @@ class SearchPageController extends GetxController{
     }
 
     searchResults.value = res.blogs!;
+    loadReputation(res.blogs ?? [], 'search');
     userSearchResults.value = res.users!;
 
     searchQuery.value = query;
@@ -156,27 +163,72 @@ class SearchPageController extends GetxController{
     isUserLoading.value = false;
   }
 
-  Future<void> followUnfollowUser(int index, String userName,bool isFollowing) async {
+  Future<void> followUnfollowUser(
+      int index, String userName, bool isFollowing) async {
     getSearchedUsers[index].isSendingFollowRequest!.value = true;
-    if(isFollowing){
+    if (isFollowing) {
       await unfollowUser(index, userName);
-    }
-    else{
+    } else {
       await followUser(index, userName);
     }
     getSearchedUsers[index].isSendingFollowRequest!.value = false;
   }
 
-
-  Future<void> followUser(int index , String userName) async {
-    if( await apiService.value.followUser(userName)){
-     getSearchedUsers[index].isFollowing!.value = true;
+  Future<void> followUser(int index, String userName) async {
+    if (await apiService.value.followUser(userName)) {
+      getSearchedUsers[index].isFollowing!.value = true;
     }
   }
 
-  Future<void> unfollowUser(int index , String userName) async {
-    if( await apiService.value.unfollowUser(userName)){
+  Future<void> unfollowUser(int index, String userName) async {
+    if (await apiService.value.unfollowUser(userName)) {
       getSearchedUsers[index].isFollowing!.value = false;
+    }
+  }
+
+  Future<void> loadReputation(List<Blog> fetchedBlogs, String blogType) async {
+    loadingReputation.value = true;
+
+    try {
+      List<String> slugs =
+          await fetchedBlogs.map((blog) => blog.slug!).toList();
+      slugs.length;
+
+      List<Reputation> reputations =
+          await apiService.value.loadReputation(slugs: slugs);
+
+      assignReputationToBlog(
+          fetchedBlogs: fetchedBlogs,
+          reputations: reputations,
+          blogType: blogType);
+    } catch (e) {
+      if (e is DioException) {
+        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 3);
+      }
+    }
+
+    loadingReputation.value = false;
+  }
+
+  void assignReputationToBlog(
+      {required List<Blog> fetchedBlogs,
+      required List<Reputation> reputations,
+      required String blogType}) {
+    for (var i = 0; i < fetchedBlogs.length; i++) {
+      for (var j = 0; j < reputations.length; j++) {
+        if (fetchedBlogs[i].slug == reputations[j].postSlug) {
+          fetchedBlogs[i].reputation.value = reputations[j];
+
+          if (blogType == 'popular') {
+            popularPosts[startPosition.value + i] = fetchedBlogs[i];
+          } else if (blogType == 'search') {
+            searchResults[startPosition.value + i] = fetchedBlogs[i];
+          }
+
+          update();
+          break;
+        }
+      }
     }
   }
 
@@ -188,7 +240,7 @@ class SearchPageController extends GetxController{
     return searchResults;
   }
 
-  List<UserProfile> get getSearchedUsers{
+  List<UserProfile> get getSearchedUsers {
     return userSearchResults;
   }
 }
