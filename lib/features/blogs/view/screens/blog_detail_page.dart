@@ -228,7 +228,9 @@ class DetailsPage extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () {
                                     openAuthorProfile(
-                                        details.authorUsername ?? "");
+                                        details.authorUsername ?? "",
+                                        context,
+                                        authController);
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(20),
@@ -242,7 +244,9 @@ class DetailsPage extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     openAuthorProfile(
-                                        details.authorUsername ?? "");
+                                        details.authorUsername ?? "",
+                                        context,
+                                        authController);
                                   },
                                   child: Container(
                                     width:
@@ -554,8 +558,13 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
-  void openAuthorProfile(String authorUsername) {
-    Get.toNamed(AppRoutes.profilePage,
-        parameters: {"me": "notme", "username": authorUsername});
+  void openAuthorProfile(String authorUsername, BuildContext context,
+      AuthController authController) {
+    if (authController.isGuestUser.value) {
+      authController.guestReminder(context);
+    } else {
+      Get.toNamed(AppRoutes.profilePage,
+          parameters: {"me": "notme", "username": authorUsername});
+    }
   }
 }
