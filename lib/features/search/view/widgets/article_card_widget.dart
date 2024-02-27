@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/colors.dart';
 import '../../../blogs/view/screens/blog_detail_page.dart';
 
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({
+  ArticleCard({
     super.key,
     required this.searchController,
     required this.index,
@@ -15,6 +18,7 @@ class ArticleCard extends StatelessWidget {
 
   final SearchPageController searchController;
   final int index;
+  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -121,14 +125,16 @@ class ArticleCard extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      //  will be modified in detail .
-
-                      Get.toNamed(AppRoutes.profilePage, parameters: {
-                        "me": "notme",
-                        "username": searchController
-                                .popularBlogs[index].authorUsername ??
-                            ""
-                      });
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else {
+                        Get.toNamed(AppRoutes.profilePage, parameters: {
+                          "me": "notme",
+                          "username": searchController
+                                  .popularBlogs[index].authorUsername ??
+                              ""
+                        });
+                      }
                     },
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(

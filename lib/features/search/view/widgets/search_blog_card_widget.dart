@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
 import 'package:mindplex/utils/colors.dart';
 
@@ -12,7 +13,7 @@ import '../../../user_profile_settings/models/user_profile.dart';
 import '../../../../routes/app_routes.dart';
 
 class SearchBlogCard extends StatelessWidget {
-  const SearchBlogCard({
+  SearchBlogCard({
     super.key,
     required this.searchController,
     required this.index,
@@ -20,6 +21,7 @@ class SearchBlogCard extends StatelessWidget {
 
   final SearchPageController searchController;
   final int index;
+  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +35,16 @@ class SearchBlogCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //  will be modified in detail .
-
-                    Get.toNamed(AppRoutes.profilePage, parameters: {
-                      "me": "notme",
-                      "username": searchController
-                              .searchedBlogs[index].authorUsername ??
-                          ""
-                    });
+                    if (authController.isGuestUser.value) {
+                      authController.guestReminder(context);
+                    } else {
+                      Get.toNamed(AppRoutes.profilePage, parameters: {
+                        "me": "notme",
+                        "username": searchController
+                                .popularBlogs[index].authorUsername ??
+                            ""
+                      });
+                    }
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(
