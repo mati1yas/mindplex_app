@@ -18,6 +18,7 @@ class ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         Get.to(DetailsPage(
@@ -30,7 +31,7 @@ class ArticleCard extends StatelessWidget {
             border: Border.all(color: Colors.white),
             color: blogContainerColor),
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.65,
+          width: width * 0.65,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -113,6 +114,7 @@ class ArticleCard extends StatelessWidget {
                 ),
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     width: 10,
@@ -139,20 +141,53 @@ class ArticleCard extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    searchController.popularBlogs[index].authorDisplayName ??
-                        "",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    searchController.popularBlogs[index].publishedAt ?? "",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: width * 0.2,
+                            child: Text(
+                              searchController
+                                      .popularBlogs[index].authorDisplayName ??
+                                  "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            searchController.popularBlogs[index].publishedAt ??
+                                "",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Obx(
+                        () => searchController.loadingReputation.value &&
+                                index >= searchController.startPosition.value
+                            ? Container(
+                                width: 13,
+                                height: 13,
+                                child: CircularProgressIndicator(
+                                  color: Colors.green[300],
+                                ))
+                            : Text(
+                                "MPXR ${searchController.popularBlogs[index].reputation.value != null ? searchController.popularBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
+                                style: TextStyle(
+                                    color: titleTextColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -169,7 +204,7 @@ class ArticleCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 10.0),
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -177,6 +212,33 @@ class ArticleCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                       searchController.popularBlogs[index].overview ?? ""),
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Obx(
+                      () => searchController.loadingReputation.value &&
+                              index >= searchController.startPosition.value
+                          ? Container(
+                              width: 13,
+                              height: 13,
+                              child: CircularProgressIndicator(
+                                color: Colors.green[300],
+                              ))
+                          : Text(
+                              "MPXR ${searchController.popularBlogs[index].reputation.value != null ? searchController.popularBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
+                              style: TextStyle(
+                                  color: titleTextColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ),
+                  ],
                 ),
               ),
               Padding(
