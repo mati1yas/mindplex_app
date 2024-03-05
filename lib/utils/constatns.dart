@@ -27,10 +27,12 @@ class AppUrls {
   static var blogAddViewUrl = "$baseUrl/mp_rp/post/view_count/";
   static var draftBaseUrl = "${AppUrls.baseUrl}/mp_up/v1/post/draft/";
   static var postUrl = "${AppUrls.baseUrl}/mp_up/v1/post/";
+  static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
 }
 
 var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";
 var api_key = "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
+
 final List<String> emojiCodes = [
   "128175",
   "128152",
