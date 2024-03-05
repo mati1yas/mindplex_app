@@ -30,10 +30,12 @@ class AppUrls {
   static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
   static var userProfileReputation =
       "${AppUrls.baseUrlReputation}/core/communities/mindplex/users";
+  static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
 }
 
 var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";
 var api_key = "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
+
 final List<String> emojiCodes = [
   "128175",
   "128152",
