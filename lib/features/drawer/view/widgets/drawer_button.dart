@@ -53,7 +53,7 @@ class DrawerItemButton extends StatelessWidget {
               drawerTitle,
               style: TextStyle(
                   fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w400,
                   color: this.color ?? white),
             ),
           )),

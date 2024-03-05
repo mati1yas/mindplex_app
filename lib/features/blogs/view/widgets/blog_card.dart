@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import '../../controllers/blogs_controller.dart';
 import '../../../../routes/app_routes.dart';
@@ -59,7 +60,9 @@ class BlogCard extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(DetailsPage(index: index, details: blogsController.filteredBlogs[index]));
+                      Get.to(DetailsPage(
+                          index: index,
+                          details: blogsController.filteredBlogs[index]));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,8 +75,8 @@ class BlogCard extends StatelessWidget {
                                       .filteredBlogs[index].authorDisplayName ??
                                   "",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                color: titleTextColor,
+                              ),
                             ),
                             Obx(
                               () => blogsController.loadingReputation.value &&
@@ -88,7 +91,7 @@ class BlogCard extends StatelessWidget {
                                   : Text(
                                       " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: titleTextColor,
                                           fontWeight: FontWeight.bold),
                                     ),
                             ),
@@ -106,24 +109,27 @@ class BlogCard extends StatelessWidget {
                             )
                           ],
                         ),
+                        SizedBox(
+                          height: 8,
+                        ),
                         Text(
                             style: TextStyle(
-                                color: Colors.white,
+                                color: titleTextColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                             blogsController.filteredBlogs[index].postTitle ??
                                 ""),
                         SizedBox(
-                          height: 10,
+                          height: 13,
                         ),
                         Text(
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            blogsController.filteredBlogs[index].overview ??
-                                ""),
+                          blogsController.filteredBlogs[index].overview ?? "",
+                          style: TextStyle(
+                              color: bodyTextColor,
+                              fontWeight: FontWeight.w300),
+                        ),
                         SizedBox(
-                          height: 10,
+                          height: 13,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,7 +137,9 @@ class BlogCard extends StatelessWidget {
                             Text(
                               blogsController.filteredBlogs[index].minToRead ??
                                   "",
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                  color: bodyTextColor,
+                                  fontWeight: FontWeight.w300),
                             ),
                             Obx(
                               () => blogsController.loadingReputation.value &&
@@ -146,7 +154,7 @@ class BlogCard extends StatelessWidget {
                                   : Text(
                                       " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: titleTextColor,
                                           fontWeight: FontWeight.bold),
                                     ),
                             ),
@@ -242,6 +250,7 @@ class BlogCard extends StatelessWidget {
                         InteractionStatistics(
                           blogsController: blogsController,
                           index: index,
+                          buttonsInteractive: false,
                         )
                       ],
                     ),
@@ -249,10 +258,14 @@ class BlogCard extends StatelessWidget {
                 )
               ],
             ),
-            Divider(
-              color: Colors.white,
-              thickness: 1,
+
+            SizedBox(
+              height: 20,
             )
+            // Divider(
+            //   color: Colors.white,
+            //   thickness: 1,
+            // )
           ],
         ),
       ),

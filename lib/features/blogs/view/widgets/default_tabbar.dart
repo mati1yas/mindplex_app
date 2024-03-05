@@ -17,10 +17,10 @@ class DefaultTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => TabBar(
-          isScrollable: false,
+          isScrollable: true,
           dividerColor: Colors.grey,
           indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(8),
               color: blogsController.post_format == 'text'
                   ? Color(0xFF8aa7da)
                   : blogsController.post_format == 'video'

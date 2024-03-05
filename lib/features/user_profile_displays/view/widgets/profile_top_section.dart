@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/user_profile_image_widget.dart';
+import 'package:mindplex/routes/app_routes.dart';
 
 class ProfileTopSection extends StatelessWidget {
   const ProfileTopSection({
@@ -64,12 +66,12 @@ class ProfileTopSection extends StatelessWidget {
                       ),
                       PopupMenuItem(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Get.toNamed(AppRoutes.settingsPage);
                         },
                         child: Row(
                           children: [
                             Icon(Icons.info),
-                            Text("Change info"),
+                            Text("Edit Profile"),
                           ],
                         ),
                       ),

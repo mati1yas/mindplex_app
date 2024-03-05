@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
+import 'package:mindplex/features/user_profile_displays/models/user_profile_reputation_model.dart';
+import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 import 'package:mindplex/services/api_services.dart';
@@ -24,6 +26,7 @@ class ProfileController extends GetxController {
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
   RxString selectedTabCategory = "About".obs;
   RxBool isLoading = false.obs;
+  RxBool isLoadingReputation = false.obs;
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
@@ -43,6 +46,8 @@ class ProfileController extends GetxController {
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
   final apiService = ApiService().obs;
+
+  final userProfileApiService = ProfileServices().obs;
 
   AuthController authController = Get.find();
 
@@ -96,6 +101,16 @@ class ProfileController extends GetxController {
       res.username = username;
       userProfile.value = res;
       isLoading.value = false;
+      //  start reputation loading indicator
+      isLoadingReputation.value = true;
+      final userProfileReputation =
+          await getUserReputation(userId: res.userId!);
+      res.mpxr = userProfileReputation.mpxr!.toDouble();
+
+      userProfile.value = res;
+
+      isLoadingReputation.value = false;
+      //  end loading indicator and show it on the front end
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
@@ -103,6 +118,13 @@ class ProfileController extends GetxController {
             message: 'No Internet Connection', color: Colors.red, duration: 1);
       }
     }
+  }
+
+  Future<UserProfileReputation> getUserReputation({required int userId}) async {
+    UserProfileReputation userProfileReputation =
+        await userProfileApiService.value.getUserReputation(userId: userId);
+
+    return userProfileReputation;
   }
 
   Future<void> fetchFollowers({required String username}) async {

@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
+import 'package:mindplex/utils/colors.dart';
 
 import '../../../blogs/view/screens/blog_detail_page.dart';
 
@@ -11,7 +13,7 @@ import '../../../user_profile_settings/models/user_profile.dart';
 import '../../../../routes/app_routes.dart';
 
 class SearchBlogCard extends StatelessWidget {
-  const SearchBlogCard({
+  SearchBlogCard({
     super.key,
     required this.searchController,
     required this.index,
@@ -19,6 +21,7 @@ class SearchBlogCard extends StatelessWidget {
 
   final SearchPageController searchController;
   final int index;
+  AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +35,16 @@ class SearchBlogCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //  will be modified in detail .
-
-                    Get.toNamed(AppRoutes.profilePage, parameters: {
-                      "me": "notme",
-                      "username":
-                          searchController.searchedBlogs[index].authorUsername ??
-                              ""
-                    });
+                    if (authController.isGuestUser.value) {
+                      authController.guestReminder(context);
+                    } else {
+                      Get.toNamed(AppRoutes.profilePage, parameters: {
+                        "me": "notme",
+                        "username": searchController
+                                .popularBlogs[index].authorUsername ??
+                            ""
+                      });
+                    }
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(
@@ -73,14 +78,22 @@ class SearchBlogCard extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              searchController
-                                      .searchedBlogs[index].authorUsername ??
-                                  "",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 123, 122, 122),
-                              ),
-                            ),
+                            Obx(() =>
+                                searchController.loadingReputation.value &&
+                                        index >=
+                                            searchController.startPosition.value
+                                    ? Container(
+                                        width: 13,
+                                        height: 13,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.green[300],
+                                        ))
+                                    : Text(
+                                        " MPXR ${searchController.searchResults[index].reputation.value != null ? searchController.searchResults[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
+                                        style: TextStyle(
+                                            color: titleTextColor,
+                                            fontWeight: FontWeight.bold),
+                                      )),
                             Text(
                               searchController
                                       .searchedBlogs[index].publishedAt ??
@@ -111,9 +124,32 @@ class SearchBlogCard extends StatelessWidget {
                         SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          searchController.searchedBlogs[index].minToRead ?? "",
-                          style: TextStyle(color: Colors.white),
+                        Row(
+                          children: [
+                            Text(
+                              searchController.searchedBlogs[index].minToRead ??
+                                  "",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Spacer(),
+                            Obx(
+                              () => searchController.loadingReputation.value &&
+                                      index >=
+                                          searchController.startPosition.value
+                                  ? Container(
+                                      width: 13,
+                                      height: 13,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.green[300],
+                                      ))
+                                  : Text(
+                                      " MPXR ${searchController.searchResults[index].reputation.value != null ? searchController.searchResults[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
+                                      style: TextStyle(
+                                          color: titleTextColor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                            )
+                          ],
                         ),
                         SizedBox(
                           height: 5,

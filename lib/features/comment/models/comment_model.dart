@@ -16,6 +16,7 @@ class Comment {
   String? authorAvatarUrls;
   int? replyCount;
   RxList<Comment>? replies = <Comment>[].obs;
+  double? commentorMpxr;
 
   Comment(
       {this.commentID,
@@ -31,7 +32,8 @@ class Comment {
       this.commenterUsername,
       this.displayName,
       this.authorAvatarUrls,
-      this.replyCount});
+      this.replyCount,
+      this.commentorMpxr});
 
   Comment.fromJson(Map<String, dynamic> json) {
     commentID = json['comment_ID'];

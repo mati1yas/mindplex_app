@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/comment/api_service/comment_api_service.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 
 import '../models/comment_model.dart';
 
@@ -9,6 +10,7 @@ class CommentController extends GetxController {
   CommentController({required this.post_slug}); // the constructor
 
   final commentApiService = CommentApiService();
+  final profileService = ProfileServices();
 
   final String post_slug;
   int currentPage = 1; // the page number we're at (related to *pagination*)
@@ -25,6 +27,7 @@ class CommentController extends GetxController {
   RxBool loadingMoreComments = false.obs;
   RxBool moreCommentsAvailable = true.obs;
   RxBool loadingCommentReply = false.obs;
+  RxBool loadingcommentorMpxr = false.obs;
 
   final TextEditingController commentTextEditingController =
       TextEditingController(); // we'll use this controller for writing new comments and replies
@@ -47,6 +50,8 @@ class CommentController extends GetxController {
     comments.value =
         await commentApiService.fetchComments(post_slug: post_slug);
 
+    loadCommentorMpxr(comments);
+
     loadCommentReplies(comments);
 
     loadingComments.value = false;
@@ -61,7 +66,7 @@ class CommentController extends GetxController {
       currentPage += 1;
       startPosition.value = comments.length;
       comments.addAll(fetchedComments);
-
+      loadCommentorMpxr(fetchedComments);
       loadCommentReplies(fetchedComments);
     } else {
       moreCommentsAvailable.value = false;
@@ -85,6 +90,21 @@ class CommentController extends GetxController {
     } catch (e) {}
 
     loadingCommentReply.value = false;
+  }
+
+  void loadCommentorMpxr(List<Comment> fetchedComments) async {
+    loadingcommentorMpxr.value = true;
+
+    try {
+      for (var i = 0; i < fetchedComments.length; i++) {
+        final userMpxr = await profileService.getUserReputation(
+            userId: int.parse(fetchedComments[i].userId ?? "0"));
+
+        comments[startPosition.value + i].commentorMpxr = userMpxr.mpxr;
+      }
+    } catch (e) {}
+
+    loadingcommentorMpxr.value = false;
   }
 
   onClickPost() async {

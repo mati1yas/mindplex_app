@@ -21,12 +21,14 @@ class UserCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        //  will be modified in detail .
-
-        Get.toNamed(AppRoutes.profilePage, parameters: {
-          "me": "notme",
-          "username": user.getSearchedUsers[index].username ?? ""
-        });
+        if (authController.isGuestUser.value) {
+          authController.guestReminder(context);
+        } else {
+          Get.toNamed(AppRoutes.profilePage, parameters: {
+            "me": "notme",
+            "username": user.getSearchedUsers[index].username ?? ""
+          });
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -37,8 +39,8 @@ class UserCard extends StatelessWidget {
               child: Row(
                 children: [
                   CircleAvatar(
-                    foregroundImage:
-                    NetworkImage(user.getSearchedUsers[index].avatarUrl ?? ""),
+                    foregroundImage: NetworkImage(
+                        user.getSearchedUsers[index].avatarUrl ?? ""),
                     radius: 20,
                     child: const Material(
                       color: Color.fromARGB(0, 231, 6, 6), //
@@ -68,46 +70,52 @@ class UserCard extends StatelessWidget {
                 ],
               ),
             ),
-            Obx(() =>
-            profileController.authenticatedUser.value.username ==  user.getSearchedUsers[index].username?
-            Container():
-            GestureDetector(
-              onTap: (){
-                if (authController.isGuestUser.value) {
-                  authController.guestReminder(context);
-                }
-                else if(!user.getSearchedUsers[index].isSendingFollowRequest!.value) {
-                  user.followUnfollowUser(index, user.getSearchedUsers[index].username!,user.getSearchedUsers[index].isFollowing!.value);
-                }
-              },
-              child: Obx(() => Container(
-                width: 75,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 49, 153, 167),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.all(8),
-                child: user.getSearchedUsers[index].isSendingFollowRequest!.value?Center(
-                  child: Container(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator()),
-                ):user.getSearchedUsers[index].isFollowing!.value?
-                Center(
-                  child: Text(
-                      'Unfollow',
-                      style: TextStyle(color: Colors.white, fontSize: 15)
-                  ),
-                ):
-                Center(
-                  child: Text(
-                      'follow',
-                      style: TextStyle(color: Colors.white, fontSize: 15)
-                  ),
-                ),
-              )),
-            )),
+            Obx(() => profileController.authenticatedUser.value.username ==
+                    user.getSearchedUsers[index].username
+                ? Container()
+                : GestureDetector(
+                    onTap: () {
+                      if (authController.isGuestUser.value) {
+                        authController.guestReminder(context);
+                      } else if (!user.getSearchedUsers[index]
+                          .isSendingFollowRequest!.value) {
+                        user.followUnfollowUser(
+                            index,
+                            user.getSearchedUsers[index].username!,
+                            user.getSearchedUsers[index].isFollowing!.value);
+                      }
+                    },
+                    child: Obx(() => Container(
+                          width: 75,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 49, 153, 167),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.all(8),
+                          child: user.getSearchedUsers[index]
+                                  .isSendingFollowRequest!.value
+                              ? Center(
+                                  child: Container(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator()),
+                                )
+                              : user.getSearchedUsers[index].isFollowing!.value
+                                  ? Center(
+                                      child: Text('Unfollow',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                    )
+                                  : Center(
+                                      child: Text('follow',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                    ),
+                        )),
+                  )),
           ],
         ),
       ),

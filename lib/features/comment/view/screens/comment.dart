@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/comment/controllers/comment_controller.dart';
+import 'package:mindplex/features/comment/view/widgets/comment_preview_overlay.dart';
 import 'package:mindplex/features/comment/view/widgets/comment_tile.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
@@ -70,6 +71,8 @@ class MyWidgetComment extends StatelessWidget {
                               border: Border.all(color: Colors.grey.shade400),
                             ),
                             child: TextField(
+                              minLines: 1,
+                              maxLines: 5,
                               style: TextStyle(
                                 color: const Color.fromARGB(255, 46, 46, 46),
                                 fontWeight: FontWeight.w400,
@@ -116,11 +119,22 @@ class MyWidgetComment extends StatelessWidget {
                             } else {
                               controller.commentTextEditingController.text == ''
                                   ? null
-                                  : controller.onClickPost();
+                                  : showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          CommentPreviewOverlay(
+                                            commentController: controller,
+                                            profileController:
+                                                profileController,
+                                            authController: authController,
+                                            currentComment: controller
+                                                .commentTextEditingController
+                                                .text,
+                                          ));
                             }
                           },
                           child: Text(
-                            'Post',
+                            'Preview',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -176,7 +190,9 @@ class MyWidgetComment extends StatelessWidget {
                                                           .startPosition.value
                                               ? Center(
                                                   child:
-                                                      CircularProgressIndicator(),
+                                                      CircularProgressIndicator(
+                                                    color: Colors.green,
+                                                  ),
                                                 )
                                               : controller.comments[index]
                                                           .replies ==

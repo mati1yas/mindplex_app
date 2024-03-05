@@ -5,6 +5,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/BlogsType.dart';
+import 'package:mindplex/features/user_profile_displays/models/user_profile_reputation_model.dart';
 import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/constatns.dart';
 import "../../authentication/controllers/auth_controller.dart";
@@ -17,6 +18,23 @@ var blogsTypes = {
 
 class ProfileServices {
   AuthController authenticationController = getxprefix.Get.find();
+
+  Future<UserProfileReputation> getUserReputation({required int userId}) async {
+    var dio = Dio();
+
+    try {
+      dio.options.headers["com-id"] = com_id;
+      dio.options.headers["x-api-key"] = api_key;
+
+      Response response = await dio.get(
+        "${AppUrls.userProfileReputation}/$userId",
+      );
+
+      return UserProfileReputation.fromJson(response.data);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
   Future<List<Blog>> getBlogs(String url, blogType) async {
     Dio dio = Dio();

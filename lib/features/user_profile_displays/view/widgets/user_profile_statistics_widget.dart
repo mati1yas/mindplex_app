@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followers_overlay.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followings_overlay.dart';
@@ -31,7 +32,6 @@ class UserProfileStatistics extends StatelessWidget {
         "value": " MPXR"
       }
     ];
-    print(profileController.userProfile.value.followers.toString());
 
     return Container(
       height: 46,
@@ -77,9 +77,29 @@ class UserProfileStatistics extends StatelessWidget {
                         )
                       : Column(
                           children: [
-                            Icon(
-                              Icons.warning,
-                              color: Colors.white,
+                            Obx(
+                              () => profileController.isLoadingReputation.value
+                                  ? Container(
+                                      height: 10,
+                                      width: 10,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                  : Text(
+                                      profileController
+                                                  .userProfile.value.mpxr !=
+                                              null
+                                          ? profileController
+                                              .userProfile.value.mpxr!
+                                              .toStringAsFixed(3)
+                                          : "-",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                             ),
                             Text(
                               "MPXR",

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
+import 'package:flutter_html/flutter_html.dart' as html;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class BlogContentDisplay extends StatelessWidget {
@@ -25,7 +28,12 @@ class BlogContentDisplay extends StatelessWidget {
           switch (element.type) {
             case 'h1':
               return Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 20.0,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
@@ -39,6 +47,9 @@ class BlogContentDisplay extends StatelessWidget {
             case 'h2':
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 15.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
@@ -52,12 +63,15 @@ class BlogContentDisplay extends StatelessWidget {
             case 'h3':
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
@@ -65,12 +79,15 @@ class BlogContentDisplay extends StatelessWidget {
             case 'h4':
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
                     fontSize: 17.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.red,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
@@ -78,12 +95,15 @@ class BlogContentDisplay extends StatelessWidget {
             case 'h5':
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
@@ -91,38 +111,72 @@ class BlogContentDisplay extends StatelessWidget {
             case 'h6':
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                ),
                 child: Text(
                   element.content!.replaceAll('&nbsp', ' '),
                   style: const TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple,
+                    color: Color.fromARGB(255, 73, 255, 179),
                   ),
                 ),
               );
 
             case 'p':
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  element.content!.replaceAll('&nbsp;', ''),
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              );
+                  padding: const EdgeInsets.symmetric(vertical: 0.0),
+                  child: html.Html(
+                    onLinkTap: (url, attributes, element) {
+                      launchUrl(Uri.parse(url ?? ""));
+                    },
+                    style: {"*": html.Style(color: Colors.white)},
+                    data: element.content!,
+                  ));
+
+            case 'blockquote':
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.quoteLeft,
+                        color: Color.fromARGB(255, 7, 146, 141),
+                      ),
+                    ),
+                    html.Html(
+                      onLinkTap: (url, attributes, element) {
+                        launchUrl(Uri.parse(url ?? ""));
+                      },
+                      style: {"*": html.Style(color: Colors.white)},
+                      data: element.content!,
+                    ),
+                  ]);
 
             case 'img':
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 5.0,
+                ),
                 child: Image.network(element.content!),
               );
             case 'figure':
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 5.0,
+                ),
                 child: Image.network(element.content!),
               );
             case 'pre':
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 5.0,
+                ),
                 child: HighlightView(
                   element.content!,
                   theme: githubTheme,

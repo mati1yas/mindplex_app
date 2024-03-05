@@ -13,6 +13,7 @@ class Blog {
   String? authorDisplayName;
   RxBool? isFollowing = false.obs;
   String? publishedAt;
+  String? publishedTimestamp;
   String? postTitle;
   String? overview;
   RxInt likes = 0.obs;
@@ -40,6 +41,7 @@ class Blog {
       this.authorDisplayName,
       bool? isFollowing,
       this.publishedAt,
+      this.publishedTimestamp,
       this.postTitle,
       this.overview,
       int? likes,
@@ -62,7 +64,8 @@ class Blog {
   Blog.fromJson(Map<String, dynamic> json) {
     slug = json['slug'];
     url = json['url'];
-    postTypeFormat = json['post_type_format'] != ""?json['post_type_format']:"text";
+    postTypeFormat =
+        json['post_type_format'] != "" ? json['post_type_format'] : "text";
     thumbnailImage = json['thumbnail_image'];
     banner = json['banner'];
     authorUsername = json['author_username'];
@@ -71,6 +74,7 @@ class Blog {
     authorDisplayName = json['author_display_name'];
     isFollowing = RxBool(json['is_following']);
     publishedAt = json['published_at'];
+    publishedTimestamp = json['published_timestamp'];
     postTitle = json['post_title'];
     overview = json['overview'];
     likes = RxInt(json['likes']);
@@ -105,6 +109,7 @@ class Blog {
     data['author_display_name'] = this.authorDisplayName;
     data['is_following'] = this.isFollowing;
     data['published_at'] = this.publishedAt;
+    data['published_timestamp'] = this.publishedTimestamp;
     data['post_title'] = this.postTitle;
     data['overview'] = this.overview;
     data['likes'] = this.likes;

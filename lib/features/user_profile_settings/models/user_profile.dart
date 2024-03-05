@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_settings/models/social_link.dart';
 
 class UserProfile {
+  int? userId;
   String? firstName;
   String? lastName;
   String? avatarUrl;
@@ -31,12 +32,13 @@ class UserProfile {
   int? followers;
   int? followings;
   int? friends;
-  int? mpxr;
+  double? mpxr;
   RxBool? isFollowing = false.obs;
   RxBool? isSendingFollowRequest = false.obs;
 
   UserProfile(
-      {this.firstName,
+      {this.userId,
+      this.firstName,
       this.lastName,
       this.avatarUrl,
       this.username,
@@ -64,11 +66,12 @@ class UserProfile {
       this.followings,
       this.friends,
       this.mpxr,
-        this.isFollowing,
-        this.isSendingFollowRequest // added for the purpose of showing loading animation when a user attempts to follow another user
+      this.isFollowing,
+      this.isSendingFollowRequest // added for the purpose of showing loading animation when a user attempts to follow another user
       });
 
   UserProfile.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
     firstName = json['first_name'];
     lastName = json['last_name'];
     avatarUrl = json['avatar_url'];
@@ -101,11 +104,12 @@ class UserProfile {
     socialLink = json['social_media'] != null
         ? List<String>.from(json['social_media'])
         : [];
-    isFollowing = RxBool(json['is_following']??false);
+    isFollowing = RxBool(json['is_following'] ?? false);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_id'] = this.userId;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
     data['avatar_url'] = this.avatarUrl;

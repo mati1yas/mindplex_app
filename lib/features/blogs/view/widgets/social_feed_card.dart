@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
+import 'package:mindplex/features/blogs/view/widgets/social_post_time_remaining_widget.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../../controllers/blogs_controller.dart';
+
 import 'blog_content_display.dart';
 
 class SocialFeedCard extends StatelessWidget {
@@ -14,10 +16,11 @@ class SocialFeedCard extends StatelessWidget {
   final BlogsController blogsController;
   final int index;
 
-  AuthController authController = Get.find();
+  final AuthController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     Blog blog = blogsController.filteredBlogs[index];
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -67,46 +70,34 @@ class SocialFeedCard extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.dialog(Dialog(
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.6,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.cancel_outlined,
-                                            color: Colors.red,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "Dismis",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ],
-                                      ))
-                                ],
-                              ),
-                            ),
-                          ));
-                        },
-                        child: Icon(
-                          Icons.timer_outlined,
-                          color: Colors.white,
-                        ),
-                      )
+
+                      // added three hours bse of time zone difference . and this widget will be hidden for those that have passed the time limit
+                      if (DateTime.now()
+                              .difference(
+                                  DateTime.parse(blog.publishedTimestamp!))
+                              .inHours <
+                          int.parse(blogsController.socialFeedSetting.value
+                                  .timeBeforeDeletion!) +
+                              3)
+                        Obx(() => blogsController.loadingReputation.value &&
+                                index >= blogsController.startPosition.value
+                            ? Container(
+                                width: 13,
+                                height: 13,
+                                child: CircularProgressIndicator(
+                                  color: Colors.green[300],
+                                ))
+                            : GestureDetector(
+                                onTap: () {
+                                  Get.dialog(PostTimeRemaining(
+                                      blog: blogsController
+                                          .filteredBlogs[index]));
+                                },
+                                child: Icon(
+                                  Icons.timer_outlined,
+                                  color: Colors.white,
+                                ),
+                              ))
                     ],
                   ),
                   Obx(
@@ -180,7 +171,10 @@ class SocialFeedCard extends StatelessWidget {
                     ),
                   ),
                   InteractionStatistics(
-                      blogsController: blogsController, index: index)
+                    blogsController: blogsController,
+                    index: index,
+                    buttonsInteractive: true,
+                  )
                 ],
               ),
             )

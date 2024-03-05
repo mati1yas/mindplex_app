@@ -74,165 +74,169 @@ class _LandingPageState extends State<LandingPage>
       // drawer: Drawer(
       //   child: DrawerWidget(),
       // ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            child: Column(
-              children: [
-                Container(
-                  height: height * 0.15,
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TopUserProfileIcon(
-                          profileController: profileController,
-                          authController: authController),
-                      SizedBox(
-                        width: width * 0.14,
-                      ),
-                      Obx(() => Container(
-                            width: width * 0.40,
-                            child: Center(
-                              child: Text(blogsController.landingPageHeader(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25,
-                                      color: Colors.white)),
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
-
-                // section for making a post to social feed .
-                Obx(() => blogsController.post_type == 'social' &&
-                        blogsController.showSocialFeedForm.value
-                    ? SocialFeedForm(
-                        draftedPostsController: draftedPostsController,
-                        editingDraft:
-                            draftedPostsController.editingSocialPostDraft.value,
-                      )
-                    : SizedBox.shrink()),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
             ),
-          ),
-
-          // top navigation bar
-
-          // this section shows list of topics to be selected by a user
-          Obx(() => blogsController.post_type == 'topics'
-              ? Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    height: height * 0.15,
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TopUserProfileIcon(
+                            profileController: profileController,
+                            authController: authController),
+                        SizedBox(
+                          width: width * 0.14,
+                        ),
+                        Obx(() => Container(
+                              width: width * 0.40,
+                              child: Center(
+                                child: Text(blogsController.landingPageHeader(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25,
+                                        color: Colors.white)),
+                              ),
+                            )),
+                      ],
                     ),
-                    PostTopics(blogsController: blogsController),
-                  ],
-                )
-              : SizedBox.shrink()),
-          SizedBox(
-            height: 10,
-          ),
+                  ),
 
-          //  for social feed we dont have tab bar for selecting post format
-          Obx(
-            () => blogsController.post_type != 'social'
-                ? Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(50, 118, 118, 128),
-                        borderRadius: BorderRadius.circular(8),
+                  // section for making a post to social feed .
+                  Obx(() => blogsController.post_type == 'social' &&
+                          blogsController.showSocialFeedForm.value
+                      ? SocialFeedForm(
+                          draftedPostsController: draftedPostsController,
+                          editingDraft: draftedPostsController
+                              .editingSocialPostDraft.value,
+                        )
+                      : SizedBox.shrink()),
+                ],
+              ),
+            ),
+
+            // top navigation bar
+
+            // this section shows list of topics to be selected by a user
+            Obx(() => blogsController.post_type == 'topics'
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
                       ),
-                      child: Obx(
-                        () => blogsController.post_type != 'community_content'
-                            ? DefaultTabBar(
-                                blogsController: blogsController,
-                                tabController: _tabController)
-                            : CommunityContentTabBar(
-                                blogsController: blogsController,
-                                tabController2: _tabController2),
-                      ),
-                    ),
+                      PostTopics(blogsController: blogsController),
+                    ],
                   )
-                : SizedBox.shrink(),
-          ),
+                : SizedBox.shrink()),
+            SizedBox(
+              height: 10,
+            ),
 
-          // section for displaying user
-
-          Obx(() {
-            return !blogsController.isConnected.value
-                ? noInternetCard(() {
-                    blogsController.fetchBlogs();
-                  })
-                : (blogsController.isLoadingMore.value == true &&
-                            isIntialLoading) ||
-                        blogsController.newPostTypeLoading.value
-                    ? Expanded(
-                        child: ListView.builder(
-                          itemCount: 5,
-                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
+            //  for social feed we dont have tab bar for selecting post format
+            Obx(
+              () => blogsController.post_type != 'social'
+                  ? Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(50, 118, 118, 128),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      )
-                    : Expanded(
-                        child: RefreshIndicator(
-                          color: Colors.green,
-                          onRefresh: () async {
-                            blogsController.fetchBlogs();
-                          },
+                        child: Obx(
+                          () => blogsController.post_type != 'community_content'
+                              ? DefaultTabBar(
+                                  blogsController: blogsController,
+                                  tabController: _tabController)
+                              : CommunityContentTabBar(
+                                  blogsController: blogsController,
+                                  tabController2: _tabController2),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ),
+
+            // section for displaying user
+
+            Obx(() {
+              return !blogsController.isConnected.value
+                  ? noInternetCard(() {
+                      blogsController.fetchBlogs();
+                    })
+                  : (blogsController.isLoadingMore.value == true &&
+                              isIntialLoading) ||
+                          blogsController.newPostTypeLoading.value
+                      ? Expanded(
                           child: ListView.builder(
-                              controller: blogsController.scrollController,
-                              itemCount:
-                                  blogsController.filteredBlogs.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index <
-                                    blogsController.filteredBlogs.length) {
-                                  isIntialLoading = false;
-                                  return blogsController.post_type != 'social'
-                                      ? BlogCard(
-                                          blogsController: blogsController,
-                                          index: index)
-                                      : SocialFeedCard(
-                                          blogsController: blogsController,
-                                          index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index ==
-                                          blogsController
-                                              .filteredBlogs.length &&
-                                      !blogsController.reachedEndOfList) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Obx(() => !blogsController
-                                            .canLoadMoreBlogs.value
-                                        ? Container(
-                                            margin: EdgeInsets.only(bottom: 50),
-                                            child: noInternetCard(() {
-                                              blogsController.loadMoreBlogs();
-                                            }),
-                                          )
-                                        : ListView.builder(
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: 1,
-                                            itemBuilder: (ctx, inx) =>
-                                                const BlogSkeleton(),
-                                          ));
+                            itemCount: 5,
+                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
+                          ),
+                        )
+                      : Expanded(
+                          child: RefreshIndicator(
+                            color: Colors.green,
+                            onRefresh: () async {
+                              blogsController.fetchBlogs();
+                            },
+                            child: ListView.builder(
+                                controller: blogsController.scrollController,
+                                itemCount:
+                                    blogsController.filteredBlogs.length + 1,
+                                itemBuilder: (ctx, index) {
+                                  if (index <
+                                      blogsController.filteredBlogs.length) {
+                                    isIntialLoading = false;
+                                    return blogsController.post_type != 'social'
+                                        ? BlogCard(
+                                            blogsController: blogsController,
+                                            index: index)
+                                        : SocialFeedCard(
+                                            blogsController: blogsController,
+                                            index: index);
                                   } else {
-                                    return Container(); // Return an empty container otherwise
+                                    print("executing else statement");
+                                    if (index ==
+                                            blogsController
+                                                .filteredBlogs.length &&
+                                        !blogsController.reachedEndOfList) {
+                                      // Display CircularProgressIndicator under the last card
+                                      return Obx(() => !blogsController
+                                              .canLoadMoreBlogs.value
+                                          ? Container(
+                                              margin:
+                                                  EdgeInsets.only(bottom: 50),
+                                              child: noInternetCard(() {
+                                                blogsController.loadMoreBlogs();
+                                              }),
+                                            )
+                                          : ListView.builder(
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: 1,
+                                              itemBuilder: (ctx, inx) =>
+                                                  const BlogSkeleton(),
+                                            ));
+                                    } else {
+                                      return Container(); // Return an empty container otherwise
+                                    }
                                   }
-                                }
-                              }),
-                        ),
-                      );
-          })
-        ],
+                                }),
+                          ),
+                        );
+            })
+          ],
+        ),
       ),
     );
   }
