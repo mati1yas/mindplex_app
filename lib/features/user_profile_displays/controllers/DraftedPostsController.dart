@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:delta_to_html/delta_to_html.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as ql;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
@@ -28,7 +30,7 @@ class DraftedPostsController extends GetxController {
   RxInt beingEditedDaftIndex = (-1).obs;
 
   Rx<TextEditingController> textEditingController = TextEditingController().obs;
-
+  ql.QuillController quillController = ql.QuillController.basic();
   BlogsController blogsController = Get.find();
   PageNavigationController pageNavigationController = Get.find();
 
@@ -36,6 +38,7 @@ class DraftedPostsController extends GetxController {
   Rx<Status> status = Status.unknown.obs;
   RxString errorMessage = "Something is very wrong!".obs;
   ScrollController draftScorllController = ScrollController();
+
   RxBool isReachedEndOfList = false.obs;
   RxInt blogPage = 1.obs;
   ProfileServices profileService = ProfileServices();
@@ -280,9 +283,10 @@ class DraftedPostsController extends GetxController {
 
 //  HELPER FUNTIONS BELOW
   String extractPostContentFromTextFieldEditor() {
-    final lines = textEditingController.value.text.split('\n');
+    final lines =
+        DeltaToHTML.encodeJson(quillController.document.toDelta().toJson())
+            .split('<br>');
     final postContent = lines.map((line) => '<p>$line</p>').join('');
-
     return postContent;
   }
 
@@ -304,7 +308,13 @@ class DraftedPostsController extends GetxController {
 
   Future<void> resetDrafting() async {
     editingSocialPostDraft.value = false;
-    textEditingController.value.text = '';
+    quillController.replaceText(
+      0,
+      quillController.document.length,
+      '',
+      TextSelection(baseOffset: 0, extentOffset: 0),
+    );
+
     beingEditeDraftBlog.value = Blog();
     selectedImages.value = [];
   }

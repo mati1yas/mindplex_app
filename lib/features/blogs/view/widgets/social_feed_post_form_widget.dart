@@ -3,7 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/view/widgets/post_text_editor.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
+import 'package:flutter_quill/flutter_quill.dart' as ql;
+import 'package:flutter_quill/quill_delta.dart';
 
 class SocialFeedForm extends StatelessWidget {
   const SocialFeedForm({
@@ -16,37 +19,14 @@ class SocialFeedForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formkey = GlobalKey<FormState>();
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15),
+      margin: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
-          Form(
-            key: formkey,
-            child: TextFormField(
-              validator: (value) {
-                if (value != null &&
-                    value.isEmpty &&
-                    draftedPostsController.selectedImages.isEmpty) {
-                  return "Empty Post";
-                }
-
-                return null;
-              },
-              onChanged: (value) {
-                draftedPostsController.textEditingController.value.text = value;
-              },
-              style: TextStyle(color: Colors.white), // Set the text color
-
-              controller: draftedPostsController.textEditingController.value,
-              decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Color.fromARGB(255, 4, 28, 49),
-                  border: OutlineInputBorder()),
-              maxLines: 2,
-              minLines: 1,
-            ),
-          ),
+          Container(
+              child: CustomTextEditor(
+            draftedPostsController: draftedPostsController,
+          )),
           Obx(
             () => draftedPostsController.selectedImages.length == 0
                 ? SizedBox.shrink()
@@ -118,12 +98,10 @@ class SocialFeedForm extends StatelessWidget {
                 children: [
                   ElevatedButton(
                       onPressed: () {
-                        if (formkey.currentState!.validate()) {
-                          if (editingDraft == true) {
-                            draftedPostsController.updateDraft();
-                          } else {
-                            draftedPostsController.createNewDraft();
-                          }
+                        if (editingDraft == true) {
+                          draftedPostsController.updateDraft();
+                        } else {
+                          draftedPostsController.createNewDraft();
                         }
                       },
                       child: Obx(() =>
@@ -147,12 +125,10 @@ class SocialFeedForm extends StatelessWidget {
                           backgroundColor: MaterialStatePropertyAll(
                               Color.fromARGB(255, 5, 209, 224))),
                       onPressed: () {
-                        if (formkey.currentState!.validate()) {
-                          if (editingDraft == true) {
-                            draftedPostsController.postDraftToSocial();
-                          } else {
-                            draftedPostsController.postNewToSocial();
-                          }
+                        if (editingDraft == true) {
+                          draftedPostsController.postDraftToSocial();
+                        } else {
+                          draftedPostsController.postNewToSocial();
                         }
                       },
                       child: Obx(
