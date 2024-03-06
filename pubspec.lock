@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  date_count_down:
+    dependency: "direct main"
+    description:
+      name: date_count_down
+      sha256: "89b87807a8307c03e0ee25e60175fe86667c9e8e1231032b4d4e76389fb95c80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   dio:
     dependency: "direct main"
     description:
@@ -263,7 +271,7 @@ packages:
     source: hosted
     version: "3.0.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "8207f27539deb83732fdda03e259349046a39a4c767269285f449ade355d54ba"
@@ -384,6 +392,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      sha256: "275ff26905134bcb59417cf60ad979136f1f8257f2f449914b2c3e05bbb4cd6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.7.0"
   get:
     dependency: "direct main"
     description:

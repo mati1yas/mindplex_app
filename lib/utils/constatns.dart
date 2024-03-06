@@ -27,6 +27,7 @@ class AppUrls {
   static var blogAddViewUrl = "$baseUrl/mp_rp/post/view_count/";
   static var draftBaseUrl = "${AppUrls.baseUrl}/mp_up/v1/post/draft/";
   static var postUrl = "${AppUrls.baseUrl}/mp_up/v1/post/";
+  static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
   static var userProfileReputation =
       "${AppUrls.baseUrlReputation}/core/communities/mindplex/users";
 }
