@@ -39,20 +39,20 @@ android {
         applicationId "com.singularitynet.mindplex"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 20 //flutter.minSdkVersion
+        minSdkVersion 23 //flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
     }
-    // signingConfigs{
-    //     debug{
-    //         keyAlias 'keystorealias'
-    //         keyPassword 'android'
-    //         storeFile file('mykeystore.jks')
-    //         storePassword 'android' 
-    //     }
-    // }
+    signingConfigs{
+        debug{
+            keyAlias 'keystorealias'
+            keyPassword 'android'
+            storeFile file('mykeystore.jks')
+            storePassword 'android' 
+        }
+    }
     buildTypes {
         debug {
             // TODO: Add your own signing config for the release build.
