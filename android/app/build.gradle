@@ -45,14 +45,14 @@ android {
         versionName flutterVersionName
         multiDexEnabled true
     }
-    signingConfigs{
-        debug{
-            keyAlias 'keystorealias'
-            keyPassword 'android'
-            storeFile file('mykeystore.jks')
-            storePassword 'android' 
-        }
-    }
+    // signingConfigs{
+    //     debug{
+    //         keyAlias 'keystorealias'
+    //         keyPassword 'android'
+    //         storeFile file('mykeystore.jks')
+    //         storePassword 'android' 
+    //     }
+    // }
     buildTypes {
         debug {
             // TODO: Add your own signing config for the release build.
