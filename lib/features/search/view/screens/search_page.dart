@@ -111,7 +111,11 @@ class _SearchPageState extends State<SearchPage>
                                     color: Colors.white,
                                   ),
                                   onTap: () {
-                                    Get.toNamed(AppRoutes.settingsPage);
+                                    if (authController.isGuestUser.value) {
+                                      authController.guestReminder(context);
+                                    } else {
+                                      Get.toNamed(AppRoutes.settingsPage);
+                                    }
                                   },
                                 ),
                                 SizedBox(width: 30),
