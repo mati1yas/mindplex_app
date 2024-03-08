@@ -42,9 +42,6 @@ class DetailsPage extends StatelessWidget {
             blogsController.filteredBlogs[index].minToRead!.split(" ")[0]),
         true);
     final decodedHtml = parse(details.authorBio).documentElement!.text;
-    print(decodedHtml);
-
-    print(details.slug);
 
     return WillPopScope(
       onWillPop: () async {
