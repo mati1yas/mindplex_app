@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/post_text_editor.dart';
 import 'package:mindplex/features/comment/controllers/comment_controller.dart';
 import 'package:mindplex/features/comment/view/widgets/comment_preview_overlay.dart';
 import 'package:mindplex/features/comment/view/widgets/comment_tile.dart';
+import 'package:mindplex/features/comment/view/widgets/custom_comment_text_editor.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 
 import '../../../../utils/colors.dart';
@@ -24,6 +27,7 @@ class MyWidgetComment extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(CommentController(post_slug: post_slug));
     ProfileController profileController = Get.find();
+
     final theme = Theme.of(context);
     AuthController authController = Get.find();
     return SafeArea(
@@ -65,43 +69,16 @@ class MyWidgetComment extends StatelessWidget {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: Colors.grey.shade400),
-                            ),
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 5,
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 46, 46, 46),
-                                fontWeight: FontWeight.w400,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: Colors.grey.shade400),
                               ),
-                              focusNode: controller.focusNode,
-                              controller:
-                                  controller.commentTextEditingController,
-                              textAlignVertical: TextAlignVertical.center,
-                              cursorColor: commentSectionColor,
-                              decoration: const InputDecoration(
-                                hintStyle: TextStyle(
-                                    color: Color.fromARGB(90, 56, 56, 56),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400),
-                                hintText: 'Leave a Comment',
-                                contentPadding: EdgeInsets.all(14),
-                                border: InputBorder.none,
-                              ),
-                              onTap: () {
-                                if (authController.isGuestUser.value) {
-                                  authController.guestReminder(context);
-                                  controller.focusNode!.unfocus();
-                                }
-                              },
-                              onChanged: (val) {
-                                // TODO: handle this callback using the textFieldController in the controller
-                              },
-                            ),
-                          ),
+                              child: CustomCommentTextEditor(
+                                commentController: controller,
+                                showBulletList: false,
+                                showNumberList: false,
+                              )),
                         )
                       ],
                     ),
@@ -117,20 +94,15 @@ class MyWidgetComment extends StatelessWidget {
                             if (authController.isGuestUser.value) {
                               authController.guestReminder(context);
                             } else {
-                              controller.commentTextEditingController.text == ''
-                                  ? null
-                                  : showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          CommentPreviewOverlay(
-                                            commentController: controller,
-                                            profileController:
-                                                profileController,
-                                            authController: authController,
-                                            currentComment: controller
-                                                .commentTextEditingController
-                                                .text,
-                                          ));
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => CommentPreviewOverlay(
+                                        commentController: controller,
+                                        profileController: profileController,
+                                        authController: authController,
+                                        currentComment: controller
+                                            .commentTextEditingController.text,
+                                      ));
                             }
                           },
                           child: Text(

@@ -5,12 +5,10 @@ import 'package:html/parser.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/comment/controllers/comment_controller.dart';
 import 'package:mindplex/features/comment/models/comment_model.dart';
-import 'package:mindplex/features/comment/view/screens/comment.dart';
 import 'package:mindplex/features/comment/view/widgets/comment_reply.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/ago_date_formater.dart';
 import 'package:mindplex/utils/colors.dart';
-import 'package:mindplex/utils/constatns.dart';
 import 'package:share/share.dart';
 
 class CommentTile extends StatelessWidget {
@@ -214,6 +212,16 @@ class CommentTile extends StatelessWidget {
                     },
                     child: Icon(
                       Icons.share_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.add_reaction_outlined,
                       color: Colors.white,
                     ),
                   ),
