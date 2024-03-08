@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/comment/controllers/comment_controller.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
-import 'package:mindplex/utils/constatns.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentPreviewOverlay extends StatelessWidget {
   CommentPreviewOverlay(
@@ -74,20 +75,22 @@ class CommentPreviewOverlay extends StatelessWidget {
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w300)),
+                      SizedBox(
+                        width: 8,
+                      )
                     ],
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  height: height * 0.4,
-                  child: SingleChildScrollView(
-                    child: Center(
-                        child: Text(currentComment + longEmptySpace,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300))),
-                  ),
-                ),
+                    margin: EdgeInsets.symmetric(horizontal: 16),
+                    height: height * 0.4,
+                    child: Html(
+                        onLinkTap: (url, attributes, element) {
+                          launchUrl(Uri.parse(url ?? ""));
+                        },
+                        style: {"*": Style(color: Colors.white)},
+                        data: commentController
+                            .extractCommentContentFromTextEditor())),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
