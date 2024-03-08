@@ -140,34 +140,34 @@ class _ProfilePage extends State<ProfilePage>
                 ),
               ),
               // OutlinedButton(onPressed: onPressed, child: child)
-              if (params['me'] == 'me')
-                Obx(() => userProfileController.isWalletConnected.value
-                    ? SizedBox(
-                        width: 0,
-                        height: 0,
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: OutlinedButton(
-                          onPressed:
-                              userProfileController.switchWallectConnectedState,
-                          style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              minimumSize: Size(117, 37),
-                              backgroundColor:
-                                  const Color.fromARGB(255, 225, 62, 111),
-                              foregroundColor: Colors.white),
-                          child: const Text(
-                            'Connect Wallet',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ))),
+              // if (params['me'] == 'me')
+              //   Obx(() => userProfileController.isWalletConnected.value
+              //       ? SizedBox(
+              //           width: 0,
+              //           height: 0,
+              //         )
+              //       : Container(
+              //           width: MediaQuery.of(context).size.width * 0.5,
+              //           child: OutlinedButton(
+              //             onPressed:
+              //                 userProfileController.switchWallectConnectedState,
+              //             style: OutlinedButton.styleFrom(
+              //                 shape: RoundedRectangleBorder(
+              //                   borderRadius: BorderRadius.circular(15),
+              //                 ),
+              //                 minimumSize: Size(117, 37),
+              //                 backgroundColor:
+              //                     const Color.fromARGB(255, 225, 62, 111),
+              //                 foregroundColor: Colors.white),
+              //             child: const Text(
+              //               'Connect Wallet',
+              //               textAlign: TextAlign.center,
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontSize: 14,
+              //                   fontWeight: FontWeight.w400),
+              //             ),
+              //           ))),
             ],
           )),
     );
