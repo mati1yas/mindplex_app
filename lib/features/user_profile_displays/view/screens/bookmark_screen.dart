@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/blog_card.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/bookmarksController.dart';
 
@@ -52,9 +53,16 @@ class BookmarkScreen extends StatelessWidget {
                               return SizedBox(height: 10);
                             }
 
-                            return BlogCard(
-                                blog: bookmarksController.blogs[index],
-                                index: index);
+                            return GestureDetector(
+                              onTap: () {
+                                Get.to(DetailsPage(
+                                    index: index,
+                                    details: bookmarksController.blogs[index]));
+                              },
+                              child: BlogCard(
+                                  blog: bookmarksController.blogs[index],
+                                  index: index),
+                            );
                           }),
                     )),
                   ]);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/publishedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/blog_shimmer.dart';
 import "../widgets/blog-widget.dart";
@@ -49,9 +50,16 @@ class PublishedPosts extends StatelessWidget {
                             return SizedBox(height: 10);
                           }
 
-                          return BlogWidget(
-                              publishedPost:
-                                  publishPostController.blogs[index]);
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(DetailsPage(
+                                  index: index,
+                                  details: publishPostController.blogs[index]));
+                            },
+                            child: BlogWidget(
+                                publishedPost:
+                                    publishPostController.blogs[index]),
+                          );
                         }),
                   );
       }),
