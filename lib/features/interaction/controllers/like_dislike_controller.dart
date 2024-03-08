@@ -108,8 +108,39 @@ class LikeDislikeConroller extends GetxController {
     blogsController.blogs[blogIndex] = blog;
   }
 
-  void addVote() {
+  Future<void> addVote({
+    required int blogIndex,
+    required Blog blog,
+  }) async {
+    apiService.value.addVote(
+      articleSlug: blogIndex,
+      hasVoted: hasVoted.value,
+    );
+    final BlogsController blogsController = Get.find();
+    blog.isVotted.value = !(blog.isVotted.value ?? false);
     hasVoted.value = !hasVoted.value;
+    blogsController.blogs[blogIndex] = blog;
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? lastVoted = prefs.getString('lastVoted');
+    final DateTime now = DateTime.now();
+    final String month = now.month.toString();
+    final String year = now.year.toString();
+    final String currentMonth = "$month-$year";
+    if (lastVoted == null || lastVoted != currentMonth) {
+      prefs.setString('lastVoted', currentMonth);
+      hasVoted.value = true;
+    } else {
+      Get.snackbar(
+        'Already Voted',
+        'You have already voted or there is an issue with the vote status.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      hasVoted.value = false;
+    }
   }
 
   Future<void> addToBookmark({

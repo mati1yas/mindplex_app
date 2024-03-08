@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -135,6 +134,27 @@ class ApiService {
         "message": hasBookmarked ? 'added' : 'removed',
       },
     );
+  }
+
+  Future<void> addVote(
+      {required int articleSlug, required bool hasVoted}) async {
+    try {
+      var dio = Dio();
+      Rx<LocalStorage> localStorage =
+          LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+      final token = await localStorage.value.readFromStorage('Token');
+      dio.options.headers['Authorization'] = "Bearer ${token}";
+      Response response = await dio.get(
+        "${AppUrls.vote}$articleSlug",
+      );
+      if (response.statusCode == 200) {
+        print('hi there ${response.data}');
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('error from the voting feature $e');
+    }
   }
 
   Future<void> removePreviousInteraction(
