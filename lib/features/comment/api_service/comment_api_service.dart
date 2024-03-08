@@ -53,12 +53,11 @@ class CommentApiService {
     final token = await localStorage.value.readFromStorage('Token');
     dio.options.headers["Authorization"] = "Bearer ${token}";
 
-    print('${AppUrls.commentCreate}/$post_slug/$parent');
     Response response = await dio.post(
       //'${AppUrls.commentCreate}/$post_slug/$parent',
       '${AppUrls.commentCreate}/$post_slug/$parent',
       queryParameters: {
-        'comment_content': "&lt;p&gt;" + content + "&lt;p&gt;",
+        'comment_content': content,
       },
     );
     if (response.statusCode == 200) {

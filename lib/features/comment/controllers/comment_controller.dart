@@ -1,8 +1,12 @@
+import 'package:delta_to_html/delta_to_html.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/comment/api_service/comment_api_service.dart';
+import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
+import 'package:flutter_quill/flutter_quill.dart' as ql;
+import 'package:mindplex/utils/Toster.dart';
 
 import '../models/comment_model.dart';
 
@@ -33,7 +37,7 @@ class CommentController extends GetxController {
       TextEditingController(); // we'll use this controller for writing new comments and replies
   final TextEditingController updateTextEditingController =
       TextEditingController(); // we'll use this controller for updating comments and replies
-
+  ql.QuillController quillController = ql.QuillController.basic();
   final _focusNode = Rx<FocusNode?>(FocusNode());
   FocusNode? get focusNode => _focusNode.value;
 
@@ -109,13 +113,22 @@ class CommentController extends GetxController {
 
   onClickPost() async {
     // create a comment object on the server and get the newly created comment back
-    var newComment = await commentApiService.createComment(
-        post_slug: post_slug, content: commentTextEditingController.text);
-    // add the comment object to the comments list
-    comments.value!.insert(0, newComment);
-    comments.refresh();
-    commentTextEditingController.clear();
-    update();
+
+    try {
+      String extractedComment = extractCommentContentFromTextEditor();
+      var newComment = await commentApiService.createComment(
+          post_slug: post_slug, content: extractedComment);
+
+      comments.value!.insert(0, newComment);
+      comments.refresh();
+      resetComment();
+      commentTextEditingController.clear();
+      update();
+    } catch (e) {
+      Toster(
+          message: 'Failed To Post comment , Please Try again Latter ',
+          duration: 1);
+    }
   }
 
   onClickReply(Comment comment, String replyText) async {
@@ -192,14 +205,35 @@ class CommentController extends GetxController {
     profileImage = profileController.authenticatedUser.value.image;
   }
 
+// we have helper functions below s
+  String extractCommentContentFromTextEditor() {
+    final lines =
+        DeltaToHTML.encodeJson(quillController.document.toDelta().toJson())
+            .split('<br>');
+    final postContent = lines.map((line) => '<p>$line</p>').join('');
+    return postContent;
+  }
+
+  Future<void> resetComment() async {
+    quillController.replaceText(
+      0,
+      quillController.document.length,
+      '',
+      TextSelection(baseOffset: 0, extentOffset: 0),
+    );
+  }
+
   @override
   void onClose() {
     _focusNode.value?.unfocus();
+    resetComment();
+
     super.onClose();
   }
 
   @override
   void dispose() {
+    resetComment();
     commentTextEditingController.dispose();
     updateTextEditingController.dispose();
     super.dispose();
