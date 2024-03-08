@@ -35,11 +35,17 @@ class DefaultTabBar extends StatelessWidget {
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
           tabs: [
             Tab(
-              text: "All",
+              text: "      All      ",
             ),
-            Tab(text: "Popular"),
-            Tab(text: "Most Recent"),
-            Tab(text: "Trending"),
+            Tab(
+              text: "    Popular    ",
+            ),
+            Tab(
+              text: "  Most Recent  ",
+            ),
+            Tab(
+              text: "    Trending    ",
+            ),
           ]),
     );
   }

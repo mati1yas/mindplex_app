@@ -34,15 +34,13 @@ class CommunityContentTabBar extends StatelessWidget {
           controller: _tabController2,
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
           tabs: [
-            Tab(
-              text: "All",
-            ),
-            Tab(text: "Popular"),
-            Tab(text: "Most Recent"),
-            Tab(text: "Trending"),
-            Tab(text: "Article"),
-            Tab(text: "Video"),
-            Tab(text: "Podcast"),
+            Tab(text: "     All    "),
+            Tab(text: "    Popular  "),
+            Tab(text: "  Most Recent "),
+            Tab(text: "   Trending   "),
+            Tab(text: "   Article   "),
+            Tab(text: "    Video   "),
+            Tab(text: "   Podcast   "),
           ]),
     );
   }
