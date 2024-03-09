@@ -73,12 +73,16 @@ class SocialFeedCard extends StatelessWidget {
 
                       // added three hours bse of time zone difference . and this widget will be hidden for those that have passed the time limit
                       if (DateTime.now()
-                              .difference(
-                                  DateTime.parse(blog.publishedTimestamp!))
+                              .difference(blog.publishedTimestamp != null
+                                  ? DateTime.parse(blog.publishedTimestamp!)
+                                  : DateTime.now())
                               .inHours <
-                          int.parse(blogsController.socialFeedSetting.value
-                                  .timeBeforeDeletion!) +
-                              3)
+                          (blogsController.socialFeedSetting.value
+                                      .timeBeforeDeletion !=
+                                  null
+                              ? int.parse(blogsController
+                                  .socialFeedSetting.value.timeBeforeDeletion!)
+                              : 0 + 3))
                         Obx(() => blogsController.loadingReputation.value &&
                                 index >= blogsController.startPosition.value
                             ? Container(
