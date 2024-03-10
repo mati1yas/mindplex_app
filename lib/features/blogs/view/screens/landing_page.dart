@@ -74,115 +74,129 @@ class _LandingPageState extends State<LandingPage>
       // drawer: Drawer(
       //   child: DrawerWidget(),
       // ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Container(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          // section for displaying user
+          Material(
+            color: Color(0xFF0c2b46),
+            elevation: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
                   Container(
-                    height: height * 0.15,
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
                       children: [
-                        TopUserProfileIcon(
-                            profileController: profileController,
-                            authController: authController),
-                        SizedBox(
-                          width: width * 0.14,
-                        ),
-                        Obx(() => Container(
-                              width: width * 0.40,
-                              child: Center(
-                                child: Text(blogsController.landingPageHeader(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25,
-                                        color: Colors.white)),
+                        Container(
+                          height: height * 0.15,
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TopUserProfileIcon(
+                                  profileController: profileController,
+                                  authController: authController),
+                              SizedBox(
+                                width: width * 0.14,
                               ),
-                            )),
+                              Obx(() => Container(
+                                    width: width * 0.40,
+                                    child: Center(
+                                      child: Text(
+                                          blogsController.landingPageHeader(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                              color: Colors.white)),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+
+                        // section for making a post to social feed .
+                        Obx(() => blogsController.post_type == 'social' &&
+                                blogsController.showSocialFeedForm.value
+                            ? SocialFeedForm(
+                                draftedPostsController: draftedPostsController,
+                                editingDraft: draftedPostsController
+                                    .editingSocialPostDraft.value,
+                              )
+                            : SizedBox.shrink()),
                       ],
                     ),
                   ),
 
-                  // section for making a post to social feed .
-                  Obx(() => blogsController.post_type == 'social' &&
-                          blogsController.showSocialFeedForm.value
-                      ? SocialFeedForm(
-                          draftedPostsController: draftedPostsController,
-                          editingDraft: draftedPostsController
-                              .editingSocialPostDraft.value,
+                  // top navigation bar
+
+                  // this section shows list of topics to be selected by a user
+                  Obx(() => blogsController.post_type == 'topics'
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            PostTopics(blogsController: blogsController),
+                          ],
                         )
                       : SizedBox.shrink()),
+                  SizedBox(
+                    height: 10,
+                  ),
+
+                  //  for social feed we dont have tab bar for selecting post format
+                  Obx(
+                    () => blogsController.post_type != 'social'
+                        ? Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(50, 118, 118, 128),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Obx(
+                                () => blogsController.post_type !=
+                                        'community_content'
+                                    ? DefaultTabBar(
+                                        blogsController: blogsController,
+                                        tabController: _tabController)
+                                    : CommunityContentTabBar(
+                                        blogsController: blogsController,
+                                        tabController2: _tabController2),
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ),
                 ],
               ),
             ),
-
-            // top navigation bar
-
-            // this section shows list of topics to be selected by a user
-            Obx(() => blogsController.post_type == 'topics'
-                ? Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      PostTopics(blogsController: blogsController),
-                    ],
-                  )
-                : SizedBox.shrink()),
-            SizedBox(
-              height: 10,
-            ),
-
-            //  for social feed we dont have tab bar for selecting post format
-            Obx(
-              () => blogsController.post_type != 'social'
-                  ? Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(50, 118, 118, 128),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Obx(
-                          () => blogsController.post_type != 'community_content'
-                              ? DefaultTabBar(
-                                  blogsController: blogsController,
-                                  tabController: _tabController)
-                              : CommunityContentTabBar(
-                                  blogsController: blogsController,
-                                  tabController2: _tabController2),
-                        ),
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ),
-
-            // section for displaying user
-
-            Obx(() {
-              return !blogsController.isConnected.value
-                  ? noInternetCard(() {
-                      blogsController.fetchBlogs();
-                    })
-                  : (blogsController.isLoadingMore.value == true &&
-                              isIntialLoading) ||
-                          blogsController.newPostTypeLoading.value
-                      ? Expanded(
+          ),
+          Obx(() {
+            return !blogsController.isConnected.value
+                ? noInternetCard(() {
+                    blogsController.fetchBlogs();
+                  })
+                : (blogsController.isLoadingMore.value == true &&
+                            isIntialLoading) ||
+                        blogsController.newPostTypeLoading.value
+                    ? Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ListView.builder(
                             itemCount: 5,
                             itemBuilder: (ctx, inx) => const BlogSkeleton(),
                           ),
-                        )
-                      : Expanded(
+                        ),
+                      )
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: RefreshIndicator(
                             color: Colors.green,
                             onRefresh: () async {
@@ -233,10 +247,10 @@ class _LandingPageState extends State<LandingPage>
                                   }
                                 }),
                           ),
-                        );
-            })
-          ],
-        ),
+                        ),
+                      );
+          })
+        ],
       ),
     );
   }
