@@ -104,7 +104,8 @@ class CustomCommentTextEditor extends StatelessWidget {
                     configurations: ql.QuillEditorConfigurations(
                       enableSelectionToolbar: false,
                       controller: commentController.quillController,
-                      maxHeight: 70,
+                      minHeight: 50,
+                      maxHeight: 90,
                     ),
                     focusNode: FocusNode(),
                     scrollController: ScrollController(),

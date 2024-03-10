@@ -96,7 +96,8 @@ class CustomTextEditor extends StatelessWidget {
                     configurations: ql.QuillEditorConfigurations(
                       enableSelectionToolbar: false,
                       controller: draftedPostsController.quillController,
-                      maxHeight: 70,
+                      minHeight: 50,
+                      maxHeight: 90,
                     ),
                     focusNode: FocusNode(),
                     scrollController: ScrollController(),
