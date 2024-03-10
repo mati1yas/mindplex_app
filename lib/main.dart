@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/view/screens/landing_page.dart';
 import 'package:mindplex/features/bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
@@ -21,6 +22,7 @@ import 'splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
