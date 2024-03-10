@@ -64,7 +64,7 @@ class DrawerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "© 2023 MindPlex. All rights reserved",
+                "© 2024 MindPlex. All rights reserved",
                 style: TextStyle(color: Colors.white),
               ),
               SizedBox(
