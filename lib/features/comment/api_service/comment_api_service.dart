@@ -5,7 +5,6 @@ import 'package:get/get.dart' as getxprefix;
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mindplex/features/comment/models/comment_model.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../utils/constatns.dart';
 import '../../authentication/controllers/auth_controller.dart';
@@ -69,21 +68,6 @@ class CommentApiService {
     }
   }
 
-  Future<bool?> updateComment(
-      {required String commentId, required String newContent}) async {
-    var dio = Dio();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
-    Response response = await dio.patch(
-      '${AppUrls.commentUpdate}/$commentId/?comment_content=$newContent',
-    );
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw Exception('Failed to update the comment on the server.');
-    }
-  }
-
   Future<bool?> commentLikeDislike(String commentId, {bool like = true}) async {
     /// if the named parameter 'like' is set to false, it's considered as dislike.
     // this method returns true if the comment is liked/disliked successfully
@@ -103,21 +87,6 @@ class CommentApiService {
       return true;
     } else {
       throw Exception('Failed to like/dislike the comment on the server.');
-    }
-  }
-
-  Future<bool?> deleteComment({required String commentId}) async {
-    // this method returns true if the comment is deleted successfully
-    var dio = Dio();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    dio.options.headers["Authorization"] = "Bearer ${prefs.getString("token")}";
-    Response response = await dio.delete(
-      '${AppUrls.commentDelete}/$commentId',
-    );
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw Exception('Failed to delete the comment from the server.');
     }
   }
 }

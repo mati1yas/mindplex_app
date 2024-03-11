@@ -11,7 +11,6 @@ import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
 import 'package:mindplex/features/search/models/search_response.dart';
 import 'package:mindplex/features/notification/models/notification_model.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/authentication/controllers/auth_controller.dart';
 import '../features/blogs/models/blog_model.dart';
