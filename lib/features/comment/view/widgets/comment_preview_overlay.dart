@@ -22,6 +22,7 @@ class CommentPreviewOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    profileController.getAuthenticatedUser();
     return FractionallySizedBox(
       widthFactor: 0.8,
       heightFactor: 0.6,
@@ -52,7 +53,8 @@ class CommentPreviewOverlay extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              profileController.userProfile.value.firstName ??
+                              profileController.authenticatedUser.value
+                                      .userDisplayName ??
                                   "",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
