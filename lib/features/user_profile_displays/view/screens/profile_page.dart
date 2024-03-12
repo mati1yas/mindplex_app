@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/interaction/controllers/like_dislike_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/DraftedPostsController.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/bookmarksController.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/publishedPostsController.dart';
@@ -9,6 +10,7 @@ import 'package:mindplex/features/user_profile_displays/view/screens/draft_scree
 import 'package:mindplex/features/user_profile_displays/view/widgets/profile_top_section.dart';
 
 import 'package:mindplex/utils/colors.dart';
+import 'package:mindplex/utils/profile_page_button_widget.dart';
 import '../../../../utils/no_internet_card_widget.dart';
 import '../../../authentication/controllers/auth_controller.dart';
 import '../widgets/user_profile_statistics_widget.dart';
@@ -39,6 +41,7 @@ class _ProfilePage extends State<ProfilePage>
       Get.put(PublishPostController());
 
   ProfileController userProfileController = Get.find();
+  LikeDislikeConroller likeDislikeConroller = Get.find();
 
   @override
   void initState() {
@@ -139,35 +142,48 @@ class _ProfilePage extends State<ProfilePage>
                   textAlign: TextAlign.center,
                 ),
               ),
+
+              if (params['me'] != 'me')
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ProfilePageOutlinedButton(
+                      buttonAction: () {
+                        followTheUser(
+                          userProfileController.userProfile.value.username ??
+                              "",
+                        );
+                      },
+                      buttonColor: Color.fromARGB(255, 225, 62, 111),
+                      buttonName: "Follow",
+                      buttonWidthFactor: 0.4,
+                      buttonRadius: 10,
+                    ),
+                    ProfilePageOutlinedButton(
+                      buttonAction:
+                          userProfileController.switchWallectConnectedState,
+                      buttonColor: Color.fromARGB(255, 5, 161, 158),
+                      buttonName: "Add friend",
+                      buttonWidthFactor: 0.4,
+                      buttonRadius: 10,
+                    )
+                  ],
+                ),
               // OutlinedButton(onPressed: onPressed, child: child)
-              // if (params['me'] == 'me')
-              //   Obx(() => userProfileController.isWalletConnected.value
-              //       ? SizedBox(
-              //           width: 0,
-              //           height: 0,
-              //         )
-              //       : Container(
-              //           width: MediaQuery.of(context).size.width * 0.5,
-              //           child: OutlinedButton(
-              //             onPressed:
-              //                 userProfileController.switchWallectConnectedState,
-              //             style: OutlinedButton.styleFrom(
-              //                 shape: RoundedRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(15),
-              //                 ),
-              //                 minimumSize: Size(117, 37),
-              //                 backgroundColor:
-              //                     const Color.fromARGB(255, 225, 62, 111),
-              //                 foregroundColor: Colors.white),
-              //             child: const Text(
-              //               'Connect Wallet',
-              //               textAlign: TextAlign.center,
-              //               style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontSize: 14,
-              //                   fontWeight: FontWeight.w400),
-              //             ),
-              //           ))),
+              if (params['me'] == 'me')
+                Obx(() => userProfileController.isWalletConnected.value
+                    ? SizedBox(
+                        width: 0,
+                        height: 0,
+                      )
+                    : ProfilePageOutlinedButton(
+                        buttonAction:
+                            userProfileController.switchWallectConnectedState,
+                        buttonColor: const Color.fromARGB(255, 225, 62, 111),
+                        buttonName: "Connect Wallet",
+                        buttonWidthFactor: 0.5,
+                        buttonRadius: 15,
+                      )),
             ],
           )),
     );
@@ -217,5 +233,11 @@ class _ProfilePage extends State<ProfilePage>
         ),
       ],
     );
+  }
+
+  void followTheUser(String username) {
+    if (!likeDislikeConroller.isSendingFollowRequest.value) {
+      likeDislikeConroller.followUnfollowBlogAuthor(-1, username, true);
+    }
   }
 }

@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_settings/controllers/settings_controller.dart';
 import 'package:mindplex/routes/app_routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../authentication/controllers/auth_controller.dart';
@@ -26,13 +25,14 @@ final _formKey = GlobalKey<FormState>();
 String? userNameError, userEmailError, userDisplayNameError;
 
 class _GeneralSettingsState extends State<GeneralSettings> {
-
   @override
   void initState() {
     super.initState();
     profileController.getAuthenticatedUser();
-    userNameController.text = profileController.authenticatedUser.value.username??"";
-    emailController.text = profileController.authenticatedUser.value.userEmail??"";
+    userNameController.text =
+        profileController.authenticatedUser.value.username ?? "";
+    emailController.text =
+        profileController.authenticatedUser.value.userEmail ?? "";
   }
 
   TextEditingController userNameController = TextEditingController();
@@ -44,7 +44,6 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: mainBackgroundColor,
       body: SingleChildScrollView(
@@ -56,15 +55,24 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(children: [
                   const SizedBox(height: 10),
-                  inputBoxWithLabel(context, false, userNameController, TextInputType.name, "Username"),
-                  Obx(() => settingsController.usernameError.value != "" && settingsController.isSaved.value
-                      ? errorMessage(settingsController.usernameError.value)
-                      : Container(),),
-                  inputBoxWithLabel(context, false, emailController, TextInputType.name, "Email"),
-                  Obx(() => settingsController.emailError.value != "" && settingsController.isSaved.value
-                      ? errorMessage(settingsController.emailError.value)
-                      : Container(),),
-                  inputBoxWithLabel(context, true, userNameController, TextInputType.name, "Mindplex Handle"),
+                  inputBoxWithLabel(context, false, userNameController,
+                      TextInputType.name, "Username"),
+                  Obx(
+                    () => settingsController.usernameError.value != "" &&
+                            settingsController.isSaved.value
+                        ? errorMessage(settingsController.usernameError.value)
+                        : Container(),
+                  ),
+                  inputBoxWithLabel(context, false, emailController,
+                      TextInputType.name, "Email"),
+                  Obx(
+                    () => settingsController.emailError.value != "" &&
+                            settingsController.isSaved.value
+                        ? errorMessage(settingsController.emailError.value)
+                        : Container(),
+                  ),
+                  inputBoxWithLabel(context, true, userNameController,
+                      TextInputType.name, "Mindplex Handle"),
                 ])),
           ),
           Padding(
@@ -79,9 +87,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     child: buildButton("Save", (() async {
                       settingsController.isSaved.value = false;
                       final isValidForm = _formKey.currentState!.validate();
-                        settingsController.isSaved.value = true;
-                      if (isValidForm) {
-                      }
+                      settingsController.isSaved.value = true;
+                      if (isValidForm) {}
                     }), Colors.blueAccent.shade200, true))
               ],
             ),

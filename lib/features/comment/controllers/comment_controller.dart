@@ -147,41 +147,6 @@ class CommentController extends GetxController {
     Get.back();
   }
 
-  onUpdateComment(Comment comment, String newContent) async {
-    // update the comment object on the server
-    var updateSuccessful = await commentApiService.updateComment(
-        commentId: comment.commentID.toString(), newContent: newContent);
-    // update the comment object in the comments list and refresh
-    if (updateSuccessful == true) {
-      comment.commentContent = newContent;
-      comments.refresh();
-    }
-    updateTextEditingController.clear();
-    Get.back();
-  }
-
-  onDeleteComment(Comment comment) async {
-    // create a comment object on the server
-    var deleteSuccessful = await commentApiService.deleteComment(
-        commentId: comment.commentID ?? "");
-    // remove the comment from the comments list if it's deleted successfully from the server
-    if (deleteSuccessful == true) {
-      comments.remove(comment);
-    }
-    comments.refresh();
-  }
-
-  onDeleteReply(Comment reply, Comment parent) async {
-    // delete the reply from the server
-    var deleteSuccessful =
-        await commentApiService.deleteComment(commentId: reply.commentID ?? "");
-    // remove the reply from the replies list of the parent comment if it's deleted successfully from the server
-    if (deleteSuccessful == true) {
-      parent.replies?.remove(reply);
-    }
-    comments.refresh();
-  }
-
   onToggleLike(comment) async {
     // this method toggles a comment between like and default states.
     // the underlying implementation has a like-dislike but the interface provided to the user

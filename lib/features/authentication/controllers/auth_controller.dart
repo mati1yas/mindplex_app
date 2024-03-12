@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -12,10 +13,10 @@ import '../models/auth_model.dart';
 class AuthController extends GetxController {
   final networkErrorMessage =
       "Looks like there is problem with your connection.";
-  final authService = AuthService().obs;  
+  final authService = AuthService().obs;
 
   ConnectionInfoImpl connectionChecker = Get.find();
-  
+
   Rx<LocalStorage> localStorage =
       LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
   final RxBool isAuthenticated = false.obs;
@@ -66,36 +67,23 @@ class AuthController extends GetxController {
   void checkFirstTime() async {}
 
   void guestReminder(context) async {
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            alignment: Alignment.center,
-            content: Text("Guest User , Please Login first !!"),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Continue as Guest")),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        backgroundColor: Color.fromARGB(224, 14, 187, 158)),
-                    onPressed: () {
-                      Get.offAllNamed(AppRoutes.authPage);
-                    },
-                    child: Text('Login'),
-                  ),
-                ],
-              )
-            ],
-          );
-        });
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      animType: AnimType.rightSlide,
+      title: "Hello Guest , 👋",
+      desc: 'To get an Access , You Must Login First',
+      btnOkText: "Login",
+
+      btnCancelText: "Stay Guest",
+      // btnCancelColor: Colors.blue,
+      btnCancelOnPress: () {
+        Get.back();
+      },
+      btnOkOnPress: () {
+        Get.offAllNamed(AppRoutes.authPage);
+      },
+    )..show();
   }
 
   void logout() async {

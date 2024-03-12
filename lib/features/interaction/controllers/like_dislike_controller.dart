@@ -153,9 +153,10 @@ class LikeDislikeConroller extends GetxController {
 
   Future<void> followBlogAuthor(int index, String userName) async {
     final BlogsController blogsController = Get.find();
-
+//  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
     if (await apiService.value.followUser(userName)) {
-      blogsController.filteredBlogs[index].isFollowing!.value = true;
+      if (index != -1)
+        blogsController.filteredBlogs[index].isFollowing!.value = true;
     }
   }
 
@@ -163,7 +164,9 @@ class LikeDislikeConroller extends GetxController {
     final BlogsController blogsController = Get.find();
 
     if (await apiService.value.unfollowUser(userName)) {
-      blogsController.filteredBlogs[index].isFollowing!.value = false;
+//  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
+      if (index != -1)
+        blogsController.filteredBlogs[index].isFollowing!.value = false;
     }
   }
 }
