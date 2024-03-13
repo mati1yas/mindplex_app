@@ -35,6 +35,7 @@ class DrawerButtonController extends GetxController {
     '/privacyPolicyPage',
     '/searchResultPage',
     '/generalSettingsPage',
+    '/faq'
   };
   final currentDrawerType = DrawerType.read.obs;
 
@@ -60,7 +61,6 @@ class DrawerButtonController extends GetxController {
       requiresPrivilege: drawerModel.requiresPrivilege,
     )) {
       Get.back();
-
       Get.toNamed(drawerModel.pageName, parameters: drawerModel.parameters);
     }
     currentDrawerType.value = drawerModel.drawerType;
