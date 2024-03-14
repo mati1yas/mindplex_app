@@ -75,8 +75,10 @@ class _SearchPageState extends State<SearchPage>
             body: Column(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height *
-                      (searchController.isSearchResultPage.value ? 0.25 : 0.19),
+                  height:
+                      (searchController.isSearchResultPage.value ? 165 : 120),
+                  // height: MediaQuery.of(context).size.height *
+                  //     (searchController.isSearchResultPage.value ? 0.25 : 0.19),
                   child: Material(
                     color: Color(0xFF0c2b46),
                     elevation: 10,
@@ -160,7 +162,7 @@ class _SearchPageState extends State<SearchPage>
                 Container(
                   height: MediaQuery.of(context).size.height *
                       (searchController.isSearchResultPage.value
-                          ? 0.75
+                          ? 0.73
                           : 0.8099),
                   child: SingleChildScrollView(
                     child: Column(children: [
