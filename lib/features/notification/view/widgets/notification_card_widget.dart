@@ -27,7 +27,9 @@ class NotificationCard extends StatelessWidget {
       "moderator_approved":
           "Your requested content has been approved by a moderator",
       "publish": "published a new $message",
-      "claim_start": "claimed your Request"
+      "claim_start": "claimed your Request",
+      "com_like": "liked your comment",
+      "friendship_accepted": "accepted your friendship request",
     };
     return reactionTypePhrase[type] ?? type;
   }
