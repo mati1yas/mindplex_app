@@ -78,6 +78,9 @@ class SearchBlogCard extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Obx(() =>
                                 searchController.loadingReputation.value &&
                                         index >=
@@ -94,19 +97,22 @@ class SearchBlogCard extends StatelessWidget {
                                             color: titleTextColor,
                                             fontWeight: FontWeight.bold),
                                       )),
-                            Text(
-                              searchController
-                                      .searchedBlogs[index].publishedAt ??
-                                  "",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 123, 122, 122),
-                              ),
-                            ),
+                            Spacer(),
                             Icon(
                               Icons.more_horiz,
                               color: Colors.white,
                             )
                           ],
+                        ),
+                        Text(
+                          searchController.searchedBlogs[index].publishedAt ??
+                              "",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 123, 122, 122),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         Text(
                             style: TextStyle(
