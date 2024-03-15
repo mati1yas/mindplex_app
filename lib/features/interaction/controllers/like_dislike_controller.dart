@@ -17,6 +17,7 @@ class LikeDislikeConroller extends GetxController {
     "😅",
   ].obs;
   RxBool isSendingFollowRequest = false.obs;
+  RxInt clickedAuthorIndex = (-1).obs;
 
   Future<void> interactionHandler(
       {required Blog blog, required int index, required bool itIsLike}) async {
@@ -141,32 +142,51 @@ class LikeDislikeConroller extends GetxController {
   }
 
   Future<void> followUnfollowBlogAuthor(
-      int index, String userName, bool isFollowing) async {
+      {required int blogIndex,
+      required int authorIndex,
+      required String userName,
+      required bool isFollowing}) async {
     isSendingFollowRequest.value = true;
+    clickedAuthorIndex.value = authorIndex;
+
     if (isFollowing) {
-      await unfollowBlogAuthor(index, userName);
+      await unfollowBlogAuthor(
+          blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
     } else {
-      await followBlogAuthor(index, userName);
+      await followBlogAuthor(
+          blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
     }
+    clickedAuthorIndex.value = -1;
+
     isSendingFollowRequest.value = false;
   }
 
-  Future<void> followBlogAuthor(int index, String userName) async {
+  Future<void> followBlogAuthor({
+    required int blogIndex,
+    required int authorIndex,
+    required String userName,
+  }) async {
     final BlogsController blogsController = Get.find();
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
     if (await apiService.value.followUser(userName)) {
-      if (index != -1)
-        blogsController.filteredBlogs[index].isFollowing!.value = true;
+      if (blogIndex != -1)
+        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
+            .isFollowing!.value = true;
     }
   }
 
-  Future<void> unfollowBlogAuthor(int index, String userName) async {
+  Future<void> unfollowBlogAuthor({
+    required int blogIndex,
+    required int authorIndex,
+    required String userName,
+  }) async {
     final BlogsController blogsController = Get.find();
 
     if (await apiService.value.unfollowUser(userName)) {
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
-      if (index != -1)
-        blogsController.filteredBlogs[index].isFollowing!.value = false;
+      if (blogIndex != -1)
+        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
+            .isFollowing!.value = false;
     }
   }
 }
