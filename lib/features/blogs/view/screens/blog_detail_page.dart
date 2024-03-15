@@ -206,7 +206,9 @@ class DetailsPage extends StatelessWidget {
                             padding: 16,
                           ),
                         ),
-                        //  author details and follow button
+
+                        //
+                        // author details and follow button
                         ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -224,6 +226,10 @@ class DetailsPage extends StatelessWidget {
                                 likeDislikeConroller: likeDislikeConroller);
                           },
                         ),
+
+                        SizedBox(
+                          height: 50,
+                        )
                       ],
                     )),
               ),

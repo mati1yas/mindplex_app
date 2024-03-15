@@ -104,29 +104,42 @@ class AuthorsTileWidget extends StatelessWidget {
                     authController.guestReminder(context);
                   } else if (!likeDislikeConroller
                       .isSendingFollowRequest.value) {
-                    // likeDislikeConroller.followUnfollowBlogAuthor(blogIndex,
-                    //     details.authors![authorIndex].username!, true);
+                    likeDislikeConroller.followUnfollowBlogAuthor(
+                        blogIndex: blogIndex,
+                        authorIndex: authorIndex,
+                        userName: details.authors![authorIndex].username!,
+                        isFollowing:
+                            details.authors![authorIndex].isFollowing!.value);
                   }
                 },
-                child: Container(
-                    padding: const EdgeInsets.only(
-                        top: 8, left: 25, right: 25, bottom: 8),
-                    margin: EdgeInsets.only(top: 15),
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(235, 41, 92, 120),
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: likeDislikeConroller.isSendingFollowRequest.value
-                        ? Container(
-                            height: 24,
-                            width: 30,
-                            child: CircularProgressIndicator())
-                        : Text(
-                            details.isFollowing!.value ? 'Unfollow' : 'Follow',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.white),
-                          )),
+                child: Obx(
+                  () => Container(
+                      padding: const EdgeInsets.only(
+                          top: 6, left: 20, right: 20, bottom: 6),
+                      margin: EdgeInsets.only(top: 15),
+                      decoration: const BoxDecoration(
+                          color: Color.fromARGB(235, 41, 92, 120),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: likeDislikeConroller
+                                  .isSendingFollowRequest.value &&
+                              likeDislikeConroller.clickedAuthorIndex ==
+                                  authorIndex
+                          ? Container(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.green,
+                              ))
+                          : Text(
+                              details.authors![authorIndex].isFollowing!.value
+                                  ? 'Unfollow'
+                                  : 'Follow',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w200,
+                                  color: Colors.white),
+                            )),
+                ),
               )),
         SizedBox(
           width: 16,
