@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Widget noInternetCard(VoidCallback onRefresh, String? message) {
+const internetProblem =
+    "Looks like you have a problem with your internet connection";
+Widget noInternetCard(VoidCallback onRefresh,
+    {String message = internetProblem}) {
   return Container(
     width: MediaQuery.of(Get.context!).size.width * 0.65,
     height: 150,
@@ -20,8 +23,7 @@ Widget noInternetCard(VoidCallback onRefresh, String? message) {
           ),
         ),
         Text(
-          message ??
-              "Looks like you have a problem with your internet connection",
+          message,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
         )
       ],
