@@ -160,20 +160,34 @@ class ProfileController extends GetxController {
   }) async {
     isSendingFollowRequest.value = true;
 
-    bool isFollowing = userProfile.value.isFollowing!.value;
-    if (isFollowing) {
-      await unfollowUser(userName);
-    } else {
-      await followUser(userName);
+    try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+
+      bool isFollowing = userProfile.value.isFollowing!.value;
+      if (isFollowing) {
+        await unfollowUser(userName);
+      } else {
+        await followUser(userName);
+      }
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+      }
     }
-    print("about to send Follow Request");
+
     isSendingFollowRequest.value = false;
   }
 
   Future<void> sendFriendRequest({required String username}) async {
     isSendingFriendRequest.value = true;
 
-    print("about to send Friend Request");
     isSendingFriendRequest.value = false;
   }
 

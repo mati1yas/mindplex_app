@@ -5,6 +5,7 @@ import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/search/services/search_api_service.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 import '../../blogs/models/blog_model.dart';
 import '../../user_profile_settings/models/user_profile.dart';
@@ -38,6 +39,8 @@ class SearchPageController extends GetxController {
   final searchApiService = SearchApiService().obs;
   final apiService = ApiService().obs;
   RxInt startPosition = 0.obs;
+  ConnectionInfoImpl connectionChecker = Get.find();
+  RxBool isConnected = false.obs;
 
   @override
   void onInit() {
@@ -166,10 +169,25 @@ class SearchPageController extends GetxController {
   Future<void> followUnfollowUser(
       int index, String userName, bool isFollowing) async {
     getSearchedUsers[index].isSendingFollowRequest!.value = true;
-    if (isFollowing) {
-      await unfollowUser(index, userName);
-    } else {
-      await followUser(index, userName);
+
+    try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      if (isFollowing) {
+        await unfollowUser(index, userName);
+      } else {
+        await followUser(index, userName);
+      }
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+      }
     }
     getSearchedUsers[index].isSendingFollowRequest!.value = false;
   }
