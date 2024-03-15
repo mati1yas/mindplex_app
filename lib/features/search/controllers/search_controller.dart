@@ -42,6 +42,8 @@ class SearchPageController extends GetxController {
   ConnectionInfoImpl connectionChecker = Get.find();
   RxBool isConnected = false.obs;
 
+  RxBool searchFailed = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -67,14 +69,35 @@ class SearchPageController extends GetxController {
   }
 
   void fetchPopularBlogs() async {
-    final res = await searchApiService.value.fetchSearchLanding();
+    searchFailed.value = false;
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      final res = await searchApiService.value.fetchSearchLanding();
 
-    popularPosts.value = res.blogs!;
-    loadReputation(popularPosts, 'popular');
-    categories.value = res.categories!;
-    isIntialLoading.value = false;
+      popularPosts.value = res.blogs!;
+      loadReputation(popularPosts, 'popular');
+      categories.value = res.categories!;
+      isIntialLoading.value = false;
 
-    isLoadingMore.value = false;
+      isLoadingMore.value = false;
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        print(e.toString());
+        searchFailed.value = true;
+        Toster(
+            message: 'Something is Wrong,Try Again !',
+            color: Colors.red,
+            duration: 1);
+      }
+    }
   }
 
   void loadMoreSearchResults(String query) async {
