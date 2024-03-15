@@ -11,6 +11,7 @@ import 'package:mindplex/features/search/view/widgets/search_bar_widget.dart';
 import 'package:mindplex/features/search/view/widgets/search_blog_card_widget.dart';
 import 'package:mindplex/features/search/view/widgets/category_container_widget.dart';
 import 'package:mindplex/utils/colors.dart';
+import 'package:mindplex/utils/no_internet_card_widget.dart';
 
 import '../../../bottom_navigation_bar/controllers/bottom_page_navigation_controller.dart';
 import '../../controllers/search_controller.dart';
@@ -165,160 +166,199 @@ class _SearchPageState extends State<SearchPage>
                           ? 0.73
                           : 0.8099),
                   child: SingleChildScrollView(
-                    child: Column(children: [
-                      !searchController.isSearchResultPage.value
-                          ? Container(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Trends for you",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        )),
-                                  ),
-                                  searchController.isIntialLoading.value
-                                      ? Container(
-                                          height: 320,
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        )
-                                      : Column(children: [
-                                          for (int i = 0;
-                                              i <
-                                                  (searchController
-                                                          .showAllCategories
-                                                          .value
-                                                      ? searchController
-                                                          .categories.length
-                                                      : 5);
-                                              i++)
-                                            categoryContainer(
-                                                category: searchController
-                                                    .categories[i],
-                                                index: i,
-                                                searchTextEditingController:
-                                                    searchTextEditingController)
-                                        ]),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        searchController
-                                                .showAllCategories.value =
-                                            !searchController.showAllCategories
-                                                .value; // Toggle the flag to show all categories
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(18),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            searchController
-                                                    .showAllCategories.value
-                                                ? "Show Less"
-                                                : "Show More",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.blue,
-                                                fontSize: 18),
-                                          ),
-                                          InkWell(
-                                            child: Icon(
-                                              searchController
-                                                      .showAllCategories.value
-                                                  ? Icons
-                                                      .keyboard_arrow_up_sharp
-                                                  : Icons.arrow_forward_ios,
-                                              color: Colors.blue,
-                                              size: 30,
+                    child: searchController.isConnected.value == false
+                        ? noInternetCard(
+                            () {
+                              searchController.fetchPopularBlogs();
+                            },
+                          )
+                        : searchController.searchFailed.value
+                            ? noInternetCard(() {
+                                searchController.fetchPopularBlogs();
+                              }, message: "Failed to Fetch , Please Try Again")
+                            : Column(children: [
+                                !searchController.isSearchResultPage.value
+                                    ? Container(
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(18.0),
+                                              child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    "Trends for you",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  )),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    thickness: 2.0,
-                                    color: Colors.white,
-                                    indent: 18,
-                                    endIndent: 18,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 18.0, top: 8),
-                                    child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Articles for you",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        )),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 18.0, vertical: 8),
-                                    child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Check out these popular and trending articles for you",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w200,
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        )),
-                                  ),
-                                  searchController.isIntialLoading.value
-                                      ? Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : Obx(
-                                          () => searchController
-                                                      .isLoadingMore.value ==
-                                                  false
-                                              ? SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: IntrinsicHeight(
-                                                    child: Row(
-                                                      children: [
-                                                        for (int i = 0;
-                                                            i <
-                                                                searchController
-                                                                    .popularBlogs
-                                                                    .length;
-                                                            i++)
-                                                          ArticleCard(
-                                                              searchController:
-                                                                  searchController,
-                                                              index: i)
-                                                      ],
+                                            searchController
+                                                    .isIntialLoading.value
+                                                ? Container(
+                                                    height: 320,
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     ),
+                                                  )
+                                                : Column(children: [
+                                                    for (int i = 0;
+                                                        i <
+                                                            (searchController
+                                                                    .showAllCategories
+                                                                    .value
+                                                                ? searchController
+                                                                    .categories
+                                                                    .length
+                                                                : 5);
+                                                        i++)
+                                                      categoryContainer(
+                                                          category:
+                                                              searchController
+                                                                      .categories[
+                                                                  i],
+                                                          index: i,
+                                                          searchTextEditingController:
+                                                              searchTextEditingController)
+                                                  ]),
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  searchController
+                                                          .showAllCategories
+                                                          .value =
+                                                      !searchController
+                                                          .showAllCategories
+                                                          .value; // Toggle the flag to show all categories
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.all(18),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      searchController
+                                                              .showAllCategories
+                                                              .value
+                                                          ? "Show Less"
+                                                          : "Show More",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.blue,
+                                                          fontSize: 18),
+                                                    ),
+                                                    InkWell(
+                                                      child: Icon(
+                                                        searchController
+                                                                .showAllCategories
+                                                                .value
+                                                            ? Icons
+                                                                .keyboard_arrow_up_sharp
+                                                            : Icons
+                                                                .arrow_forward_ios,
+                                                        color: Colors.blue,
+                                                        size: 30,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Divider(
+                                              thickness: 2.0,
+                                              color: Colors.white,
+                                              indent: 18,
+                                              endIndent: 18,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 18.0, top: 8),
+                                              child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    "Articles for you",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  )),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 18.0,
+                                                      vertical: 8),
+                                              child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    "Check out these popular and trending articles for you",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w200,
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  )),
+                                            ),
+                                            searchController
+                                                    .isIntialLoading.value
+                                                ? Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  )
+                                                : Obx(
+                                                    () => searchController
+                                                                .isLoadingMore
+                                                                .value ==
+                                                            false
+                                                        ? SingleChildScrollView(
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            child:
+                                                                IntrinsicHeight(
+                                                              child: Row(
+                                                                children: [
+                                                                  for (int i =
+                                                                          0;
+                                                                      i <
+                                                                          searchController
+                                                                              .popularBlogs
+                                                                              .length;
+                                                                      i++)
+                                                                    ArticleCard(
+                                                                        searchController:
+                                                                            searchController,
+                                                                        index:
+                                                                            i)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(),
                                                   ),
-                                                )
-                                              : Container(),
+                                          ],
                                         ),
-                                ],
-                              ),
-                            )
-                          : SearchResultPage(
-                              tabController: _tabController,
-                              searchController: searchController),
-                      SizedBox(
-                        height:
-                            searchController.isSearchResultPage.value ? 0 : 80,
-                      )
-                    ]),
+                                      )
+                                    : SearchResultPage(
+                                        tabController: _tabController,
+                                        searchController: searchController),
+                                SizedBox(
+                                  height:
+                                      searchController.isSearchResultPage.value
+                                          ? 0
+                                          : 80,
+                                )
+                              ]),
                   ),
                 )
               ],
