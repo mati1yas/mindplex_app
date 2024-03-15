@@ -176,7 +176,7 @@ class Author {
     avatar = json['avatar'];
     bio = json['bio'];
     displayName = json['display_name'];
-    isFollowing = RxBool(json['is_following']);
+    isFollowing = RxBool(json['is_following'] ?? false);
   }
 
   Map<String, dynamic> toJson() {
