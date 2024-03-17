@@ -149,19 +149,29 @@ class _ProfilePage extends State<ProfilePage>
                   children: [
                     ProfilePageOutlinedButton(
                       buttonAction: () {
-                        followTheUser(
+                        sendFollowRequest(
                           userProfileController.userProfile.value.username ??
                               "",
                         );
                       },
-                      buttonColor: Color.fromARGB(255, 225, 62, 111),
-                      buttonName: "Follow",
+                      buttonColor:
+                          userProfileController.isSendingFollowRequest.value
+                              ? Color.fromARGB(255, 229, 146, 171)
+                              : Color.fromARGB(255, 225, 62, 111),
+                      buttonName: userProfileController
+                              .userProfile.value.isFollowing!.value
+                          ? "Unfollow "
+                          : "Follow",
                       buttonWidthFactor: 0.4,
                       buttonRadius: 10,
                     ),
                     ProfilePageOutlinedButton(
-                      buttonAction:
-                          userProfileController.switchWallectConnectedState,
+                      buttonAction: () {
+                        sendFriendRequest(
+                          userProfileController.userProfile.value.username ??
+                              "",
+                        );
+                      },
                       buttonColor: Color.fromARGB(255, 5, 161, 158),
                       buttonName: "Add friend",
                       buttonWidthFactor: 0.4,
@@ -235,9 +245,15 @@ class _ProfilePage extends State<ProfilePage>
     );
   }
 
-  void followTheUser(String username) {
-    if (!likeDislikeConroller.isSendingFollowRequest.value) {
-      likeDislikeConroller.followUnfollowBlogAuthor(-1, username, true);
+  void sendFollowRequest(String username) {
+    if (!userProfileController.isSendingFollowRequest.value) {
+      userProfileController.sendFollowRequest(userName: username);
+    }
+  }
+
+  void sendFriendRequest(String username) {
+    if (!userProfileController.isSendingFriendRequest.value) {
+      // userProfileController.sendFriendRequest(username: username);
     }
   }
 }

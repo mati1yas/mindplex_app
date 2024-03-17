@@ -1,10 +1,13 @@
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/constatns.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 class LikeDislikeConroller extends GetxController {
   RxBool isLoading = true.obs;
@@ -17,6 +20,9 @@ class LikeDislikeConroller extends GetxController {
     "😅",
   ].obs;
   RxBool isSendingFollowRequest = false.obs;
+  RxBool isConnected = false.obs;
+  RxInt clickedAuthorIndex = (-1).obs;
+  ConnectionInfoImpl connectionChecker = Get.find();
 
   Future<void> interactionHandler(
       {required Blog blog, required int index, required bool itIsLike}) async {
@@ -141,32 +147,65 @@ class LikeDislikeConroller extends GetxController {
   }
 
   Future<void> followUnfollowBlogAuthor(
-      int index, String userName, bool isFollowing) async {
+      {required int blogIndex,
+      required int authorIndex,
+      required String userName,
+      required bool isFollowing}) async {
     isSendingFollowRequest.value = true;
-    if (isFollowing) {
-      await unfollowBlogAuthor(index, userName);
-    } else {
-      await followBlogAuthor(index, userName);
+    clickedAuthorIndex.value = authorIndex;
+    try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      if (isFollowing) {
+        await unfollowBlogAuthor(
+            blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
+      } else {
+        await followBlogAuthor(
+            blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
+      }
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+      }
     }
+    clickedAuthorIndex.value = -1;
+
     isSendingFollowRequest.value = false;
   }
 
-  Future<void> followBlogAuthor(int index, String userName) async {
+  Future<void> followBlogAuthor({
+    required int blogIndex,
+    required int authorIndex,
+    required String userName,
+  }) async {
     final BlogsController blogsController = Get.find();
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
+
     if (await apiService.value.followUser(userName)) {
-      if (index != -1)
-        blogsController.filteredBlogs[index].isFollowing!.value = true;
+      if (blogIndex != -1)
+        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
+            .isFollowing!.value = true;
     }
   }
 
-  Future<void> unfollowBlogAuthor(int index, String userName) async {
+  Future<void> unfollowBlogAuthor({
+    required int blogIndex,
+    required int authorIndex,
+    required String userName,
+  }) async {
     final BlogsController blogsController = Get.find();
 
     if (await apiService.value.unfollowUser(userName)) {
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
-      if (index != -1)
-        blogsController.filteredBlogs[index].isFollowing!.value = false;
+      if (blogIndex != -1)
+        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
+            .isFollowing!.value = false;
     }
   }
 }

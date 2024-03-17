@@ -159,6 +159,7 @@ class BlogsController extends GetxController {
       }
       newPostTypeLoading.value = true;
       isLoadingMore.value = true;
+      canLoadMoreBlogs.value = true;
       page.value = 1;
       startPosition.value = 0;
       final res = await apiSerivice.value.loadBlogs(
@@ -177,8 +178,18 @@ class BlogsController extends GetxController {
         isConnected.value = false;
         Toster(
             message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        print(e.toString());
+        Toster(
+            message: 'Something is Wrong,Try Again !',
+            color: Colors.red,
+            duration: 1);
       }
+      isLoadingMore.value = false;
+      canLoadMoreBlogs.value = false;
     }
+    isLoadingMore.value = false;
+    newPostTypeLoading.value = false;
   }
 
   Future<void> loadReputation(List<Blog> fetchedBlogs) async {

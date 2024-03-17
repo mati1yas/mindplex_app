@@ -9,7 +9,7 @@ class Blog {
   String? banner;
   String? authorUsername;
   String? authorAvatar;
-  List<Authors>? authors;
+  List<Author>? authors;
   String? authorDisplayName;
   RxBool? isFollowing = false.obs;
   String? publishedAt;
@@ -72,9 +72,9 @@ class Blog {
     authorAvatar = json['author_avatar'];
 
     if (json['authors'] != null) {
-      authors = <Authors>[];
+      authors = <Author>[];
       json['authors'].forEach((v) {
-        authors!.add(new Authors.fromJson(v));
+        authors!.add(new Author.fromJson(v));
       });
     }
     authorDisplayName = json['author_display_name'];
@@ -156,19 +156,27 @@ class Content {
   }
 }
 
-class Authors {
+class Author {
   String? username;
   String? avatar;
   String? bio;
   String? displayName;
+  RxBool? isFollowing = false.obs;
 
-  Authors({this.username, this.avatar, this.bio, this.displayName});
+  Author({
+    this.username,
+    this.avatar,
+    this.bio,
+    this.displayName,
+    bool? isFollowing,
+  });
 
-  Authors.fromJson(Map<String, dynamic> json) {
+  Author.fromJson(Map<String, dynamic> json) {
     username = json['username'];
     avatar = json['avatar'];
     bio = json['bio'];
     displayName = json['display_name'];
+    isFollowing = RxBool(json['is_following'] ?? false);
   }
 
   Map<String, dynamic> toJson() {
@@ -177,6 +185,7 @@ class Authors {
     data['avatar'] = this.avatar;
     data['bio'] = this.bio;
     data['display_name'] = this.displayName;
+    data['is_following'] = this.isFollowing;
     return data;
   }
 }

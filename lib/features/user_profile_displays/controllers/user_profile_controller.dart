@@ -42,6 +42,8 @@ class ProfileController extends GetxController {
   RxInt followingsPage = 0.obs;
   RxBool reachedEndofFollowers = false.obs;
   RxBool reachedEndofFollowings = false.obs;
+  RxBool isSendingFollowRequest = false.obs;
+  RxBool isSendingFriendRequest = false.obs;
 
   Rx<UserProfile> userProfile = Rx<UserProfile>(UserProfile());
 
@@ -151,5 +153,53 @@ class ProfileController extends GetxController {
     if (fetchedFollowings.length < 10) reachedEndofFollowings.value = true;
     isLoadingFollowings.value = false;
     firstTimeLoadingFollowings.value = false;
+  }
+
+  Future<void> sendFollowRequest({
+    required String userName,
+  }) async {
+    isSendingFollowRequest.value = true;
+
+    try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+
+      bool isFollowing = userProfile.value.isFollowing!.value;
+      if (isFollowing) {
+        await unfollowUser(userName);
+      } else {
+        await followUser(userName);
+      }
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+      }
+    }
+
+    isSendingFollowRequest.value = false;
+  }
+
+  Future<void> sendFriendRequest({required String username}) async {
+    isSendingFriendRequest.value = true;
+
+    isSendingFriendRequest.value = false;
+  }
+
+  Future<void> followUser(String userName) async {
+    if (await apiService.value.followUser(userName)) {
+      userProfile.value.isFollowing!.value = true;
+    }
+  }
+
+  Future<void> unfollowUser(String userName) async {
+    if (await apiService.value.unfollowUser(userName)) {
+      userProfile.value.isFollowing!.value = false;
+    }
   }
 }
