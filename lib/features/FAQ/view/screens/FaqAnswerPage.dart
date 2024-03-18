@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/FAQ/controller/faqController.dart';
+import 'package:mindplex/features/FAQ/model/FaqAnswer.dart';
 import 'package:mindplex/features/FAQ/services/FaqSerivces.dart';
+import 'package:mindplex/features/FAQ/view/widgets/FaqAnswerWidget.dart';
 import 'package:mindplex/features/FAQ/view/widgets/FaqGroup.dart';
 import 'package:mindplex/features/FAQ/view/widgets/faqSearch.dart';
 import 'package:mindplex/utils/status.dart';
 import "../../../../utils/colors.dart";
 
-class FAQ extends StatelessWidget {
+class FaqAnswerPage extends StatelessWidget {
   FaqController faqController = Get.put(FaqController());
+  final String slug = Get.arguments;
   @override
   Widget build(BuildContext context) {
-    faqController.loadFaq();
+    faqController.loadAnswer(slug);
     double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         body: Container(
       color: mainBackgroundColor,
@@ -22,23 +24,24 @@ class FAQ extends StatelessWidget {
         children: [
           FaqSearch(),
           Container(
+            width: double.infinity,
             height: screenHeight * 0.65,
             child: Obx(
-              () => faqController.status == Status.loading
+              () => faqController.statusAnswer == Status.loading
                   ? Center(child: CircularProgressIndicator())
-                  : faqController.status == Status.error
+                  : faqController.statusAnswer == Status.error
                       ? Center(
                           child: Icon(Icons.error),
                         )
                       : ListView.separated(
-                          padding: EdgeInsets.fromLTRB(30, 30, 30, 20),
+                          padding: EdgeInsets.all(25),
                           shrinkWrap: true,
                           separatorBuilder: (context, index) =>
-                              SizedBox(height: 60),
-                          itemBuilder: (context, index) => FaqGroupCard(
-                            faqGroup: faqController.faqGroups[index],
+                              SizedBox(height: 10),
+                          itemBuilder: (context, index) => FaqAnswerWidget(
+                            faqAnswer: faqController.faqAnswers[index],
                           ),
-                          itemCount: faqController.faqGroups.length,
+                          itemCount: faqController.faqAnswers.length,
                         ),
             ),
           ),
