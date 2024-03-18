@@ -19,26 +19,39 @@ import '../widgets/blog_content_display.dart';
 import '../widgets/reaction_emoji.dart';
 import '../widgets/interactions_overlay.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
   final int index;
   final Blog details;
   const DetailsPage({super.key, required this.details, required this.index});
 
   @override
-  Widget build(BuildContext context) {
-    BlogTimeSpentController blogTimeSpentController =
-        Get.put(BlogTimeSpentController());
-    BlogsController blogsController = Get.find();
-    LikeDislikeConroller likeDislikeConroller = Get.find();
-    AuthController authController = Get.find();
-    ProfileController profileController = Get.find();
+  State<DetailsPage> createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  BlogTimeSpentController blogTimeSpentController =
+      Get.put(BlogTimeSpentController());
+  BlogsController blogsController = Get.find();
+  LikeDislikeConroller likeDislikeConroller = Get.find();
+  AuthController authController = Get.find();
+  ProfileController profileController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialization logic here
+    blogTimeSpentController.loadAuthorsReputation(
+        authors: blogsController.filteredBlogs[widget.index].authors ?? []);
     profileController.getAuthenticatedUser();
     blogTimeSpentController.startOrStopTimer(
-        blogsController.filteredBlogs[index].slug,
-        int.parse(
-            blogsController.filteredBlogs[index].minToRead!.split(" ")[0]),
+        blogsController.filteredBlogs[widget.index].slug,
+        int.parse(blogsController.filteredBlogs[widget.index].minToRead!
+            .split(" ")[0]),
         true);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height);
 
     return WillPopScope(
@@ -59,13 +72,13 @@ class DetailsPage extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              details.postTypeFormat == "text"
+              widget.details.postTypeFormat == "text"
                   ? const Icon(
                       Icons.description_outlined,
                       color: Color(0xFF8aa7da),
                       size: 20,
                     )
-                  : details.postTypeFormat == "video"
+                  : widget.details.postTypeFormat == "video"
                       ? const Icon(
                           Icons.videocam,
                           color: Color.fromARGB(255, 185, 127, 127),
@@ -80,9 +93,9 @@ class DetailsPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.03,
               ),
               Text(
-                  details.postTypeFormat == "text"
+                  widget.details.postTypeFormat == "text"
                       ? "Read"
-                      : details.postTypeFormat == "video"
+                      : widget.details.postTypeFormat == "video"
                           ? "Watch "
                           : "Listen",
                   style: TextStyle(fontWeight: FontWeight.w300)),
@@ -114,7 +127,7 @@ class DetailsPage extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: Text(
-                                  details.postTitle ?? "",
+                                  widget.details.postTitle ?? "",
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 25.0,
@@ -127,20 +140,20 @@ class DetailsPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '${details.publishedAt}' + " " ?? "",
+                                    '${widget.details.publishedAt}' + " " ?? "",
                                     style: const TextStyle(
                                       color: Color.fromARGB(235, 247, 202, 0),
                                     ),
                                   ),
                                   Text(
-                                    '${details.minToRead}' + "   " ?? "",
+                                    '${widget.details.minToRead}' + "   " ?? "",
                                     style: const TextStyle(
                                       color: Color.fromARGB(235, 247, 202, 0),
                                     ),
                                   ),
                                   Obx(
                                     () => Text(
-                                      details.likes.value.toString() +
+                                      widget.details.likes.value.toString() +
                                           " likes  ",
                                       style: const TextStyle(
                                         color: Color.fromARGB(235, 247, 202, 0),
@@ -175,7 +188,7 @@ class DetailsPage extends StatelessWidget {
                                   horizontal: 5.0,
                                 ),
                                 child: Text(
-                                  details.overview ?? "",
+                                  widget.details.overview ?? "",
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -186,13 +199,15 @@ class DetailsPage extends StatelessWidget {
                                 thickness: 2,
                                 color: Colors.white,
                               ),
-                              blogsController.filteredBlogs[index].banner != ""
+                              blogsController
+                                          .filteredBlogs[widget.index].banner !=
+                                      ""
                                   ? Container(
                                       height: 150,
                                       width: 600,
                                       child: Image.network(
                                           fit: BoxFit.cover,
-                                          details.banner ?? ""))
+                                          widget.details.banner ?? ""))
                                   : Container()
                             ],
                           ),
@@ -202,7 +217,7 @@ class DetailsPage extends StatelessWidget {
                         Material(
                           color: Color(0xFF0c2b46),
                           child: BlogContentDisplay(
-                            data: details.content ?? [],
+                            data: widget.details.content ?? [],
                             padding: 16,
                           ),
                         ),
@@ -212,16 +227,18 @@ class DetailsPage extends StatelessWidget {
                         ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: details.authors != null
-                              ? details.authors!.length
+                          itemCount: widget.details.authors != null
+                              ? widget.details.authors!.length
                               : 0,
                           itemBuilder: (context, i) {
                             return AuthorsTileWidget(
-                                details: details,
+                                details: widget.details,
+                                blogTimeSpentController:
+                                    blogTimeSpentController,
                                 profileController: profileController,
                                 blogsController: blogsController,
                                 authorIndex: i,
-                                blogIndex: index,
+                                blogIndex: widget.index,
                                 authController: authController,
                                 likeDislikeConroller: likeDislikeConroller);
                           },
@@ -256,7 +273,7 @@ class DetailsPage extends StatelessWidget {
                           itemCount: emojis.length,
                           itemBuilder: (context, index) => ReactionEmoji(
                               emojiIndex: index,
-                              blog: details,
+                              blog: widget.details,
                               blogIndex: index),
                         ),
                       ),
@@ -282,10 +299,12 @@ class DetailsPage extends StatelessWidget {
                             authController.guestReminder(context);
                           } else {
                             likeDislikeConroller.interactionHandler(
-                                blog: details, index: index, itIsLike: true);
+                                blog: widget.details,
+                                index: widget.index,
+                                itIsLike: true);
                           }
                         },
-                        icon: (details.isUserLiked.value)
+                        icon: (widget.details.isUserLiked.value)
                             ? Icon(
                                 Icons.thumb_up_off_alt_rounded,
                                 color: Color.fromARGB(255, 73, 255, 179),
@@ -304,12 +323,14 @@ class DetailsPage extends StatelessWidget {
                             authController.guestReminder(context);
                           } else {
                             likeDislikeConroller.interactionHandler(
-                                blog: details, index: index, itIsLike: false);
+                                blog: widget.details,
+                                index: widget.index,
+                                itIsLike: false);
 
                             ;
                           }
                         },
-                        icon: details.isUserDisliked.value
+                        icon: widget.details.isUserDisliked.value
                             ? Icon(
                                 Icons.thumb_down,
                                 color: const Color.fromARGB(255, 230, 96, 86),
@@ -324,7 +345,7 @@ class DetailsPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Share.share(details.url ?? "",
+                          Share.share(widget.details.url ?? "",
                               subject: 'Sharing blog to your media appearance');
                         },
                         child: Icon(
@@ -341,8 +362,9 @@ class DetailsPage extends StatelessWidget {
                             isScrollControlled: true,
                             ignoreSafeArea: false,
                             MyWidgetComment(
-                                post_slug: details.slug!,
-                                comment_number: details.comments.toString()),
+                                post_slug: widget.details.slug!,
+                                comment_number:
+                                    widget.details.comments.toString()),
                           );
                         },
                         child: Badge(
@@ -350,7 +372,7 @@ class DetailsPage extends StatelessWidget {
                             Icons.mode_comment_outlined,
                             color: Colors.white,
                           ),
-                          label: Text(details.comments.toString()),
+                          label: Text(widget.details.comments.toString()),
                         ),
                       ),
                       SizedBox(
@@ -366,10 +388,10 @@ class DetailsPage extends StatelessWidget {
                           }
                         },
                         child: Obx(
-                          () => details.interactedEmoji.value != ''
+                          () => widget.details.interactedEmoji.value != ''
                               ? Text(
                                   codeToEmojiMap[
-                                      details.interactedEmoji.value]!,
+                                      widget.details.interactedEmoji.value]!,
                                   style: TextStyle(fontSize: 24))
                               : Icon(
                                   Icons.add_reaction_outlined,
@@ -409,16 +431,16 @@ class DetailsPage extends StatelessWidget {
                             authController.guestReminder(context);
                           } else {
                             await likeDislikeConroller.addToBookmark(
-                              blogIndex: index,
-                              blog: details,
-                              articleSlug: details.slug ?? '',
+                              blogIndex: widget.index,
+                              blog: widget.details,
+                              articleSlug: widget.details.slug ?? '',
                             );
                           }
                         },
                         child: Obx(
                           () => Icon(
                             Icons.bookmark_add,
-                            color: details.isBookmarked!.value
+                            color: widget.details.isBookmarked!.value
                                 ? Color.fromARGB(255, 73, 255, 179)
                                 : Colors.white,
                           ),
@@ -441,7 +463,7 @@ class DetailsPage extends StatelessWidget {
   void _showInteractionsOverlay(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => InteractionsOverlay(slug: details.slug!),
+      builder: (context) => InteractionsOverlay(slug: widget.details.slug!),
       // isScrollControlled: true,
     );
   }

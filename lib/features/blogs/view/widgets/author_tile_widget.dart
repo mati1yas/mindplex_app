@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:html/parser.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/controllers/blog_time_spent_controller.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/interaction/controllers/like_dislike_controller.dart';
@@ -20,10 +22,12 @@ class AuthorsTileWidget extends StatelessWidget {
     required this.blogIndex,
     required this.authController,
     required this.likeDislikeConroller,
+    required this.blogTimeSpentController,
   });
 
   final Blog details;
   final ProfileController profileController;
+  final BlogTimeSpentController blogTimeSpentController;
   final BlogsController blogsController;
   final int authorIndex;
   final int blogIndex;
@@ -70,15 +74,30 @@ class AuthorsTileWidget extends StatelessWidget {
                       color: titleTextColor),
                 ),
                 SizedBox(height: 5),
-                Text(
-                  authorIndex == 0
-                      ? details.reputation.value != null
-                          ? details.reputation.value!.author!.mpxr!
-                              .toStringAsFixed(5)
-                          : " - " + " MPXR"
-                      : " - ",
-                  style: TextStyle(
-                      color: bodyTextColor, fontWeight: FontWeight.w500),
+                Obx(
+                  () => blogTimeSpentController.isLoadinAuthorsReputation.value
+                      ? Container(
+                          width: 10,
+                          height: 10,
+                          child: CircularProgressIndicator(
+                            color: Colors.green,
+                          ),
+                        )
+                      : Text(
+                          details.authors![authorIndex].mpxr!.value
+                                      .toStringAsFixed(5) +
+                                  " MPXR " ??
+                              " - MPXR",
+                          // authorIndex == 0
+                          //     ? details.reputation.value != null
+                          //         ? details.reputation.value!.author!.mpxr!
+                          //             .toStringAsFixed(5)
+                          //         : " - " + " MPXR"
+                          //     : " - ",
+                          style: TextStyle(
+                              color: bodyTextColor,
+                              fontWeight: FontWeight.w500),
+                        ),
                 ),
                 SizedBox(height: 5),
                 Text(
