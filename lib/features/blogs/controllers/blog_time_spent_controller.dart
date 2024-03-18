@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/models/author_reputation_model.dart';
+import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/services/blog_api_service.dart';
 
 import '../../../utils/Toster.dart';
@@ -15,6 +17,7 @@ class BlogTimeSpentController extends GetxController {
   RxBool isGoodReader = false.obs;
   RxBool isAverageReader = false.obs;
   RxBool isBestReader = false.obs;
+  RxBool isLoadinAuthorsReputation = false.obs;
 
   ScrollController scrollController = ScrollController();
 
@@ -81,5 +84,43 @@ class BlogTimeSpentController extends GetxController {
 
   void addView(String blogSlug) async {
     bool success = await blogApiService.AddView(blogSlug);
+  }
+
+  void loadAuthorsReputation({required List<Author> authors}) async {
+    isLoadinAuthorsReputation.value = true;
+    print('calling author reputation  method');
+
+    var userIds = authors.map((author) => author.userId!.value).toList();
+
+    try {
+      var authorsReputations =
+          await blogApiService.loadReputation(userIds: userIds);
+
+      assignMpxrToAuthor(
+          authors: authors, authorsReputations: authorsReputations);
+    } catch (e) {
+      Toster(
+          message: 'Failed to Load Mpxr Value,Try Again !',
+          color: Colors.red,
+          duration: 1);
+    }
+
+    isLoadinAuthorsReputation.value = false;
+  }
+
+  void assignMpxrToAuthor({
+    required List<Author> authors,
+    required List<AuthorReputation> authorsReputations,
+  }) {
+    for (var i = 0; i < authors.length; i++) {
+      for (var j = 0; j < authorsReputations.length; j++) {
+        if (authors[i].userId == authorsReputations[j].user) {
+          authors[i].mpxr!.value = authorsReputations[j].mpxr ?? 0;
+
+          update();
+          break;
+        }
+      }
+    }
   }
 }
