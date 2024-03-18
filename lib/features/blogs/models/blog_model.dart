@@ -157,13 +157,16 @@ class Content {
 }
 
 class Author {
+  RxInt? userId = 0.obs;
   String? username;
   String? avatar;
   String? bio;
   String? displayName;
   RxBool? isFollowing = false.obs;
+  Rx<dynamic>? mpxr = Rx<dynamic>(null);
 
   Author({
+    int? userId,
     this.username,
     this.avatar,
     this.bio,
@@ -171,7 +174,10 @@ class Author {
     bool? isFollowing,
   });
 
-  Author.fromJson(Map<String, dynamic> json) {
+  Author.fromJson(Map<dynamic, dynamic> json) {
+    userId = RxInt(json['user_id'].runtimeType == String
+        ? int.tryParse(json['user_id']) ?? 0
+        : json['user_id']);
     username = json['username'];
     avatar = json['avatar'];
     bio = json['bio'];
@@ -181,6 +187,7 @@ class Author {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_id'] = this.userId;
     data['username'] = this.username;
     data['avatar'] = this.avatar;
     data['bio'] = this.bio;
