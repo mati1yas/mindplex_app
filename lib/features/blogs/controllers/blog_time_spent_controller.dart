@@ -88,7 +88,6 @@ class BlogTimeSpentController extends GetxController {
 
   void loadAuthorsReputation({required List<Author> authors}) async {
     isLoadinAuthorsReputation.value = true;
-    print('calling author reputation  method');
 
     var userIds = authors.map((author) => author.userId!.value).toList();
 
