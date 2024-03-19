@@ -31,7 +31,6 @@ class AppUrls {
   static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
   static var userProfileReputation =
       "${AppUrls.baseUrlReputation}/core/communities/mindplex/users";
-  static var timeSpentUrl = "$baseUrl/mp_rp/post/time_spent";
 }
 
 var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";
