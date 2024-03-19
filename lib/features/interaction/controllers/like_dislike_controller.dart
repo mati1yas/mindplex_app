@@ -165,7 +165,11 @@ class LikeDislikeConroller extends GetxController {
       blogsController.blogs[blogIndex] = blog;
 
       Get.snackbar(
-          "Voting Error", "You have already voted on a different article.");
+          "Voting value", "You have already voted on a different article.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          duration: Duration(seconds: 10));
     }
   }
 
