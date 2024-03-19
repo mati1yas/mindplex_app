@@ -136,26 +136,6 @@ class ApiService {
     );
   }
 
-  // Future<void> addVote(
-  //     {required int articleSlug, required bool hasVoted}) async {
-  //   try {
-  //     var dio = Dio();
-  //     Rx<LocalStorage> localStorage =
-  //         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
-  //     final token = await localStorage.value.readFromStorage('Token');
-  //     dio.options.headers['Authorization'] = "Bearer ${token}";
-  //     Response response = await dio.get(
-  //       "${AppUrls.vote}$articleSlug",
-  //     );
-  //     if (response.statusCode == 200) {
-  //       print('hi there ${response.data}');
-  //     } else {
-  //       print('Error: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('error from the voting feature $e');
-  //   }
-  // }
   Future<void> addVote(
       {required String articleSlug, required bool hasVoted}) async {
     var dio = Dio();
