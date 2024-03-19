@@ -21,3 +21,5 @@ const userNameColor = Color(0xFFBEBEBE);
 const pink = Colors.pink;
 const bodyTextColor = Color.fromARGB(255, 238, 238, 238);
 const titleTextColor = Color.fromARGB(255, 238, 238, 238);
+
+const ColorPrimaryDark = Color.fromRGBO(14, 24, 37, 1);

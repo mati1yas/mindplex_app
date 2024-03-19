@@ -62,11 +62,15 @@ class SocialFeedCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(blog.authorDisplayName ?? "",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700)),
+                      Expanded(
+                        child: Text(blog.authorDisplayName ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700)),
+                      ),
                       SizedBox(
                         width: 10,
                       ),

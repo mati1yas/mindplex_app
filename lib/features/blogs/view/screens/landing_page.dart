@@ -230,8 +230,10 @@ class _LandingPageState extends State<LandingPage>
                                               margin:
                                                   EdgeInsets.only(bottom: 50),
                                               child: noInternetCard(() {
-                                                blogsController.loadMoreBlogs();
-                                              }),
+                                                blogsController.fetchBlogs();
+                                              },
+                                                  message:
+                                                      "Article Loading Failed , Try Again"),
                                             )
                                           : ListView.builder(
                                               physics:

@@ -28,95 +28,84 @@ class SearchResultPage extends StatelessWidget {
               children: [
                 Obx(() {
                   return searchController.isLoading.value == true
-                      ? Expanded(
-                          child: ListView.builder(
-                            itemCount: 5,
-                            itemBuilder: (ctx, inx) => const BlogSkeleton(),
-                          ),
+                      ? ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (ctx, inx) => const BlogSkeleton(),
                         )
-                      : Expanded(
-                          child: ListView.builder(
-                              controller:
-                                  searchController.searchScrollController,
-                              itemCount:
-                                  searchController.searchedBlogs.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index <
-                                    searchController.searchedBlogs.length) {
-                                  return SearchBlogCard(
-                                      searchController: searchController,
-                                      index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index ==
-                                          searchController
-                                              .searchedBlogs.length &&
-                                      !searchController
-                                          .reachedEndOfListSearch.value) {
-                                    return Container(
-                                        height: 250, child: BlogSkeleton());
-                                  } else {
-                                    return Container(
-                                      child: Center(
-                                        child: Text(
-                                          searchController.searchPage == 1
-                                              ? "No Content"
-                                              : "no more content",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ); // Return an empty container otherwise
-                                  }
-                                }
-                              }),
-                        );
+                      : ListView.builder(
+                          controller: searchController.searchScrollController,
+                          itemCount: searchController.searchedBlogs.length + 1,
+                          itemBuilder: (ctx, index) {
+                            if (index < searchController.searchedBlogs.length) {
+                              return SearchBlogCard(
+                                  searchController: searchController,
+                                  index: index);
+                            } else {
+                              print("executing else statement");
+                              if (index ==
+                                      searchController.searchedBlogs.length &&
+                                  !searchController
+                                      .reachedEndOfListSearch.value) {
+                                return Container(
+                                    height: 300, child: BlogSkeleton());
+                              } else {
+                                return Container(
+                                  child: Center(
+                                    child: Text(
+                                      searchController.searchPage == 1
+                                          ? "No Content"
+                                          : "no more content",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ); // Return an empty container otherwise
+                              }
+                            }
+                          });
                 }),
                 Obx(() {
                   return searchController.isUserLoading.value == true
-                      ? Expanded(
-                          child: Center(
+                      ? Center(
                           child: CircularProgressIndicator(),
-                        ))
-                      : Expanded(
-                          child: ListView.builder(
-                              controller:
-                                  searchController.searchUserScrollController,
-                              itemCount:
-                                  searchController.getSearchedUsers.length + 1,
-                              itemBuilder: (ctx, index) {
-                                if (index <
-                                    searchController.getSearchedUsers.length) {
-                                  return UserCard(
-                                      user: searchController, index: index);
-                                } else {
-                                  print("executing else statement");
-                                  if (index ==
-                                          searchController
-                                              .getSearchedUsers.length &&
-                                      !searchController
-                                          .reachedEndOfListSearchUser.value) {
-                                    // Display CircularProgressIndicator under the last card
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  } else {
-                                    return Container(
-                                      child: Center(
-                                        child: Text(
-                                          searchController.searchUserPage == 1
-                                              ? "No users"
-                                              : "no more users",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ); // Return an empty container otherwise
-                                  }
-                                }
-                              }),
-                        );
+                        )
+                      : ListView.builder(
+                          controller:
+                              searchController.searchUserScrollController,
+                          itemCount:
+                              searchController.getSearchedUsers.length + 1,
+                          itemBuilder: (ctx, index) {
+                            if (index <
+                                searchController.getSearchedUsers.length) {
+                              return UserCard(
+                                  user: searchController, index: index);
+                            } else {
+                              print("executing else statement");
+                              if (index ==
+                                      searchController
+                                          .getSearchedUsers.length &&
+                                  !searchController
+                                      .reachedEndOfListSearchUser.value) {
+                                // Display CircularProgressIndicator under the last card
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return Container(
+                                  child: Center(
+                                    child: Text(
+                                      searchController.searchUserPage == 1
+                                          ? "No users"
+                                          : "no more users",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ); // Return an empty container otherwise
+                              }
+                            }
+                          });
                 }),
               ],
             ),

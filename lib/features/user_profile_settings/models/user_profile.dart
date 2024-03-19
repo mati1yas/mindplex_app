@@ -34,6 +34,7 @@ class UserProfile {
   int? friends;
   double? mpxr;
   RxBool? isFollowing = false.obs;
+  RxBool? isFriends = false.obs;
   RxBool? isSendingFollowRequest = false.obs;
 
   UserProfile(
@@ -67,6 +68,7 @@ class UserProfile {
       this.friends,
       this.mpxr,
       this.isFollowing,
+      this.isFriends,
       this.isSendingFollowRequest // added for the purpose of showing loading animation when a user attempts to follow another user
       });
 
@@ -105,6 +107,7 @@ class UserProfile {
         ? List<String>.from(json['social_media'])
         : [];
     isFollowing = RxBool(json['is_following'] ?? false);
+    isFriends = RxBool(json['is_friends'] ?? false);
   }
 
   Map<String, dynamic> toJson() {

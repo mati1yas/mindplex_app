@@ -23,6 +23,7 @@ class CommentPreviewOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     profileController.getAuthenticatedUser();
+
     return FractionallySizedBox(
       widthFactor: 0.8,
       heightFactor: 0.6,

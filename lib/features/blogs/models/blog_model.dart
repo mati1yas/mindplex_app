@@ -9,7 +9,7 @@ class Blog {
   String? banner;
   String? authorUsername;
   String? authorAvatar;
-  String? authorBio;
+  List<Author>? authors;
   String? authorDisplayName;
   RxBool? isFollowing = false.obs;
   String? publishedAt;
@@ -37,7 +37,7 @@ class Blog {
       this.banner,
       this.authorUsername,
       this.authorAvatar,
-      this.authorBio,
+      this.authors,
       this.authorDisplayName,
       bool? isFollowing,
       this.publishedAt,
@@ -70,7 +70,13 @@ class Blog {
     banner = json['banner'];
     authorUsername = json['author_username'];
     authorAvatar = json['author_avatar'];
-    authorBio = json['author_bio'];
+
+    if (json['authors'] != null) {
+      authors = <Author>[];
+      json['authors'].forEach((v) {
+        authors!.add(new Author.fromJson(v));
+      });
+    }
     authorDisplayName = json['author_display_name'];
     isFollowing = RxBool(json['is_following']);
     publishedAt = json['published_at'];
@@ -105,7 +111,10 @@ class Blog {
     data['banner'] = this.banner;
     data['author_username'] = this.authorUsername;
     data['author_avatar'] = this.authorAvatar;
-    data['author_bio'] = this.authorBio;
+
+    if (this.authors != null) {
+      data['authors'] = this.authors!.map((v) => v.toJson()).toList();
+    }
     data['author_display_name'] = this.authorDisplayName;
     data['is_following'] = this.isFollowing;
     data['published_at'] = this.publishedAt;
@@ -143,6 +152,47 @@ class Content {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['type'] = this.type;
     data['content'] = this.content;
+    return data;
+  }
+}
+
+class Author {
+  RxInt? userId = 0.obs;
+  String? username;
+  String? avatar;
+  String? bio;
+  String? displayName;
+  RxBool? isFollowing = false.obs;
+  Rx<dynamic>? mpxr = Rx<dynamic>(null);
+
+  Author({
+    int? userId,
+    this.username,
+    this.avatar,
+    this.bio,
+    this.displayName,
+    bool? isFollowing,
+  });
+
+  Author.fromJson(Map<dynamic, dynamic> json) {
+    userId = RxInt(json['user_id'].runtimeType == String
+        ? int.tryParse(json['user_id']) ?? 0
+        : json['user_id']);
+    username = json['username'];
+    avatar = json['avatar'];
+    bio = json['bio'];
+    displayName = json['display_name'];
+    isFollowing = RxBool(json['is_following'] ?? false);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_id'] = this.userId;
+    data['username'] = this.username;
+    data['avatar'] = this.avatar;
+    data['bio'] = this.bio;
+    data['display_name'] = this.displayName;
+    data['is_following'] = this.isFollowing;
     return data;
   }
 }

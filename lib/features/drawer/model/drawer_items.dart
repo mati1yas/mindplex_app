@@ -83,7 +83,7 @@ class DrawerItems {
       icon: Icons.help_outline,
       drawerName: "FAQ",
       drawerType: DrawerType.faq,
-      pageName: "/faq",
+      pageName: AppRoutes.faq,
     ),
     DrawerModel(
       icon: Icons.people_alt_sharp,

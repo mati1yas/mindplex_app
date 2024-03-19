@@ -78,6 +78,9 @@ class BlogCard extends StatelessWidget {
                                 color: titleTextColor,
                               ),
                             ),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Obx(
                               () => blogsController.loadingReputation.value &&
                                       index >=
@@ -95,19 +98,19 @@ class BlogCard extends StatelessWidget {
                                           fontWeight: FontWeight.bold),
                                     ),
                             ),
-                            Text(
-                              blogsController
-                                      .filteredBlogs[index].publishedAt ??
-                                  "",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 123, 122, 122),
-                              ),
-                            ),
+                            Spacer(),
                             Icon(
                               Icons.more_horiz,
                               color: Colors.white,
                             )
                           ],
+                        ),
+                        Text(
+                          blogsController.filteredBlogs[index].publishedAt ??
+                              "",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 123, 122, 122),
+                          ),
                         ),
                         SizedBox(
                           height: 8,
