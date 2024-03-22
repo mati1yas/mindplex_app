@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
@@ -24,6 +22,7 @@ class LikeDislikeConroller extends GetxController {
   RxInt clickedAuthorIndex = (-1).obs;
   ConnectionInfoImpl connectionChecker = Get.find();
 
+  int? lastVotedBlogIndex;
   Future<void> interactionHandler(
       {required Blog blog, required int index, required bool itIsLike}) async {
     if (!itIsLike) {
@@ -47,7 +46,8 @@ class LikeDislikeConroller extends GetxController {
             index: index,
             articleSlug: blog.slug ?? "",
             interction: "L");
-      } else if (blog.isUserLiked.value == false) {
+      } else {
+        print('object');
         likeDislikeArticle(
             blog: blog,
             index: index,
@@ -108,68 +108,47 @@ class LikeDislikeConroller extends GetxController {
     blogsController.blogs[blogIndex] = blog;
   }
 
-  // Future<void> addVote({
-  //   required int blogIndex,
-  //   required Blog blog,
-  // }) async {
-  //   apiService.value.addVote(
-  //     articleSlug: blogIndex,
-  //     hasVoted: hasVoted.value,
-  //   );
-  //   final BlogsController blogsController = Get.find();
-  //   blog.isVotted.value = !(blog.isVotted.value ?? false);
-  //   hasVoted.value = !hasVoted.value;
-  //   blogsController.blogs[blogIndex] = blog;
-
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final String? lastVoted = prefs.getString('lastVoted');
-  //   final DateTime now = DateTime.now();
-  //   final String month = now.month.toString();
-  //   final String year = now.year.toString();
-  //   final String currentMonth = "$month-$year";
-  //   if (lastVoted == null || lastVoted != currentMonth) {
-  //     prefs.setString('lastVoted', currentMonth);
-  //     hasVoted.value = true;
-  //   } else {
-  //     Get.snackbar(
-  //       'Already Voted',
-  //       'You have already voted or there is an issue with the vote status.',
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       duration: Duration(seconds: 3),
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.white,
-  //     );
-  //     hasVoted.value = false;
-  //   }
-  // }
   Future<void> addVote(
       {required int blogIndex,
       required Blog blog,
       required String articleSlug}) async {
     final BlogsController blogsController = Get.find();
-    if (blog.isVotted.value == null) {
-      await apiService.value.addVote(
-        articleSlug: blog.slug ?? '',
-        hasVoted: true,
-      );
-      blog.isVotted.value = true;
-      hasVoted.value = true;
-      blogsController.blogs[blogIndex] = blog;
-    } else if (blog.isVotted.value == true) {
-      blog.isVotted.value = true;
-      hasVoted.value = true;
-      blogsController.blogs[blogIndex] = blog;
-    } else {
-      blog.isVotted.value = false;
-      hasVoted.value = false;
-      blogsController.blogs[blogIndex] = blog;
+    if (blog.isVotted.value == true) {
+      Toster(
+          message: 'You have already voted in this article.',
+          color:Color.fromARGB(255, 33, 89, 118),
+          duration: 3);
+    } else if (blog.isVotted.value == false || lastVotedBlogIndex != null) {
+      Toster(
+          message: "You have already voted on a different article.",
+          color: Color.fromARGB(255, 33, 89, 118),
+          duration: 3);
+    } else if (blog.isVotted.value == null) {
+      try {
+        await apiService.value.addVote(
+          articleSlug: blog.slug ?? '',
+          isVoted: true,
+        );
+        blog.isVotted.value = true;
+        hasVoted.value = true;
 
-      Get.snackbar(
-          "Voting value", "You have already voted on a different article.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.white,
-          colorText: Colors.black,
-          duration: Duration(seconds: 10));
+        if (lastVotedBlogIndex != null &&
+            lastVotedBlogIndex! < blogsController.blogs.length) {
+          blogsController.blogs[lastVotedBlogIndex!].isVotted.value = false;
+        }
+
+        lastVotedBlogIndex = blogIndex;
+
+        blogsController.blogs[blogIndex] = blog;
+      } catch (e) {
+        if (e is NetworkException) {
+          isConnected.value = false;
+          Toster(
+              message: 'No Internet Connection',
+              color: Colors.red,
+              duration: 1);
+        }
+      }
     }
   }
 
