@@ -415,7 +415,8 @@ class _DetailsPageState extends State<DetailsPage> {
                           }
                         },
                         child: Obx(
-                          () => widget.details.isVotted.value
+                            () => widget.details.isVotted.value != null &&
+                                    widget.details.isVotted.value == true 
                               ? Icon(
                                   Icons.check_box_outlined,
                                   color: Color.fromARGB(255, 73, 255, 179),
