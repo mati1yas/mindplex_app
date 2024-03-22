@@ -137,7 +137,7 @@ class ApiService {
   }
 
   Future<void> addVote(
-      {required String articleSlug, required bool hasVoted}) async {
+      {required String articleSlug, required bool isVoted}) async {
     var dio = Dio();
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -148,7 +148,7 @@ class ApiService {
       "${AppUrls.vote}$articleSlug?",
       data: <String, String>{
         "code": "choise_result",
-        "message": "your choise is record"
+        "message": isVoted ? 'voted' : 'unvoted',
       },
     );
   }
