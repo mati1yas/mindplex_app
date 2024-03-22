@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/FAQ/model/faqQuestion.dart';
 import 'package:mindplex/routes/app_routes.dart';
 
 import '../../controller/faqController.dart';
-import '../../model/faqModel.dart';
-// import "package:mindplex/utils/colors.dart";
 
 class FaqTile extends StatelessWidget {
   final FaqQuestion faq;

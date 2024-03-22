@@ -5,6 +5,6 @@ class FaqQuestion {
   FaqQuestion({required this.title, required this.slug});
 
   FaqQuestion.fromJson(Map<String, dynamic> json)
-      : title = json["title"],
+      : title = json["post_title"] ?? json["title"],
         slug = json["slug"] {}
 }
