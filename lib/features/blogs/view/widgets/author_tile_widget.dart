@@ -84,10 +84,13 @@ class AuthorsTileWidget extends StatelessWidget {
                           ),
                         )
                       : Text(
-                          details.authors![authorIndex].mpxr!.value
+                          details.authors![authorIndex].mpxr != null &&
+                                  details.authors![authorIndex].mpxr!.value !=
+                                      null
+                              ? details.authors![authorIndex].mpxr!.value
                                       .toStringAsFixed(5) +
-                                  " MPXR " ??
-                              " - MPXR",
+                                  " MPXR "
+                              : " - MPXR",
                           // authorIndex == 0
                           //     ? details.reputation.value != null
                           //         ? details.reputation.value!.author!.mpxr!
@@ -115,7 +118,7 @@ class AuthorsTileWidget extends StatelessWidget {
         ),
         Spacer(),
         Obx(() => profileController.authenticatedUser.value.username ==
-                blogsController.filteredBlogs[blogIndex].authorUsername
+                details.authorUsername
             ? SizedBox()
             : GestureDetector(
                 onTap: () {
@@ -124,6 +127,7 @@ class AuthorsTileWidget extends StatelessWidget {
                   } else if (!likeDislikeConroller
                       .isSendingFollowRequest.value) {
                     likeDislikeConroller.followUnfollowBlogAuthor(
+                        blog: details,
                         blogIndex: blogIndex,
                         authorIndex: authorIndex,
                         userName: details.authors![authorIndex].username!,
@@ -149,14 +153,16 @@ class AuthorsTileWidget extends StatelessWidget {
                               child: CircularProgressIndicator(
                                 color: Colors.green,
                               ))
-                          : Text(
-                              details.authors![authorIndex].isFollowing!.value
-                                  ? 'Unfollow'
-                                  : 'Follow',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.white),
+                          : Obx(
+                              () => Text(
+                                details.authors![authorIndex].isFollowing!.value
+                                    ? 'Unfollow'
+                                    : 'Follow',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w200,
+                                    color: Colors.white),
+                              ),
                             )),
                 ),
               )),
@@ -172,7 +178,7 @@ class AuthorsTileWidget extends StatelessWidget {
     if (authController.isGuestUser.value) {
       authController.guestReminder(context);
     } else {
-      Get.toNamed(AppRoutes.profilePage,
+      Get.offAndToNamed(AppRoutes.profilePage,
           parameters: {"me": "notme", "username": authorUsername});
     }
   }
