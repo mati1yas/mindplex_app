@@ -143,6 +143,7 @@ class BlogsController extends GetxController {
   }
 
   void loadContents(String postType, String postFormat) async {
+    showSocialFeedForm.value = true;
     post_type.value = postType;
     post_format.value = postFormat;
     recommender.value = 'default';
