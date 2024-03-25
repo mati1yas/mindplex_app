@@ -7,6 +7,9 @@ class FaqAnswer {
   FaqAnswer({required this.title, required this.contents});
 
   FaqAnswer.fromJson(Map<String, dynamic> json) : title = json["post_title"] {
-    for (var item in json["content"]) contents.add(HtmlContent.fromJson(item));
+    for (var item in json["content"]) {
+      contents.add(HtmlContent.fromJson(item));
+    }
+    ;
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -137,6 +136,23 @@ class ApiService {
     );
   }
 
+  Future<void> addVote(
+      {required String articleSlug, required bool isVoted}) async {
+    var dio = Dio();
+    Rx<LocalStorage> localStorage =
+        LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
+    final token = await localStorage.value.readFromStorage('Token');
+    dio.options.headers['Authorization'] = "Bearer ${token}";
+
+    Response response = await dio.post(
+      "${AppUrls.vote}$articleSlug?",
+      data: <String, String>{
+        "code": "choise_result",
+        "message": isVoted ? 'voted' : 'unvoted',
+      },
+    );
+  }
+
   Future<void> removePreviousInteraction(
       {required String articleSlug, required String interction}) async {
     var dio = Dio();
@@ -148,6 +164,11 @@ class ApiService {
 
     Response response = await dio.post(
         "${AppUrls.likeDislike}$articleSlug?is_remove=1&like_or_dislike=$interction");
+    if (response.statusCode == 200) {
+      print('vote1$response');
+    } else {
+      print('vote2$response');
+    }
   }
 
   Future<bool> followUser(String username) async {

@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:mindplex/features/FAQ/controller/faqController.dart';
 import 'package:mindplex/utils/colors.dart';
 
 class FaqSearch extends StatelessWidget {
-  const FaqSearch({super.key});
-
+  FaqSearch({super.key});
+  TextEditingController _controller = TextEditingController();
+  FaqController faqController = Get.find();
+  FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        faqController.changeSearchMode(true);
+      }
+    });
     double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       color: ColorPrimaryDark,
@@ -17,7 +27,6 @@ class FaqSearch extends StatelessWidget {
           Container(
               width: double.infinity,
               height: 50,
-              // color: Colors.red,
               child: Stack(alignment: Alignment.center, children: [
                 Positioned(
                     top: 0,
@@ -56,10 +65,18 @@ class FaqSearch extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(10)),
               child: TextField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Search here",
-                      prefixIcon: Icon(Icons.search)))),
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Search here",
+                    prefixIcon: Icon(Icons.search)),
+                controller: _controller,
+                focusNode: _focusNode,
+                onSubmitted: (_) {
+                  if (_controller.text == null || _controller.text.length < 3)
+                    return;
+                  faqController.searchFaq(_controller.text);
+                },
+              )),
         ],
       ),
     );

@@ -409,11 +409,16 @@ class _DetailsPageState extends State<DetailsPage> {
                           if (authController.isGuestUser.value) {
                             authController.guestReminder(context);
                           } else {
-                            likeDislikeConroller.addVote();
+                            likeDislikeConroller.addVote(
+                              blogIndex: widget.index,
+                              blog: widget.details,
+                              articleSlug: widget.details.slug ?? '',
+                            );
                           }
                         },
                         child: Obx(
-                          () => likeDislikeConroller.hasVoted.value
+                            () => widget.details.isVotted.value != null &&
+                                    widget.details.isVotted.value == true 
                               ? Icon(
                                   Icons.check_box_outlined,
                                   color: Color.fromARGB(255, 73, 255, 179),

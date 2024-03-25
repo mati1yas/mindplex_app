@@ -20,6 +20,7 @@ class AppUrls {
   static var reactWithEmoji = '$baseUrl/wp/v2/post/react/';
   static var searchLandingUrl = '$baseUrl/mp_rp/v1/search';
   static var bookmark = '$baseUrl/mp_gl/v1/posts/bookmark/';
+  static var vote = '$baseUrl/mp_rp/v1/posts/vote/';
   static var followUrl = '$baseUrl/mp_rp/v1/user/follow';
   static var unfollowUrl = '$baseUrl/mp_rp/v1/user/unfollow';
   static var followers = '$baseUrl/mp_rp/v1/user/followers/';
@@ -34,6 +35,7 @@ class AppUrls {
 
 var com_id = "e98776e8-32f6-4325-971c-ffc8d1188901";
 var api_key = "HiF2J9gC.U7MOTTOfXdtfRsh9x0wcCM6p3kJWvg9C";
+
 final List<String> emojiCodes = [
   "128175",
   "128152",

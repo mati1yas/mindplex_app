@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +23,7 @@ class LikeDislikeConroller extends GetxController {
   RxInt clickedAuthorIndex = (-1).obs;
   ConnectionInfoImpl connectionChecker = Get.find();
 
+  int? lastVotedBlogIndex;
   Future<void> interactionHandler(
       {required Blog blog, required int index, required bool itIsLike}) async {
     if (!itIsLike) {
@@ -48,7 +47,8 @@ class LikeDislikeConroller extends GetxController {
             index: index,
             articleSlug: blog.slug ?? "",
             interction: "L");
-      } else if (blog.isUserLiked.value == false) {
+      } else {
+        print('object');
         likeDislikeArticle(
             blog: blog,
             index: index,
@@ -114,8 +114,48 @@ class LikeDislikeConroller extends GetxController {
     blogsController.blogs[blogIndex] = blog;
   }
 
-  void addVote() {
-    hasVoted.value = !hasVoted.value;
+  Future<void> addVote(
+      {required int blogIndex,
+      required Blog blog,
+      required String articleSlug}) async {
+    final BlogsController blogsController = Get.find();
+    if (blog.isVotted.value == true) {
+      Toster(
+          message: 'You have already voted in this article.',
+          color:Color.fromARGB(255, 33, 89, 118),
+          duration: 3);
+    } else if (blog.isVotted.value == false || lastVotedBlogIndex != null) {
+      Toster(
+          message: "You have already voted on a different article.",
+          color: Color.fromARGB(255, 33, 89, 118),
+          duration: 3);
+    } else if (blog.isVotted.value == null) {
+      try {
+        await apiService.value.addVote(
+          articleSlug: blog.slug ?? '',
+          isVoted: true,
+        );
+        blog.isVotted.value = true;
+        hasVoted.value = true;
+
+        if (lastVotedBlogIndex != null &&
+            lastVotedBlogIndex! < blogsController.blogs.length) {
+          blogsController.blogs[lastVotedBlogIndex!].isVotted.value = false;
+        }
+
+        lastVotedBlogIndex = blogIndex;
+
+        blogsController.blogs[blogIndex] = blog;
+      } catch (e) {
+        if (e is NetworkException) {
+          isConnected.value = false;
+          Toster(
+              message: 'No Internet Connection',
+              color: Colors.red,
+              duration: 1);
+        }
+      }
+    }
   }
 
   Future<void> addToBookmark({

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mindplex/features/FAQ/model/FaqList.dart';
 import 'package:mindplex/features/FAQ/model/FaqSubGroup.dart';
 
 import 'faqTile.dart';
