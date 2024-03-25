@@ -53,10 +53,10 @@ dependencies:
   collection: ^1.17.0
   transparent_image: ^2.0.1
   cached_network_image: ^3.3.0
-  flutter_svg: ^1.1.0
+  flutter_svg: ^2.0.10+1
   intl: 
   shimmer_effect: ^1.0.4
-  image_picker: ^0.8.7+5
+  image_picker: ^1.0.7
   share: ^2.0.0
   google_sign_in:
   internet_connection_checker: ^1.0.0+1
