@@ -414,17 +414,20 @@ class _DetailsPageState extends State<DetailsPage> {
                             );
                           }
                         },
-                        child: Obx(
+                        child: Tooltip(
+                          message: voteMessage,
+                                  child: Obx(
                             () => widget.details.isVotted.value != null &&
-                                    widget.details.isVotted.value == true 
-                              ? Icon(
-                                  Icons.check_box_outlined,
-                                  color: Color.fromARGB(255, 73, 255, 179),
-                                )
-                              : Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: Colors.white,
-                                ),
+                                    widget.details.isVotted.value == true
+                                ? Icon(
+                                    Icons.check_box_outlined,
+                                    color: Color.fromARGB(255, 73, 255, 179),
+                                  )
+                                : Icon(
+                                    Icons.check_box_outline_blank,
+                                    color: Colors.white,
+                                  ),
+                          ),
                         ),
                       ),
                       SizedBox(
