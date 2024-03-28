@@ -327,3 +327,10 @@ List<String> countryList = [
   "Zambia",
   "Zimbabwe"
 ];
+const voteMessage =
+    'Here is where you pick your favorite article of the month. An article that collected the highest number of picks is dubbed "People\'s Choice." Our editors have their pick, and so do you decide and click this button; you can only select one article every';
+const voteMessageForSameArticle =
+    'You have already voted in this article. NB you can only choose one article per month';
+
+const voteMessageForDifferentArticle =
+    'You have already voted on a different article. NB you can only choose one article per month';
