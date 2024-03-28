@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
@@ -62,32 +63,37 @@ class LikeDislikeConroller extends GetxController {
       required Blog blog,
       required String articleSlug,
       required String interction}) async {
-    apiService.value
-        .likeDislikeArticle(articleSlug: articleSlug, interction: interction);
-    final BlogsController blogsController = Get.find();
+    try {
+      apiService.value
+          .likeDislikeArticle(articleSlug: articleSlug, interction: interction);
+      final BlogsController blogsController = Get.find();
 
 // logic for incrementing and decrmenting like and dislike counter realtime
-    if (blog.isUserLiked.value == true && interction == "D") {
-      blog.likes.value -= 1;
-    } else if (blog.isUserDisliked.value == true && interction == "L") {
-      blog.likes.value += 1;
-    } else if (blog.isUserDisliked.value == false &&
-        blog.isUserLiked.value == false) {
-      if (interction == "L") {
+      if (blog.isUserLiked.value == true && interction == "D") {
+        blog.likes.value -= 1;
+      } else if (blog.isUserDisliked.value == true && interction == "L") {
         blog.likes.value += 1;
+      } else if (blog.isUserDisliked.value == false &&
+          blog.isUserLiked.value == false) {
+        if (interction == "L") {
+          blog.likes.value += 1;
+        }
       }
-    }
 
-    if (interction == "D") {
-      blog.isUserDisliked.value = true;
+      if (interction == "D") {
+        blog.isUserDisliked.value = true;
 
-      blog.isUserLiked.value = false;
+        blog.isUserLiked.value = false;
 
-      blogsController.blogs[index] = blog;
-    } else {
-      blog.isUserDisliked.value = false;
-      blog.isUserLiked.value = true;
-      blogsController.blogs[index] = blog;
+        blogsController.blogs[index] = blog;
+      } else {
+        blog.isUserDisliked.value = false;
+        blog.isUserLiked.value = true;
+        // blogsController.blogs[index] = blog;
+      }
+    } catch (e) {
+      Toster(
+          message: 'Failed To Submit Reaction', color: Colors.red, duration: 1);
     }
   }
 
@@ -174,21 +180,46 @@ class LikeDislikeConroller extends GetxController {
       required String interction}) async {
     final BlogsController blogsController = Get.find();
 
-    apiService.value.removePreviousInteraction(
-        articleSlug: articleSlug, interction: interction);
+    try {
+      apiService.value.removePreviousInteraction(
+          articleSlug: articleSlug, interction: interction);
 
-    if (blog.isUserLiked.value == true && interction == "L") {
-      blog.likes.value -= 1;
+      if (blog.isUserLiked.value == true && interction == "L") {
+        blog.likes.value -= 1;
+      }
+
+      blog.isUserDisliked.value = false;
+      blog.isUserLiked.value = false;
+      blogsController.blogs[index] = blog;
+    } on DioException catch (e) {
+      Toster(
+          message: 'Failed To Submit Reaction', color: Colors.red, duration: 1);
+    } catch (e) {
+      try {
+        apiService.value.removePreviousInteraction(
+            articleSlug: articleSlug, interction: interction);
+
+        if (blog.isUserLiked.value == true && interction == "L") {
+          blog.likes.value -= 1;
+        }
+
+        blog.isUserDisliked.value = false;
+        blog.isUserLiked.value = false;
+        // blogsController.blogs[index] = blog;
+      } catch (e) {
+        if (e is DioException)
+          Toster(
+              message: 'Failed To Submit Reaction',
+              color: Colors.red,
+              duration: 1);
+      }
     }
-
-    blog.isUserDisliked.value = false;
-    blog.isUserLiked.value = false;
-    blogsController.blogs[index] = blog;
   }
 
   Future<void> followUnfollowBlogAuthor(
       {required int blogIndex,
       required int authorIndex,
+      required Blog blog,
       required String userName,
       required bool isFollowing}) async {
     isSendingFollowRequest.value = true;
@@ -200,10 +231,16 @@ class LikeDislikeConroller extends GetxController {
       }
       if (isFollowing) {
         await unfollowBlogAuthor(
-            blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
+            blogIndex: blogIndex,
+            authorIndex: authorIndex,
+            userName: userName,
+            blog: blog);
       } else {
         await followBlogAuthor(
-            blogIndex: blogIndex, authorIndex: authorIndex, userName: userName);
+            blogIndex: blogIndex,
+            authorIndex: authorIndex,
+            userName: userName,
+            blog: blog);
       }
     } catch (e) {
       if (e is NetworkException) {
@@ -211,7 +248,10 @@ class LikeDislikeConroller extends GetxController {
         Toster(
             message: 'No Internet Connection', color: Colors.red, duration: 1);
       } else {
-        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+        Toster(
+            message: 'Failed To Follow/Unfollow',
+            color: Colors.red,
+            duration: 1);
       }
     }
     clickedAuthorIndex.value = -1;
@@ -219,33 +259,26 @@ class LikeDislikeConroller extends GetxController {
     isSendingFollowRequest.value = false;
   }
 
-  Future<void> followBlogAuthor({
-    required int blogIndex,
-    required int authorIndex,
-    required String userName,
-  }) async {
-    final BlogsController blogsController = Get.find();
+  Future<void> followBlogAuthor(
+      {required int blogIndex,
+      required int authorIndex,
+      required String userName,
+      required Blog blog}) async {
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
-
     if (await apiService.value.followUser(userName)) {
-      if (blogIndex != -1)
-        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
-            .isFollowing!.value = true;
+      if (blogIndex != -1) blog.authors![authorIndex].isFollowing!.value = true;
     }
   }
 
-  Future<void> unfollowBlogAuthor({
-    required int blogIndex,
-    required int authorIndex,
-    required String userName,
-  }) async {
-    final BlogsController blogsController = Get.find();
-
+  Future<void> unfollowBlogAuthor(
+      {required int blogIndex,
+      required int authorIndex,
+      required String userName,
+      required Blog blog}) async {
     if (await apiService.value.unfollowUser(userName)) {
 //  -1 means the follow/unfollow action is not sent from blog detail page instead it is from profile page .
       if (blogIndex != -1)
-        blogsController.filteredBlogs[blogIndex].authors![authorIndex]
-            .isFollowing!.value = false;
+        blog.authors![authorIndex].isFollowing!.value = false;
     }
   }
 }

@@ -22,7 +22,12 @@ import '../widgets/interactions_overlay.dart';
 class DetailsPage extends StatefulWidget {
   final int index;
   final Blog details;
-  const DetailsPage({super.key, required this.details, required this.index});
+
+  const DetailsPage({
+    super.key,
+    required this.details,
+    required this.index,
+  });
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -38,16 +43,15 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   void initState() {
+    print("ABOUT TO PRINT INDEX");
+    print(widget.index);
     super.initState();
     // Initialization logic here
     blogTimeSpentController.loadAuthorsReputation(
-        authors: blogsController.filteredBlogs[widget.index].authors ?? []);
+        authors: widget.details.authors ?? []);
     profileController.getAuthenticatedUser();
-    blogTimeSpentController.startOrStopTimer(
-        blogsController.filteredBlogs[widget.index].slug,
-        int.parse(blogsController.filteredBlogs[widget.index].minToRead!
-            .split(" ")[0]),
-        true);
+    blogTimeSpentController.startOrStopTimer(widget.details.slug,
+        int.parse(widget.details.minToRead!.split(" ")[0]), true);
   }
 
   @override
@@ -199,9 +203,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 thickness: 2,
                                 color: Colors.white,
                               ),
-                              blogsController
-                                          .filteredBlogs[widget.index].banner !=
-                                      ""
+                              widget.details.banner != ""
                                   ? Container(
                                       height: 150,
                                       width: 600,

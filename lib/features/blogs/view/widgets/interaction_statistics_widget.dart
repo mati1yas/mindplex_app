@@ -51,9 +51,11 @@ class InteractionStatistics extends StatelessWidget {
             SizedBox(
               width: 3,
             ),
-            Text(
-              blog.likes.toString() + " Likes",
-              style: TextStyle(color: Colors.white),
+            Obx(
+              () => Text(
+                blog.likes.value.toString() + " Likes",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -114,16 +116,18 @@ class InteractionStatistics extends StatelessWidget {
             },
             child: Row(
               children: [
-                blog.isUserDisliked.value
-                    ? Icon(
-                        color: Colors.white,
-                        Icons.thumb_down,
-                      )
-                    : Icon(
-                        color: Colors.white,
-                        Icons.thumb_down_off_alt_outlined,
-                        size: width * 0.05,
-                      ),
+                Obx(
+                  () => blog.isUserDisliked.value
+                      ? Icon(
+                          color: Colors.white,
+                          Icons.thumb_down,
+                        )
+                      : Icon(
+                          color: Colors.white,
+                          Icons.thumb_down_off_alt_outlined,
+                          size: width * 0.05,
+                        ),
+                ),
                 SizedBox(
                   width: 3,
                 ),
