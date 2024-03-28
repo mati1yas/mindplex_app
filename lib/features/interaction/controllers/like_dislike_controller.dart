@@ -115,14 +115,12 @@ class LikeDislikeConroller extends GetxController {
     final BlogsController blogsController = Get.find();
     if (blog.isVotted.value == true) {
       Toster(
-          message:
-              'You have already voted in this article. NB you can only choose one article per month',
+          message: voteMessageForSameArticle,
           color: Color.fromARGB(255, 33, 89, 118),
           duration: 3);
     } else if (blog.isVotted.value == false || lastVotedBlogIndex != null) {
       Toster(
-          message:
-              "You have already voted on a different article. NB you can only choose one article per month",
+          message: voteMessageForDifferentArticle,
           color: Color.fromARGB(255, 33, 89, 118),
           duration: 3);
     } else if (blog.isVotted.value == null) {
