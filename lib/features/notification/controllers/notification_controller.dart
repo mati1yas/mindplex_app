@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
+import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 import '../models/notification_model.dart';
 
@@ -17,6 +19,8 @@ class NotificationController extends GetxController {
   RxInt page = 0.obs;
   RxBool reachedEndofNotifications = false.obs;
   ScrollController notificationPageScrollController = ScrollController();
+  ConnectionInfoImpl connectionChecker = Get.find();
+  RxBool isConnected = true.obs;
   @override
   void onInit() {
     super.onInit();
@@ -43,15 +47,36 @@ class NotificationController extends GetxController {
   }
 
   Future<void> loadNotifications() async {
-    isLoadingNotifications.value = true;
-    page.value += 1;
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      isLoadingNotifications.value = true;
+      page.value += 1;
 
-    Map<String, dynamic> notificationMap =
-        await apiService.value.loadNotification(pageNumber: page.value);
+      Map<String, dynamic> notificationMap =
+          await apiService.value.loadNotification(pageNumber: page.value);
 
-    notificationList.addAll(notificationMap['notificationList']);
-    if (notificationMap['notificationList'].length < 10)
-      reachedEndofNotifications.value = true;
+      notificationList.addAll(notificationMap['notificationList']);
+      if (notificationMap['notificationList'].length < 10)
+        reachedEndofNotifications.value = true;
+      isLoadingNotifications.value = false;
+      firstTimeLoading.value = false;
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        print(e.toString());
+        Toster(
+            message: 'Something is Wrong,Try Again !',
+            color: Colors.red,
+            duration: 1);
+      }
+    }
     isLoadingNotifications.value = false;
     firstTimeLoading.value = false;
   }

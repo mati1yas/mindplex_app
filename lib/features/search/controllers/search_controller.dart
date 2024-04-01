@@ -125,20 +125,40 @@ class SearchPageController extends GetxController {
   }
 
   void loadMoreUsers(String query) async {
-    if (isLoadingMoreUsers.value || reachedEndOfListSearchUser.value) {
-      return;
-    }
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      if (isLoadingMoreUsers.value || reachedEndOfListSearchUser.value) {
+        return;
+      }
 
-    isLoadingMoreUsers.value = true;
-    searchUserPage.value++; // Increment the page number
+      isLoadingMoreUsers.value = true;
+      searchUserPage.value++; // Increment the page number
 
-    final res = await searchApiService.value
-        .fetchSearchResponse(query, searchUserPage.value.toInt());
+      final res = await searchApiService.value
+          .fetchSearchResponse(query, searchUserPage.value.toInt());
 
-    if (res.users!.isEmpty) {
-      reachedEndOfListSearchUser.value = true;
-    } else {
-      userSearchResults.addAll(res.users!);
+      if (res.users!.isEmpty) {
+        reachedEndOfListSearchUser.value = true;
+      } else {
+        userSearchResults.addAll(res.users!);
+      }
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        print(e.toString());
+        searchFailed.value = true;
+        Toster(
+            message: 'Something is Wrong,Try Again !',
+            color: Colors.red,
+            duration: 1);
+      }
     }
 
     isLoadingMore.value = false;
@@ -159,26 +179,46 @@ class SearchPageController extends GetxController {
     searchPage.value = 1;
     searchUserPage.value = 1;
     startPosition.value = 0;
+    try {
+      isConnected.value = true;
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException(
+            "Looks like there is problem with your connection.");
+      }
+      final res = await searchApiService.value
+          .fetchSearchResponse(query, searchPage.value.toInt());
 
-    final res = await searchApiService.value
-        .fetchSearchResponse(query, searchPage.value.toInt());
+      if (res.blogs!.length < 10) {
+        reachedEndOfListSearch.value = true;
+        if (res.blogs!.length > 1) {
+          searchPage++;
+        }
+      }
+      if (res.users!.length < 10) {
+        reachedEndOfListSearchUser.value = true;
+        if (res.users!.length > 1) {
+          searchUserPage++;
+        }
+      }
 
-    if (res.blogs!.length < 10) {
-      reachedEndOfListSearch.value = true;
-      if (res.blogs!.length > 1) {
-        searchPage++;
+      searchResults.value = res.blogs!;
+      loadReputation(res.blogs ?? [], 'search');
+
+      userSearchResults.value = res.users!;
+    } catch (e) {
+      if (e is NetworkException) {
+        isConnected.value = false;
+        Toster(
+            message: 'No Internet Connection', color: Colors.red, duration: 1);
+      } else {
+        print(e.toString());
+        searchFailed.value = true;
+        Toster(
+            message: 'Something is Wrong,Try Again !',
+            color: Colors.red,
+            duration: 1);
       }
     }
-    if (res.users!.length < 10) {
-      reachedEndOfListSearchUser.value = true;
-      if (res.users!.length > 1) {
-        searchUserPage++;
-      }
-    }
-
-    searchResults.value = res.blogs!;
-    loadReputation(res.blogs ?? [], 'search');
-    userSearchResults.value = res.users!;
 
     searchQuery.value = query;
 
