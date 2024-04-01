@@ -9,7 +9,7 @@ class Reputation {
   Reputation.fromJson(Map<String, dynamic> json) {
     author =
         json['author'] != null ? new Author.fromJson(json['author']) : null;
-    postRep = json['post_rep'];
+    postRep = json['post_rep'].toDouble();
     postSlug = json['post_slug'];
     if (json['editor'] != null) {
       editor = <Editor>[];
@@ -41,7 +41,7 @@ class Author {
 
   Author.fromJson(Map<String, dynamic> json) {
     user = json['user'];
-    mpxr = json['mpxr'];
+    mpxr = json['mpxr'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -60,7 +60,7 @@ class Editor {
 
   Editor.fromJson(Map<String, dynamic> json) {
     user = json['user'];
-    mpxr = json['mpxr'];
+    mpxr = json['mpxr'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
