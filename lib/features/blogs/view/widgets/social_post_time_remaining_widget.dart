@@ -15,7 +15,8 @@ class PostTimeRemaining extends StatelessWidget {
   BlogsController blogsController = Get.find();
 
   double calculateNeededMpxrToAvoidDeletion() {
-    double currentRep = blog.reputation.value!.postRep ?? 0.0;
+    double currentRep =
+        blog.reputation.value != null ? blog.reputation.value!.postRep! : 0.0;
 
     double needed = double.parse(
             blogsController.socialFeedSetting.value.minRequiredMpxr ?? "0.0") -
@@ -41,7 +42,7 @@ class PostTimeRemaining extends StatelessWidget {
               Row(children: [
                 Expanded(
                     child: Text(
-                        "Current post Reputation: ${blog.reputation.value!.postRep!.toStringAsFixed(5)}"))
+                        "Current post Reputation: ${blog.reputation.value != null && blog.reputation.value!.postRep != null ? blog.reputation.value!.postRep!.toStringAsFixed(5) : '  -'}"))
               ]),
               Row(children: [
                 Expanded(
