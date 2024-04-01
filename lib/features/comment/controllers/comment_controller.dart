@@ -50,15 +50,19 @@ class CommentController extends GetxController {
   }
 
   void prepareComments() async {
-    loadingComments.value = true;
-    comments.value =
-        await commentApiService.fetchComments(post_slug: post_slug);
+    try {
+      loadingComments.value = true;
+      comments.value =
+          await commentApiService.fetchComments(post_slug: post_slug);
 
-    loadCommentorMpxr(comments);
+      loadCommentorMpxr(comments);
 
-    loadCommentReplies(comments);
+      loadCommentReplies(comments);
 
-    loadingComments.value = false;
+      loadingComments.value = false;
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   void fetchMoreComments() async {
@@ -106,7 +110,9 @@ class CommentController extends GetxController {
 
         comments[startPosition.value + i].commentorMpxr = userMpxr.mpxr;
       }
-    } catch (e) {}
+    } catch (e) {
+      throw e;
+    }
 
     loadingcommentorMpxr.value = false;
   }
