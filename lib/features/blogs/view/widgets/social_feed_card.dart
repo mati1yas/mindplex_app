@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
+import 'package:mindplex/features/blogs/view/widgets/interactions_overlay.dart';
 import 'package:mindplex/features/blogs/view/widgets/social_post_time_remaining_widget.dart';
+import 'package:mindplex/utils/double_to_string_convertor.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../authentication/controllers/auth_controller.dart';
@@ -118,7 +120,7 @@ class SocialFeedCard extends StatelessWidget {
                               color: Colors.green[300],
                             ))
                         : Text(
-                            " MPXR ${(blogsController.filteredBlogs[index].reputation.value != null && blogsController.filteredBlogs[index].reputation.value!.author != null && blogsController.filteredBlogs[index].reputation.value!.author!.mpxr != null) ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
+                            " MPXR ${(blogsController.filteredBlogs[index].reputation.value != null && blogsController.filteredBlogs[index].reputation.value!.author != null && blogsController.filteredBlogs[index].reputation.value!.author!.mpxr != null) ? numberToString(numberValue: blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!, decimalPlace: 5) : "-"}",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
@@ -132,22 +134,25 @@ class SocialFeedCard extends StatelessWidget {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w300),
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
+                      InkWell(
+                        onTap: () {
+                          _showInteractionsOverlay(context, blog.slug ?? "");
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
                               Icons.tag_faces_outlined,
                               color: Colors.white,
                             ),
-                          ),
-                          Text(
-                            "Interactions",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ],
+                            SizedBox(width: 5),
+                            Text(
+                              "Interactions",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -172,7 +177,7 @@ class SocialFeedCard extends StatelessWidget {
                                 color: Colors.green[300],
                               ))
                           : Text(
-                              " MPXR ${(blog.reputation.value != null && blog.reputation.value!.postRep != null) ? blog.reputation.value!.postRep!.toStringAsFixed(5) : '  -'}",
+                              " MPXR ${(blog.reputation.value != null && blog.reputation.value!.postRep != null) ? numberToString(numberValue: blog.reputation.value!.postRep!, decimalPlace: 5) : '  -'}",
                               // " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
                               style: TextStyle(
                                   color: Colors.white,
@@ -201,6 +206,14 @@ class SocialFeedCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showInteractionsOverlay(BuildContext context, String slug) {
+    showDialog(
+      context: context,
+      builder: (context) => InteractionsOverlay(slug: slug),
+      // isScrollControlled: true,
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:mindplex/features/interaction/controllers/like_dislike_controlle
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
+import 'package:mindplex/utils/double_to_string_convertor.dart';
 
 class AuthorsTileWidget extends StatelessWidget {
   const AuthorsTileWidget({
@@ -87,8 +88,10 @@ class AuthorsTileWidget extends StatelessWidget {
                           details.authors![authorIndex].mpxr != null &&
                                   details.authors![authorIndex].mpxr!.value !=
                                       null
-                              ? details.authors![authorIndex].mpxr!.value
-                                      .toStringAsFixed(5) +
+                              ? numberToString(
+                                      numberValue: details
+                                          .authors![authorIndex].mpxr!.value,
+                                      decimalPlace: 5) +
                                   " MPXR "
                               : " - MPXR",
                           // authorIndex == 0
