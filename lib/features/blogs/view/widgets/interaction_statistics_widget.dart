@@ -10,20 +10,20 @@ import '../../controllers/blogs_controller.dart';
 class InteractionStatistics extends StatelessWidget {
   InteractionStatistics({
     super.key,
-    required this.blogsController,
+    this.blogsController,
     required this.index,
     required this.buttonsInteractive,
+    required this.blog,
   });
-  final BlogsController blogsController;
+  final BlogsController? blogsController;
   final int index;
+  final Blog blog;
   final bool buttonsInteractive;
 
   LikeDislikeConroller likeDislikeConroller = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    Blog blog = blogsController.filteredBlogs[index];
-
     var width = MediaQuery.of(context).size.width;
 
     return Row(
@@ -99,8 +99,7 @@ class InteractionStatistics extends StatelessWidget {
                 width: 3,
               ),
               Text(
-                blogsController.filteredBlogs[index].comments.toString() +
-                    " comments",
+                blog.comments.toString() + " comments",
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -110,9 +109,7 @@ class InteractionStatistics extends StatelessWidget {
             onTap: () {
               if (buttonsInteractive)
                 likeDislikeConroller.interactionHandler(
-                    blog: blogsController.filteredBlogs[index],
-                    index: index,
-                    itIsLike: false);
+                    blog: blog, index: index, itIsLike: false);
             },
             child: Row(
               children: [

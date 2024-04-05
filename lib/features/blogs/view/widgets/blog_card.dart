@@ -280,6 +280,7 @@ class BlogCard extends StatelessWidget {
                                 height: 5,
                               ),
                               InteractionStatistics(
+                                blog: blogsController.filteredBlogs[index],
                                 blogsController: blogsController,
                                 index: index,
                                 buttonsInteractive: false,

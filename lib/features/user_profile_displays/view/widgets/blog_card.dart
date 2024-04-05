@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
-import './interaction_statistics_widget.dart';
+import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 
 import '../../../../routes/app_routes.dart';
 import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
@@ -70,12 +70,7 @@ class BlogCard extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "MPXR 1.234",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            Spacer(),
                             Text(
                               blog.publishedAt ?? "",
                               style: TextStyle(
@@ -111,12 +106,6 @@ class BlogCard extends StatelessWidget {
                             Text(
                               blog.minToRead ?? "",
                               style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "MPXR 12.123",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -187,8 +176,7 @@ class BlogCard extends StatelessWidget {
                           height: 5,
                         ),
                         InteractionStatistics(
-                          blog: blog,
-                        )
+                            index: index, buttonsInteractive: false, blog: blog)
                       ],
                     ),
                   ),
