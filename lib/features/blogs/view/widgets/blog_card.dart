@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/double_to_string_convertor.dart';
@@ -25,8 +27,11 @@ class BlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
       child: Container(
         child: Column(
           children: [
@@ -49,11 +54,21 @@ class BlogCard extends StatelessWidget {
                     }
                   },
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        blogsController.filteredBlogs[index].authorAvatar ??
-                            ""),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            blogsController.filteredBlogs[index].authorAvatar ??
+                                "",
+                        placeholder: (context, url) =>
+                            Image.asset('assets/images/user_avatar.png'),
+                        errorWidget: (context, url, error) =>
+                            Image.asset('assets/images/user_avatar.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     radius: 20,
-                    backgroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                   ),
                 ),
                 Expanded(
@@ -184,36 +199,12 @@ class BlogCard extends StatelessWidget {
                             children: [
                               Stack(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        image: blogsController
-                                                    .filteredBlogs[index]
-                                                    .thumbnailImage ==
-                                                "default.jpg"
-                                            ? blogsController
-                                                        .filteredBlogs[index]
-                                                        .postTypeFormat ==
-                                                    "text"
-                                                ? DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: AssetImage(
-                                                        "assets/images/img_not_found_text.png"))
-                                                : DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: AssetImage(
-                                                        "assets/images/image_not_found_podcast.png"))
-                                            : DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    blogsController
-                                                        .filteredBlogs[index]
-                                                        .thumbnailImage!))),
-                                    height: 170,
-                                    width: 400,
-                                  ),
+                                  // blog thumbnail image
+                                  BlogThumbnailImage(
+                                      blog:
+                                          blogsController.filteredBlogs[index],
+                                      height: 170,
+                                      width: width * 0.8),
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: Padding(
@@ -280,6 +271,7 @@ class BlogCard extends StatelessWidget {
                                 height: 5,
                               ),
                               InteractionStatistics(
+                                blog: blogsController.filteredBlogs[index],
                                 blogsController: blogsController,
                                 index: index,
                                 buttonsInteractive: false,

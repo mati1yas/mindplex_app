@@ -45,17 +45,22 @@ class _LandingPageState extends State<LandingPage>
     blogsController.fetchBlogs();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
-      String category = blogsController.categories[_tabController.index];
-      isIntialLoading = true;
-      blogsController.filterBlogsByRecommender(category: category);
+      if (!_tabController.indexIsChanging) {
+        String category = blogsController.categories[_tabController.index];
+        isIntialLoading = true;
+        blogsController.filterBlogsByRecommender(category: category);
+      }
     });
 
     _tabController2 = TabController(length: 7, vsync: this);
     _tabController2.addListener(() {
-      String category = blogsController.categories[_tabController2.index];
+      if (!_tabController2.indexIsChanging) {
+        String category = blogsController.categories[_tabController2.index];
 
-      isIntialLoading = true;
-      blogsController.filterBlogsByRecommender(category: category);
+        isIntialLoading = true;
+
+        blogsController.filterBlogsByRecommender(category: category);
+      }
     });
   }
 
@@ -64,7 +69,6 @@ class _LandingPageState extends State<LandingPage>
     profileController.getAuthenticatedUser();
     _tabController.index = 0;
     _tabController2.index = 0;
-
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
@@ -91,7 +95,7 @@ class _LandingPageState extends State<LandingPage>
                     child: Column(
                       children: [
                         Container(
-                          height: height * 0.15,
+                          height: height * 0.11,
                           padding: const EdgeInsets.only(left: 15.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,15 +141,12 @@ class _LandingPageState extends State<LandingPage>
                       ? Column(
                           children: [
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             PostTopics(blogsController: blogsController),
                           ],
                         )
                       : SizedBox.shrink()),
-                  SizedBox(
-                    height: 10,
-                  ),
 
                   //  for social feed we dont have tab bar for selecting post format
                   Obx(

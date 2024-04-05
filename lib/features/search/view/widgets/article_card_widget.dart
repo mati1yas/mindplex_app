@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/drawer/view/widgets/top_user_profile_icon.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
@@ -43,31 +44,10 @@ class ArticleCard extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: Stack(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          image: searchController
-                                      .popularBlogs[index].thumbnailImage ==
-                                  "default.jpg"
-                              ? searchController
-                                          .popularBlogs[index].postTypeFormat ==
-                                      "text"
-                                  ? DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                          "assets/images/img_not_found_text.png"))
-                                  : DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                          "assets/images/image_not_found_podcast.png"))
-                              : DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(searchController
-                                      .popularBlogs[index].thumbnailImage!))),
-                      height: 100,
-                      width: 300,
-                    ),
+                    BlogThumbnailImage(
+                        blog: searchController.popularBlogs[index],
+                        height: 100,
+                        width: 300),
                     Align(
                       alignment: Alignment.topRight,
                       child: Padding(

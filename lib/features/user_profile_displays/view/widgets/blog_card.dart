@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
-import './interaction_statistics_widget.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
+import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 
 import '../../../../routes/app_routes.dart';
 import 'package:mindplex/features/blogs/view/screens/blog_detail_page.dart';
@@ -21,6 +22,8 @@ class BlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -70,12 +73,7 @@ class BlogCard extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "MPXR 1.234",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            Spacer(),
                             Text(
                               blog.publishedAt ?? "",
                               style: TextStyle(
@@ -112,12 +110,6 @@ class BlogCard extends StatelessWidget {
                               blog.minToRead ?? "",
                               style: TextStyle(color: Colors.white),
                             ),
-                            Text(
-                              "MPXR 12.123",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
                           ],
                         ),
                         SizedBox(
@@ -125,18 +117,8 @@ class BlogCard extends StatelessWidget {
                         ),
                         Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          blog.thumbnailImage ?? ""))),
-                              height: 170,
-                              width: 400,
-                            ),
+                            BlogThumbnailImage(
+                                blog: blog, height: 170, width: width * 0.8),
                             Align(
                               alignment: Alignment.topRight,
                               child: Padding(
@@ -187,8 +169,7 @@ class BlogCard extends StatelessWidget {
                           height: 5,
                         ),
                         InteractionStatistics(
-                          blog: blog,
-                        )
+                            index: index, buttonsInteractive: false, blog: blog)
                       ],
                     ),
                   ),
