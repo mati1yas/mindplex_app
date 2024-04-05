@@ -196,6 +196,7 @@ class SocialFeedCard extends StatelessWidget {
                     ),
                   ),
                   InteractionStatistics(
+                    blog: blogsController.filteredBlogs[index],
                     blogsController: blogsController,
                     index: index,
                     buttonsInteractive: true,
