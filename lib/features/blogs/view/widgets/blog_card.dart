@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/double_to_string_convertor.dart';
@@ -199,58 +200,11 @@ class BlogCard extends StatelessWidget {
                               Stack(
                                 children: [
                                   // blog thumbnail image
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      child: CachedNetworkImage(
-                                        imageUrl: blogsController
-                                                .filteredBlogs[index]
-                                                .thumbnailImage ??
-                                            "",
-                                        placeholder: (context, url) {
-                                          if (blogsController
-                                                  .filteredBlogs[index]
-                                                  .postTypeFormat ==
-                                              "text") {
-                                            return Image.asset(
-                                                fit: BoxFit.cover,
-                                                "assets/images/img_not_found_text.png");
-                                          }
-
-                                          return Image.asset(
-                                              fit: BoxFit.cover,
-                                              "assets/images/image_not_found_podcast.png");
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          if (blogsController
-                                                      .filteredBlogs[index]
-                                                      .thumbnailImage ==
-                                                  "default.jpg" &&
-                                              blogsController
-                                                      .filteredBlogs[index]
-                                                      .postTypeFormat ==
-                                                  "text") {
-                                            return Image.asset(
-                                                fit: BoxFit.cover,
-                                                "assets/images/img_not_found_text.png");
-                                          }
-
-                                          return Image.asset(
-                                              fit: BoxFit.cover,
-                                              "assets/images/image_not_found_podcast.png");
-                                        },
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    height: 170,
-                                    width: width * 0.8,
-                                  ),
+                                  BlogThumbnailImage(
+                                      blog:
+                                          blogsController.filteredBlogs[index],
+                                      height: 170,
+                                      width: width * 0.8),
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: Padding(
