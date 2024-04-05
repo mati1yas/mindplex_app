@@ -18,17 +18,17 @@ class UserProfileReputation {
 
   UserProfileReputation.fromJson(Map<String, dynamic> json) {
     user = json['user'];
-    mpxr = json['mpxr'];
-    voteRepAvailabe = json['vote_rep_availabe'];
+    mpxr = json['mpxr'].toDouble();
+    voteRepAvailabe = json['vote_rep_availabe'].toDouble();
     publicAddress = json['public_address'];
-    sharedRep = json['shared_rep'];
+    sharedRep = json['shared_rep'].toDouble();
     if (json['categories'] != null) {
       categories = <Categories>[];
       json['categories'].forEach((v) {
         categories!.add(new Categories.fromJson(v));
       });
     }
-    userReadTime = json['user_read_time'];
+    userReadTime = json['user_read_time'].toDouble();
   }
 
   Map<String, dynamic> toJson() {

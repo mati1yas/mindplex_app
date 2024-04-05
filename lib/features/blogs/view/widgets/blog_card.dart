@@ -5,6 +5,7 @@ import 'package:mindplex/features/authentication/controllers/auth_controller.dar
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 import 'package:mindplex/utils/colors.dart';
+import 'package:mindplex/utils/double_to_string_convertor.dart';
 
 import '../../controllers/blogs_controller.dart';
 import '../../../../routes/app_routes.dart';
@@ -99,7 +100,7 @@ class BlogCard extends StatelessWidget {
                                             ),
                                           )
                                         : Text(
-                                            " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!.toStringAsFixed(2) : "-"}",
+                                            " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? numberToString(numberValue: blogsController.filteredBlogs[index].reputation.value!.author!.mpxr!, decimalPlace: 2) : "-"}",
                                             style: TextStyle(
                                                 color: titleTextColor,
                                                 fontWeight: FontWeight.bold),
@@ -165,7 +166,7 @@ class BlogCard extends StatelessWidget {
                                           color: Colors.green[300],
                                         ))
                                     : Text(
-                                        " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
+                                        " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? numberToString(numberValue: blogsController.filteredBlogs[index].reputation.value!.postRep!, decimalPlace: 5) : "-"}",
                                         style: TextStyle(
                                             color: titleTextColor,
                                             fontWeight: FontWeight.bold),

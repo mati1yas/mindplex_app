@@ -32,7 +32,7 @@ class LikeDislikeConroller extends GetxController {
             blog: blog,
             index: index,
             articleSlug: blog.slug ?? "",
-            interction: "D");
+            interction: "L");
       } else if (blog.isUserDisliked.value == false) {
         likeDislikeArticle(
             blog: blog,
@@ -48,7 +48,6 @@ class LikeDislikeConroller extends GetxController {
             articleSlug: blog.slug ?? "",
             interction: "L");
       } else {
-        print('object');
         likeDislikeArticle(
             blog: blog,
             index: index,
@@ -92,8 +91,17 @@ class LikeDislikeConroller extends GetxController {
         // blogsController.blogs[index] = blog;
       }
     } catch (e) {
-      Toster(
-          message: 'Failed To Submit Reaction', color: Colors.red, duration: 1);
+      if (e is DioException) {
+        Toster(
+            message: 'Failed To Submit Reaction',
+            color: Colors.red,
+            duration: 1);
+      } else {
+        Toster(
+            message: 'Failed To Submit Reaction',
+            color: Colors.red,
+            duration: 1);
+      }
     }
   }
 

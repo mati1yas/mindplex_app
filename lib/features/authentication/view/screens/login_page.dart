@@ -8,6 +8,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindplex/features/authentication/api_service/auth_service.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/services/api_services.dart';
+import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
 
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
 import '../../../user_profile_settings/view/screens/change_password.dart';
@@ -436,19 +438,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future signin() async {
+    ConnectionInfoImpl connectionChecker = Get.find();
+
     final GoogleSignIn googleSignIn = GoogleSignIn();
     googleSignIn.disconnect();
     AuthController authController = Get.put(AuthController());
 
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       final user = await googleSignIn.signIn();
 
-      if(user != null) {
+      if (user != null) {
         showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) =>
-                Center(
+            builder: (context) => Center(
                   child: CircularProgressIndicator(color: Colors.green[900]),
                 ));
         String? name = "";
@@ -472,6 +478,17 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } catch (error) {
+      if (error is NetworkException) {
+        Toster(
+            message: 'There is problem with your internet Connection',
+            color: Colors.red,
+            duration: 1);
+      } else {
+        Toster(
+            message: 'Failed To Sign in ,try Again!',
+            color: Colors.red,
+            duration: 1);
+      }
       throw error;
     }
   }
