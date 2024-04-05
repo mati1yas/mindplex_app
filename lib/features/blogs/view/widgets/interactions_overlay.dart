@@ -19,6 +19,7 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
     with SingleTickerProviderStateMixin {
   late TabController controller;
   bool fetched = false;
+  bool failedToFetch = false;
   Map<String, List<dynamic>> interactionsMap = {};
   List<dynamic> interactions = [];
   List<Map<String, dynamic>> uniqueInteractions = [];
@@ -35,9 +36,7 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
 
     BlogsController blogsController = Get.find();
     blogsController
-        .getUserInteractions(
-          articleSlug: widget.slug.split(' ')[0],
-        )
+        .getUserInteractions(articleSlug: widget.slug.split(' ')[0].toString())
         .then((value) => {
               value.sort((a, b) {
                 int indexOfA =
@@ -60,11 +59,15 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
                   } else {
                     interactionsMap[interactionType] = [];
                   }
-                  print('initial...');
-                  print(interactionsMap);
                 }
               })
-            });
+            })
+        .catchError((error) {
+      setState(() {
+        this.failedToFetch = true;
+      });
+      throw error.toString();
+    });
   }
 
   List<String> _getAllInteractionTypes() {
@@ -349,54 +352,66 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
 
   Widget _buildInteractionsList(List<dynamic> interactions) {
     print(interactions);
-    return fetched
-        ? ListView.builder(
-            padding: EdgeInsets.only(left: 30),
-            itemCount: interactions.length,
-            itemBuilder: (context, index) {
-              final interaction = interactions[index];
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Row(
-                  children: [
-                    Stack(
+    return failedToFetch
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Failed To Fetch Post Interactions , Please Try Again !",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w300),
+              textAlign: TextAlign.center,
+            ),
+          )
+        : fetched
+            ? ListView.builder(
+                padding: EdgeInsets.only(left: 30),
+                itemCount: interactions.length,
+                itemBuilder: (context, index) {
+                  final interaction = interactions[index];
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(interaction['avatar_url'] ?? ''),
-                          radius: 20.0,
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(interaction['avatar_url'] ?? ''),
+                              radius: 20.0,
+                            ),
+                            Positioned(
+                              right: -1,
+                              bottom: -1,
+                              child: Container(
+                                margin: EdgeInsets.all(1),
+                                padding: EdgeInsets.all(0.5),
+                                decoration: BoxDecoration(
+                                    color: Color(0xFF0c2b46),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                    )),
+                                child: _buildInteractionIcon(
+                                    interaction['interaction_type']!, ""),
+                              ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          right: -1,
-                          bottom: -1,
-                          child: Container(
-                            margin: EdgeInsets.all(1),
-                            padding: EdgeInsets.all(0.5),
-                            decoration: BoxDecoration(
-                                color: Color(0xFF0c2b46),
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color: Colors.white,
-                                )),
-                            child: _buildInteractionIcon(
-                                interaction['interaction_type']!, ""),
-                          ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          interaction['display_name'] ?? '',
+                          style: TextStyle(color: shimmerEffectHighlight1),
                         ),
                       ],
                     ),
-                    SizedBox(width: 8.0),
-                    Text(
-                      interaction['display_name'] ?? '',
-                      style: TextStyle(color: shimmerEffectHighlight1),
-                    ),
-                  ],
-                ),
+                  );
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
               );
-            },
-          )
-        : Center(
-            child: CircularProgressIndicator(),
-          );
   }
 
   Widget _buildInteractionIcon(String interactionType, String? emojiCode) {
