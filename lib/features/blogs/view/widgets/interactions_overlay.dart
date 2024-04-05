@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
@@ -211,7 +212,7 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
                     TabBar(
                       isScrollable: true,
                       indicatorSize: TabBarIndicatorSize.label,
-                      onTap: _handleTabChange,
+                      // onTap: _handleTabChange,
                       tabs: [
                         _buildTab('All', this.interactions.length),
                         if (countInteractions('L') > 0)
@@ -358,17 +359,30 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
                 contentPadding: EdgeInsets.zero,
                 title: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(interaction['avatar_url'] ?? ''),
-                      radius: 20.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 26.0,
-                      ),
-                      child: _buildInteractionIcon(
-                          interaction['interaction_type']!, ""),
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(interaction['avatar_url'] ?? ''),
+                          radius: 20.0,
+                        ),
+                        Positioned(
+                          right: -1,
+                          bottom: -1,
+                          child: Container(
+                            margin: EdgeInsets.all(1),
+                            padding: EdgeInsets.all(0.5),
+                            decoration: BoxDecoration(
+                                color: Color(0xFF0c2b46),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  color: Colors.white,
+                                )),
+                            child: _buildInteractionIcon(
+                                interaction['interaction_type']!, ""),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(width: 8.0),
                     Text(
@@ -386,35 +400,36 @@ class _InteractionsOverlayState extends State<InteractionsOverlay>
   }
 
   Widget _buildInteractionIcon(String interactionType, String? emojiCode) {
+    double emojiFontSize = 14;
     switch (interactionType) {
       case 'L':
-        return Icon(Icons.thumb_up, color: Colors.white, size: 16.0);
+        return Text("👍", style: TextStyle(fontSize: emojiFontSize));
       case 'D':
-        return Icon(Icons.thumb_down, color: Colors.white, size: 16.0);
+        return Text("👎", style: TextStyle(fontSize: emojiFontSize));
       case "10024":
-        return Text("✨", style: TextStyle(fontSize: 16));
+        return Text("✨", style: TextStyle(fontSize: emojiFontSize));
       case "128175":
-        return Text("💯", style: TextStyle(fontSize: 16));
+        return Text("💯", style: TextStyle(fontSize: emojiFontSize));
       case "128525":
-        return Text("😍", style: TextStyle(fontSize: 16));
+        return Text("😍", style: TextStyle(fontSize: emojiFontSize));
       case "128152":
-        return Text("💘", style: TextStyle(fontSize: 16));
+        return Text("💘", style: TextStyle(fontSize: emojiFontSize));
       case "127881":
-        return Text("🎉", style: TextStyle(fontSize: 16));
+        return Text("🎉", style: TextStyle(fontSize: emojiFontSize));
       case "128079":
-        return Text("👏", style: TextStyle(fontSize: 16));
+        return Text("👏", style: TextStyle(fontSize: emojiFontSize));
       case "129000":
-        return Text("🟨", style: TextStyle(fontSize: 16));
+        return Text("🟨", style: TextStyle(fontSize: emojiFontSize));
       case "128564":
-        return Text("😴", style: TextStyle(fontSize: 16));
+        return Text("😴", style: TextStyle(fontSize: emojiFontSize));
       case "128545":
-        return Text("😡", style: TextStyle(fontSize: 16));
+        return Text("😡", style: TextStyle(fontSize: emojiFontSize));
       case "10060":
-        return Text("❌", style: TextStyle(fontSize: 16));
+        return Text("❌", style: TextStyle(fontSize: emojiFontSize));
       case "129326":
-        return Text("🤮", style: TextStyle(fontSize: 16));
+        return Text("🤮", style: TextStyle(fontSize: emojiFontSize));
       case "128169":
-        return Text("💩", style: TextStyle(fontSize: 16));
+        return Text("💩", style: TextStyle(fontSize: emojiFontSize));
       default:
         return SizedBox.shrink();
     }
