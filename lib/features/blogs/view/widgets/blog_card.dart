@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,9 @@ class BlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
       child: Container(
@@ -49,11 +53,21 @@ class BlogCard extends StatelessWidget {
                     }
                   },
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        blogsController.filteredBlogs[index].authorAvatar ??
-                            ""),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            blogsController.filteredBlogs[index].authorAvatar ??
+                                "",
+                        placeholder: (context, url) =>
+                            Image.asset('assets/images/user_avatar.png'),
+                        errorWidget: (context, url, error) =>
+                            Image.asset('assets/images/user_avatar.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     radius: 20,
-                    backgroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                   ),
                 ),
                 Expanded(
@@ -184,35 +198,58 @@ class BlogCard extends StatelessWidget {
                             children: [
                               Stack(
                                 children: [
+                                  // blog thumbnail image
                                   Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        image: blogsController
-                                                    .filteredBlogs[index]
-                                                    .thumbnailImage ==
-                                                "default.jpg"
-                                            ? blogsController
-                                                        .filteredBlogs[index]
-                                                        .postTypeFormat ==
-                                                    "text"
-                                                ? DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: AssetImage(
-                                                        "assets/images/img_not_found_text.png"))
-                                                : DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: AssetImage(
-                                                        "assets/images/image_not_found_podcast.png"))
-                                            : DecorationImage(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      child: CachedNetworkImage(
+                                        imageUrl: blogsController
+                                                .filteredBlogs[index]
+                                                .thumbnailImage ??
+                                            "",
+                                        placeholder: (context, url) {
+                                          if (blogsController
+                                                  .filteredBlogs[index]
+                                                  .postTypeFormat ==
+                                              "text") {
+                                            return Image.asset(
                                                 fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    blogsController
-                                                        .filteredBlogs[index]
-                                                        .thumbnailImage!))),
+                                                "assets/images/img_not_found_text.png");
+                                          }
+
+                                          return Image.asset(
+                                              fit: BoxFit.cover,
+                                              "assets/images/image_not_found_podcast.png");
+                                        },
+                                        errorWidget: (context, url, error) {
+                                          if (blogsController
+                                                      .filteredBlogs[index]
+                                                      .thumbnailImage ==
+                                                  "default.jpg" &&
+                                              blogsController
+                                                      .filteredBlogs[index]
+                                                      .postTypeFormat ==
+                                                  "text") {
+                                            return Image.asset(
+                                                fit: BoxFit.cover,
+                                                "assets/images/img_not_found_text.png");
+                                          }
+
+                                          return Image.asset(
+                                              fit: BoxFit.cover,
+                                              "assets/images/image_not_found_podcast.png");
+                                        },
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                     height: 170,
-                                    width: 400,
+                                    width: width * 0.8,
                                   ),
                                   Align(
                                     alignment: Alignment.topRight,
