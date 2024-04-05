@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 
 import '../../../../routes/app_routes.dart';
@@ -21,6 +22,8 @@ class BlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -114,18 +117,8 @@ class BlogCard extends StatelessWidget {
                         ),
                         Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          blog.thumbnailImage ?? ""))),
-                              height: 170,
-                              width: 400,
-                            ),
+                            BlogThumbnailImage(
+                                blog: blog, height: 170, width: width * 0.8),
                             Align(
                               alignment: Alignment.topRight,
                               child: Padding(

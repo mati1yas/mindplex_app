@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/search/controllers/search_controller.dart';
 import 'package:mindplex/utils/colors.dart';
 
@@ -25,6 +26,8 @@ class SearchBlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -162,25 +165,15 @@ class SearchBlogCard extends StatelessWidget {
                         ),
                         Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(searchController
-                                              .searchedBlogs[index]
-                                              .thumbnailImage ??
-                                          ""))),
-                              height: 170,
-                              width: 400,
-                            ),
+                            BlogThumbnailImage(
+                                blog: searchController.searchResults[index],
+                                height: 170,
+                                width: width * 0.8),
                             Align(
                               alignment: Alignment.topRight,
                               child: Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 1, right: 8.0),
+                                    const EdgeInsets.only(top: 1, right: 15.0),
                                 child: Container(
                                     height: 60,
                                     width: 35,
