@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
-import 'package:mindplex/features/blogs/view/widgets/blog_author_avatar_widget.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/constatns.dart';
+import 'package:mindplex/utils/user_avatar_widget.dart';
 
 import '../../models/notification_model.dart';
 import '../../../../routes/app_routes.dart';
@@ -60,11 +59,8 @@ class NotificationCard extends StatelessWidget {
                   },
                   child: Stack(
                     children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(notification.avatar ??
-                            "https://secure.gravatar.com/avatar/44cb6ed8fa0451a09a6387dc8bf2533a?s=260&d=mm&r=g"),
-                      ),
+                      UserAvatarWidget(
+                          imageUrl: notification.avatar ?? " ", radius: 25),
                       if (notification.type == 'content_like' ||
                           notification.type == 'content_share' ||
                           notification.type == 'content_dislike' ||

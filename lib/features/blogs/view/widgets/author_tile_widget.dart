@@ -13,6 +13,7 @@ import 'package:mindplex/features/user_profile_displays/controllers/user_profile
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/double_to_string_convertor.dart';
+import 'package:mindplex/utils/user_avatar_widget.dart';
 import 'package:readmore/readmore.dart';
 
 class AuthorsTileWidget extends StatelessWidget {
@@ -51,13 +52,10 @@ class AuthorsTileWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.all(20),
-                child: CircleAvatar(
-                  radius: 21,
-                  backgroundImage:
-                      NetworkImage(details.authors![authorIndex].avatar ?? ""),
-                ),
-              ),
+                  margin: EdgeInsets.all(20),
+                  child: UserAvatarWidget(
+                      imageUrl: details.authors![authorIndex].avatar ?? "",
+                      radius: 21)),
               Container(
                 width: MediaQuery.of(context).size.width * .40,
                 margin: EdgeInsets.only(right: 3, top: 20),
