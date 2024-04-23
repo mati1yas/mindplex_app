@@ -18,6 +18,7 @@ class ReactionEmoji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     LikeDislikeConroller likeDislikeConroller = Get.find();
     return GestureDetector(
       onTap: () {
@@ -27,7 +28,7 @@ class ReactionEmoji extends StatelessWidget {
           blog: blog,
         );
       },
-      child: Text(emojis[emojiIndex], style: TextStyle(fontSize: 30)),
+      child: Text(emojis[emojiIndex], style: TextStyle(fontSize: width * 0.07)),
     );
   }
 }

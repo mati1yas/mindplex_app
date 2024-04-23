@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_author_avatar_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 import 'package:mindplex/utils/colors.dart';
@@ -53,23 +54,11 @@ class BlogCard extends StatelessWidget {
                       });
                     }
                   },
-                  child: CircleAvatar(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            blogsController.filteredBlogs[index].authorAvatar ??
-                                "",
-                        placeholder: (context, url) =>
-                            Image.asset('assets/images/user_avatar.png'),
-                        errorWidget: (context, url, error) =>
-                            Image.asset('assets/images/user_avatar.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    radius: 20,
-                    backgroundColor: Colors.white,
-                  ),
+                  child: BlogAuthorAvatarWidget(
+                      radius: 20,
+                      imageUrl:
+                          blogsController.filteredBlogs[index].authorAvatar ??
+                              ""),
                 ),
                 Expanded(
                   child: GestureDetector(
