@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mindplex/features/blogs/controllers/blogs_controller.dart';
+import 'package:mindplex/features/blogs/view/widgets/blog_author_avatar_widget.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/constatns.dart';
 
@@ -20,6 +21,7 @@ class NotificationCard extends StatelessWidget {
     final reactionTypePhrase = {
       "friendship_req": "has sent you a friend request",
       "content_like": "liked your podcast",
+      "content_dislike": "disliked your podcast",
       "follow": "started following you",
       "post_comment": "commented on your podcast",
       "content_react": "reacted to your podcast",
@@ -65,6 +67,7 @@ class NotificationCard extends StatelessWidget {
                       ),
                       if (notification.type == 'content_like' ||
                           notification.type == 'content_share' ||
+                          notification.type == 'content_dislike' ||
                           notification.type == 'content_react')
                         Positioned(
                             bottom: -1,
@@ -88,7 +91,11 @@ class NotificationCard extends StatelessWidget {
                                     : Icon(
                                         notification.type == 'content_like'
                                             ? Icons.thumb_up_off_alt_outlined
-                                            : Icons.share_outlined,
+                                            : notification.type ==
+                                                    'content_dislike'
+                                                ? Icons
+                                                    .thumb_down_off_alt_outlined
+                                                : Icons.share_outlined,
                                         color: Colors.blue,
                                         size: 17,
                                       ),
