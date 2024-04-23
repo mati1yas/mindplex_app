@@ -292,11 +292,8 @@ class _DetailsPageState extends State<DetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 8,
-                      ),
-                      IconButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           if (authController.isGuestUser.value) {
                             authController.guestReminder(context);
                           } else {
@@ -306,7 +303,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 itIsLike: true);
                           }
                         },
-                        icon: (widget.details.isUserLiked.value)
+                        child: (widget.details.isUserLiked.value)
                             ? Icon(
                                 Icons.thumb_up_off_alt_rounded,
                                 color: Color.fromARGB(255, 73, 255, 179),
@@ -316,11 +313,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                 color: Colors.white,
                               ),
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      IconButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           if (authController.isGuestUser.value) {
                             authController.guestReminder(context);
                           } else {
@@ -332,7 +326,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             ;
                           }
                         },
-                        icon: widget.details.isUserDisliked.value
+                        child: widget.details.isUserDisliked.value
                             ? Icon(
                                 Icons.thumb_down,
                                 color: const Color.fromARGB(255, 230, 96, 86),
@@ -341,9 +335,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                 Icons.thumb_down_off_alt_outlined,
                                 color: Colors.white,
                               ),
-                      ),
-                      SizedBox(
-                        width: 8,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -354,9 +345,6 @@ class _DetailsPageState extends State<DetailsPage> {
                           Icons.share_outlined,
                           color: Colors.white,
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -376,9 +364,6 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           label: Text(widget.details.comments.toString()),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -401,9 +386,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                 ),
                         ),
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
                       GestureDetector(
                         onTap: () {
                           if (authController.isGuestUser.value) {
@@ -418,7 +400,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         },
                         child: Tooltip(
                           message: voteMessage,
-                                  child: Obx(
+                          child: Obx(
                             () => widget.details.isVotted.value != null &&
                                     widget.details.isVotted.value == true
                                 ? Icon(
@@ -431,9 +413,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
                       ),
                       GestureDetector(
                         onTap: () async {
@@ -455,9 +434,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                 : Colors.white,
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
                       ),
                     ],
                   ),
