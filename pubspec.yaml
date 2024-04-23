@@ -60,14 +60,13 @@ dependencies:
   share: ^2.0.0
   google_sign_in:
   internet_connection_checker: ^1.0.0+1
-  badges:
   font_awesome_flutter: ^10.6.0
   flutter_cache_manager:
   date_count_down: ^3.0.0
   flutter_quill: ^9.3.1
   delta_to_html: ^0.2.2
   awesome_dialog: ^3.2.0
-  # quill_html_converter:
+  readmore:
   
 
   
