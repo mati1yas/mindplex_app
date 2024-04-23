@@ -38,7 +38,7 @@ class DrawerWidget extends StatelessWidget {
                 : LoggedInUserWidget(),
           ),
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           ListView.builder(
               shrinkWrap: true,

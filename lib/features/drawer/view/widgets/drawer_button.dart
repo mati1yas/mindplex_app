@@ -33,7 +33,7 @@ class DrawerItemButton extends StatelessWidget {
     const boxDecoration = BoxDecoration(
       color: drawerHighlight,
       borderRadius: BorderRadius.all(
-        Radius.circular(20),
+        Radius.circular(16),
       ),
     );
 
@@ -46,13 +46,13 @@ class DrawerItemButton extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               icon,
-              size: 25,
+              size: 22,
               color: this.color ?? white,
             ),
             title: Text(
               drawerTitle,
               style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 17,
                   fontWeight: FontWeight.w400,
                   color: this.color ?? white),
             ),
