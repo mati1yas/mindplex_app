@@ -4,11 +4,11 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
-import 'package:mindplex/features/blogs/view/widgets/blog_author_avatar_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/blog_thumbnail_image_widget.dart';
 import 'package:mindplex/features/blogs/view/widgets/interaction_statistics_widget.dart';
 import 'package:mindplex/utils/colors.dart';
 import 'package:mindplex/utils/double_to_string_convertor.dart';
+import 'package:mindplex/utils/user_avatar_widget.dart';
 
 import '../../controllers/blogs_controller.dart';
 import '../../../../routes/app_routes.dart';
@@ -54,7 +54,7 @@ class BlogCard extends StatelessWidget {
                       });
                     }
                   },
-                  child: BlogAuthorAvatarWidget(
+                  child: UserAvatarWidget(
                       radius: 20,
                       imageUrl:
                           blogsController.filteredBlogs[index].authorAvatar ??

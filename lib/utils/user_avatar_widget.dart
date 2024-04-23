@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class BlogAuthorAvatarWidget extends StatelessWidget {
-  const BlogAuthorAvatarWidget({
+class UserAvatarWidget extends StatelessWidget {
+  const UserAvatarWidget({
     super.key,
     required this.imageUrl,
     required this.radius,
