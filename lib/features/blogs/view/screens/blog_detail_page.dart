@@ -203,14 +203,15 @@ class _DetailsPageState extends State<DetailsPage> {
                                 thickness: 2,
                                 color: Colors.white,
                               ),
-                              widget.details.banner != ""
-                                  ? Container(
-                                      height: 150,
-                                      width: 600,
-                                      child: Image.network(
-                                          fit: BoxFit.cover,
-                                          widget.details.banner ?? ""))
-                                  : Container()
+                              if (widget.details.postTypeFormat != 'audio')
+                                widget.details.banner != ""
+                                    ? Container(
+                                        height: 150,
+                                        width: 600,
+                                        child: Image.network(
+                                            fit: BoxFit.cover,
+                                            widget.details.banner ?? ""))
+                                    : Container()
                             ],
                           ),
                         ),

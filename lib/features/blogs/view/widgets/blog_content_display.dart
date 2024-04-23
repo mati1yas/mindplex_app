@@ -251,15 +251,19 @@ class YouTubeVideoPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO implment more features to the player
     YoutubePlayerController controller = YoutubePlayerController(
       initialVideoId: YoutubePlayer.convertUrlToId(videoLink) ?? "",
       flags: YoutubePlayerFlags(
+        showLiveFullscreenButton: false,
         autoPlay: false,
-        mute: true,
+        mute: false,
       ),
     );
     return YoutubePlayer(
+      bottomActions: [
+        CurrentPosition(),
+        ProgressBar(isExpanded: true),
+      ],
       controller: controller,
       progressColors: ProgressBarColors(
           handleColor: Colors.tealAccent[400], playedColor: Colors.red),
