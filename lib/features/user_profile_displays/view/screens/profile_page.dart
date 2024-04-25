@@ -165,35 +165,35 @@ class _ProfilePage extends State<ProfilePage>
                       buttonWidthFactor: 0.4,
                       buttonRadius: 10,
                     ),
-                    ProfilePageOutlinedButton(
-                      buttonAction: () {
-                        sendFriendRequest(
-                          userProfileController.userProfile.value.username ??
-                              "",
-                        );
-                      },
-                      buttonColor: Color.fromARGB(255, 5, 161, 158),
-                      buttonName: "Add friend",
-                      buttonWidthFactor: 0.4,
-                      buttonRadius: 10,
-                    )
+                    // ProfilePageOutlinedButton(
+                    //   buttonAction: () {
+                    //     sendFriendRequest(
+                    //       userProfileController.userProfile.value.username ??
+                    //           "",
+                    //     );
+                    //   },
+                    //   buttonColor: Color.fromARGB(255, 5, 161, 158),
+                    //   buttonName: "Add friend",
+                    //   buttonWidthFactor: 0.4,
+                    //   buttonRadius: 10,
+                    // )
                   ],
                 ),
               // OutlinedButton(onPressed: onPressed, child: child)
-              if (params['me'] == 'me')
-                Obx(() => userProfileController.isWalletConnected.value
-                    ? SizedBox(
-                        width: 0,
-                        height: 0,
-                      )
-                    : ProfilePageOutlinedButton(
-                        buttonAction:
-                            userProfileController.switchWallectConnectedState,
-                        buttonColor: const Color.fromARGB(255, 225, 62, 111),
-                        buttonName: "Connect Wallet",
-                        buttonWidthFactor: 0.5,
-                        buttonRadius: 15,
-                      )),
+              // if (params['me'] == 'me')
+              //   Obx(() => userProfileController.isWalletConnected.value
+              //       ? SizedBox(
+              //           width: 0,
+              //           height: 0,
+              //         )
+              //       : ProfilePageOutlinedButton(
+              //           buttonAction:
+              //               userProfileController.switchWallectConnectedState,
+              //           buttonColor: const Color.fromARGB(255, 225, 62, 111),
+              //           buttonName: "Connect Wallet",
+              //           buttonWidthFactor: 0.5,
+              //           buttonRadius: 15,
+              //         )),
             ],
           )),
     );
