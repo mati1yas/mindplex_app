@@ -111,10 +111,11 @@ class BlogCard extends StatelessWidget {
                                           ),
                                   ),
                                   Spacer(),
-                                  Icon(
-                                    Icons.more_horiz,
-                                    color: Colors.white,
-                                  )
+                                  SizedBox()
+                                  // Icon(
+                                  //   Icons.more_horiz,
+                                  //   color: Colors.white,
+                                  // )
                                 ],
                               ),
                               Text(
