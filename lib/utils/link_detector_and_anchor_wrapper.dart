@@ -10,7 +10,8 @@ String processHtml(String htmlString) {
     final url = match.group(0);
     final wrappedLink =
         '<a href="$url"  target="_blank" rel="noreferrer noopener">$url</a>';
-    processedHtml = htmlString.replaceFirst(url!, wrappedLink);
+    processedHtml =
+        processedHtml.replaceFirst(url!, wrappedLink + "&nbsp;&nbsp;&nbsp; ");
   });
 
   final containsAnchorTags = htmlString.contains('<a ');
