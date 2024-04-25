@@ -9,7 +9,9 @@ import 'package:mindplex/features/authentication/api_service/auth_service.dart';
 import 'package:mindplex/routes/app_routes.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
 import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 
 import '../../../user_profile_displays/controllers/user_profile_controller.dart';
 import '../../../user_profile_settings/view/screens/change_password.dart';
@@ -479,17 +481,18 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (error) {
       if (error is NetworkException) {
-        Toster(
-            message: 'There is problem with your internet Connection',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: context,
+            title: "Oops ! ",
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
-        Toster(
-            message: 'Failed To Sign in ,try Again!',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: context,
+            title: "Oops !",
+            message: "Sign-in Failed Please try again.",
+            type: "failure");
       }
-      throw error;
     }
   }
 
@@ -527,17 +530,23 @@ class _LoginPageState extends State<LoginPage> {
         await profileController.getAuthenticatedUser();
       } else {
         Navigator.pop(context);
-        Flushbar(
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-          titleSize: 20,
-          messageSize: 17,
-          messageColor: Colors.red,
-          backgroundColor: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          message: authController.statusMessage.toString(),
-          duration: const Duration(seconds: 5),
-        ).show(context);
+
+        showSnackBar(
+            context: context,
+            title: "Oops",
+            message: authController.statusMessage.toString(),
+            type: "failure");
+        // Flushbar(
+        //   flushbarPosition: FlushbarPosition.BOTTOM,
+        //   margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+        //   titleSize: 20,
+        //   messageSize: 17,
+        //   messageColor: Colors.red,
+        //   backgroundColor: Colors.white,
+        //   borderRadius: BorderRadius.circular(8),
+        //   message: authController.statusMessage.toString(),
+        //   duration: const Duration(seconds: 5),
+        // ).show(context);
       }
     }
   }

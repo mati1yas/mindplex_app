@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 
 import '../../controllers/auth_controller.dart';
 
@@ -576,21 +579,23 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-
   Future signin() async {
+    ConnectionInfoImpl connectionChecker = Get.find();
     final GoogleSignIn googleSignIn = GoogleSignIn();
     googleSignIn.disconnect();
     AuthController authController = Get.put(AuthController());
 
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       final user = await googleSignIn.signIn();
 
-      if(user != null) {
+      if (user != null) {
         showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) =>
-                Center(
+            builder: (context) => Center(
                   child: CircularProgressIndicator(color: Colors.green[900]),
                 ));
         String? name = "";
@@ -614,7 +619,19 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       }
     } catch (error) {
-      throw error;
+      if (error is NetworkException) {
+        showSnackBar(
+            context: context,
+            title: "Oops ! ",
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
+      } else {
+        showSnackBar(
+            context: context,
+            title: "Oops !",
+            message: "Sign-in Failed Please try again.",
+            type: "failure");
+      }
     }
   }
 
