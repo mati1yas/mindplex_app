@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
 import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 
 import '../models/notification_model.dart';
 
@@ -46,6 +48,11 @@ class NotificationController extends GetxController {
     });
   }
 
+  Future<BuildContext> getContext() async {
+    BuildContext? context = Get.context;
+    return context!;
+  }
+
   Future<void> loadNotifications() async {
     try {
       isConnected.value = true;
@@ -67,14 +74,18 @@ class NotificationController extends GetxController {
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
-        Toster(
-            message: 'No Internet Connection', color: Colors.red, duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
         print(e.toString());
-        Toster(
-            message: 'Something is Wrong,Try Again !',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.unKnowenError,
+            type: "failure");
       }
     }
     isLoadingNotifications.value = false;

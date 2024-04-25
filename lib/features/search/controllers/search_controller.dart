@@ -5,7 +5,9 @@ import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/search/services/search_api_service.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
 import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 
 import '../../blogs/models/blog_model.dart';
 import '../../user_profile_settings/models/user_profile.dart';
@@ -66,6 +68,11 @@ class SearchPageController extends GetxController {
         loadMoreUsers(searchQuery.value);
       }
     });
+  }
+
+  Future<BuildContext> getContext() async {
+    BuildContext? context = Get.context;
+    return context!;
   }
 
   void fetchPopularBlogs() async {
@@ -149,15 +156,19 @@ class SearchPageController extends GetxController {
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
-        Toster(
-            message: 'No Internet Connection', color: Colors.red, duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
         print(e.toString());
         searchFailed.value = true;
-        Toster(
-            message: 'Something is Wrong,Try Again !',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.unKnowenError,
+            type: "failure");
       }
     }
 
@@ -208,15 +219,19 @@ class SearchPageController extends GetxController {
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
-        Toster(
-            message: 'No Internet Connection', color: Colors.red, duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
         print(e.toString());
         searchFailed.value = true;
-        Toster(
-            message: 'Something is Wrong,Try Again !',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.unKnowenError,
+            type: "failure");
       }
     }
 
@@ -246,10 +261,18 @@ class SearchPageController extends GetxController {
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
-        Toster(
-            message: 'No Internet Connection', color: Colors.red, duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
-        Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
+        print(e.toString());
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.unKnowenError,
+            type: "failure");
       }
     }
     getSearchedUsers[index].isSendingFollowRequest!.value = false;
@@ -284,7 +307,11 @@ class SearchPageController extends GetxController {
           blogType: blogType);
     } catch (e) {
       if (e is DioException) {
-        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 3);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.mpxrLoadingFailure,
+            type: "failure");
       }
     }
 

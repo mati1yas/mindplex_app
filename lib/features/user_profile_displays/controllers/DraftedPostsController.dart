@@ -14,6 +14,9 @@ import 'package:mindplex/features/user_profile_displays/models/picked_social_pho
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
+import 'package:mindplex/utils/network/connection-info.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 import 'package:mindplex/utils/status.dart';
 
 // class BookmarksController extends BlogsController {
@@ -33,6 +36,7 @@ class DraftedPostsController extends GetxController {
   ql.QuillController quillController = ql.QuillController.basic();
   BlogsController blogsController = Get.find();
   PageNavigationController pageNavigationController = Get.find();
+  ConnectionInfoImpl connectionChecker = Get.find();
 
   RxList<Blog> blogs = <Blog>[].obs;
   Rx<Status> status = Status.unknown.obs;
@@ -55,6 +59,11 @@ class DraftedPostsController extends GetxController {
         loadMoreDrafts();
       }
     });
+  }
+
+  Future<BuildContext> getContext() async {
+    BuildContext? context = Get.context;
+    return context!;
   }
 
   Future<List<Blog>> fetchApi() async {
@@ -85,6 +94,9 @@ class DraftedPostsController extends GetxController {
     blogPage.value = 1;
 
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       List<Blog> res = await fetchApi();
 
       if (res.isEmpty) isReachedEndOfList.value = true;
@@ -97,7 +109,12 @@ class DraftedPostsController extends GetxController {
       if (e is AppError) {
         errorMessage(e.message);
       }
-      Toster(message: errorMessage.value);
+      if (e is NetworkException)
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
     }
   }
 
@@ -134,6 +151,9 @@ class DraftedPostsController extends GetxController {
 
   Future<void> createNewDraft() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       savingDraft.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
       final processedImages = await processImages();
@@ -145,19 +165,35 @@ class DraftedPostsController extends GetxController {
       // this makes the newly created draft available for further editing
       editingSocialPostDraft.value = true;
       beingEditeDraftBlog.value = newDraft;
-      Toster(message: "Draft Saved Successfully ", color: Colors.green);
+
+      showSnackBar(
+          context: await getContext()!,
+          title: SnackBarConstantTitle.successTitle,
+          message: SnackBarConstantMessage.draftSaveSuccess,
+          type: "success");
+      // Toster(message: "Draft Saved Successfully ", color: Colors.green);
     } catch (e) {
       status(Status.error);
       if (e is AppError) {
         errorMessage("Failed To Save");
       }
-      Toster(message: errorMessage.value);
+
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: e is NetworkException
+              ? SnackBarConstantMessage.noInternetConnection
+              : SnackBarConstantMessage.draftSaveFailure,
+          type: "failure");
     }
     savingDraft.value = false;
   }
 
   Future<void> updateDraft() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       updatingDraft.value = true;
       final draftId = extractDaftId();
       final postContent = extractPostContentFromTextFieldEditor();
@@ -167,19 +203,34 @@ class DraftedPostsController extends GetxController {
           draftId: draftId, postContent: postContent, images: processedImages);
 
       updatingDraft.value = false;
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.successTitle,
+          message: SnackBarConstantMessage.draftUpdateSuccess,
+          type: "success");
+      updatingDraft.value = false;
     } catch (e) {
       status(Status.error);
+      updatingDraft.value = false;
+
       if (e is AppError) {
         errorMessage("Failed To Update");
       }
-      Toster(message: errorMessage.value);
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: e is NetworkException
+              ? SnackBarConstantMessage.noInternetConnection
+              : SnackBarConstantMessage.draftUpdateFailure,
+          type: "failure");
     }
-    Toster(message: " Draft Updated", color: Colors.green);
-    updatingDraft.value = false;
   }
 
   Future<void> postDraftToSocial() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       makingPost.value = true;
       final draftId = extractDaftId();
       final postContent = extractPostContentFromTextFieldEditor();
@@ -189,20 +240,33 @@ class DraftedPostsController extends GetxController {
       makingPost.value = false;
       resetDrafting();
       blogsController.loadContents('social', 'all');
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.successTitle,
+          message: SnackBarConstantMessage.socialPostSucccess,
+          type: "success");
+      makingPost.value = false;
     } catch (e) {
       status(Status.error);
+      makingPost.value = false;
       if (e is AppError) {
-        errorMessage("Failed To Delete");
+        errorMessage("Failed To post");
       }
-      Toster(message: errorMessage.value);
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: e is NetworkException
+              ? SnackBarConstantMessage.noInternetConnection
+              : SnackBarConstantMessage.socialPostFailure,
+          type: "failure");
     }
-
-    Toster(message: " Draft Posted Successfully ", color: Colors.green);
-    makingPost.value = false;
   }
 
   Future<void> postNewToSocial() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       makingPost.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
 
@@ -212,16 +276,25 @@ class DraftedPostsController extends GetxController {
       makingPost.value = false;
       resetDrafting();
       blogsController.loadContents('social', 'all');
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.successTitle,
+          message: SnackBarConstantMessage.socialPostSucccess,
+          type: "success");
+      makingPost.value = false;
     } catch (e) {
-      status(Status.error);
+      makingPost.value = false;
       if (e is AppError) {
-        errorMessage("Failed To Delete");
+        errorMessage("Failed To post");
       }
-      Toster(message: errorMessage.value);
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: e is NetworkException
+              ? SnackBarConstantMessage.noInternetConnection
+              : SnackBarConstantMessage.socialPostFailure,
+          type: "failure");
     }
-
-    Toster(message: " Successfully Posted ", color: Colors.green);
-    makingPost.value = false;
   }
 
   /// returns list of base64 encoded images
@@ -260,6 +333,9 @@ class DraftedPostsController extends GetxController {
   Future<void> deleteDraft(
       {required Blog blog, required int draftIndex}) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        throw NetworkException("");
+      }
       deletingDraft.value = true;
       beingDeletedDaftIndex.value = draftIndex;
       beingEditeDraftBlog.value = blog;
@@ -268,14 +344,24 @@ class DraftedPostsController extends GetxController {
       await profileService.deleteDraft(draftId: draftId);
       deletingDraft.value = false;
       blogs.removeAt(draftIndex);
-      Toster(message: "Deleted Succesfully", color: Colors.green);
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.successTitle,
+          message: SnackBarConstantMessage.draftDeleteSuccess,
+          type: "success");
+      makingPost.value = false;
     } catch (e) {
-      print(e.toString());
-      status(Status.error);
+      deletingDraft.value = false;
       if (e is AppError) {
-        errorMessage("Failed To Delete");
+        errorMessage("Failed To post");
       }
-      Toster(message: errorMessage.value);
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: e is NetworkException
+              ? SnackBarConstantMessage.noInternetConnection
+              : SnackBarConstantMessage.draftDeleteFailure,
+          type: "failure");
     }
     deletingDraft.value = false;
     beingDeletedDaftIndex.value = -1;

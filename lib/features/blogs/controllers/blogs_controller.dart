@@ -8,6 +8,8 @@ import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
 import 'package:mindplex/services/api_services.dart';
 import 'package:mindplex/utils/Toster.dart';
+import 'package:mindplex/utils/awesome_snackbar.dart';
+import 'package:mindplex/utils/snackbar_constants.dart';
 
 import '../../../utils/network/connection-info.dart';
 
@@ -81,6 +83,11 @@ class BlogsController extends GetxController {
         loadMoreBlogs();
       }
     });
+  }
+
+  Future<BuildContext> getContext() async {
+    BuildContext? context = Get.context;
+    return context!;
   }
 
   void loadMoreBlogs() async {
@@ -177,14 +184,17 @@ class BlogsController extends GetxController {
     } catch (e) {
       if (e is NetworkException) {
         isConnected.value = false;
-        Toster(
-            message: 'No Internet Connection', color: Colors.red, duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       } else {
-        print(e.toString());
-        Toster(
-            message: 'Something is Wrong,Try Again !',
-            color: Colors.red,
-            duration: 1);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.noInternetConnection,
+            type: "failure");
       }
       isLoadingMore.value = false;
       canLoadMoreBlogs.value = false;
@@ -208,7 +218,11 @@ class BlogsController extends GetxController {
           fetchedBlogs: fetchedBlogs, reputations: reputations);
     } catch (e) {
       if (e is DioException) {
-        Toster(message: 'Failed To Load Mpxr', color: Colors.red, duration: 3);
+        showSnackBar(
+            context: await getContext(),
+            title: SnackBarConstantTitle.failureTitle,
+            message: SnackBarConstantMessage.mpxrLoadingFailure,
+            type: "failure");
       }
     }
 
