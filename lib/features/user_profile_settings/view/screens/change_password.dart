@@ -26,12 +26,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   ProfileController profileController = Get.put(ProfileController());
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   late FocusNode newPasswordFocusNode, confirmPasswordFocusNode;
 
   @override
   void initState() {
-
     super.initState();
 
     newPasswordFocusNode = FocusNode();
@@ -49,6 +49,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
     super.dispose();
   }
+
   Future<void> changePassword(String password) async {
     showDialog(
         context: context,
@@ -98,11 +99,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           confirmPasswordFocusNode,
                           null, () {
                         setState(() {
-                          passwordController.oldPasswordVisible.value = !passwordController.oldPasswordVisible.value;
+                          passwordController.oldPasswordVisible.value =
+                              !passwordController.oldPasswordVisible.value;
                         });
                       }),
-                      passwordController.newPasswordError != null && passwordController.isSaved.value
-                          ? errorMessage( passwordController.newPasswordError?.value)
+                      passwordController.newPasswordError != null &&
+                              passwordController.isSaved.value
+                          ? errorMessage(
+                              passwordController.newPasswordError?.value)
                           : Container(),
                       Container(
                         alignment: Alignment.topLeft,
@@ -122,11 +126,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           null,
                           newPasswordController.text, () {
                         setState(() {
-                          passwordController.confirmPasswordVisible.value = !passwordController.confirmPasswordVisible.value;
+                          passwordController.confirmPasswordVisible.value =
+                              !passwordController.confirmPasswordVisible.value;
                         });
                       }),
-                      passwordController.confirmPasswordError != null && passwordController.isSaved.value
-                          ? errorMessage(passwordController.confirmPasswordError?.value)
+                      passwordController.confirmPasswordError != null &&
+                              passwordController.isSaved.value
+                          ? errorMessage(
+                              passwordController.confirmPasswordError?.value)
                           : Container(),
                       const SizedBox(
                         height: 30,
@@ -142,7 +149,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       confirmPasswordFocusNode.unfocus();
                       newPasswordController.text = "";
                       confirmPasswordController.text = "";
-                    }, Colors.blueAccent, false),
+                    }, Colors.blueAccent, false, context),
                     buildButton("Save", (() async {
                       newPasswordFocusNode.unfocus();
                       confirmPasswordFocusNode.unfocus();
@@ -154,7 +161,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       if (isValidForm) {
                         changePassword(confirmPasswordController.text);
                       }
-                    }), Colors.blueAccent.shade200, true)
+                    }), Colors.blueAccent.shade200, true, context)
                   ],
                 ),
               ],

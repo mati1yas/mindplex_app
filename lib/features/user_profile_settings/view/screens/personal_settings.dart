@@ -13,9 +13,12 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:html/parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mindplex/features/user_profile_settings/models/social_link.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/local_data_storage/local_storage.dart';
+import 'package:mindplex/features/user_profile_settings/view/widgets/button_widget.dart';
+import 'package:mindplex/features/user_profile_settings/view/widgets/interest_dropdown_selector.dart';
+import 'package:mindplex/utils/form_error_message.dart';
+import 'package:mindplex/utils/number_type_checker.dart';
 import 'package:mindplex/utils/social_media_link_identifier.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../services/api_services.dart';
@@ -666,50 +669,52 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                                 print(element);
                               });
                             }
-                          }, Colors.amber, true),
+                          }, Colors.amber, true, context),
                         ),
                       ],
                     ),
                   ),
                 ])),
           ),
-          Padding(
-            padding: const EdgeInsets.all(40.0),
-            child: Row(
-              children: [
-                buildButton("Cancel", () async {
-                  print("account deleted");
-                }, Colors.blueAccent, false),
-                Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: buildButton("Save", (() async {
-                      isSaved = false;
-                      final isValidForm = _formKey.currentState!.validate();
-                      setState(() {
-                        isSaved = true;
-                      });
-                      if (isValidForm) {
-                        updateUserProfile(first_name, last_name)
-                            .then((String updatedValues) {})
-                            .catchError((error) {
-                          print('Error updating user profile: $error');
-                        });
-                      } else {
-                        Flushbar(
-                          flushbarPosition: FlushbarPosition.BOTTOM,
-                          margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                          titleSize: 20,
-                          messageSize: 17,
-                          messageColor: Colors.white,
-                          backgroundColor: Colors.red,
-                          borderRadius: BorderRadius.circular(8),
-                          message: "invalid value on 1 or more input",
-                          duration: const Duration(seconds: 2),
-                        ).show(context);
-                      }
-                    }), Colors.blueAccent.shade200, true))
-              ],
-            ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildButton("Cancel", () async {
+                print("account deleted");
+              }, Colors.blueAccent, false, context),
+              buildButton("Save", (() async {
+                isSaved = false;
+                final isValidForm = _formKey.currentState!.validate();
+                setState(() {
+                  isSaved = true;
+                });
+                if (isValidForm) {
+                  updateUserProfile(first_name, last_name)
+                      .then((String updatedValues) {})
+                      .catchError((error) {
+                    print('Error updating user profile: $error');
+                  });
+                } else {
+                  Flushbar(
+                    flushbarPosition: FlushbarPosition.BOTTOM,
+                    margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                    titleSize: 20,
+                    messageSize: 17,
+                    messageColor: Colors.white,
+                    backgroundColor: Colors.red,
+                    borderRadius: BorderRadius.circular(8),
+                    message: "invalid value on 1 or more input",
+                    duration: const Duration(seconds: 2),
+                  ).show(context);
+                }
+              }), Colors.blueAccent.shade200, true, context)
+            ],
+          ),
+          SizedBox(
+            height: 20,
           ),
         ]),
       ),
@@ -961,305 +966,6 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                       }
                       return null;
                     })))),
-      ],
-    );
-  }
-}
-
-bool isNumeric(String value) {
-  try {
-    int age = int.parse(value);
-    if (age > 0) {
-      return true; // Age is a positive integer
-    }
-  } catch (e) {
-    return false;
-  }
-  return false;
-}
-
-Widget buildButton(String label, VoidCallback onTap, Color color1, bool fill) {
-  return SizedBox(
-    key: UniqueKey(),
-    width: 150,
-    height: label == "Add link" ? 35 : 50,
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: fill
-            ? BoxDecoration(
-                color: color1,
-                borderRadius: BorderRadius.circular(10),
-              )
-            : BoxDecoration(
-                border: Border.all(color: color1),
-                borderRadius: BorderRadius.circular(10)),
-        child: Center(
-          child: Text(
-            label,
-            style: fill
-                ? TextStyle(color: Colors.white, fontSize: 20)
-                : TextStyle(color: color1, fontSize: 20),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget errorMessage(String? error) {
-  return Container(
-      alignment: Alignment.topLeft,
-      margin: const EdgeInsets.only(top: 5, left: 10),
-      child: Text(
-        error.toString(),
-        style: const TextStyle(color: Colors.red),
-      ));
-}
-
-class InterestDropdown extends StatefulWidget {
-  late final List<String> selectedItems;
-  final ValueChanged<List<String>> onSelectionChanged;
-
-  InterestDropdown(
-      {required this.selectedItems, required this.onSelectionChanged});
-
-  @override
-  _InterestDropdownState createState() => _InterestDropdownState();
-}
-
-class _InterestDropdownState extends State<InterestDropdown> {
-  List<String> dropdownItems = [
-    'Classroom Study',
-    'Software Development',
-    'Hardware Development',
-    'Blockchain Development',
-    'Robotics',
-    'Design',
-    'Research',
-    'Trading',
-    'Marketing',
-    'Partnership',
-    'Finance And Investing',
-    'Fashion In Wearable Tech',
-    'Love In Virtual Word',
-    'Dating Robots And Other Tech Entities',
-    'Fitness Technologies',
-    'Travel',
-    'AI Art',
-    '3D Food Printing',
-    'Space',
-    'Law',
-    'Journalism',
-    'Philosophy And Related',
-    'Healthcare And Related',
-    'Agriculture And Related',
-    'Accounting',
-    'Environmental And Wildlife',
-    'Governance',
-    'Military',
-    'Commerce',
-    'Art',
-  ];
-  List<String> searchOutputs = [];
-
-  bool showDropDown = false;
-  TextEditingController searchText = TextEditingController();
-
-  void updateInterests(String query) {
-    setState(() {
-      searchOutputs = dropdownItems
-          .where((interest) =>
-              interest.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
-
-  @override
-  void initState() {
-    searchOutputs = dropdownItems;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        Container(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              "Interests",
-              style: TextStyle(
-                  color: Colors.amber,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              showDropDown = !showDropDown;
-            });
-          },
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.amber, width: 2.0),
-              color: mainBackgroundColor,
-              borderRadius: BorderRadius.circular(15), // Apply border radius
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    children:
-                        List.generate(widget.selectedItems.length, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: mainBackgroundColor,
-                            border: Border.all(color: Colors.purpleAccent),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: EdgeInsets.all(
-                              8.0), // Adjust the padding as needed
-                          child: Text(
-                            widget.selectedItems[index],
-                            style: TextStyle(color: Colors.purpleAccent),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-                Icon(
-                  showDropDown ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  size: 40,
-                  color: Colors.amber,
-                ),
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Container(
-            width: double.infinity,
-            height: showDropDown ? 260 : 0,
-            decoration: BoxDecoration(
-                color: Color.fromARGB(100, 130, 16, 185),
-                border: Border.all(
-                  color: Color.fromARGB(100, 52, 5, 112),
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(15)),
-            child: showDropDown
-                ? Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Scrollbar(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "Search your interest here...",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.white),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.white),
-                                    ),
-                                  ),
-                                  style: TextStyle(color: Colors.white),
-                                  controller: searchText,
-                                  onChanged: (value) {
-                                    updateInterests(value);
-                                  },
-                                ),
-                              ),
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio:
-                                      4.0, // Adjust this value to change the aspect ratio of the checkboxes
-                                ),
-                                itemCount: searchOutputs
-                                    .length, // Replace 'choices' with your list of choices
-                                itemBuilder: (context, index) {
-                                  return Theme(
-                                    data: ThemeData(
-                                        unselectedWidgetColor: Colors.white,
-                                        checkboxTheme: CheckboxThemeData(
-                                            fillColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white))),
-                                    child: CheckboxListTile(
-                                      checkColor: Colors.white,
-                                      activeColor: Colors.purpleAccent,
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Text(
-                                        searchOutputs[index],
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      value: widget.selectedItems
-                                              .contains(searchOutputs[index])
-                                          ? true
-                                          : false,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          if (newValue == true) {
-                                            widget.selectedItems
-                                                .add(searchOutputs[index]);
-                                          } else {
-                                            widget.selectedItems
-                                                .remove(searchOutputs[index]);
-                                          }
-                                          print(widget.selectedItems);
-                                          widget.onSelectionChanged(
-                                              widget.selectedItems);
-                                        });
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : null,
-          ),
-        )
       ],
     );
   }

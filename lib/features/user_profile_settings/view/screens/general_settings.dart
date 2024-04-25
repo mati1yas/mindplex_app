@@ -75,23 +75,24 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       TextInputType.name, "Mindplex Handle"),
                 ])),
           ),
-          Padding(
-            padding: const EdgeInsets.all(40.0),
-            child: Row(
-              children: [
-                buildButton("Cancel", () async {
-                  print("account deleted");
-                }, Colors.blueAccent, false),
-                Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: buildButton("Save", (() async {
-                      settingsController.isSaved.value = false;
-                      final isValidForm = _formKey.currentState!.validate();
-                      settingsController.isSaved.value = true;
-                      if (isValidForm) {}
-                    }), Colors.blueAccent.shade200, true))
-              ],
-            ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildButton("Cancel", () async {
+                print("account deleted");
+              }, Colors.blueAccent, false, context),
+              Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: buildButton("Save", (() async {
+                    settingsController.isSaved.value = false;
+                    final isValidForm = _formKey.currentState!.validate();
+                    settingsController.isSaved.value = true;
+                    if (isValidForm) {}
+                  }), Colors.blueAccent.shade200, true, context))
+            ],
           ),
         ]),
       ),

@@ -2,22 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-Widget buildButton(String label, VoidCallback onTap, Color color1, bool fill) {
+Widget buildButton(String label, VoidCallback onTap, Color color1, bool fill,
+    BuildContext context) {
   return SizedBox(
     key: UniqueKey(),
-    width: 150,
-    height: 50,
+    width: MediaQuery.of(context).size.width * 0.4,
+    height: 40,
     child: GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: fill
             ? BoxDecoration(
-          color: color1,
-          borderRadius: BorderRadius.circular(10),
-        )
+                color: color1,
+                borderRadius: BorderRadius.circular(10),
+              )
             : BoxDecoration(
-            border: Border.all(color: color1),
-            borderRadius: BorderRadius.circular(10)),
+                border: Border.all(color: color1),
+                borderRadius: BorderRadius.circular(10)),
         child: Center(
           child: Text(
             label,

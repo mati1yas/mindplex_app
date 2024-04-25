@@ -34,7 +34,8 @@ class _SettingsPage extends State<SettingsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    settingsController.fetchUserInfo(profileController.authenticatedUser.value.username!);
+    settingsController
+        .fetchUserInfo(profileController.authenticatedUser.value.username!);
   }
 
   @override
@@ -55,102 +56,111 @@ class _SettingsPage extends State<SettingsPage>
       backgroundColor: mainBackgroundColor,
       body: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+          Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 40, left: 5, right: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Text(
+                      'Edit Profile',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      child: const Icon(
+                        Icons.share,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
-                Text(
-                  'Edit Profile',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-                CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  child: const Icon(
-                    Icons.share,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              height: 35,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(50, 118, 118, 128),
-                borderRadius: BorderRadius.circular(10),
               ),
-              child: TabBar(
-                dividerColor: Colors.transparent,
-                controller: _tabController,
-                isScrollable: true,
-                indicator: BoxDecoration(
+              SizedBox(
+                height: 5,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  height: 35,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(50, 118, 118, 128),
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.amber.shade400),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white,
-                tabs: [
-                  Tab(
-                    text: 'General',
                   ),
-                  Tab(
-                    text: 'Edit Profile',
+                  child: TabBar(
+                    dividerColor: Colors.transparent,
+                    controller: _tabController,
+                    isScrollable: true,
+                    indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.amber.shade400),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.white,
+                    tabs: [
+                      Tab(
+                        text: 'General',
+                      ),
+                      Tab(
+                        text: 'Edit Profile',
+                      ),
+                      Tab(
+                        text: "Password",
+                      ),
+                      Tab(
+                        text: 'Recommendation',
+                      ),
+                      Tab(
+                        text: "Settings",
+                      )
+                    ],
                   ),
-                  Tab(
-                    text: "Password",
-                  ),
-                  Tab(
-                    text: 'Recommendation',
-                  ),
-                  Tab(
-                    text: "Settings",
-                  )
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-          Obx(() => !profileController.isConnected.value?
-          noInternetCard(() {
-            profileController.getUserProfile(username:profileController.authenticatedUser.value.username!);
-          }):Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Content for Tab 1
-                GeneralSettings(),
-                // Content for Tab 2
-                PersonalSettingsPage(),
-                ChangePasswordPage(),
-                // Content for Tab 3
-                RecommendationPage(),
+          Obx(
+            () => !profileController.isConnected.value
+                ? noInternetCard(() {
+                    profileController.getUserProfile(
+                        username: profileController
+                            .authenticatedUser.value.username!);
+                  })
+                : Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        // Content for Tab 1
+                        GeneralSettings(),
+                        // Content for Tab 2
+                        PersonalSettingsPage(),
+                        ChangePasswordPage(),
+                        // Content for Tab 3
+                        RecommendationPage(),
 
-                PreferencePage()
-              ],
-            ),
-          ),),
+                        PreferencePage()
+                      ],
+                    ),
+                  ),
+          ),
         ],
       ),
     );
