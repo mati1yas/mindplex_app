@@ -131,7 +131,10 @@ class BlogContentDisplay extends StatelessWidget {
                     onLinkTap: (url, attributes, element) {
                       launchUrl(Uri.parse(url ?? ""));
                     },
-                    style: {"*": html.Style(color: Colors.white)},
+                    style: {
+                      "*": html.Style(color: Colors.white),
+                      "a": html.Style(color: Color.fromARGB(255, 5, 211, 207)),
+                    },
                     data: element.content!,
                   ));
 
