@@ -4,6 +4,7 @@ import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_html/flutter_html.dart' as html;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
+import 'package:mindplex/utils/link_detector_and_anchor_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -127,15 +128,18 @@ class BlogContentDisplay extends StatelessWidget {
             case 'p':
               return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: html.Html(
-                    onLinkTap: (url, attributes, element) {
-                      launchUrl(Uri.parse(url ?? ""));
-                    },
-                    style: {
-                      "*": html.Style(color: Colors.white),
-                      "a": html.Style(color: Color.fromARGB(255, 5, 211, 207)),
-                    },
-                    data: element.content!,
+                  child: SelectionArea(
+                    child: html.Html(
+                      onLinkTap: (url, attributes, element) {
+                        launchUrl(Uri.parse(url ?? ""));
+                      },
+                      style: {
+                        "*": html.Style(color: Colors.white),
+                        "a":
+                            html.Style(color: Color.fromARGB(255, 5, 211, 207)),
+                      },
+                      data: processHtml(element.content!),
+                    ),
                   ));
 
             case 'blockquote':
