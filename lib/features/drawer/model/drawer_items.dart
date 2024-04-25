@@ -78,6 +78,7 @@ class DrawerItems {
       drawerType: DrawerType.social,
       postType: "social",
       postFormat: "all",
+      requiresPrivilege: true,
     ),
     DrawerModel(
       icon: Icons.help_outline,
