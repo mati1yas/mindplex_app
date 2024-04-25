@@ -135,7 +135,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                   widget.details.postTitle ?? "",
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    fontSize: 25.0,
+                                    fontSize: 23.0,
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 73, 255, 179),
                                   ),
@@ -193,7 +193,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                     horizontal: 5.0,
                                   ),
                                   child: Html(
-                                  
                                     data: widget.details.overview ?? "",
                                     style: {"*": Style(color: Colors.white)},
                                   )

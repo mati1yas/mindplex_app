@@ -37,7 +37,7 @@ class BlogContentDisplay extends StatelessWidget {
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
-                    fontSize: 30.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 73, 255, 179),
                   ),
@@ -53,7 +53,7 @@ class BlogContentDisplay extends StatelessWidget {
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
-                    fontSize: 25.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 73, 255, 179),
                   ),
@@ -69,7 +69,7 @@ class BlogContentDisplay extends StatelessWidget {
                 child: Text(
                   element.content!.replaceAll('&nbsp;', ''),
                   style: const TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 73, 255, 179),
                   ),
