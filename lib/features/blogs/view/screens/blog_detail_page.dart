@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/blogs/controllers/blog_time_spent_controller.dart';
 import 'package:mindplex/features/blogs/view/widgets/author_tile_widget.dart';
@@ -188,17 +189,22 @@ class _DetailsPageState extends State<DetailsPage> {
                                 ],
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 5.0,
-                                ),
-                                child: Text(
-                                  widget.details.overview ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.0,
                                   ),
-                                ),
-                              ),
+                                  child: Html(
+                                  
+                                    data: widget.details.overview ?? "",
+                                    style: {"*": Style(color: Colors.white)},
+                                  )
+                                  // child: Text(
+                                  //   widget.details.overview ?? "",
+                                  //   style: const TextStyle(
+                                  //     fontSize: 16,
+                                  //     color: Colors.white,
+                                  //   ),
+                                  // ),
+                                  ),
                               Divider(
                                 thickness: 2,
                                 color: Colors.white,
