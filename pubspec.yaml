@@ -67,7 +67,7 @@ dependencies:
   delta_to_html: ^0.2.2
   awesome_dialog: ^3.2.0
   readmore:
-  
+  awesome_snackbar_content:
 
   
 
