@@ -108,8 +108,6 @@ class BlogsController extends GetxController {
       isLoadingMore.value = true;
       page.value++; // Increment the page number
 
-      print('ABOUT TO LOAD MORE AND PRINT PAGE');
-      print(page.value);
       final res = await apiSerivice.value.loadBlogs(
           post_type: post_type.value,
           recommender: recommender.value,
@@ -139,7 +137,6 @@ class BlogsController extends GetxController {
   }
 
   void changeTopics({required String topicCategory}) async {
-    print(topicCategory);
     post_format.value = topicCategory;
     page.value = 1;
     fetchBlogs();
@@ -182,11 +179,8 @@ class BlogsController extends GetxController {
           "${post_type.value}/${recommender.value}/${post_format.value}";
 
       if (!refreshing && blogCacheService.value.isInCache(cacheKey)) {
-        print("GETTING DATA FROM CACHED");
         final res = blogCacheService.value.getFromCache(cacheKey);
-        print(res.length);
         page.value = (res.length ~/ 10) + 1;
-        print(page.value);
         blogs.value = res;
         loadReputation(res);
         if (res.isEmpty) reachedEndOfList = true;
@@ -199,7 +193,6 @@ class BlogsController extends GetxController {
         if (res.isEmpty) reachedEndOfList = true;
 
         blogs.value = res;
-        print(res.length);
         loadReputation(res);
         blogCacheService.value.removeFromCache(cacheKey);
         blogCacheService.value.addToCache(cacheKey, blogs);
@@ -216,7 +209,6 @@ class BlogsController extends GetxController {
             message: SnackBarConstantMessage.noInternetConnection,
             type: "failure");
       } else {
-        print(e.toString());
         showSnackBar(
             context: await getContext(),
             title: SnackBarConstantTitle.failureTitle,
@@ -260,7 +252,6 @@ class BlogsController extends GetxController {
     required List<Blog> fetchedBlogs,
     required List<Reputation> reputations,
   }) {
-    print('LENGTH OF THE LISTS ${fetchedBlogs.length}');
     for (var i = 0; i < fetchedBlogs.length; i++) {
       for (var j = 0; j < reputations.length; j++) {
         if (fetchedBlogs[i].slug == reputations[j].postSlug) {
@@ -276,8 +267,6 @@ class BlogsController extends GetxController {
   }
 
   void filterBlogsByRecommender({required String category}) {
-    print(category);
-
     reachedEndOfList = false;
     page.value = 1;
 
