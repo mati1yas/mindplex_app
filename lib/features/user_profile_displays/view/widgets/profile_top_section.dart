@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import 'package:mindplex/features/authentication/controllers/auth_controller.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
-import 'package:mindplex/features/user_profile_displays/view/widgets/user_profile_image_widget.dart';
 import 'package:mindplex/routes/app_routes.dart';
+import 'package:mindplex/utils/user_avatar_widget.dart';
 
 class ProfileTopSection extends StatelessWidget {
   const ProfileTopSection({
@@ -28,10 +29,16 @@ class ProfileTopSection extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          UserProfileImage(
-              context: context,
-              profileController: userProfileController,
-              me: me),
+          ClipRRect(
+            borderRadius: BorderRadius.all(
+                Radius.circular(MediaQuery.of(context).size.width * 0.25)),
+            child: UserAvatarWidget(
+              imageUrl: me
+                  ? userProfileController.authenticatedUser.value.image ?? ""
+                  : userProfileController.userProfile.value.avatarUrl ?? "",
+              radius: MediaQuery.of(context).size.width * 0.25,
+            ),
+          ),
           Positioned(
             top: 0,
             left: 5,
