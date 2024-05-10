@@ -205,12 +205,14 @@ class ProfileController extends GetxController {
   Future<void> followUser(String userName) async {
     if (await apiService.value.followUser(userName)) {
       userProfile.value.isFollowing!.value = true;
+      userProfileCacheService.value.addToCache(userName, userProfile.value);
     }
   }
 
   Future<void> unfollowUser(String userName) async {
     if (await apiService.value.unfollowUser(userName)) {
       userProfile.value.isFollowing!.value = false;
+      userProfileCacheService.value.addToCache(userName, userProfile.value);
     }
   }
 }
