@@ -56,9 +56,9 @@ class BlogsController extends GetxController {
   };
 
   final postFormatMaps = {
-    'text': 'Read',
+    'text': 'Magazine',
     'video': 'Watch',
-    'audio': 'Listen',
+    'audio': 'Podcast',
   };
 
   ScrollController scrollController = ScrollController();
