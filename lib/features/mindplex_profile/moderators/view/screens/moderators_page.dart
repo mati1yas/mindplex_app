@@ -10,6 +10,7 @@ import '../widgets/moderator_card.dart';
 class ModeratorsPage extends StatelessWidget {
   ModeratorsPage({super.key});
   DrawerButtonController drawerButtonController = Get.find();
+  GlobalKey _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -62,7 +63,9 @@ class ModeratorsPage extends StatelessWidget {
                   moderatorRole: "Moderator",
                   moderatorBio:
                       "My name is Henderson Robert, I’ve been an online content moderator for mindplex..."),
-              ModeratorApplicationForm()
+              ModeratorApplicationForm(
+                formKey: _formKey,
+              )
             ],
           ),
         ),
