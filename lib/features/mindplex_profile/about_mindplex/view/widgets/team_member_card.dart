@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindplex/features/mindplex_profile/about_mindplex/models/TeamMember.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TeamMemberCard extends StatelessWidget {
   final TeamMember teamMember;
@@ -56,21 +57,31 @@ class TeamMemberCard extends StatelessWidget {
                 ),
                 Spacer(),
                 Center(
-                  child: Container(
-                    width: 40,
-                    height: height * 0.067,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      // border: Border.all(
-                      //   width: 2,
-                      //   color: const Color.fromARGB(208, 178, 178, 178),
-                      // ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                          fit: BoxFit.cover,
-                          "assets/images/linkedin_white_logo.png"),
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (teamMember.linkedInLink == null) return null;
+                      if (await canLaunchUrl(
+                          Uri.parse(teamMember.linkedInLink ?? ""))) {
+                        launchUrl(Uri.parse(teamMember.linkedInLink ?? ""));
+                      }
+                      ;
+                    },
+                    child: Container(
+                      width: 40,
+                      height: height * 0.067,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        // border: Border.all(
+                        //   width: 2,
+                        //   color: const Color.fromARGB(208, 178, 178, 178),
+                        // ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                            fit: BoxFit.fill,
+                            "assets/images/linkedin_icon_w.png"),
+                      ),
                     ),
                   ),
                 )
