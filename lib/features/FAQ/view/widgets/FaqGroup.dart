@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mindplex/features/FAQ/controller/faqController.dart';
 import 'package:mindplex/features/FAQ/model/faqGroup.dart';
 import 'package:mindplex/features/FAQ/view/widgets/FaqList.dart';
+import 'package:mindplex/features/user_profile_settings/view/widgets/button_widget.dart';
 
 import 'faqTile.dart';
 
@@ -16,7 +17,7 @@ class FaqGroupCard extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Icon(
         Icons.wallet,
-        size: 50,
+        size: 40,
         color: Colors.white70,
       ),
       Text(faqGroup.name,
@@ -44,8 +45,7 @@ class FaqGroupCard extends StatelessWidget {
         ),
       ),
       Container(
-        width: 80,
-        height: 30,
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         alignment: Alignment.centerLeft,
         child: OutlinedButton(
           onPressed: () {
