@@ -139,6 +139,8 @@ class UserProfile {
     data['followers'] = this.followers;
     data['followings'] = this.followings;
     data['friends'] = this.friends;
+    data['is_following'] = this.isFollowing!.value;
+    data['is_friends'] = this.isFriends!.value;
     data['mpxr'] = this.mpxr;
     return data;
   }

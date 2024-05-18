@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:mindplex/features/blogs/cache_service/blog_cache_service.dart';
 import 'package:mindplex/features/blogs/models/blog_model.dart';
 import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
@@ -55,14 +56,15 @@ class BlogsController extends GetxController {
   };
 
   final postFormatMaps = {
-    'text': 'Read',
+    'text': 'Magazine',
     'video': 'Watch',
-    'audio': 'Listen',
+    'audio': 'Podcast',
   };
 
   ScrollController scrollController = ScrollController();
   bool reachedEndOfList = false;
   final apiSerivice = ApiService().obs;
+  final blogCacheService = BlogCacheService().obs;
   double scrollDistance = 0.0;
   double previousOffset = 0.0;
   double currentOffset = 0.0;
@@ -121,9 +123,12 @@ class BlogsController extends GetxController {
       if (isLoadingMore.value || reachedEndOfList) {
         return;
       }
+      String cacheKey =
+          "${post_type.value}/${recommender.value}/${post_format.value}";
 
       isLoadingMore.value = true;
       page.value++; // Increment the page number
+
       final res = await apiSerivice.value.loadBlogs(
           post_type: post_type.value,
           recommender: recommender.value,
@@ -139,6 +144,7 @@ class BlogsController extends GetxController {
         blogs.addAll(res);
 
         loadReputation(res);
+        blogCacheService.value.addToCache(cacheKey, res);
       }
 
       isLoadingMore.value = false;
@@ -152,7 +158,6 @@ class BlogsController extends GetxController {
   }
 
   void changeTopics({required String topicCategory}) async {
-    print(topicCategory);
     post_format.value = topicCategory;
     page.value = 1;
     fetchBlogs();
@@ -179,7 +184,7 @@ class BlogsController extends GetxController {
     fetchBlogs();
   }
 
-  void fetchBlogs() async {
+  void fetchBlogs({bool refreshing = false}) async {
     try {
       isConnected.value = true;
       if (!await connectionChecker.isConnected) {
@@ -189,16 +194,30 @@ class BlogsController extends GetxController {
       newPostTypeLoading.value = true;
       isLoadingMore.value = true;
       canLoadMoreBlogs.value = true;
-      page.value = 1;
+
       startPosition.value = 0;
-      final res = await apiSerivice.value.loadBlogs(
-          post_type: post_type.value,
-          recommender: recommender.value,
-          post_format: post_format.value,
-          page: page.value.toInt());
-      if (res.isEmpty) reachedEndOfList = true;
-      blogs.value = res;
-      loadReputation(res);
+      String cacheKey =
+          "${post_type.value}/${recommender.value}/${post_format.value}";
+
+      if (!refreshing && blogCacheService.value.isInCache(cacheKey)) {
+        final res = blogCacheService.value.getFromCache(cacheKey);
+        page.value = (res.length ~/ 10) + 1;
+        blogs.value = res;
+        loadReputation(res);
+        if (res.isEmpty) reachedEndOfList = true;
+      } else {
+        final res = await apiSerivice.value.loadBlogs(
+            post_type: post_type.value,
+            recommender: recommender.value,
+            post_format: post_format.value,
+            page: page.value.toInt());
+        if (res.isEmpty) reachedEndOfList = true;
+
+        blogs.value = res;
+        loadReputation(res);
+        blogCacheService.value.removeFromCache(cacheKey);
+        blogCacheService.value.addToCache(cacheKey, blogs);
+      }
 
       isLoadingMore.value = false;
       newPostTypeLoading.value = false;
@@ -214,7 +233,7 @@ class BlogsController extends GetxController {
         showSnackBar(
             context: await getContext(),
             title: SnackBarConstantTitle.failureTitle,
-            message: SnackBarConstantMessage.noInternetConnection,
+            message: SnackBarConstantMessage.unKnowenError,
             type: "failure");
       }
       isLoadingMore.value = false;
@@ -269,7 +288,6 @@ class BlogsController extends GetxController {
   }
 
   void filterBlogsByRecommender({required String category}) {
-    print(category);
     reachedEndOfList = false;
     page.value = 1;
 
@@ -287,8 +305,8 @@ class BlogsController extends GetxController {
     } else {
       recommender.value = recommenderMaps[category] as String;
     }
-
     fetchBlogs();
+    animateScrollPosition();
   }
 
   void filterBlogsByPostType({required String postFormat}) {
@@ -312,6 +330,10 @@ class BlogsController extends GetxController {
     final interactions = await apiSerivice.value.fetchUserInteraction(
         articleSlug: articleSlug, interactionType: interactionType);
     return interactions;
+  }
+
+  void animateScrollPosition() {
+    scrollController.jumpTo(0);
   }
 
   List<Blog> get filteredBlogs {
