@@ -223,6 +223,8 @@ class ProfileController extends GetxController {
 
   Future<void> sendFollowRequest({
     required String userName,
+    int?
+        followerIndex, // this parameters is used to decide weather we are trying to follow a user directly from his/her profile or from list .
   }) async {
     if (isSendingFollowRequest.value) return;
     isSendingFollowRequest.value = true;
@@ -232,12 +234,17 @@ class ProfileController extends GetxController {
         throw NetworkException(
             "Looks like there is problem with your connection.");
       }
-      bool isFollowing = userProfile.value.isFollowing!.value;
+      bool isFollowing = false;
+      if (followerIndex == null) {
+        isFollowing = userProfile.value.isFollowing!.value;
+      } else {
+        isFollowing = followers_followings[followerIndex].isFollowing!.value;
+      }
 
       if (isFollowing) {
-        await unfollowUser(userName);
+        await unfollowUser(userName, followerIndex);
       } else {
-        await followUser(userName);
+        await followUser(userName, followerIndex);
       }
     } catch (e) {
       if (e is NetworkException) {
@@ -245,6 +252,7 @@ class ProfileController extends GetxController {
         Toster(
             message: 'No Internet Connection', color: Colors.red, duration: 1);
       } else {
+        print(e.toString());
         Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
       }
     }
@@ -258,17 +266,25 @@ class ProfileController extends GetxController {
     isSendingFriendRequest.value = false;
   }
 
-  Future<void> followUser(String userName) async {
+  Future<void> followUser(String userName, [int? followerIndex]) async {
     if (await apiService.value.followUser(userName)) {
-      userProfile.value.isFollowing!.value = true;
-      userProfileCacheService.value.addToCache(userName, userProfile.value);
+      if (followerIndex == null) {
+        userProfile.value.isFollowing!.value = true;
+        userProfileCacheService.value.addToCache(userName, userProfile.value);
+      } else {
+        followers_followings[followerIndex].isFollowing!.value = true;
+      }
     }
   }
 
-  Future<void> unfollowUser(String userName) async {
+  Future<void> unfollowUser(String userName, [int? followerIndex]) async {
     if (await apiService.value.unfollowUser(userName)) {
-      userProfile.value.isFollowing!.value = false;
-      userProfileCacheService.value.addToCache(userName, userProfile.value);
+      if (followerIndex == null) {
+        userProfile.value.isFollowing!.value = false;
+        userProfileCacheService.value.addToCache(userName, userProfile.value);
+      } else {
+        followers_followings[followerIndex].isFollowing!.value = false;
+      }
     }
   }
 }

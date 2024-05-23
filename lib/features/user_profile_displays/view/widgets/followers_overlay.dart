@@ -126,6 +126,7 @@ class _FollowersOverlayState extends State<FollowersOverlay> {
                                       follower: follower,
                                       profileController:
                                           widget.profileController,
+                                      followerIndex: index,
                                     ),
                                   ),
                                 );
