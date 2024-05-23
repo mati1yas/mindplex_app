@@ -65,26 +65,47 @@ class BlogsController extends GetxController {
   bool reachedEndOfList = false;
   final apiSerivice = ApiService().obs;
   final blogCacheService = BlogCacheService().obs;
+  double scrollDistance = 0.0;
+  double previousOffset = 0.0;
+  double currentOffset = 0.0;
+
+  ScrollDirection scrollDirection = ScrollDirection.forward;
 
   @override
   void onInit() {
     super.onInit();
 
     scrollController.addListener(() {
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        showSocialFeedForm.value = false;
-      } else {
-        showSocialFeedForm.value = true;
-      }
+      animateFormAppearance();
 
       if (!reachedEndOfList &&
           scrollController.position.pixels >=
               scrollController.position.maxScrollExtent - 250) {
-        // Load more data
         loadMoreBlogs();
       }
     });
+  }
+
+  void animateFormAppearance() {
+    currentOffset = scrollController.position.pixels;
+    if (scrollDirection == scrollController.position.userScrollDirection) {
+      scrollDistance = scrollDistance + (currentOffset - previousOffset).abs();
+
+      if (scrollDistance >= 75) {
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          showSocialFeedForm.value = false;
+        } else {
+          showSocialFeedForm.value = true;
+        }
+      }
+    } else {
+      scrollDistance = 0.0;
+      scrollDirection = scrollDirection == ScrollDirection.forward
+          ? ScrollDirection.reverse
+          : ScrollDirection.forward;
+    }
+    previousOffset = currentOffset;
   }
 
   Future<BuildContext> getContext() async {
@@ -128,7 +149,7 @@ class BlogsController extends GetxController {
 
       isLoadingMore.value = false;
 
-      update(); // Trigger UI update
+      update();
     } catch (e) {
       if (e is NetworkException) {
         canLoadMoreBlogs.value = false;

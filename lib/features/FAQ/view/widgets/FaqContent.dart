@@ -95,18 +95,20 @@ class FaqContent extends StatelessWidget {
         // ),
         if (content.type == "p" || content.type == "li")
           Container(
-            width:
-                content.type == "li" ? screenWidth * 0.82 : screenWidth * 0.87,
-            child: Html(
-              data: content.content,
-              style: {
-                "body": Style(
-                  color: Colors.white70,
-                  fontSize: FontSize(16),
-                  margin: Margins.zero,
-                  lineHeight: LineHeight.number(1.4),
-                )
-              },
+            // width:
+            //     content.type == "li" ? screenWidth * 0.82 : screenWidth * 0.82,
+            child: Expanded(
+              child: Html(
+                data: content.content,
+                style: {
+                  "body": Style(
+                    color: Colors.white70,
+                    fontSize: FontSize(16),
+                    margin: Margins.zero,
+                    lineHeight: LineHeight.number(1.4),
+                  )
+                },
+              ),
             ),
           )
       ],

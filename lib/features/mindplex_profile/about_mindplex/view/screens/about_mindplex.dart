@@ -16,6 +16,7 @@ class AboutMindPlex extends StatelessWidget {
   AboutMindPlex({super.key});
 
   DrawerButtonController drawerButtonController = Get.find();
+  GlobalKey _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -87,18 +88,22 @@ class AboutMindPlex extends StatelessWidget {
                       teamMember: TeamMember(
                           name: "Dr. Ben Goertzel",
                           position: "Editor in chief",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/bengoertzel/",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/ben.png")),
                   TeamMemberCard(
                       teamMember: TeamMember(
                           name: "Amara Angelica",
                           position: "Senior Editor",
+                          linkedInLink: "https://www.linkedin.com/in/amaraa/",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/amara.png")),
                   TeamMemberCard(
                       teamMember: TeamMember(
                           name: "Lisa Rein",
                           position: "Editor in Large",
+                          linkedInLink: "https://www.linkedin.com/in/lisarein/",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/lisa.png")),
                   TeamMemberCard(
@@ -111,12 +116,16 @@ class AboutMindPlex extends StatelessWidget {
                       teamMember: TeamMember(
                           name: "Hruy Tsegaye",
                           position: "CEO of Mindplex",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/hruy-tsegaye-819276239/",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/hruy.png")),
                   TeamMemberCard(
                       teamMember: TeamMember(
                           name: "Leykun Ejigu",
                           position: "Developer",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/leykun-ejigu/",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/leykun.jpg")),
                   TeamMemberCard(
@@ -129,18 +138,24 @@ class AboutMindPlex extends StatelessWidget {
                       teamMember: TeamMember(
                           name: "Esubalew Amenu",
                           position: "Lead Backend Developer",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/esubalew-amenu",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/esubalew.jpg")),
                   TeamMemberCard(
                       teamMember: TeamMember(
                           name: "Dawit Mekonnen",
                           position: "Web developer",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/dawit-mekonnen",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/dawit.jpg")),
                   TeamMemberCard(
                       teamMember: TeamMember(
                           name: "Anna Ostrovska",
                           position: "Illustrator & UI Designer",
+                          linkedInLink:
+                              "https://www.linkedin.com/in/anna-ostrovska-6a48561b8",
                           profilePic:
                               "https://magazine.mindplex.ai/wp-content/plugins/mp-general/public/assets/authors/anna.jpg")),
                   TeamMemberCard(
@@ -167,7 +182,9 @@ class AboutMindPlex extends StatelessWidget {
             MissionCard(),
             ValuesCard(),
             VissionsCard(),
-            ContactForm()
+            ContactForm(
+              formkey: _formKey,
+            )
           ],
         ),
       )),

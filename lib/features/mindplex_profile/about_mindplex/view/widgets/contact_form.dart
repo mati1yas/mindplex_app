@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:mindplex/features/user_profile_settings/view/widgets/button_widget.dart';
+import 'package:mindplex/utils/text_form_field_widget.dart';
 
 class ContactForm extends StatelessWidget {
-  const ContactForm({super.key});
+  ContactForm({super.key, required this.formkey});
+
+  final GlobalKey formkey;
+
+  get inputBorder => null;
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey _formKey = GlobalKey<FormState>();
-    TextEditingController nameController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController biographyController = TextEditingController();
+    TextEditingController firstNameTextEditingController =
+        TextEditingController();
+    TextEditingController lastNameTextEditingController =
+        TextEditingController();
+    TextEditingController emailTextEditingController = TextEditingController();
+    TextEditingController messageTextEditingController =
+        TextEditingController();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -22,7 +31,7 @@ class ContactForm extends StatelessWidget {
                 fontWeight: FontWeight.bold),
           ),
           Form(
-            key: _formKey,
+            key: formkey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -30,7 +39,7 @@ class ContactForm extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  "Name",
+                  "First Name",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
@@ -39,21 +48,23 @@ class ContactForm extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    hintText: 'your name here',
-                    filled: true,
-                    fillColor: Color.fromARGB(109, 112, 208, 166),
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                  ),
+                TextFormFieldWidget(
+                    textEditingController: firstNameTextEditingController),
+                SizedBox(
+                  height: 5,
                 ),
+                Text(
+                  "Last Name",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                TextFormFieldWidget(
+                    textEditingController: lastNameTextEditingController),
                 SizedBox(
                   height: 5,
                 ),
@@ -67,26 +78,14 @@ class ContactForm extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    hintText: 'your email here',
-                    filled: true,
-                    fillColor: Color.fromARGB(109, 112, 208, 166),
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                  ),
+                TextFormFieldWidget(
+                  textEditingController: emailTextEditingController,
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  "About you",
+                  "Message",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
@@ -95,38 +94,16 @@ class ContactForm extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                TextFormField(
-                  maxLines: 3,
-                  controller: biographyController,
-                  decoration: InputDecoration(
-                    hintText: 'about you here',
-                    filled: true,
-                    fillColor: Color.fromARGB(109, 112, 208, 166),
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.green)),
-                  ),
+                TextFormFieldWidget(
+                  textEditingController: messageTextEditingController,
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Center(
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.green)),
-                      onPressed: () {
-                        //  send for contacting  .
-                      },
-                      child: Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          child: Center(child: Text('Submit')))),
-                )
+                    child: buildButton("Submit", () {
+                  print("Moderators form submit has been clicked");
+                }, Colors.green, true, context)),
               ],
             ),
           )

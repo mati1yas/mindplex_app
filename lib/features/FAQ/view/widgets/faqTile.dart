@@ -28,8 +28,7 @@ class FaqTile extends StatelessWidget {
                 color: Colors.white70,
               ),
               SizedBox(width: 10),
-              Container(
-                width: screenWidth * 0.75,
+              Expanded(
                 child: Text(faq.title,
                     style: TextStyle(
                       color: Colors.white70,

@@ -15,6 +15,7 @@ import 'package:mindplex/features/user_profile_displays/services/profileServices
 import 'package:mindplex/utils/AppError.dart';
 import 'package:mindplex/utils/Toster.dart';
 import 'package:mindplex/utils/awesome_snackbar.dart';
+import 'package:mindplex/utils/empty_content_exception.dart';
 import 'package:mindplex/utils/network/connection-info.dart';
 import 'package:mindplex/utils/snackbar_constants.dart';
 import 'package:mindplex/utils/status.dart';
@@ -154,9 +155,13 @@ class DraftedPostsController extends GetxController {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
       }
+
       savingDraft.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
       final processedImages = await processImages();
+      if (is_empty_form() && processedImages.length == 0) {
+        throw EmptyContentException("");
+      }
 
       Blog newDraft = await profileService.createNewDraft(
           postContent: postContent, images: processedImages);
@@ -178,12 +183,19 @@ class DraftedPostsController extends GetxController {
         errorMessage("Failed To Save");
       }
 
+      String error = "";
+      if (e is NetworkException) {
+        error = SnackBarConstantMessage.noInternetConnection;
+      } else if (e is EmptyContentException) {
+        error = SnackBarConstantMessage.emptyContent;
+      } else {
+        error = SnackBarConstantMessage.draftSaveFailure;
+      }
+
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: e is NetworkException
-              ? SnackBarConstantMessage.noInternetConnection
-              : SnackBarConstantMessage.draftSaveFailure,
+          message: error,
           type: "failure");
     }
     savingDraft.value = false;
@@ -194,10 +206,14 @@ class DraftedPostsController extends GetxController {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
       }
+
       updatingDraft.value = true;
       final draftId = extractDaftId();
       final postContent = extractPostContentFromTextFieldEditor();
       final processedImages = await processImages();
+      if (is_empty_form() && processedImages.length == 0) {
+        throw EmptyContentException("");
+      }
 
       await profileService.updateDraft(
           draftId: draftId, postContent: postContent, images: processedImages);
@@ -216,12 +232,19 @@ class DraftedPostsController extends GetxController {
       if (e is AppError) {
         errorMessage("Failed To Update");
       }
+      String error = "";
+      if (e is NetworkException) {
+        error = SnackBarConstantMessage.noInternetConnection;
+      } else if (e is EmptyContentException) {
+        error = SnackBarConstantMessage.emptyContent;
+      } else {
+        error = SnackBarConstantMessage.draftUpdateFailure;
+      }
+
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: e is NetworkException
-              ? SnackBarConstantMessage.noInternetConnection
-              : SnackBarConstantMessage.draftUpdateFailure,
+          message: error,
           type: "failure");
     }
   }
@@ -231,10 +254,14 @@ class DraftedPostsController extends GetxController {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
       }
+
       makingPost.value = true;
       final draftId = extractDaftId();
       final postContent = extractPostContentFromTextFieldEditor();
       final processedImages = await processImages();
+      if (is_empty_form() && processedImages.length == 0) {
+        throw EmptyContentException("");
+      }
       await profileService.postDraftToSocial(
           draftId: draftId, postContent: postContent, images: processedImages);
       makingPost.value = false;
@@ -252,12 +279,20 @@ class DraftedPostsController extends GetxController {
       if (e is AppError) {
         errorMessage("Failed To post");
       }
+
+      String error = "";
+      if (e is NetworkException) {
+        error = SnackBarConstantMessage.noInternetConnection;
+      } else if (e is EmptyContentException) {
+        error = SnackBarConstantMessage.emptyContent;
+      } else {
+        error = SnackBarConstantMessage.socialPostFailure;
+      }
+
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: e is NetworkException
-              ? SnackBarConstantMessage.noInternetConnection
-              : SnackBarConstantMessage.socialPostFailure,
+          message: error,
           type: "failure");
     }
   }
@@ -267,10 +302,14 @@ class DraftedPostsController extends GetxController {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
       }
+
       makingPost.value = true;
       final postContent = extractPostContentFromTextFieldEditor();
 
       final processedImages = await processImages();
+      if (is_empty_form() && processedImages.length == 0) {
+        throw EmptyContentException("");
+      }
       await profileService.postNewToSocial(
           postContent: postContent, images: processedImages);
       makingPost.value = false;
@@ -336,6 +375,7 @@ class DraftedPostsController extends GetxController {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
       }
+
       deletingDraft.value = true;
       beingDeletedDaftIndex.value = draftIndex;
       beingEditeDraftBlog.value = blog;
@@ -368,10 +408,30 @@ class DraftedPostsController extends GetxController {
   }
 
 //  HELPER FUNTIONS BELOW
-  String extractPostContentFromTextFieldEditor() {
+
+  bool is_empty_form() {
+    final lines = getLines();
+    for (var line in lines) {
+      if (!line.trim().isEmpty) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  dynamic getLines() {
     final lines =
         DeltaToHTML.encodeJson(quillController.document.toDelta().toJson())
             .split('<br>');
+
+    return lines;
+  }
+
+  String extractPostContentFromTextFieldEditor() {
+    print("EXTRACTING CONTENT ");
+    final lines = getLines();
+    print(lines);
+
     final postContent = lines.map((line) => '<p>$line</p>').join('');
     return postContent;
   }
