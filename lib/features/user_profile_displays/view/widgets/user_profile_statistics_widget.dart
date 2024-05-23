@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followers_overlay.dart';
-import 'package:mindplex/features/user_profile_displays/view/widgets/followings_overlay.dart';
 
 class UserProfileStatistics extends StatelessWidget {
   const UserProfileStatistics({
@@ -44,7 +43,7 @@ class UserProfileStatistics extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 if (item['value'] == "Followers") {
-                  _showInteractionsOverlay(context);
+                  _showFollowersOverlay(context);
                 }
                 if (item['value'] == "Following") {
                   _showFollowingsOverlay(context);
@@ -126,10 +125,11 @@ class UserProfileStatistics extends StatelessWidget {
     );
   }
 
-  void _showInteractionsOverlay(BuildContext context) {
+  void _showFollowersOverlay(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => FollowersOverlay(
+        fetchUserFollowers: true,
         profileController: profileController,
       ),
       // isScrollControlled: true,
@@ -139,7 +139,8 @@ class UserProfileStatistics extends StatelessWidget {
   void _showFollowingsOverlay(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => FollowingsOverlay(
+      builder: (context) => FollowersOverlay(
+        fetchUserFollowers: false,
         profileController: profileController,
       ),
     );
