@@ -1,8 +1,10 @@
+import 'package:get/get.dart';
+
 class FollowerModel {
   String? username;
   String? displayName;
   String? avatarUrl;
-  bool? isFollowing;
+  RxBool? isFollowing = false.obs;
   String? isFriends;
 
   FollowerModel(
@@ -16,7 +18,7 @@ class FollowerModel {
     username = json['username'];
     displayName = json['display_name'];
     avatarUrl = json['avatar_url'];
-    isFollowing = json['is_following'];
+    isFollowing = RxBool(json['is_following'] ?? false);
     isFriends = json['is_friends'];
   }
 
@@ -25,7 +27,7 @@ class FollowerModel {
     data['username'] = this.username;
     data['display_name'] = this.displayName;
     data['avatar_url'] = this.avatarUrl;
-    data['is_following'] = this.isFollowing;
+    data['is_following'] = this.isFollowing!.value;
     data['is_friends'] = this.isFriends;
     return data;
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
 import 'package:mindplex/features/user_profile_displays/models/follower_model.dart';
 import 'package:mindplex/features/user_profile_displays/view/widgets/followers_overlay.dart';
@@ -10,10 +11,12 @@ class FollowerOrFollowingUserTile extends StatelessWidget {
     super.key,
     required this.follower,
     required this.profileController,
+    required this.followerIndex,
   });
 
   final FollowerModel follower;
   final ProfileController profileController;
+  final int followerIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +40,22 @@ class FollowerOrFollowingUserTile extends StatelessWidget {
         Container(
           child: Row(
             children: [
-              ProfilePageOutlinedButton(
-                buttonAction: () {
-                  profileController.sendFollowRequest(
-                      userName: follower.username ?? "");
-                },
-                buttonColor: profileController.isSendingFollowRequest.value
-                    ? Color.fromARGB(255, 229, 146, 171)
-                    : Color.fromARGB(255, 225, 62, 111),
-                buttonName:
-                    follower.isFollowing ?? false ? "Unfollow " : "Follow",
-                buttonWidthFactor: 0.25,
-                buttonHeight: 25,
-                buttonRadius: 10,
+              Obx(
+                () => ProfilePageOutlinedButton(
+                  buttonAction: () {
+                    profileController.sendFollowRequest(
+                        userName: follower.username ?? "",
+                        followerIndex: followerIndex);
+                  },
+                  buttonColor: profileController.isSendingFollowRequest.value
+                      ? Color.fromARGB(255, 229, 146, 171)
+                      : Color.fromARGB(255, 225, 62, 111),
+                  buttonName:
+                      follower.isFollowing!.value ? "Unfollow " : "Follow",
+                  buttonWidthFactor: 0.25,
+                  buttonHeight: 25,
+                  buttonRadius: 10,
+                ),
               )
             ],
           ),
