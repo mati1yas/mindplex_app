@@ -151,6 +151,7 @@ class DraftedPostsController extends GetxController {
   }
 
   Future<void> createNewDraft() async {
+    if (!await userCanMakePost()) return;
     try {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
@@ -202,6 +203,7 @@ class DraftedPostsController extends GetxController {
   }
 
   Future<void> updateDraft() async {
+    if (!await userCanMakePost()) return;
     try {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
@@ -250,6 +252,7 @@ class DraftedPostsController extends GetxController {
   }
 
   Future<void> postDraftToSocial() async {
+    if (!await userCanMakePost()) return;
     try {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
@@ -298,6 +301,7 @@ class DraftedPostsController extends GetxController {
   }
 
   Future<void> postNewToSocial() async {
+    if (!await userCanMakePost()) return;
     try {
       if (!await connectionChecker.isConnected) {
         throw NetworkException("");
@@ -428,9 +432,7 @@ class DraftedPostsController extends GetxController {
   }
 
   String extractPostContentFromTextFieldEditor() {
-    print("EXTRACTING CONTENT ");
     final lines = getLines();
-    print(lines);
 
     final postContent = lines.map((line) => '<p>$line</p>').join('');
     return postContent;
@@ -477,5 +479,18 @@ class DraftedPostsController extends GetxController {
 
   Future<void> removeSelectedImage({required int photoIndex}) async {
     selectedImages.removeAt(photoIndex);
+  }
+
+  Future<bool> userCanMakePost() async {
+    var canPostAfter = blogsController.socialFeedSetting.value.timeBetweenPost;
+    if (canPostAfter != null) {
+      showSnackBar(
+          context: await getContext(),
+          title: SnackBarConstantTitle.failureTitle,
+          message: "you can only post after : $canPostAfter ",
+          type: "warning");
+      return false;
+    }
+    return true;
   }
 }
