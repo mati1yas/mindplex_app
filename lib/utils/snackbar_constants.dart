@@ -20,4 +20,5 @@ class SnackBarConstantMessage {
 
   static var unKnowenError = "Something went wrong , Please try Again !";
   static var mpxrLoadingFailure = "Failed To Load Mpxr values";
+  static var emptyContent = "Failed to make changes , Empty Content !";
 }

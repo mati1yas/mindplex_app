@@ -23,10 +23,10 @@ class FaqGroupLists extends StatelessWidget {
                   )
                 : faqController.status == Status.success
                     ? ListView.separated(
-                        padding: EdgeInsets.fromLTRB(30, 30, 30, 20),
+                        padding: EdgeInsets.fromLTRB(30, 10, 30, 50),
                         shrinkWrap: true,
                         separatorBuilder: (context, index) =>
-                            SizedBox(height: 60),
+                            SizedBox(height: 30),
                         itemBuilder: (context, index) => FaqGroupCard(
                           faqGroup: faqController.faqGroups[index],
                         ),

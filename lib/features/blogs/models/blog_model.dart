@@ -116,23 +116,23 @@ class Blog {
       data['authors'] = this.authors!.map((v) => v.toJson()).toList();
     }
     data['author_display_name'] = this.authorDisplayName;
-    data['is_following'] = this.isFollowing;
+    data['is_following'] = this.isFollowing!.value;
     data['published_at'] = this.publishedAt;
     data['published_timestamp'] = this.publishedTimestamp;
     data['post_title'] = this.postTitle;
     data['overview'] = this.overview;
-    data['likes'] = this.likes;
+    data['likes'] = this.likes.value;
     data['comments'] = this.comments;
     data['views'] = this.views;
     data['min_to_read'] = this.minToRead;
     if (this.content != null) {
       data['content'] = this.content!.map((v) => v.toJson()).toList();
     }
-    data['is_user_liked'] = this.isUserLiked;
-    data['is_user_disliked'] = this.isUserDisliked;
-    data['is_bookmarked'] = this.isBookmarked;
-    data['is_votted'] = this.isVotted;
-    data['interacted_emoji'] = this.interactedEmoji;
+    data['is_user_liked'] = this.isUserLiked!.value;
+    data['is_user_disliked'] = this.isUserDisliked!.value;
+    data['is_bookmarked'] = this.isBookmarked!.value;
+    data['is_votted'] = this.isVotted!.value;
+    data['interacted_emoji'] = this.interactedEmoji!.value;
     return data;
   }
 }
@@ -187,12 +187,12 @@ class Author {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
+    data['user_id'] = this.userId!.value;
     data['username'] = this.username;
     data['avatar'] = this.avatar;
     data['bio'] = this.bio;
     data['display_name'] = this.displayName;
-    data['is_following'] = this.isFollowing;
+    data['is_following'] = this.isFollowing!.value;
     return data;
   }
 }

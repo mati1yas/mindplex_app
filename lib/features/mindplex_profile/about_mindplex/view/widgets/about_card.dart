@@ -39,7 +39,12 @@ class AboutCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: 200,
-                    color: Colors.black,
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        image: DecorationImage(
+                            fit: BoxFit.fitWidth,
+                            image: AssetImage(
+                                'assets/images/about_mindplex.png'))),
                   ),
                 ),
               ],

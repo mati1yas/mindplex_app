@@ -19,7 +19,7 @@ class FaqSearchResult extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
         height: screenHeight * 0.65,
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
         child: Obx(() => faqController.searchStatus == Status.loading
             ? ListView.builder(
                 itemCount: 5,
@@ -56,7 +56,7 @@ class FaqSearchResult extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        height: screenHeight * 0.52,
+                        height: screenHeight * 0.50,
                         child: ListView.separated(
                           padding: EdgeInsets.all(10),
                           shrinkWrap: true,

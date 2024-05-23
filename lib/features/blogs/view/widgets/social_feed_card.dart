@@ -175,11 +175,11 @@ class SocialFeedCard extends StatelessWidget {
                                 color: Colors.green[300],
                               ))
                           : Text(
-                              " MPXR ${(blog.reputation.value != null && blog.reputation.value!.postRep != null) ? numberToString(numberValue: blog.reputation.value!.postRep!, decimalPlace: 5) : '  -'}",
+                              "Post MPXR ${(blog.reputation.value != null && blog.reputation.value!.postRep != null) ? numberToString(numberValue: blog.reputation.value!.postRep!, decimalPlace: 5) : '  -'}",
                               // " MPXR ${blogsController.filteredBlogs[index].reputation.value != null ? blogsController.filteredBlogs[index].reputation.value!.postRep!.toStringAsFixed(5) : "-"}",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w500),
                             ),
                     ),
                   Divider(

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
+import 'package:mindplex/features/user_profile_displays/cache_service/profile_cache_service.dart';
 import 'package:mindplex/features/user_profile_displays/models/user_profile_reputation_model.dart';
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
 
@@ -50,6 +51,7 @@ class ProfileController extends GetxController {
   final apiService = ApiService().obs;
 
   final userProfileApiService = ProfileServices().obs;
+  final userProfileCacheService = ProfileCacheService().obs;
 
   AuthController authController = Get.find();
 
@@ -98,20 +100,29 @@ class ProfileController extends GetxController {
         throw NetworkException(
             "Looks like there is problem with your connection.");
       }
+      String cacheKey = username;
 
-      final res = await apiService.value.fetchUserProfile(userName: username);
-      res.username = username;
-      userProfile.value = res;
-      isLoading.value = false;
-      //  start reputation loading indicator
-      isLoadingReputation.value = true;
-      final userProfileReputation =
-          await getUserReputation(userId: res.userId!);
-      res.mpxr = userProfileReputation.mpxr!.toDouble();
+      if (userProfileCacheService.value.isInCache(cacheKey)) {
+        final res = userProfileCacheService.value.getFromCache(cacheKey);
+        userProfile.value = res;
+        isLoading.value = false;
+      } else {
+        final res = await apiService.value.fetchUserProfile(userName: username);
+        res.username = username;
+        userProfile.value = res;
+        isLoading.value = false;
+        //  start reputation loading indicator
+        isLoadingReputation.value = true;
+        final userProfileReputation =
+            await getUserReputation(userId: res.userId!);
+        res.mpxr = userProfileReputation.mpxr!.toDouble();
 
-      userProfile.value = res;
+        userProfile.value = res;
 
-      isLoadingReputation.value = false;
+        // cache the user profile ;
+        userProfileCacheService.value.addToCache(cacheKey, userProfile.value);
+        isLoadingReputation.value = false;
+      }
       //  end loading indicator and show it on the front end
     } catch (e) {
       if (e is NetworkException) {
@@ -194,12 +205,14 @@ class ProfileController extends GetxController {
   Future<void> followUser(String userName) async {
     if (await apiService.value.followUser(userName)) {
       userProfile.value.isFollowing!.value = true;
+      userProfileCacheService.value.addToCache(userName, userProfile.value);
     }
   }
 
   Future<void> unfollowUser(String userName) async {
     if (await apiService.value.unfollowUser(userName)) {
       userProfile.value.isFollowing!.value = false;
+      userProfileCacheService.value.addToCache(userName, userProfile.value);
     }
   }
 }

@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/FAQ/controller/faqController.dart';
-import 'package:mindplex/features/FAQ/model/FaqAnswer.dart';
-import 'package:mindplex/features/FAQ/services/FaqSerivces.dart';
 import 'package:mindplex/features/FAQ/view/widgets/FaqAnswerWidget.dart';
-import 'package:mindplex/features/FAQ/view/widgets/FaqGroup.dart';
-import 'package:mindplex/features/FAQ/view/widgets/faqSearch.dart';
+import 'package:mindplex/features/FAQ/view/widgets/faq_top_bar_widget.dart';
 import 'package:mindplex/utils/status.dart';
 import "../../../../../utils/colors.dart";
 
@@ -17,6 +14,7 @@ class FaqAnswerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     faqController.loadAnswer(slug);
     double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         body: Container(
       color: mainBackgroundColor,
@@ -26,33 +24,9 @@ class FaqAnswerPage extends StatelessWidget {
             // FaqSearch(),
             Container(
               color: ColorPrimaryDark,
-              padding: EdgeInsets.fromLTRB(20, 30, 10, 10),
-              height: screenHeight * 0.12,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      width: double.infinity,
-                      height: 50,
-                      child: Stack(alignment: Alignment.center, children: [
-                        Positioned(
-                            top: 0,
-                            left: -10,
-                            child: Container(
-                              child: BackButton(
-                                color: Colors.white70,
-                              ),
-                            )),
-                        Text(
-                          "FAQs",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
-                        )
-                      ])),
-                ],
-              ),
+              padding: EdgeInsets.fromLTRB(0, 30, 10, 10),
+              height: 70,
+              child: FAQTopBarWidget(screenWidth: screenWidth),
             ),
             Container(
               width: double.infinity,
