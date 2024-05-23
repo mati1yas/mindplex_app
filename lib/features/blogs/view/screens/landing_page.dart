@@ -201,7 +201,7 @@ class _LandingPageState extends State<LandingPage>
                           child: RefreshIndicator(
                             color: Colors.green,
                             onRefresh: () async {
-                              blogsController.fetchBlogs();
+                              blogsController.fetchBlogs(refreshing: true);
                             },
                             child: ListView.builder(
                                 controller: blogsController.scrollController,
