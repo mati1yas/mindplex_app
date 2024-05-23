@@ -6,18 +6,20 @@ class ProfilePageOutlinedButton extends StatelessWidget {
   final Color buttonColor;
   final double buttonWidthFactor;
   final double buttonRadius;
+  final double buttonHeight;
   const ProfilePageOutlinedButton(
       {super.key,
       required this.buttonName,
       required this.buttonAction,
       required this.buttonColor,
       required this.buttonWidthFactor,
-      required this.buttonRadius});
+      required this.buttonRadius,
+      this.buttonHeight = 30});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 30,
+        height: buttonHeight,
         width: MediaQuery.of(context).size.width * buttonWidthFactor,
         child: OutlinedButton(
           onPressed: buttonAction,
