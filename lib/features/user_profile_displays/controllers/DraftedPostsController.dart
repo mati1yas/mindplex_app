@@ -330,12 +330,19 @@ class DraftedPostsController extends GetxController {
       if (e is AppError) {
         errorMessage("Failed To post");
       }
+      String error = "";
+      if (e is NetworkException) {
+        error = SnackBarConstantMessage.noInternetConnection;
+      } else if (e is EmptyContentException) {
+        error = SnackBarConstantMessage.emptyContent;
+      } else {
+        error = SnackBarConstantMessage.socialPostFailure;
+      }
+
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: e is NetworkException
-              ? SnackBarConstantMessage.noInternetConnection
-              : SnackBarConstantMessage.socialPostFailure,
+          message: error,
           type: "failure");
     }
   }
