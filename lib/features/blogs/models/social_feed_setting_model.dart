@@ -12,7 +12,7 @@ class SocialFeedSetting {
 
   SocialFeedSetting.fromJson(Map<String, dynamic> json) {
     initialMpxr = json['initial_mpxr'];
-    timeBetweenPost = json['next_post_time'];
+    timeBetweenPost = json['next_post_time'].toString();
     timeBeforeDeletion = json['check_for_mpxr_to_pass'];
     minRequiredMpxr = json['min_mpxr_to_pass'];
   }
