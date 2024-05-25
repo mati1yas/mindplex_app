@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mindplex/features/authentication/models/auth_model.dart';
+import 'package:mindplex/features/user_profile_displays/models/follower_model.dart';
 import 'package:mindplex/features/user_profile_displays/cache_service/profile_cache_service.dart';
 import 'package:mindplex/features/user_profile_displays/models/user_profile_reputation_model.dart';
 import 'package:mindplex/features/user_profile_displays/services/profileServices.dart';
@@ -21,7 +22,17 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // fetchBlogs();
+
+    // Add a listener to the scroll controller to check when the user reaches the end of the list
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !reachedEndofFollowersOrFollowings.value) {
+        isLoadingMoreFollowerFollowings.value = true;
+        fetchMoreFollowersOrFollowings();
+        isLoadingMoreFollowerFollowings.value = false;
+      }
+    });
   }
 
   Rx<AuthModel> authenticatedUser = Rx<AuthModel>(AuthModel());
@@ -31,18 +42,17 @@ class ProfileController extends GetxController {
   RxString selectedBlogCategory = "Popular".obs;
   RxList<PopularDetails> blogs = <PopularDetails>[].obs;
   RxBool isWalletConnected = false.obs;
-  RxList followers = [].obs;
-  RxList followings = [].obs;
+  List<FollowerModel> followers = <FollowerModel>[];
+  List<FollowerModel> followings = <FollowerModel>[];
   RxBool isLoadingFollowers = false.obs;
   RxBool isLoadingFollowings = false.obs;
   RxBool firstTimeLoading = true.obs;
   RxBool firstTimeLoadingFollowings = true.obs;
   RxBool isConnected = true.obs;
 
-  RxInt page = 0.obs;
+  RxInt followersPage = 0.obs;
   RxInt followingsPage = 0.obs;
-  RxBool reachedEndofFollowers = false.obs;
-  RxBool reachedEndofFollowings = false.obs;
+  RxBool reachedEndofFollowersOrFollowings = false.obs;
   RxBool isSendingFollowRequest = false.obs;
   RxBool isSendingFriendRequest = false.obs;
 
@@ -56,19 +66,63 @@ class ProfileController extends GetxController {
   AuthController authController = Get.find();
 
   ConnectionInfoImpl connectionChecker = Get.find();
+  ScrollController scrollController = ScrollController();
+  RxList<FollowerModel> followers_followings = <FollowerModel>[].obs;
+  RxBool fetchUserFollowers = false.obs;
+  RxBool isLoadingFollowerFollowings = false.obs;
+  RxBool isLoadingMoreFollowerFollowings = false.obs;
+
+  void fetchFollowersOrFollowings() async {
+    if (!isLoadingFollowerFollowings.value) {
+      isLoadingFollowerFollowings.value = true;
+
+      if (fetchUserFollowers.value) {
+        resetFollowers();
+        await fetchFollowers(username: userProfile.value.username!);
+
+        followers_followings.value = followers;
+        isLoadingFollowerFollowings.value = false;
+        // });
+      } else {
+        resetFollowings();
+        await fetchFollowings(username: userProfile.value.username!);
+        followers_followings.value = followings;
+        isLoadingFollowerFollowings.value = false;
+      }
+    }
+  }
+
+  void fetchMoreFollowersOrFollowings() async {
+    if (!isLoadingFollowerFollowings.value) {
+      isLoadingMoreFollowerFollowings.value = true;
+
+      if (fetchUserFollowers.value) {
+        await fetchFollowers(username: userProfile.value.username!);
+
+        followers_followings.value = followers;
+        isLoadingMoreFollowerFollowings.value = false;
+        // });
+      } else {
+        fetchFollowings(username: userProfile.value.username!);
+        followers_followings.value = followings;
+
+        isLoadingMoreFollowerFollowings.value = false;
+      }
+    }
+  }
 
   void resetFollowers() {
-    followers.clear();
+    followers = [];
     isLoadingFollowings.value = false;
-    page.value = 0;
-    reachedEndofFollowers.value = false;
+    followersPage.value = 0;
+    reachedEndofFollowersOrFollowings.value = false;
   }
 
   void resetFollowings() {
-    followings.clear();
+    followings = [];
     isLoadingFollowers.value = false;
     followingsPage.value = 0;
-    reachedEndofFollowings.value = false;
+    reachedEndofFollowersOrFollowings.value = false;
   }
 
   void switchWallectConnectedState() {
@@ -142,13 +196,13 @@ class ProfileController extends GetxController {
 
   Future<void> fetchFollowers({required String username}) async {
     isLoadingFollowers.value = true;
-    page.value += 1;
+    followersPage.value += 1;
 
-    List<dynamic> fetchedFollowers = await apiService.value
-        .fetchUserFollowers(page: page.value, username: username);
-
+    List<FollowerModel> fetchedFollowers = await apiService.value
+        .fetchUserFollowers(page: followersPage.value, username: username);
     followers.addAll(fetchedFollowers);
-    if (fetchedFollowers.length < 10) reachedEndofFollowers.value = true;
+    if (fetchedFollowers.length < 10)
+      reachedEndofFollowersOrFollowings.value = true;
     isLoadingFollowers.value = false;
     firstTimeLoading.value = false;
   }
@@ -157,18 +211,22 @@ class ProfileController extends GetxController {
     isLoadingFollowings.value = true;
     followingsPage.value += 1;
 
-    List<dynamic> fetchedFollowings = await apiService.value
+    List<FollowerModel> fetchedFollowings = await apiService.value
         .fetchUserFollowings(page: followingsPage.value, username: username);
 
     followings.addAll(fetchedFollowings);
-    if (fetchedFollowings.length < 10) reachedEndofFollowings.value = true;
+    if (fetchedFollowings.length < 10)
+      reachedEndofFollowersOrFollowings.value = true;
     isLoadingFollowings.value = false;
     firstTimeLoadingFollowings.value = false;
   }
 
   Future<void> sendFollowRequest({
     required String userName,
+    int?
+        followerIndex, // this parameters is used to decide weather we are trying to follow a user directly from his/her profile or from list .
   }) async {
+    if (isSendingFollowRequest.value) return;
     isSendingFollowRequest.value = true;
 
     try {
@@ -176,12 +234,17 @@ class ProfileController extends GetxController {
         throw NetworkException(
             "Looks like there is problem with your connection.");
       }
-
-      bool isFollowing = userProfile.value.isFollowing!.value;
-      if (isFollowing) {
-        await unfollowUser(userName);
+      bool isFollowing = false;
+      if (followerIndex == null) {
+        isFollowing = userProfile.value.isFollowing!.value;
       } else {
-        await followUser(userName);
+        isFollowing = followers_followings[followerIndex].isFollowing!.value;
+      }
+
+      if (isFollowing) {
+        await unfollowUser(userName, followerIndex);
+      } else {
+        await followUser(userName, followerIndex);
       }
     } catch (e) {
       if (e is NetworkException) {
@@ -189,6 +252,7 @@ class ProfileController extends GetxController {
         Toster(
             message: 'No Internet Connection', color: Colors.red, duration: 1);
       } else {
+        print(e.toString());
         Toster(message: 'Failed To Follow', color: Colors.red, duration: 1);
       }
     }
@@ -202,17 +266,25 @@ class ProfileController extends GetxController {
     isSendingFriendRequest.value = false;
   }
 
-  Future<void> followUser(String userName) async {
+  Future<void> followUser(String userName, [int? followerIndex]) async {
     if (await apiService.value.followUser(userName)) {
-      userProfile.value.isFollowing!.value = true;
-      userProfileCacheService.value.addToCache(userName, userProfile.value);
+      if (followerIndex == null) {
+        userProfile.value.isFollowing!.value = true;
+        userProfileCacheService.value.addToCache(userName, userProfile.value);
+      } else {
+        followers_followings[followerIndex].isFollowing!.value = true;
+      }
     }
   }
 
-  Future<void> unfollowUser(String userName) async {
+  Future<void> unfollowUser(String userName, [int? followerIndex]) async {
     if (await apiService.value.unfollowUser(userName)) {
-      userProfile.value.isFollowing!.value = false;
-      userProfileCacheService.value.addToCache(userName, userProfile.value);
+      if (followerIndex == null) {
+        userProfile.value.isFollowing!.value = false;
+        userProfileCacheService.value.addToCache(userName, userProfile.value);
+      } else {
+        followers_followings[followerIndex].isFollowing!.value = false;
+      }
     }
   }
 }

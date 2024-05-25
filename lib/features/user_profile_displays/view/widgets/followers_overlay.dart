@@ -1,57 +1,40 @@
+import 'dart:ffi';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mindplex/features/user_profile_displays/controllers/user_profile_controller.dart';
+import 'package:mindplex/features/user_profile_displays/view/widgets/follower_or_following_user_tile.dart';
 import 'package:mindplex/utils/colors.dart';
+
+import '../../../../routes/app_routes.dart';
 
 class FollowersOverlay extends StatefulWidget {
   final ProfileController profileController;
+  final bool fetchUserFollowers;
 
-  const FollowersOverlay({Key? key, required this.profileController});
+  FollowersOverlay(
+      {Key? key,
+      required this.profileController,
+      required this.fetchUserFollowers});
 
   @override
   State<FollowersOverlay> createState() => _FollowersOverlayState();
 }
 
 class _FollowersOverlayState extends State<FollowersOverlay> {
-  List<dynamic> followers = [];
-  bool fetched = false;
-  bool isLoading = false;
-  ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
-    print(widget.profileController.userProfile.value.username);
-    _fetchFollowers();
+    widget.profileController.fetchUserFollowers.value =
+        widget.fetchUserFollowers;
 
-    // Add a listener to the scroll controller to check when the user reaches the end of the list
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
-          !widget.profileController.reachedEndofFollowers.value) {
-        _fetchFollowers();
-      }
-    });
+    widget.profileController.followersPage.value = 0;
+    widget.profileController.followingsPage.value = 0;
+    widget.profileController.fetchFollowersOrFollowings();
   }
 
   // Fetch followers method
-  void _fetchFollowers() {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
-
-      widget.profileController
-          .fetchFollowers(
-              username: widget.profileController.userProfile.value.username!)
-          .then((value) => {
-                setState(() {
-                  this.followers = widget.profileController.followers;
-                  this.fetched = true;
-                  isLoading = false;
-                })
-              });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +67,7 @@ class _FollowersOverlayState extends State<FollowersOverlay> {
                   ],
                 ),
                 Text(
-                  'Followers',
+                  widget.fetchUserFollowers ? 'Followers' : "Followings",
                   style: TextStyle(
                     fontSize: 24.0,
                     fontStyle: FontStyle.normal,
@@ -94,44 +77,75 @@ class _FollowersOverlayState extends State<FollowersOverlay> {
                 ),
                 SizedBox(height: 16.0),
                 // List of followers
-                this.fetched
-                    ? Expanded(
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: this.followers.length +
-                              (widget.profileController.reachedEndofFollowers
-                                      .value
-                                  ? 0
-                                  : 1), // +1 for the loading spinner if not reached end
-                          itemBuilder: (context, index) {
-                            if (index < this.followers.length) {
-                              final follower = this.followers[index];
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(follower['avatar_url']),
-                                ),
-                                title: Text(
-                                  follower['display_name'],
-                                  style:
-                                      TextStyle(color: shimmerEffectHighlight1),
-                                ),
-                              );
-                            } else if (!widget.profileController
-                                .reachedEndofFollowers.value) {
-                              // Loading spinner at the bottom
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            } else {
-                              return Container(); // Return an empty container if reached end
-                            }
-                          },
-                        ),
-                      )
-                    : Center(child: CircularProgressIndicator())
+                Obx(
+                  () => !widget
+                          .profileController.isLoadingFollowerFollowings.value
+                      ? Expanded(
+                          child: ListView.separated(
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: 5,
+                            ),
+                            controller:
+                                widget.profileController.scrollController,
+                            itemCount: widget.profileController
+                                    .followers_followings.length +
+                                (widget.profileController
+                                        .reachedEndofFollowersOrFollowings.value
+                                    ? 0
+                                    : 1), // +1 for the loading spinner if not reached end
+                            itemBuilder: (context, index) {
+                              if (widget.profileController.followers_followings
+                                      .length ==
+                                  0) {
+                                return Center(
+                                  child: Text(
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                      "No ${widget.fetchUserFollowers ? "Followers !" : "Followings !"} "),
+                                );
+                              }
+                              if (index <
+                                  widget.profileController.followers_followings
+                                      .length) {
+                                final follower = widget.profileController
+                                    .followers_followings[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.toNamed(AppRoutes.profilePage,
+                                          parameters: {
+                                            "me": "notme",
+                                            "username": follower.username ?? ""
+                                          });
+                                    },
+                                    child: FollowerOrFollowingUserTile(
+                                      follower: follower,
+                                      profileController:
+                                          widget.profileController,
+                                      followerIndex: index,
+                                    ),
+                                  ),
+                                );
+                              } else if (!widget.profileController
+                                  .reachedEndofFollowersOrFollowings.value) {
+                                // Loading spinner at the bottom
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              } else {
+                                return Container(); // Return an empty container if reached end
+                              }
+                            },
+                          ),
+                        )
+                      : Center(child: CircularProgressIndicator()),
+                )
               ],
             ),
           ),

@@ -9,6 +9,7 @@ import 'package:mindplex/features/blogs/models/reputation_model.dart';
 import 'package:mindplex/features/blogs/models/social_feed_setting_model.dart';
 import 'package:mindplex/features/search/models/search_response.dart';
 import 'package:mindplex/features/notification/models/notification_model.dart';
+import 'package:mindplex/features/user_profile_displays/models/follower_model.dart';
 import 'package:mindplex/features/user_profile_settings/models/user_profile.dart';
 
 import '../features/authentication/controllers/auth_controller.dart';
@@ -40,7 +41,6 @@ class ApiService {
       //  condition to check if the  user is guest user or not to extract token
       if (authenticationController.isGuestUser.value == false)
         dio.options.headers["Authorization"] = "Bearer ${token}";
-
       Response response = await dio
           .get("${AppUrls.blogUrl}/$post_type/$recommender/$post_format/$page");
 
@@ -438,9 +438,10 @@ class ApiService {
     }
   }
 
-  Future<List<dynamic>> fetchUserFollowers(
+  Future<List<FollowerModel>> fetchUserFollowers(
       {required String username, required int page}) async {
     var dio = Dio();
+    var ret = <FollowerModel>[];
 
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -449,21 +450,23 @@ class ApiService {
     if (!authenticationController.isGuestUser.value) {
       dio.options.headers["Authorization"] = "Bearer $token";
     }
-    print("${AppUrls.followers}$username/$page");
     Response response = await dio.get("${AppUrls.followers}$username/$page");
-
     if (response.statusCode == 200) {
       final followers = response.data['data'];
-      print(followers);
-      return followers;
+
+      for (var follower in followers) {
+        ret.add(FollowerModel.fromJson(follower));
+      }
+      return ret;
     } else {
       throw Exception('Failed to fetch user followers from the server.');
     }
   }
 
-  Future<List<dynamic>> fetchUserFollowings(
+  Future<List<FollowerModel>> fetchUserFollowings(
       {required String username, required int page}) async {
     var dio = Dio();
+    var ret = <FollowerModel>[];
 
     Rx<LocalStorage> localStorage =
         LocalStorage(flutterSecureStorage: FlutterSecureStorage()).obs;
@@ -472,13 +475,15 @@ class ApiService {
     if (!authenticationController.isGuestUser.value) {
       dio.options.headers["Authorization"] = "Bearer $token";
     }
-    print("${AppUrls.followings}$username/$page");
     Response response = await dio.get("${AppUrls.followings}$username/$page");
 
     if (response.statusCode == 200) {
       final followings = response.data['data'];
-      print(followings);
-      return followings;
+
+      for (var following in followings) {
+        ret.add(FollowerModel.fromJson(following));
+      }
+      return ret;
     } else {
       throw Exception('Failed to fetch user followings from the server.');
     }
