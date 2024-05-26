@@ -330,12 +330,19 @@ class DraftedPostsController extends GetxController {
       if (e is AppError) {
         errorMessage("Failed To post");
       }
+      String error = "";
+      if (e is NetworkException) {
+        error = SnackBarConstantMessage.noInternetConnection;
+      } else if (e is EmptyContentException) {
+        error = SnackBarConstantMessage.emptyContent;
+      } else {
+        error = SnackBarConstantMessage.socialPostFailure;
+      }
+
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: e is NetworkException
-              ? SnackBarConstantMessage.noInternetConnection
-              : SnackBarConstantMessage.socialPostFailure,
+          message: error,
           type: "failure");
     }
   }
@@ -483,11 +490,13 @@ class DraftedPostsController extends GetxController {
 
   Future<bool> userCanMakePost() async {
     var canPostAfter = blogsController.socialFeedSetting.value.timeBetweenPost;
-    if (canPostAfter != null) {
+
+    if (canPostAfter != "0") {
       showSnackBar(
           context: await getContext(),
           title: SnackBarConstantTitle.failureTitle,
-          message: "you can only post after : $canPostAfter ",
+          message:
+              "you can only post after : $canPostAfter  or try refreshing the page.  ",
           type: "warning");
       return false;
     }

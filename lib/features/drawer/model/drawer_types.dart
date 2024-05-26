@@ -11,4 +11,8 @@ enum DrawerType {
   faq,
   moderators,
   about,
+  contstitution,
+  contribute,
+  terms,
+  privacy
 }

@@ -216,7 +216,8 @@ class BlogsController extends GetxController {
         blogs.value = res;
         loadReputation(res);
         blogCacheService.value.removeFromCache(cacheKey);
-        blogCacheService.value.addToCache(cacheKey, blogs);
+        if (post_type != "social")
+          blogCacheService.value.addToCache(cacheKey, blogs);
       }
 
       isLoadingMore.value = false;

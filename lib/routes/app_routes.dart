@@ -4,6 +4,10 @@ import 'package:mindplex/features/FAQ/view/screens/FaqAnswerPage.dart';
 import 'package:mindplex/features/FAQ/view/screens/faqPage.dart';
 import 'package:mindplex/features/authentication/view/screens/auth.dart';
 import 'package:mindplex/features/mindplex_profile/about_mindplex/view/screens/about_mindplex.dart';
+import 'package:mindplex/features/mindplex_profile/mindplex_constitution/view/screens/constitution_page.dart';
+import 'package:mindplex/features/mindplex_profile/mindplex_contribution/view/screens/contribution_page.dart';
+import 'package:mindplex/features/mindplex_profile/mindplex_privacy/Terms/view/screens/mindplex_terms_page.dart';
+import 'package:mindplex/features/mindplex_profile/mindplex_privacy/privacy/view/screens/mindplex_privacy_page.dart';
 import 'package:mindplex/features/mindplex_profile/moderators/view/screens/moderators_page.dart';
 import 'package:mindplex/main.dart';
 import 'package:mindplex/features/user_profile_settings/view/screens/settings_page.dart';
@@ -39,6 +43,10 @@ class AppRoutes {
   static const String moderators = '/moderatorsPage';
   static const String faq = '/faq';
   static const String faqAnswer = '/faqAnswer';
+  static const String constitutionPage = '/constitutionPage';
+  static const String contributePage = '/contributePage';
+  static const String termsPage = '/termsPage';
+  static const String privacyPage = '/privacyPage';
 
   static final List<GetPage> pages = [
     GetPage(name: home, page: () => SplashScreen()),
@@ -60,7 +68,9 @@ class AppRoutes {
     GetPage(name: moderators, page: () => ModeratorsPage()),
     GetPage(name: faq, page: () => FAQ()),
     GetPage(name: faqAnswer, page: () => FaqAnswerPage()),
+    GetPage(name: constitutionPage, page: () => MindplexConstitution()),
+    GetPage(name: contributePage, page: () => MindplexContribution()),
+    GetPage(name: termsPage, page: () => MindplexTerms()),
+    GetPage(name: privacyPage, page: () => MindplexPrivacy()),
   ];
 }
-
-class PrivacyPolicyPage {}
