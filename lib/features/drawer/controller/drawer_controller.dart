@@ -35,7 +35,11 @@ class DrawerButtonController extends GetxController {
     '/privacyPolicyPage',
     '/searchResultPage',
     '/generalSettingsPage',
-    '/faq'
+    '/faq',
+    '/constitutionPage',
+    '/contributePage',
+    '/privacyPage',
+    '/termsPage'
   };
   final currentDrawerType = DrawerType.read.obs;
 

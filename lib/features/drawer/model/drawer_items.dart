@@ -98,5 +98,30 @@ class DrawerItems {
       drawerType: DrawerType.about,
       pageName: AppRoutes.aboutPage,
     ),
+
+    DrawerModel(
+      icon: Icons.edit_document,
+      drawerName: "Contribute",
+      drawerType: DrawerType.contstitution,
+      pageName: AppRoutes.contributePage,
+    ),
+    DrawerModel(
+      icon: Icons.format_align_justify,
+      drawerName: "Constitution",
+      drawerType: DrawerType.contstitution,
+      pageName: AppRoutes.constitutionPage,
+    ),
+    DrawerModel(
+      icon: Icons.privacy_tip_outlined,
+      drawerName: "Terms",
+      drawerType: DrawerType.contstitution,
+      pageName: AppRoutes.termsPage,
+    ),
+    DrawerModel(
+      icon: Icons.privacy_tip,
+      drawerName: "Privacy",
+      drawerType: DrawerType.contstitution,
+      pageName: AppRoutes.privacyPage,
+    ),
   ];
 }
