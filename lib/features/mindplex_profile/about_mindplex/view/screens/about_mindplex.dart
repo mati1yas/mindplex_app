@@ -5,6 +5,7 @@ import 'package:mindplex/features/drawer/controller/drawer_controller.dart';
 import 'package:mindplex/features/drawer/model/drawer_types.dart';
 
 import 'package:mindplex/features/mindplex_profile/about_mindplex/models/TeamMember.dart';
+import 'package:mindplex/utils/custom_app_bar.dart';
 
 import '../widgets/about_card.dart';
 import '../widgets/contact_form.dart';
@@ -31,35 +32,11 @@ class AboutMindPlex extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 6, 46, 59),
         body: Column(
           children: [
-            Material(
-              elevation: 10,
-              child: Container(
-                height: height * 0.1,
-                width: width,
-                alignment: Alignment.center,
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        drawerButtonController
-                            .changeDrawerType(DrawerType.read);
-                        Get.back();
-                      },
-                      icon: Icon(Icons.arrow_back),
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: width * 0.3,
-                    ),
-                    Center(
-                        child: Text(
-                      "About",
-                      style: TextStyle(color: Colors.white, fontSize: 22),
-                    )),
-                  ],
-                ),
-              ),
-              color: Color.fromARGB(255, 6, 46, 59),
+            CustomAppBar(
+              height: height,
+              width: width,
+              drawerButtonController: drawerButtonController,
+              pageName: "About",
             ),
             Container(
               height: height * 0.86,
